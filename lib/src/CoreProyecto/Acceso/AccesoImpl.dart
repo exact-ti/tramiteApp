@@ -11,9 +11,9 @@ class AccesoImpl implements AccesoInterface{
     }
 
   @override
-  void logear(String mensaje) {
+  String logear(String username , String password) {
 
-      logeo.logeo(mensaje);
+      logeo.logeo(username , password);
 
   }
   

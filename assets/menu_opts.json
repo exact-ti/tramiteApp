@@ -1,0 +1,23 @@
+[
+    {
+        "usuario": "oheredia",
+        "nombre": "Orlando",
+        "password": "123459",
+        "perfil": "operativo",
+        "ruta": "/perfilOperativo"
+    },
+    {
+        "usuario": "kvega",
+        "nombre": "katty",
+        "password": "123457",
+        "perfil": "usuario BCP",
+        "ruta": "/perfilusuarioBCP"
+    },
+    {
+        "usuario": "agomez",
+        "nombre": "Amanda",
+        "password": "123457",
+        "perfil": "usuario Bloque",
+        "ruta": "/perfilUsuarioBloque"
+    }
+]

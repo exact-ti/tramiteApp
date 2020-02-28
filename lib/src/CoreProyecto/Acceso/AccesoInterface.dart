@@ -1,5 +1,5 @@
 class AccesoInterface {
 
-    void logear(String mensaje){}
+    String logear(String username, String password){}
 
 }

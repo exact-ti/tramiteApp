@@ -1,5 +1,5 @@
 class LogeoInterface {
 
-  void logeo(String mensaje){}
+  String logeo(String username , String password){}
   
 }
