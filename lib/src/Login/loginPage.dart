@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Login/loginController.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 
 class LoginPage extends StatefulWidget{
   
@@ -62,13 +63,21 @@ class _LoginPageState extends State<LoginPage>{
     );
 
 
-    performLogin(){
+    performLogin(BuildContext context) async{
     String username = _usernameController.text;
     String password = _passwordController.text;
-
     print('login attempt: $username with $password');
-    }
+
+    Map info =  await logincontroller.validarlogin(username, password);
     
+    if (info['ok']) {
+        Navigator.of(context).pushNamed("principal");
+    }else{
+        mostrarAlerta(context, info['mensaje']);
+    } 
+
+    }
+
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 70),
       child: RaisedButton(
@@ -76,8 +85,8 @@ class _LoginPageState extends State<LoginPage>{
           borderRadius: BorderRadius.circular(10),
         ),
         onPressed: () {
-          performLogin();
-          Navigator.of(context).pushNamed("principal");
+          performLogin(context);
+          //Navigator.of(context).pushNamed("principal");
         },
         padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
         color: Colors.lightBlueAccent,

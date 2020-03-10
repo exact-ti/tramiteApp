@@ -11,9 +11,8 @@ import 'package:tramiteapp/src/Login/LoginController.dart';
 
 void main() {
     test('Exitoso', () {
-
       LoginController login = new LoginController();
-     //  String sdf = login.enviarmensaje("EXACT SAC");
-     // expect(" SAC",sdf);  
+       Future<String> sdf = login.enviarmensaje("kvega","123457");
+       expect("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJrYXR0eSIsInBlcmZpbCI6InVzdWFyaW8gQkNQIiwic2VkZSI6eyJpZCI6IjIiLCJub21icmUiOiJTYW50YSBSYXF1ZWwifX0.iMgbN00PixD6wb_0t17wt5G2mIaP-dKpU3yXbCxXQPI",sdf);  
     });
 }

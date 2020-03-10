@@ -1,5 +1,5 @@
 class AccesoInterface {
 
-    String logear(String username, String password){}
+    Future<Map<String, dynamic>> login(String username, String password) async {}
 
 }
