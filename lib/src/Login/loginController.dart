@@ -1,22 +1,16 @@
 
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoInterface.dart';
-import 'package:tramiteapp/src/Servicios/Logeo/LogeoAD.dart';
 import 'package:tramiteapp/src/Servicios/Logeo/LogeoFusionAuth.dart';
 
-class loginController {
+class LoginController {
 
-    AccesoInterface accesoInterface = new AccesoImpl(new LogeoAD());
-
-
-
-
-
-    void enviarmensaje(String mensaje){
-
-        print("Ingreso el logincontroller y el mensaje es el siguiente : "+mensaje);
-
-        accesoInterface.logear(mensaje);
+    AccesoInterface accesoInterface = new AccesoImpl(new LogeoFusionAuth());
+    
+    Future<Map<String, dynamic>> validarlogin(String username , String password) async{
+        print("Ingreso el username y el password es el siguiente : "+username+" password "+password);
+        Map<String, dynamic> interfaceLogear = await accesoInterface.login( username , password);
+        return interfaceLogear;
     }
 
 }

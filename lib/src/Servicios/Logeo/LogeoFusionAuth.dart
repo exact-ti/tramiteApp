@@ -1,13 +1,102 @@
+import 'dart:convert';
+import 'package:oauth2/oauth2.dart' as oauth2;
+import 'package:tramiteapp/src/Entity/Usuario.dart';
 import 'package:tramiteapp/src/Servicios/Logeo/LogeoInterface.dart';
+import 'package:http/http.dart' as http;
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 class LogeoFusionAuth implements LogeoInterface{
 
+  final String _firebasetoken = '';
+  
+  final _prefs = new PreferenciasUsuario();
 
   @override
-  void logeo(String mensaje) {
+  Future<Map<String, dynamic>> logeo(String username , String password) async {
 
-            print("Ingreso el Servicio LogeoFusionAuth y el mensaje es el siguiente : "+mensaje);
 
+
+    final authData = {
+      'email'    : username,
+      'password' : password,
+      'returnSecureToken' : true
+    };
+
+
+
+    final resp = await http.post('localhost:8890/api/security/oauth/token',
+    body: json.encode(authData)
+    );
+
+    Map<String,dynamic> decodedResp = json.decode( resp.body );
+
+    print(decodedResp);
+
+    if ( decodedResp.containsKey('idToken') ) {
+      
+      _prefs.token = decodedResp['idToken'];
+
+      return { 'ok': true, 'token': decodedResp['idToken'] };
+    } else {
+      return { 'ok': false, 'mensaje': decodedResp['error']['message'] };
+    }
+
+  }
+
+  @override
+  Future<Map<String, dynamic>> login(String username, String password)  async {
+
+  final authorizationEndpoint ='http://192.168.1.218:8890/api/security/oauth/token';
+
+  var map = new Map<String, dynamic>();
+    map['grant_type'] = 'password';
+    map['username'] = 'oheredia';
+    map['password'] = '12345';
+
+  var header = new Map<String, dynamic>();  
+    header['client_id'] = 'frontendapp';
+    header['client_secret'] = '12345';
+
+  Map<String, String> headers = {
+"Content-Type": "application/x-www-form-urlencoded",
+"Authorization":"Basic ZnJvbnRlbmRhcHA6MTIzNDU="
+};
+
+  http.Response response = await http.post(authorizationEndpoint,
+  headers: headers, 
+  body: map);
+
+    print(response);
+    
+    var resp;
+
+    final authData = {
+      'username' : username,
+      'password' : password,
+      'returnSecureToken' : true
+    };
+
+    try{
+    resp = await http.post('localhost:8890/api/security/oauth/token',
+    body : json.encode(authData)
+    );
+    }catch(e){
+      return { 'ok': false, 'mensaje': 'El servidor esta en mantenimiento.' };
+    }
+
+
+    Map<String,dynamic> decodedResp = json.decode( resp.body );
+
+    print(decodedResp);
+
+    if ( decodedResp.containsKey('idToken') ) {
+      
+      _prefs.token = decodedResp['idToken'];
+
+      return { 'ok': true, 'token': decodedResp['idToken'] };
+    } else {
+      return { 'ok': false, 'mensaje': 'El Usuario y contraseña son incorrectos.'};
+    }
   }
   
 }

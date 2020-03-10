@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Login/loginController.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 
 class LoginPage extends StatefulWidget{
   
@@ -15,7 +16,10 @@ class _LoginPageState extends State<LoginPage>{
   @override
   Widget build(BuildContext context) {
 
-    loginController logincontroller = new loginController();
+    final _usernameController = TextEditingController();
+    final _passwordController = TextEditingController();
+
+    LoginController logincontroller = new LoginController();
 
     final logo = Hero(
       tag: 'hero', 
@@ -27,6 +31,7 @@ class _LoginPageState extends State<LoginPage>{
       );
 
     final email = TextFormField(
+      controller: _usernameController,
       keyboardType: TextInputType.text,
       autofocus: false,
       textAlign: TextAlign.center,
@@ -42,6 +47,7 @@ class _LoginPageState extends State<LoginPage>{
     );
 
     final password = TextFormField(
+      controller: _passwordController,
       autofocus: false,
       obscureText: true,
       textAlign: TextAlign.center,
@@ -56,6 +62,22 @@ class _LoginPageState extends State<LoginPage>{
       ),
     );
 
+
+    performLogin(BuildContext context) async{
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+    print('login attempt: $username with $password');
+
+    Map info =  await logincontroller.validarlogin(username, password);
+    
+    if (info['ok']) {
+        Navigator.of(context).pushNamed("principal");
+    }else{
+        mostrarAlerta(context, info['mensaje']);
+    } 
+
+    }
+
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 70),
       child: RaisedButton(
@@ -63,8 +85,8 @@ class _LoginPageState extends State<LoginPage>{
           borderRadius: BorderRadius.circular(10),
         ),
         onPressed: () {
-          logincontroller.enviarmensaje(" EXACT SAC ");
-          Navigator.of(context).pushNamed("principal");
+          performLogin(context);
+          //Navigator.of(context).pushNamed("principal");
         },
         padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
         color: Colors.lightBlueAccent,
@@ -79,13 +101,13 @@ class _LoginPageState extends State<LoginPage>{
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40,color: Colors.blueGrey),
     );
 
-
+/* 
     final letrafooter = Text(
       'Forgot password?',
       textAlign: TextAlign.center,
        overflow: TextOverflow.ellipsis,
          style: TextStyle( fontSize: 18,color: Colors.lightBlue ),
-    );
+    ); */
 
     final forgotLabel = FlatButton(
       child: Text(
@@ -94,7 +116,6 @@ class _LoginPageState extends State<LoginPage>{
       ),
       //onPressed: () {},
     );
-
 
 
     return Scaffold(

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Login/loginPage.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/routes/routes.dart';
 
-void main() => runApp(MyApp());
+void main() async { 
+  final prefs = new PreferenciasUsuario();
+  await prefs.initPrefs();
+  runApp(MyApp());
+  }
 
 class MyApp extends StatelessWidget {
   @override
