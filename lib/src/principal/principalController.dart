@@ -2,6 +2,8 @@ class PrincipalController {
   
     List<Map<String,dynamic>>  ListarDestinario() {
 
+    //var tamano = text.length;  
+
     final dato1 = {
       'nombre' : 'Orlando Heredia',
       'area' : 'Proyectos TI',
@@ -73,6 +75,16 @@ class PrincipalController {
         myList.add(dato12);
         myList.add(dato13);
 
+      List<Map<String,dynamic>> listarfiltrados = List<Map<String,dynamic>>();
+
+      
+
+/*
+      for(Map<String,dynamic> onlylist in myList){
+         if(onlylist["nombre"].toString().substring(0,tamano) == text){
+            listarfiltrados.add(onlylist);
+         } 
+      }*/
 
         return myList;
     }

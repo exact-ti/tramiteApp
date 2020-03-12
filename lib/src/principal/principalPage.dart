@@ -1,312 +1,169 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/principal/principalController.dart';
 
-
-TextEditingController _rutController = TextEditingController();
-
 class PrincipalPage extends StatefulWidget {
-
   @override
   _PrincipalPageState createState() => _PrincipalPageState();
-
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
-  
+  @override
+  Widget build(BuildContext context) {
+
+    const colorplomo = const Color(0xFFEAEFF2);
+    const colorblanco = const Color(0xFFFFFFFF);
+    const colorborde = const Color(0xFFD5DCDF);
 
 
-  
+    PrincipalController principalcontroller = new PrincipalController();
 
-      @override
-      Widget build(BuildContext context) {
+TextEditingController _rutController = TextEditingController();
 
-        Widget _myListView() {
-      return ListView(
-        children:<Widget>[
-        Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-                Container(
-        child: new ListTile(
-          title: new Text('Victor Chumacahua'),
-          trailing: new Text('Operativo Vida')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Javier Soto'),
-          trailing: new Text('Comercial')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Luna Lopez'),
-          trailing: new Text('Gerencia')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Christian campos'),
-          trailing: new Text('Tecnologia de información')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Orlando Heredia'),
-          trailing: new Text('Tramite Documental')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Ronald Santos'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Kathy Vega'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-        Container(
-        child: new ListTile(
-          title: new Text('Yohan Mamani'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Kathetleen Macedo'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('GianMarco Vargas'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-         Container(
-        child: new ListTile(
-          title: new Text('Sebastian Vilela'),
-          trailing: new Text('BCP')
-        ),
-        decoration:
-            new BoxDecoration(
-                border: new Border(
-                    bottom: new BorderSide()
-                )
-            )
-        ),
-  
+    var listadestinatarios;
 
-            ]
+
+    Widget _myListView(String buscador) {
+
+      List<Widget> list = new List<Widget>();
+  /*
+      if(listadestinatarios==null){
+          list.add(new  Container(
+            child: new ListTile(
+            title: new Text(""),
+            )));
+
+       return new ListView(children: list
       );
-    }
-     PrincipalController principalcontroller = new PrincipalController();
+      }*/
 
-     void onChangedApplyFormat(String text) {
-            var lista = principalcontroller.ListarDestinario();
-            for(Map<String, dynamic> list in lista){
-                 print(list["nombre"]); 
-            }
-        print("dads"); 
-    }
+      var listadestinataris = principalcontroller.ListarDestinario();
+      var booleancolor = true;
+      var colorwidget = colorblanco; 
+      for (Map<String, dynamic> destinatario in listadestinataris) {
+        
+        if(booleancolor){
+            colorwidget = colorplomo;
+            booleancolor=false;
+        }else{
+          colorwidget= colorblanco;
+            booleancolor=true;
+        }  
 
-  final destinatario = TextFormField(
-    keyboardType: TextInputType.text,
-    autofocus: false,
-    controller: _rutController,
-    //textAlign: TextAlign.center,
-    onChanged: onChangedApplyFormat,
-        decoration: InputDecoration(
-          //border: InputBorder.none,
-          //focusedBorder: InputBorder.none,
-          border: OutlineInputBorder(),
-          filled: true,
-          fillColor: Color(0xffF0F3F4),
-          hintText: 'Ingrese destinatario',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 8.0, 20.0),
-          //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-        ),
-      );
-    
-      final titulo = Row(children: <Widget>[
-        Text('Generar envío'),
-        SizedBox(width: 250, child: TextField()),
-      ]);
-      
-
-
-        const PrimaryColor = const Color(0xFF35B6EB);
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: PrimaryColor,
-            title: Text('Generar envío'),
-          ),
-          body: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24.0, right: 24.0),
-            children: <Widget>[
-              SizedBox(height: 5.0,),
-              destinatario,
-              SizedBox(height: 48.0),
-              Container(
-              /*decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,// set border color
-                width: 1.0), 
-              ),*/
-              child: SizedBox(height: 639.0,
-              child:_myListView()
-              )
-              )    
-
-              ],
-          ),
-        );
+        list.add(new  Container(
+            child: new ListTile(
+            onTap: () {},     
+            title: new Text(destinatario["nombre"]),
+            subtitle:new Text(destinatario["area"]) ,
+            trailing:Icon(Icons.keyboard_arrow_right)
+            ),     
+            //height: 70,
+            alignment: Alignment.center,
+            decoration: new BoxDecoration(
+            color: colorwidget,
+            border: new Border(top: BorderSide(color:colorborde))
+            )));
+        print(destinatario["nombre"]);
       }
-  
 
+      return new ListView(children: list
+      );
+    }
+    
+    
+    String _text = "";
+
+
+    void onChangedApplyFormat(String text) {
+      /*var lista = principalcontroller.ListarDestinario(text);
+      for (Map<String, dynamic> list in lista) {
+        print(text.length);
+      }*/
+      listadestinatarios = principalcontroller.ListarDestinario();
+
+      setState(() => 
+      _text = text
+      ); // you need this
+            
+    }
+
+
+    final destinatario = TextFormField(
+      keyboardType: TextInputType.text,
+      autofocus: false,
+      //controller: _rutController,
+      //textAlign: TextAlign.center,
+      /*onChanged: (text) {
+              setState(() => _text = text); // you need this
+            },*/
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        //focusedBorder: InputBorder.none,
+        prefixIcon:Icon(Icons.search),
+        //border: OutlineInputBorder(),
+        filled: true,
+        fillColor: Color(0xffF0F3F4),
+        hintText: 'Ingrese destinatario',
+        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+      ),
+    );
+
+    final titulo = Row(children: <Widget>[
+      Text('Generar envío',   style: TextStyle(
+            fontSize: 10
+          )),
+      SizedBox(width: 250, child: TextField()),
+    ]);
+
+    const PrimaryColor = const Color(0xFF35B6EB);
+return Scaffold(
+      appBar: AppBar(
+        backgroundColor: PrimaryColor,
+        title: Text('Generar envío',   style: TextStyle(
+            fontSize: 18
+          )),
+      ),
+      body: 
+      Padding(
+      padding: const EdgeInsets.only(left:20,right: 20 ),
+        child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              alignment: Alignment.center,
+              height: screenHeightExcludingToolbar(context, dividedBy: 8),
+              width: double.infinity,
+              child: destinatario
+            ),
+          ),
+          Expanded(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child:  _myListView("")
+            ),
+          )
+        ],
+      ),
+)
+      
+      
+    );
+
+  }
+
+  Size screenSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
+  double screenHeight(BuildContext context,
+      {double dividedBy = 1, double reducedBy = 0.0}) {
+    return (screenSize(context).height - reducedBy) / dividedBy;
+  }
+
+  double screenHeightExcludingToolbar(BuildContext context,
+      {double dividedBy = 1}) {
+    return screenHeight(context,
+        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+  }
 }
