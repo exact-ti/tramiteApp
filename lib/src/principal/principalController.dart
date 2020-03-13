@@ -1,8 +1,13 @@
 class PrincipalController {
   
-    List<Map<String,dynamic>>  ListarDestinario() {
+    List<Map<String,dynamic>>  ListarDestinario(String text) {
 
-    //var tamano = text.length;  
+
+    var tamano = text.length; 
+
+    if(tamano == 0){
+        return null;
+    } 
 
     final dato1 = {
       'nombre' : 'Orlando Heredia',
@@ -58,6 +63,27 @@ class PrincipalController {
       'nombre' : 'Alan Garcia',
       'area' : 'Gerente BCP',
     };
+
+    final dato14 = {
+      'nombre' : 'Cesar Baltazar',
+      'area' : 'Proyectos TI',
+    };
+
+    final dato15 = {
+      'nombre' : 'Omar Cevallos',
+      'area' : 'Supervisor Marsh',
+    };
+
+    final dato16 = {
+      'nombre' : 'Karina Hinostroza',
+      'area' : 'Recursos Humanos',
+    };
+
+    final dato17 = {
+      'nombre' : 'Olinda Benites',
+      'area' : 'Trabajadora Social',
+    };
+
         
 
       List<Map<String,dynamic>> myList = List<Map<String,dynamic>>();
@@ -74,19 +100,62 @@ class PrincipalController {
         myList.add(dato11);
         myList.add(dato12);
         myList.add(dato13);
+        myList.add(dato14);
+        myList.add(dato15);
+        myList.add(dato16);
+        myList.add(dato17);
 
       List<Map<String,dynamic>> listarfiltrados = List<Map<String,dynamic>>();
 
-      
-
-/*
+    
       for(Map<String,dynamic> onlylist in myList){
-         if(onlylist["nombre"].toString().substring(0,tamano) == text){
+         if(onlylist["nombre"].toString().substring(0,tamano).toLowerCase() == text.toLowerCase()){
             listarfiltrados.add(onlylist);
          } 
-      }*/
+      }
+
+        return listarfiltrados;
+    }
+
+
+
+     List<Map<String,dynamic>>  ListarUsuariosFrecuentes() {
+
+           final dato1 = {
+      'nombre' : 'Ricardo Villafranca ',
+      'area' : 'Proyectos TI',
+    };
+
+    final dato2 = {
+      'nombre' : 'Jorge Miranda',
+      'area' : 'Proyectos TI',
+    };
+
+        final dato3 = {
+      'nombre' : 'Manuel Goigu',
+      'area' : 'Comercial',
+    };
+        final dato4 = {
+      'nombre' : 'Juan Reyes Ferrer',
+      'area' : 'Administración',
+    };
+        
+
+        
+
+      List<Map<String,dynamic>> myList = List<Map<String,dynamic>>();
+        myList.add(dato1);
+        myList.add(dato2);
+        myList.add(dato3);
+        myList.add(dato4);
+
 
         return myList;
-    }
+     }
+
+
+
+
+
 
 }

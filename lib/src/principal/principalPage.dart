@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/principal/principalController.dart';
 
@@ -7,6 +9,39 @@ class PrincipalPage extends StatefulWidget {
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
+
+
+    PrincipalController principalcontroller = new PrincipalController();
+
+  //TextEditingController _rutController = TextEditingController();
+
+    var listadestinatarios;
+    String textdestinatario="";
+
+    var listadetinatario; 
+    var listadetinatarioDisplay;
+    var colorletra = const Color(0xFFACADAD);
+    var prueba;
+
+      var nuevo =true;
+
+    @override
+    void initState() {
+        //listadetinatario= principalcontroller.ListarDestinario();
+        prueba = Text("Usuarios frecuentes",style: TextStyle(
+            fontSize: 15,color: Color(0xFFACADAD)));
+
+        setState(() {
+          //listadetinatario =principalcontroller.ListarDestinario();
+          //listadetinatarioDisplay = listadetinatario;
+
+         /* */
+
+          textdestinatario = "";
+        });
+        super.initState();
+      }
+  
   @override
   Widget build(BuildContext context) {
 
@@ -15,18 +50,32 @@ class _PrincipalPageState extends State<PrincipalPage> {
     const colorborde = const Color(0xFFD5DCDF);
 
 
-    PrincipalController principalcontroller = new PrincipalController();
-
-TextEditingController _rutController = TextEditingController();
-
-    var listadestinatarios;
-
-
     Widget _myListView(String buscador) {
-
       List<Widget> list = new List<Widget>();
-  /*
-      if(listadestinatarios==null){
+      var listadestinataris;
+      if(buscador==""){
+          listadestinataris = principalcontroller.ListarUsuariosFrecuentes();
+          setState(() {
+            if(!nuevo){
+
+                        prueba=null;
+
+            }
+            nuevo =false;
+          });
+      }else{
+          listadestinataris = principalcontroller.ListarDestinario(buscador);
+          setState(() {
+
+            prueba=Text("Usuarios frecuentes",style: TextStyle(
+            fontSize: 15,color: Color(0xFFACADAD)));
+
+
+          });
+      }
+
+
+      if(listadestinataris==null /*|| buscador.length<2*/){
           list.add(new  Container(
             child: new ListTile(
             title: new Text(""),
@@ -34,9 +83,8 @@ TextEditingController _rutController = TextEditingController();
 
        return new ListView(children: list
       );
-      }*/
+      }
 
-      var listadestinataris = principalcontroller.ListarDestinario();
       var booleancolor = true;
       var colorwidget = colorblanco; 
       for (Map<String, dynamic> destinatario in listadestinataris) {
@@ -52,9 +100,11 @@ TextEditingController _rutController = TextEditingController();
         list.add(new  Container(
             child: new ListTile(
             onTap: () {},     
-            title: new Text(destinatario["nombre"]),
-            subtitle:new Text(destinatario["area"]) ,
-            trailing:Icon(Icons.keyboard_arrow_right)
+            title: new Text(destinatario["nombre"],style: TextStyle(
+            fontSize: 15)),
+            subtitle:new Text(destinatario["area"],style: TextStyle(
+            fontSize: 12)) ,
+            trailing:Icon(Icons.keyboard_arrow_right,color:Color(0xffC7C7C7) ,)
             ),     
             //height: 70,
             alignment: Alignment.center,
@@ -78,7 +128,7 @@ TextEditingController _rutController = TextEditingController();
       for (Map<String, dynamic> list in lista) {
         print(text.length);
       }*/
-      listadestinatarios = principalcontroller.ListarDestinario();
+      listadestinatarios = principalcontroller.ListarDestinario(text);
 
       setState(() => 
       _text = text
@@ -87,24 +137,50 @@ TextEditingController _rutController = TextEditingController();
     }
 
 
+
     final destinatario = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      onChanged:  (text) {
+              setState(() {
+                  textdestinatario=text;
+                  /*listadetinatarioDisplay = listadetinatario.where((destinatario){
+                    var nombredestinatario = destinatario["nombre"];
+                    return nombredestinatario.contains(text);
+                  }).toList();*/
+                  //var nombre = "asdads";
+
+              });
+            },
       //controller: _rutController,
       //textAlign: TextAlign.center,
-      /*onChanged: (text) {
+      /*  : (text) {
               setState(() => _text = text); // you need this
             },*/
       decoration: InputDecoration(
-        border: InputBorder.none,
+        //border: InputBorder.none,
         //focusedBorder: InputBorder.none,
         prefixIcon:Icon(Icons.search),
+        contentPadding: new EdgeInsets.symmetric(vertical: 11.0),
         //border: OutlineInputBorder(),
         filled: true,
-        fillColor: Color(0xffF0F3F4),
+        //fillColor: Color(0xffF0F3F4),
+        focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(
+                    color: Color(0xffF0F3F4),
+                    width: 0.0,
+                  ),
+                ),
         hintText: 'Ingrese destinatario',
-        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-      ),
+        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xffF0F3F4),width: 0.0)),
+      ),  
     );
 
     final titulo = Row(children: <Widget>[
@@ -114,13 +190,33 @@ TextEditingController _rutController = TextEditingController();
       SizedBox(width: 250, child: TextField()),
     ]);
 
-    const PrimaryColor = const Color(0xFF35B6EB);
-return Scaffold(
+
+
+
+      /*final prueba = Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              alignment: Alignment.bottomLeft,
+              height: screenHeightExcludingToolbar(context, dividedBy: 40),
+              width: double.infinity,
+              child: Text("Usuarios Frecuentes:",style: TextStyle(
+            fontSize: 15,color: Color(0xFFACADAD)))
+            )
+            ,
+          );*/
+
+
+
+    const PrimaryColor = const Color(0xFF2C6983);
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: PrimaryColor,
         title: Text('Generar envío',   style: TextStyle(
-            fontSize: 18
-          )),
+            fontSize: 18,
+            decorationStyle: TextDecorationStyle.wavy,
+            fontStyle:FontStyle.normal,
+            fontWeight: FontWeight.normal
+        )),
       ),
       body: 
       Padding(
@@ -132,15 +228,27 @@ return Scaffold(
             alignment: Alignment.topCenter,
             child: Container(
               alignment: Alignment.center,
-              height: screenHeightExcludingToolbar(context, dividedBy: 8),
+              height: screenHeightExcludingToolbar(context, dividedBy: 10),
               width: double.infinity,
               child: destinatario
             ),
-          ),
+          ), 
+          Row(children: <Widget>[prueba==null?Container():prueba],),
+        /* Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              alignment: Alignment.bottomLeft,
+              height: screenHeightExcludingToolbar(context, dividedBy: 40),
+              width: double.infinity,
+              child: Text("Usuarios Frecuentes:",style: TextStyle(
+            fontSize: 15,color: colorletra))
+            )
+            ,
+          ),*/
           Expanded(
             child: Container(
               alignment: Alignment.bottomCenter,
-              child:  _myListView("")
+              child:  _myListView(textdestinatario)
             ),
           )
         ],
