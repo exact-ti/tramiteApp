@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/routes/routes.dart';
 
 void main() async { 
   final prefs = new PreferenciasUsuario();
+  WidgetsFlutterBinding.ensureInitialized();
   await prefs.initPrefs();
   runApp(MyApp());
   }

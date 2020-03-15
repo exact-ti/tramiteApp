@@ -25,6 +25,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   shared_preferences:
   oauth2: ^1.5.0
+  dio: 3.0.9
+
 
 dev_dependencies:
   flutter_driver:
