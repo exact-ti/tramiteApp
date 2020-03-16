@@ -4,7 +4,7 @@ import 'package:tramiteapp/src/principal/principalPage.dart';
 
 Map<String, WidgetBuilder> getAplicationRoutes() {
   return <String, WidgetBuilder>{
-    '/': (BuildContext context) => PrincipalPage(),
-    'principal': (BuildContext context) => PrincipalPage(),
+    '/login': (BuildContext context) => LoginPage(),
+    'principal-admin': (BuildContext context) => PrincipalPage(),
   };
 }

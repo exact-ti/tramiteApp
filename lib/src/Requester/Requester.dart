@@ -26,7 +26,9 @@ class Requester {
       var basic8 = utf8.encode(basic);
       String basic64 = base64.encode(basic8);
       Map<String, dynamic> header = {
-        'Authorization': 'Basic $basic64'
+        'Authorization': 'Basic $basic64',
+        "content-type": "application/x-www-form-urlencoded", 
+        "Accept": "application/json",
       };
       return await _dio.post(
         properties['API'] + path,

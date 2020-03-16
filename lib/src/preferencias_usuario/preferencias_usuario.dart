@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Entity/Buzon.dart';
 
 /*
   Recordar instalar el paquete de:
@@ -41,6 +44,16 @@ class PreferenciasUsuario {
   set refreshToken(String value) {
     _prefs.setString('refresh_token', value);
   }
+  
+  get buzones {
+    return _prefs.getString("buzones");
+  }
+
+  set buzones(List<Buzon> buzones) {
+    _prefs.setString("buzones", json.encode(buzones));
+  }
+
+
   
 
   // GET y SET de la última página
