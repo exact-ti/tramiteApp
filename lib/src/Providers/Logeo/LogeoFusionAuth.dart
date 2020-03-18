@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 class LogeoFusionAuth implements LogeoInterface {
 
@@ -10,7 +9,7 @@ class LogeoFusionAuth implements LogeoInterface {
     FormData formData = FormData.fromMap(
         {'username': username, 'password': password, 'grant_type': 'password'});
     Requester req = Requester();
-    final resp = await req.login("/security/oauth/token", formData);
+    final resp = await req.login("/servicio-oauth/oauth/token", formData);
     Map<String, dynamic> decodedResp = resp.data;
     return decodedResp;
   }

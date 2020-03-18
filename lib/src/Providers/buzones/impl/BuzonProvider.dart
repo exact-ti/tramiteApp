@@ -10,7 +10,7 @@ class BuzonProvider implements IBuzonProvider {
 
   @override
   Future<List<Buzon>> listarBuzonesDelUsuarioAutenticado() async {
-    Response resp = await req.get('/buzones/buzones');
+    Response resp = await req.get('/servicio-buzon/buzones');
     List<Buzon> buzones = resp.data;
     return buzones;
   }

@@ -15,17 +15,16 @@ class AccesoImpl implements AccesoInterface {
   LogeoInterface logeo;
   IBuzonProvider buzonProvider;
 
-  AccesoImpl(LogeoInterface logeo, IBuzonProvider buzonProvider) {
+  AccesoImpl(LogeoInterface logeo) {
     this.logeo = logeo;
-    this.buzonProvider = buzonProvider;
   }
 
   @override
   Future<Map<String, dynamic>> login(String username, String password) async{
         Map<String, dynamic> interfaceLogear = await logeo.login(username, password);
         _prefs.token = interfaceLogear['access_token'];
-        List<Buzon> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
-        _prefs.buzones = buzones;
+        // List<Buzon> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+        // _prefs.buzones = buzones;
         return interfaceLogear;
   
   }

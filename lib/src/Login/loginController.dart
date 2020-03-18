@@ -12,7 +12,7 @@ class LoginController {
        
         accesoInterface.login( username , password).then((data){
           print(data);
-          Navigator.of(context).pushNamed('');
+          Navigator.of(context).pushNamed('principal-admin');
         });
     }
 
