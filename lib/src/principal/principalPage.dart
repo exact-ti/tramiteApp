@@ -23,7 +23,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
     var colorletra = const Color(0xFFACADAD);
     var prueba;
 
-      var nuevo =true;
+      var nuevo =0;
 
     @override
     void initState() {
@@ -53,20 +53,23 @@ class _PrincipalPageState extends State<PrincipalPage> {
     Widget _myListView(String buscador) {
       List<Widget> list = new List<Widget>();
       var listadestinataris;
+      
       if(buscador==""){
           listadestinataris = principalcontroller.ListarUsuariosFrecuentes();
-          setState(() {
-            if(!nuevo){
+          /*setState(() {
+            if(nuevo==2){
+              prueba=null;
+            }else{
             prueba=Text("Usuarios frecuentes",style: TextStyle(
             fontSize: 15,color: Color(0xFFACADAD)));
             }
-            nuevo =false;
-          });
+            nuevo++;
+          });*/
       }else{
           listadestinataris = principalcontroller.ListarDestinario(buscador);
-          setState(() {
+          /*setState(() {
               prueba=null;
-          });
+          });*/
       }
 
 
@@ -229,7 +232,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
                     child: destinatario
                   ),
                 ), 
-                Row(children: <Widget>[prueba==null?Container():prueba],),
+                Row(children: <Widget>[
+                  textdestinatario!=""?Container():prueba
+                ],),
               /* Align(
                   alignment: Alignment.topCenter,
                   child: Container(
