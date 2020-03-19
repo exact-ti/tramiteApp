@@ -30,6 +30,7 @@ class Requester {
         "content-type": "application/x-www-form-urlencoded", 
         "Accept": "application/json",
       };
+      
       return await _dio.post(
         properties['API'] + path,
         data: data,
@@ -40,7 +41,7 @@ class Requester {
   }
   
   Future<Response> get(String url) async { 
-    return await addInterceptors(_dio).get(url);
+    return await addInterceptors(_dio).get( properties['API']+url);
   }
 
   Future<Response> post(String url, dynamic data, Map<String, dynamic> params ) async {

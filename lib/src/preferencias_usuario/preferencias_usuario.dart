@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Buzon.dart';
+import 'package:tramiteapp/src/Entity/Menu.dart';
 
 /*
   Recordar instalar el paquete de:
@@ -53,7 +54,13 @@ class PreferenciasUsuario {
     _prefs.setString("buzones", json.encode(buzones));
   }
 
+  get menus {
+    return _prefs.getString("menus");
+  }
 
+  set menus(List<Menu> menus) {
+    _prefs.setString("menus", json.encode(menus));
+  }
   
 
   // GET y SET de la última página
