@@ -1,5 +1,5 @@
 import 'dart:collection';
-
+import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/principal/principalController.dart';
 
@@ -57,20 +57,15 @@ class _PrincipalPageState extends State<PrincipalPage> {
           listadestinataris = principalcontroller.ListarUsuariosFrecuentes();
           setState(() {
             if(!nuevo){
-
-                        prueba=null;
-
+            prueba=Text("Usuarios frecuentes",style: TextStyle(
+            fontSize: 15,color: Color(0xFFACADAD)));
             }
             nuevo =false;
           });
       }else{
           listadestinataris = principalcontroller.ListarDestinario(buscador);
           setState(() {
-
-            prueba=Text("Usuarios frecuentes",style: TextStyle(
-            fontSize: 15,color: Color(0xFFACADAD)));
-
-
+              prueba=null;
           });
       }
 
@@ -218,60 +213,63 @@ class _PrincipalPageState extends State<PrincipalPage> {
             fontWeight: FontWeight.normal
         )),
       ),
-      body: 
-      Padding(
-      padding: const EdgeInsets.only(left:20,right: 20 ),
-        child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              alignment: Alignment.center,
-              height: screenHeightExcludingToolbar(context, dividedBy: 10),
-              width: double.infinity,
-              child: destinatario
+      drawer: sd.crearMenu(context),
+            body: 
+            Padding(
+            padding: const EdgeInsets.only(left:20,right: 20 ),
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: screenHeightExcludingToolbar(context, dividedBy: 10),
+                    width: double.infinity,
+                    child: destinatario
+                  ),
+                ), 
+                Row(children: <Widget>[prueba==null?Container():prueba],),
+              /* Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    alignment: Alignment.bottomLeft,
+                    height: screenHeightExcludingToolbar(context, dividedBy: 40),
+                    width: double.infinity,
+                    child: Text("Usuarios Frecuentes:",style: TextStyle(
+                  fontSize: 15,color: colorletra))
+                  )
+                  ,
+                ),*/
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child:  _myListView(textdestinatario)
+                  ),
+                )
+              ],
             ),
-          ), 
-          Row(children: <Widget>[prueba==null?Container():prueba],),
-        /* Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              height: screenHeightExcludingToolbar(context, dividedBy: 40),
-              width: double.infinity,
-              child: Text("Usuarios Frecuentes:",style: TextStyle(
-            fontSize: 15,color: colorletra))
-            )
-            ,
-          ),*/
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child:  _myListView(textdestinatario)
-            ),
-          )
-        ],
-      ),
-)
+      )
+            
+            
+          );
       
+        }
       
-    );
+        Size screenSize(BuildContext context) {
+          return MediaQuery.of(context).size;
+        }
+      
+        double screenHeight(BuildContext context,
+            {double dividedBy = 1, double reducedBy = 0.0}) {
+          return (screenSize(context).height - reducedBy) / dividedBy;
+        }
+      
+        double screenHeightExcludingToolbar(BuildContext context,
+            {double dividedBy = 1}) {
+          return screenHeight(context,
+              dividedBy: dividedBy, reducedBy: kToolbarHeight);
+        }
+      
 
-  }
-
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-  }
 }
