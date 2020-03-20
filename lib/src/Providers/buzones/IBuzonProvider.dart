@@ -1,5 +1,6 @@
-import 'package:tramiteapp/src/Entity/Buzon.dart';
+
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 
 abstract class IBuzonProvider{
-  Future<List<Buzon>> listarBuzonesDelUsuarioAutenticado();
+  Future<List<BuzonModel>> listarBuzonesDelUsuarioAutenticado();
 }

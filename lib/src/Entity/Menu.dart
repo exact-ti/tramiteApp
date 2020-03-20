@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'dart:convert' as prefix0;
+
 //Menu menuFromJson(String str) => Menu.fromJson(json.decode(str));
 
 String menuToJson(Menu data) => json.encode(data.toJson());
@@ -9,12 +11,14 @@ class Menu {
   String nombre;
   String link;
   int orden;
+  bool home;
 
     Menu({
         this.id,
         this.nombre = '',
         this.link = '',
         this.orden = 0,
+        this.home =true
     });
 
     List<Menu> fromJson(List< dynamic> jsons){
@@ -23,9 +27,10 @@ class Menu {
         for(Map<String, dynamic> json in jsons){
            Menu men = new Menu();
             men.id  = json["id"];
-            men.nombre     = json["nombre"];
-            men.link      = json["link"];
+            men.nombre  = json["nombre"];
+            men.link  = json["link"];
             men.orden = json["orden"];
+            men.home = json["home"];
             menus.add(men);
         }
           return menus;
@@ -37,9 +42,10 @@ class Menu {
         for(Map<String, dynamic> json in jsons){
            Menu men = new Menu();
             men.id  = json["id"];
-            men.nombre     = json["titulo"];
-            men.link      = json["valor"];
-            men.orden = json["disponible"];
+            men.nombre     = json["nombre"];
+            men.link      = json["link"];
+            men.orden = json["orden"];
+            men.home = json["home"];
             menus.add(men);
         }
           return menus;
@@ -50,12 +56,10 @@ class Menu {
 
     Map<String, dynamic> toJson() => {
         "id"         : id,
-        "titulo"     : nombre,
-        "valor"      : link,
-        "disponible" : orden
+        "nombre"     : nombre,
+        "link"      : link,
+        "orden"       : orden,
+        "home"       : home,        
     };
-
-
-
 
 }

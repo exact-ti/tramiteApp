@@ -1,8 +1,9 @@
+import 'dart:collection';
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Entity/Buzon.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
+import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 
 /*
   Recordar instalar el paquete de:
@@ -46,12 +47,12 @@ class PreferenciasUsuario {
     _prefs.setString('refresh_token', value);
   }
   
-  get buzones {
-    return _prefs.getString("buzones");
+  get buzon {
+    return _prefs.getString("buzon");
   }
 
-  set buzones(List<Buzon> buzones) {
-    _prefs.setString("buzones", json.encode(buzones));
+  set buzon (HashMap<String,dynamic> buzon) {
+    _prefs.setString("buzon", json.encode(buzon));
   }
 
   get menus {
@@ -62,6 +63,13 @@ class PreferenciasUsuario {
     _prefs.setString("menus", json.encode(menus));
   }
   
+  get configuraciones {
+    return _prefs.getString("configuraciones");
+  }
+
+  set configuraciones(List<ConfiguracionModel> configuraciones) {
+    _prefs.setString("configuraciones", json.encode(configuraciones));
+  }
 
   // GET y SET de la última página
   get ultimaPagina {

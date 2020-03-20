@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Login/loginController.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+
+import 'loginController.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
