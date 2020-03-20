@@ -9,8 +9,6 @@ import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
-import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
-import 'package:tramiteapp/src/Providers/usuarios/IUsuarioProvider.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 import 'AccesoInterface.dart';

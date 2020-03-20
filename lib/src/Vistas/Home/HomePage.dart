@@ -34,10 +34,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             SizedBox(height: 300.0),
             Center(child:Text("EXACT",style: TextStyle(fontSize: 30,color: LetraColor,fontWeight: FontWeight.bold))),
-            Center(child:Text("Expertos en Gestion Documental.",style: TextStyle(fontSize: 20,color:Colors.grey)))
+            Center(child:Text("Expertos en Gestion Documental",style: TextStyle(fontSize: 20,color:Colors.grey)))
           ],
         ),
       ),
     );
   }
 }
+//                  Navigator.of(context).pushNamed(men.link);
