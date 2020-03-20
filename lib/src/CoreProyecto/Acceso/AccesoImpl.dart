@@ -1,11 +1,16 @@
 
 
-import 'package:tramiteapp/src/Entity/Buzon.dart';
+import 'dart:collection';
+
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
+import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
+import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
+import 'package:tramiteapp/src/Providers/usuarios/IUsuarioProvider.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 import 'AccesoInterface.dart';
@@ -18,10 +23,13 @@ class AccesoImpl implements AccesoInterface {
   LogeoInterface logeo;
   IBuzonProvider buzonProvider;
   IMenuProvider menuProvider;
+  IConfiguracionProvider configuracionProvider;
 
-  AccesoImpl(LogeoInterface logeo) {
+  AccesoImpl(LogeoInterface logeo, IBuzonProvider buzon, IMenuProvider menu, IConfiguracionProvider configuracion) {
     this.logeo = logeo;
-    this.menuProvider = new MenuProvider();
+    this.menuProvider = menu;
+    this.buzonProvider = buzon;
+    this.configuracionProvider = configuracion;
   }
 
   @override
@@ -30,13 +38,29 @@ class AccesoImpl implements AccesoInterface {
         if(interfaceLogear==null){
           return null;
         }
+
         _prefs.token = interfaceLogear['access_token'];
-        // List<Buzon> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
-        // _prefs.buzones = buzones;
+
+         List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+         for (BuzonModel buzon in buzones) {
+           if(buzon.tipoBuzon.nombre=="PERSONAL"){
+             HashMap<String,dynamic> buzonhash = new HashMap();
+             buzonhash['id'] = buzon.id;
+             buzonhash['nombre'] = buzon.nombre;
+            _prefs.buzon = buzonhash;
+           }
+         }
 
         List<Menu> menus = await menuProvider.listarMenusDelUsuarioAutenticado();
         _prefs.menus = menus;
-        var log = "";
+
+        List<ConfiguracionModel> configuraciones = await configuracionProvider.listarConfiguraciones();
+        _prefs.configuraciones = configuraciones;
+
+        //List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuarioFrecuenteDelUsuarioAutenticado();
+
+
+        print("LL");
         return interfaceLogear;
   
   }

@@ -9,13 +9,13 @@ class MenuProvider implements IMenuProvider {
   
   Requester req = Requester();
 
-  Menu menuu = new Menu();
+  Menu menuclase = new Menu();
 
   @override
   Future<List<Menu>> listarMenusDelUsuarioAutenticado() async {
     Response resp = await req.get('/servicio-menu/menus');
     List<dynamic> menus = resp.data;
-    List<Menu> listmenu = menuu.fromJson(menus);
+    List<Menu> listmenu = menuclase.fromJson(menus);
     return listmenu;
   }
 

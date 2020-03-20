@@ -1,7 +1,8 @@
 import 'dart:collection';
+import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/principal/principalController.dart';
+import 'package:tramiteapp/src/Vistas/Usuarios/principalController.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -50,12 +51,50 @@ class _PrincipalPageState extends State<PrincipalPage> {
     const colorborde = const Color(0xFFD5DCDF);
 
 
-    Widget _myListView(String buscador) {
+    Widget crearItem(UsuarioFrecuente usuario){
+      return  Container(
+            child: new ListTile(
+            onTap: () {},     
+            title: new Text(usuario.nombre,style: TextStyle(
+            fontSize: 15)),
+            subtitle:new Text(usuario.sede + " - "+ usuario.area,style: TextStyle(
+            fontSize: 12)) ,
+            trailing:Icon(Icons.keyboard_arrow_right,color:Color(0xffC7C7C7) ,)
+            ),     
+            //height: 70,
+            alignment: Alignment.center,
+            decoration: new BoxDecoration(
+            color: colorplomo,
+            border: new Border(top: BorderSide(color:colorborde))
+            ));
+    }
+
+
+    Widget _crearListado(){
+      return FutureBuilder(
+        future: principalcontroller.listarusuariosfrecuentes(),
+        builder:(BuildContext context,AsyncSnapshot<List<UsuarioFrecuente>> snapshot){            
+            if(snapshot.hasData){
+                final usuarios = snapshot.data;
+                 return ListView.builder(
+                  itemCount: usuarios.length,
+                  itemBuilder:(context,i)=>crearItem(usuarios[i])
+                );
+            }
+        }
+        );
+    }
+
+
+
+    Widget _myListView(String buscador)  {
       List<Widget> list = new List<Widget>();
-      var listadestinataris;
+      List<UsuarioFrecuente> listadestinataris;
       
       if(buscador==""){
-          listadestinataris = principalcontroller.ListarUsuariosFrecuentes();
+          //listadestinataris = principalcontroller.listarusuariosfrecuentes();
+          return _crearListado();
+          
           /*setState(() {
             if(nuevo==2){
               prueba=null;
@@ -85,7 +124,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
       var booleancolor = true;
       var colorwidget = colorblanco; 
-      for (Map<String, dynamic> destinatario in listadestinataris) {
+      for (UsuarioFrecuente destinatario in listadestinataris) {
         
         if(booleancolor){
             colorwidget = colorplomo;
@@ -98,9 +137,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
         list.add(new  Container(
             child: new ListTile(
             onTap: () {},     
-            title: new Text(destinatario["nombre"],style: TextStyle(
+            title: new Text(destinatario.nombre,style: TextStyle(
             fontSize: 15)),
-            subtitle:new Text(destinatario["area"],style: TextStyle(
+            subtitle:new Text(destinatario.sede + " - "+ destinatario.area,style: TextStyle(
             fontSize: 12)) ,
             trailing:Icon(Icons.keyboard_arrow_right,color:Color(0xffC7C7C7) ,)
             ),     
@@ -110,7 +149,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
             color: colorwidget,
             border: new Border(top: BorderSide(color:colorborde))
             )));
-        print(destinatario["nombre"]);
       }
 
       return new ListView(children: list
@@ -249,7 +287,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
                 Expanded(
                   child: Container(
                     alignment: Alignment.bottomCenter,
-                    child:  _myListView(textdestinatario)
+                    child: _myListView(textdestinatario)
                   ),
                 )
               ],

@@ -1,6 +1,18 @@
+
+import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioImpl.dart';
+import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioInterface.dart';
+import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
+import 'package:tramiteapp/src/Providers/usuarios/impl/UsuarioProvider.dart';
+
 class PrincipalController {
-  
-    List<Map<String,dynamic>>  ListarDestinario(String text) {
+    UsuarioInterface usuarioInterface = new UsuarioImpl( new UsuarioProvider());
+    
+    Future<List<UsuarioFrecuente>>  listarusuariosfrecuentes() async {
+       List<UsuarioFrecuente> usuarios =  await usuarioInterface.listarUsuariosFrecuentes();
+        return usuarios;
+    }
+
+  List<UsuarioFrecuente>  ListarDestinario(String text) {
 
 
     var tamano = text.length; 
@@ -114,48 +126,9 @@ class PrincipalController {
          } 
       }
 
-        return listarfiltrados;
+        List<UsuarioFrecuente> listarfiltradoss = List<UsuarioFrecuente>();
+        return listarfiltradoss;
     }
-
-
-
-     List<Map<String,dynamic>>  ListarUsuariosFrecuentes() {
-
-           final dato1 = {
-      'nombre' : 'Ricardo Villafranca ',
-      'area' : 'Proyectos TI',
-    };
-
-    final dato2 = {
-      'nombre' : 'Jorge Miranda',
-      'area' : 'Proyectos TI',
-    };
-
-        final dato3 = {
-      'nombre' : 'Manuel Goigu',
-      'area' : 'Comercial',
-    };
-        final dato4 = {
-      'nombre' : 'Juan Reyes Ferrer',
-      'area' : 'Administración',
-    };
-        
-
-        
-
-      List<Map<String,dynamic>> myList = List<Map<String,dynamic>>();
-        myList.add(dato1);
-        myList.add(dato2);
-        myList.add(dato3);
-        myList.add(dato4);
-
-
-        return myList;
-     }
-
-
-
-
 
 
 }
