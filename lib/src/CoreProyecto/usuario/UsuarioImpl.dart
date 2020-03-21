@@ -17,4 +17,10 @@ class UsuarioImpl implements UsuarioInterface {
      List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuarioFrecuenteDelUsuarioAutenticado();
         return usuariosfrecuentes;
   }
+
+  @override
+  Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async {
+     List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuariosporFiltro(texto);
+      return usuariosfrecuentes;
+  }
 }
