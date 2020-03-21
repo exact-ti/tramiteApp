@@ -37,4 +37,13 @@ class UsuarioProvider implements IUsuariosProvider {
     return listusuarios;
   }
 
+  @override
+  Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async{
+    Response resp = await req.get('/servicio-buzon/buzones?filtro=$texto');
+    List<dynamic> menus = resp.data;
+    List<UsuarioFrecuente> listusuarios = usuarioFrecuente.fromJson(menus);
+    print("dar");
+    return listusuarios;
+  }
+
 }

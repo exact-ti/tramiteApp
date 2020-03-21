@@ -7,7 +7,6 @@ import 'package:tramiteapp/src/Providers/Logeo/LogeoFusionAuth.dart';
 import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/impl/ConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
-import 'package:tramiteapp/src/Providers/usuarios/impl/UsuarioProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
