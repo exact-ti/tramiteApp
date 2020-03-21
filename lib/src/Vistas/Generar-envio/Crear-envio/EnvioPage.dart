@@ -26,49 +26,69 @@ class _EnvioPageState extends State<EnvioPage> {
         title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
-  final observacion = Card(
-      color: Colors.grey,
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: TextField(
-          maxLines: 8,
-          decoration:
-              InputDecoration.collapsed(hintText: "Enter your text here"),
-        ),
-      ));
-
-  final loginButton = Padding(
-    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 70),
-    child: RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      onPressed: () {
-        //performLogin(context);
-        //Navigator.of(context).pushNamed("principal");
-      },
-      padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-      color: Colors.lightBlueAccent,
-      child: Text('LOG IN', style: TextStyle(color: Colors.white)),
-    ),
-  );
-
-  final codigo = TextFormField(
-    keyboardType: TextInputType.text,
-    autofocus: false,
-    style: new TextStyle(height: 0.2),
-    decoration: InputDecoration(
+  final observacion = TextField(
+          maxLines: 6,
+      decoration: InputDecoration(
       filled: true,
+      fillColor: Color(0xFFEAEFF2) ,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),
         borderSide: BorderSide(
-          color: Colors.blue,
+          color: Colors.blue
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),
         borderSide: BorderSide(
-          color: Color(0xff4693C7),
+          color: Color(0xFFEAEFF2),
+          width: 0.0,
+        ),
+      ),
+    ),
+        );
+
+  final loginButton = 
+  Container(
+
+    margin: const EdgeInsets.only(top: 40),
+    child: Padding(
+    padding: EdgeInsets.symmetric(horizontal: 120),
+    child: RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      onPressed: () {
+        //performLogin(context);
+        //Navigator.of(context).pushNamed("principal");
+      },
+      color: Color(0xFF2C6983),
+            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+      child: Text('Enviar', style: TextStyle(color: Colors.white)),
+    ),
+  )
+
+  );
+  
+  
+  var colorplomos = const Color(0xFFEAEFF2);
+
+  final codigo = TextFormField(
+    keyboardType: TextInputType.text,
+    autofocus: false,
+    style: new TextStyle(height: 0.2,color:Colors.blue),
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: Color(0xFFEAEFF2) ,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide(
+          color: Colors.blue
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide(
+          color: Color(0xFFEAEFF2),
           width: 0.0,
         ),
       ),
@@ -141,12 +161,16 @@ class _EnvioPageState extends State<EnvioPage> {
                       flex: 10,
                     ),
                     Expanded(
-                      child: Icon(Icons.camera_alt),
+                      child: Container(
+                        margin:const EdgeInsets.only(left: 15) ,
+                        child:Icon(Icons.camera_alt) ,
+                        ),
                       flex: 1
                     ),
                   ]),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 0),
+                  Container(  
+                    margin: const EdgeInsets.only(top: 15, bottom: 0),
+                    height: 40,
                     child: ListTile(
                         title: new Text("Código de sobre",
                             style: TextStyle(fontSize: 15))),
@@ -157,7 +181,11 @@ class _EnvioPageState extends State<EnvioPage> {
                       flex: 10,
                     ),
                     Expanded(
-                      child: Icon(Icons.camera_alt),
+                      child: Container(
+                        margin:const EdgeInsets.only(left: 15) ,
+                        child:Icon(Icons.camera_alt) ,
+                        ),
+                      flex: 1
                     ),
                   ]),
                   Container(
