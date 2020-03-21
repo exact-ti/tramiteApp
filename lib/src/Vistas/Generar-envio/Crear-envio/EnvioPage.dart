@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'EnvioController.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
 
 class EnvioPage extends StatefulWidget {
-  final UsuarioFrecuente usuariopage;
+  /*final UsuarioFrecuente usuariopage;
 
-  const EnvioPage({Key key, this.usuariopage}) : super(key: key);
+  const EnvioPage({Key key, this.usuariopage}) : super(key: key);*/
 
   @override
-  _EnvioPageState createState() => new _EnvioPageState(usuariopage);
+  _EnvioPageState createState() => new _EnvioPageState(/*usuariopage*/);
 }
 
 class _EnvioPageState extends State<EnvioPage> {
-  UsuarioFrecuente recordObject;
-  _EnvioPageState(this.recordObject);
+  /*UsuarioFrecuente recordObject;
+  _EnvioPageState(this.recordObject);*/
   EnvioController envioController;
+  String barcodeScanRes,value="";
+
+  Future _traerdatosescaner() async{
+    barcodeScanRes= await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+    setState(() {
+       value = barcodeScanRes;
+    });
+
+  }
 
   Widget datosUsuarios(String text) {
     return ListTile(title: new Text(text, style: TextStyle(fontSize: 15)));
@@ -49,7 +60,6 @@ class _EnvioPageState extends State<EnvioPage> {
 
   final loginButton = 
   Container(
-
     margin: const EdgeInsets.only(top: 40),
     child: Padding(
     padding: EdgeInsets.symmetric(horizontal: 120),
@@ -75,7 +85,7 @@ class _EnvioPageState extends State<EnvioPage> {
   final codigo = TextFormField(
     keyboardType: TextInputType.text,
     autofocus: false,
-    style: new TextStyle(height: 0.2,color:Colors.blue),
+    style: new TextStyle(height: 0.2),
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0xFFEAEFF2) ,
@@ -123,9 +133,9 @@ class _EnvioPageState extends State<EnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         backgroundColor: Colors.white,
-        body: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-            child: Column(
+        body: SingleChildScrollView(
+                      padding: const EdgeInsets.only(left: 20, right: 20, top: 10,  bottom: 0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Container(
@@ -133,7 +143,7 @@ class _EnvioPageState extends State<EnvioPage> {
                     child:                   ListTile(
                     leading: Icon(Icons.perm_identity), //account_circle
                     title: Align(
-                      child: new Text(recordObject.nombre,
+                      child: new Text(/*recordObject.nombre*/"Katheleen Macedo",
                           style: TextStyle(fontSize: 15)),
                       alignment: Alignment(-1.2, 0),
                     ),
@@ -143,13 +153,13 @@ class _EnvioPageState extends State<EnvioPage> {
                  ListTile(
                     leading: Icon(Icons.location_on), //account_circle
                     title: Align(
-                      child: new Text(recordObject.area + " - " + recordObject.sede,
+                      child: new Text(/*recordObject.area + " - " + recordObject.sede*/"Proyectos TI - Proyectos",
                           style: TextStyle(fontSize: 15)),
                       alignment: Alignment(-1.2, 0),
                     ),
                   ),
                   Container(  
-                    margin: const EdgeInsets.only(top: 15, bottom: 0),
+                    margin: const EdgeInsets.only(top: 15),
                     height: 40,
                     child: ListTile(
                         title: new Text("Código de sobre",
@@ -158,45 +168,45 @@ class _EnvioPageState extends State<EnvioPage> {
                   Row(children: <Widget>[
                     Expanded(
                       child: codigo,
-                      flex: 10,
+                      flex: 5,
                     ),
                     Expanded(
                       child: Container(
                         margin:const EdgeInsets.only(left: 15) ,
-                        child:Icon(Icons.camera_alt) ,
+                        child: new IconButton(icon: Icon(Icons.camera_alt),tooltip: "Increment", onPressed: _traerdatosescaner)  ,
                         ),
-                      flex: 1
                     ),
                   ]),
                   Container(  
-                    margin: const EdgeInsets.only(top: 15, bottom: 0),
+                    margin: const EdgeInsets.only(top: 15),
                     height: 40,
                     child: ListTile(
-                        title: new Text("Código de sobre",
+                        title: new Text("Código de bandeja",
                             style: TextStyle(fontSize: 15))),
                   ),
                   Row(children: <Widget>[
                     Expanded(
                       child: codigo,
-                      flex: 10,
+                      flex: 5,
                     ),
                     Expanded(
                       child: Container(
                         margin:const EdgeInsets.only(left: 15) ,
-                        child:Icon(Icons.camera_alt) ,
+                        child: new IconButton(icon: Icon(Icons.camera_alt), onPressed: _traerdatosescaner)  ,
                         ),
-                      flex: 1
                     ),
                   ]),
                   Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 0),
+                    margin: const EdgeInsets.only(top: 20),
                     child: ListTile(
                         title: new Text("Observación",
                             style: TextStyle(fontSize: 15))),
                   ),
                   observacion,
-                  loginButton
-                ])));
+                  loginButton,
+                  Text(value),
+                ])
+        ) );
   }
 }
 //                  Navigator.of(context).pushNamed(men.link);

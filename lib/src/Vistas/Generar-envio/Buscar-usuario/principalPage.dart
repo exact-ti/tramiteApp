@@ -66,7 +66,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EnvioPage(usuariopage: usuario),
+                  builder: (context) => EnvioPage(/*usuariopage: usuario*/),
                 ),
               );
               },

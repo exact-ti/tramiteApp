@@ -26,7 +26,7 @@ dependencies:
   shared_preferences:
   oauth2: ^1.5.0
   dio: 3.0.9
-
+  flutter_barcode_scanner: ^0.0.9
 
 dev_dependencies:
   flutter_driver:
