@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
+import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 
 /*
   Recordar instalar el paquete de:
@@ -53,6 +54,14 @@ class PreferenciasUsuario {
 
   set buzon (HashMap<String,dynamic> buzon) {
     _prefs.setString("buzon", json.encode(buzon));
+  }
+
+  get utd {
+    return _prefs.getString("utd");
+  }
+
+  set utd (HashMap<String,dynamic> utd) {
+    _prefs.setString("utd", json.encode(utd));
   }
 
   get menus {

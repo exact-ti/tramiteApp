@@ -7,13 +7,14 @@ import 'package:tramiteapp/src/Providers/Logeo/LogeoFusionAuth.dart';
 import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/impl/ConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
+import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 class LoginController {
 
-    AccesoInterface accesoInterface = new AccesoImpl(new LogeoFusionAuth(), new BuzonProvider(),new MenuProvider(), new ConfiguracionProvider());
+    AccesoInterface accesoInterface = new AccesoImpl(new LogeoFusionAuth(), new BuzonProvider(),new MenuProvider(), new ConfiguracionProvider(), new UtdProvider());
       final _prefs = new PreferenciasUsuario();
 
     validarlogin(BuildContext context, String username , String password) {
@@ -21,7 +22,7 @@ class LoginController {
         accesoInterface.login( username , password).then((data){
           print(data);
           if(data==null){
-          mostrarAlerta(context, 'El usuario y contraseña son incorrectos');
+          mostrarAlerta(context, 'El usuario y contraseña son incorrectos','Información incorrecta');
           }else{
           Menu menuu = new Menu();
           List<dynamic> menus = json.decode(_prefs.menus);

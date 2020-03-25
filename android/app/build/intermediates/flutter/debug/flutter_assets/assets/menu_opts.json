@@ -1,0 +1,23 @@
+[
+    {
+        "usuario": "oheredia",
+        "nombre": "Orlando",
+        "password": "123459",
+        "perfil": "operativo",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJvcmxhbmRvIiwicGVyZmlsIjoib3BlcmF0aXZvIiwic2VkZSI6eyJpZCI6IjEiLCJub21icmUiOiJMYSBNb2xpbmEifX0.q9Vt8MXRMlByt06tGu51OsLCZ0lUW8STuwqIZfACmVU"
+    },
+    {
+        "usuario": "kvega",
+        "nombre": "katty",
+        "password": "123457",
+        "perfil": "usuario BCP",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJrYXR0eSIsInBlcmZpbCI6InVzdWFyaW8gQkNQIiwic2VkZSI6eyJpZCI6IjIiLCJub21icmUiOiJTYW50YSBSYXF1ZWwifX0.iMgbN00PixD6wb_0t17wt5G2mIaP-dKpU3yXbCxXQPI"
+    },
+    {
+        "usuario": "agomez",
+        "nombre": "Amanda",
+        "password": "123457",
+        "perfil": "usuario Bloque",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJhbWFuZGEiLCJwZXJmaWwiOiJ1c3VhcmlvIEJsb3F1ZSIsInNlZGUiOnsiaWQiOiIzIiwibm9tYnJlIjoiU2FuIGlzaWRybyJ9fQ.JzFcO1NxVCN9WiLrfhVuguMts-C8CP9kaLDJZVQrMDQ"
+    }
+]

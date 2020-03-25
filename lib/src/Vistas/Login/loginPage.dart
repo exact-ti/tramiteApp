@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'loginController.dart';
 

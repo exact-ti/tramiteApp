@@ -45,9 +45,9 @@ class Requester {
   }
 
   Future<Response> post(String url, dynamic data, Map<String, dynamic> params ) async {
-    return await addInterceptors(_dio).post(url, data: data, queryParameters: params);
+    return await addInterceptors(_dio).post(properties['API']+url,data: data );
   }
-
+  
   dynamic requestInterceptor(RequestOptions options) async {
     var token = _prefs.token;
     options.headers.addAll({"Authorization": "Bearer $token"});
