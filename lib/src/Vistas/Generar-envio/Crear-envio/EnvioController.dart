@@ -6,14 +6,16 @@ import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
+import 'package:tramiteapp/src/Providers/bandejas/impl/BandejaProvider.dart';
 import 'package:tramiteapp/src/Providers/envios/impl/EnvioProvider.dart';
+import 'package:tramiteapp/src/Providers/paquetes/impl/PaqueteProvider.dart';
 import 'package:tramiteapp/src/Providers/usuarios/impl/UsuarioProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 class EnvioController {
 
     UsuarioFrecuente usuario;
-    EnvioInterface usuarioInterface = new EnvioImpl( new EnvioProvider());
+    EnvioInterface envioInterface = new EnvioImpl( new EnvioProvider(), new PaqueteProvider(), new BandejaProvider());
 
     void  vistacrearEnvio(UsuarioFrecuente usuarioModel,BuildContext context)  {
       this.usuario=usuarioModel;
@@ -21,34 +23,27 @@ class EnvioController {
     }
 
 
-    void crearEnvio(int remitenteId, int destinatarioid,String codigopaquete, String codigobandeja, String observacion){
+    void crearEnvio(BuildContext context, int remitenteId, int destinatarioid,String codigopaquete, String codigoUbicacion, String observacion){
         EnvioModel envioModel = new EnvioModel();
         envioModel.remitenteId = remitenteId;
         envioModel.destinatarioId = destinatarioid;
         envioModel.codigoPaquete = codigopaquete;
-        envioModel.codigoBandeja = codigobandeja;
+        envioModel.codigoUbicacion = codigoUbicacion;
         envioModel.observacion = observacion;
-
-
-
-
+        envioInterface.crearEnvio(envioModel);
+        mostrarAlerta(context, 'El envío se creó satisfactoriamente','Confirmación');
     }
 
 
-    bool validarexistencia(String texto){
-          if(texto=="123456789012"){
-            return false;
-          }else{
-            return true;
-          }
+    Future<bool> validarexistencia(String texto) async {
+         bool respuesta = await envioInterface.validarCodigo(texto);
+        return respuesta;
     }
 
-    bool validarexistenciabandeja(String texto){
-          if(texto=="123456789012"){
-            return false;
-          }else{
-            return true;
-          }
+
+    Future<bool> validarexistenciabandeja(String texto) async{
+         bool respuestaBandeja = await envioInterface.validarBandejaCodigo(texto);
+        return respuestaBandeja;
     }
 
 }

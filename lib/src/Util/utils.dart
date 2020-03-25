@@ -5,12 +5,12 @@ import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
   EnvioController envioController = new EnvioController();
 
-void mostrarAlerta(BuildContext context, String mensaje) {
+void mostrarAlerta(BuildContext context, String mensaje,String titulo) {
   showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Información incorrecta'),
+          title: Text('$titulo'),
           content: Text(mensaje),
           actions: <Widget>[
             FlatButton(
@@ -38,6 +38,8 @@ Widget errorsobre(String rest, int numero){
 
   int minvalor = 5;
 
+
+
   if(rest.length==0 && numero ==0){
        return Container(); 
   }
@@ -51,12 +53,25 @@ Widget errorsobre(String rest, int numero){
 
   }
 
-  if(envioController.validarexistencia(rest)){
-      return respuesta("El código no existe");
-  }
+
+return FutureBuilder(
+          future: envioController.validarexistencia(rest),
+          builder: (BuildContext context,
+              AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasData) {
+             final validador = snapshot.data;
+             if(!validador){
+             return respuesta("El código no existe");
+             }else{
+              return Container();
+             }
+            } else {
+              return Container();
+            }
+          });
 
 
-  return Container();
+  //return Container();
 
 
 }
@@ -74,10 +89,10 @@ Widget errorbandeja(String rest, int numero){
       return respuesta("La longitud mínima es de $minvalor caracteres");
 
   }
-
+/*
   if(envioController.validarexistenciabandeja(rest) && rest.length>0 ){
       return respuesta("El código no existe");
-  }
+  }*/ 
 
 
   return Container();

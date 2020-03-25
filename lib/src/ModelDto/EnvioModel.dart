@@ -2,14 +2,14 @@ class EnvioModel {
   int remitenteId;
   int destinatarioId;
   String codigoPaquete;
-  String codigoBandeja;
+  String codigoUbicacion;
   String observacion;
 
 
       EnvioModel({
         this.remitenteId,
         this.destinatarioId,
-        this.codigoBandeja='',
+        this.codigoUbicacion='',
         this.codigoPaquete='',
         this.observacion='',
     });
@@ -21,7 +21,7 @@ class EnvioModel {
         "remitenteId"         : remitenteId,
         "destinatarioId"     : destinatarioId,
         "codigoPaquete"   : codigoPaquete,
-         "codigoBandeja"     : codigoBandeja,
+         "codigoUbicacion"     : codigoUbicacion,
         "observacion"   : observacion,       
     };
 

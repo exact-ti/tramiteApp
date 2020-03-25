@@ -3,26 +3,27 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'EnvioController.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 
 class EnvioPage extends StatefulWidget {
-  /*final UsuarioFrecuente usuariopage;
+  final UsuarioFrecuente usuariopage;
 
-  const EnvioPage({Key key, this.usuariopage}) : super(key: key);*/
+  const EnvioPage({Key key, this.usuariopage}) : super(key: key);
 
   @override
-  _EnvioPageState createState() => new _EnvioPageState(/*usuariopage*/);
+  _EnvioPageState createState() => new _EnvioPageState(usuariopage);
 }
 
 class _EnvioPageState extends State<EnvioPage> {
-  /*UsuarioFrecuente recordObject;
-  _EnvioPageState(this.recordObject);*/
+  UsuarioFrecuente recordObject;
+  _EnvioPageState(this.recordObject);
   final _formKey = GlobalKey<FormState>();
   EnvioController envioController = new EnvioController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   final _observacionController = TextEditingController();
-
+  var validarSobre = false;
+  var validarBandeja = false;
+  bool confirmaciondeenvio = false;
   String qrsobre, qrbarra, valuess = "";
   String _name = '';
   String _label = '';
@@ -41,6 +42,84 @@ class _EnvioPageState extends State<EnvioPage> {
       _sobreController.text = qrsobre;
       _label = qrsobre;
     });
+  }
+
+    Widget errorsobre(String rest, int numero, bool vali) {
+    int minvalor = 5;
+
+    if(vali){
+      return Container();
+    }
+
+    if (rest.length == 0 && numero == 0) {
+      return Container();
+    }
+
+    if (rest.length == 0 && numero != 0) {
+      return respuesta("Es necesario ingresar el código del sobre");
+    }
+
+    if (rest.length > 0 && rest.length < minvalor) {
+      return respuesta("La longitud mínima es de $minvalor caracteres");
+    }
+
+    return FutureBuilder(
+        future: envioController.validarexistencia(rest),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            final validador = snapshot.data;
+            if (!validador) {
+                validarSobre = false;
+              return respuesta("El código no existe");
+
+            } else {
+                validarSobre = true;
+              return Container();
+            }
+          } else {
+            return Container();
+          }
+        });
+
+    //return Container();
+  }
+
+  Widget respuesta(String contenido) {
+    return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
+  }
+
+  Widget errorbandeja(String rest, int numero, bool valie) {
+    int minvalor = 5;
+
+    if(valie){
+      return Container();
+    }
+
+    if (rest.length == 0 && numero == 0) {
+      return Container();
+    }
+
+    if (rest.length > 0 && rest.length < minvalor) {
+      return respuesta("La longitud mínima es de $minvalor caracteres");
+    }
+
+    return FutureBuilder(
+        future: envioController.validarexistenciabandeja(rest),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            final validador = snapshot.data;
+            if (!validador) {
+                validarBandeja = false;
+              return respuesta("El código no existe");
+
+            } else {
+                validarBandeja = true;
+              return Container();
+            }
+          } else {
+            return Container();
+          }
+        });
   }
 
   Future _traerdatosescanerbandeja() async {
@@ -62,10 +141,10 @@ class _EnvioPageState extends State<EnvioPage> {
         title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
-  int nums = 10;
+  int nums = 5;
 
   bool validarenvio() {
-    if (_sobreController.text.length == 0 ) {
+    if (_sobreController.text.length == 0) {
       return false;
     }
 
@@ -79,8 +158,10 @@ class _EnvioPageState extends State<EnvioPage> {
       return false;
     }
 
-    if (envioController.validarexistencia(_sobreController.text) &&
-        envioController.validarexistenciabandeja(_bandejaController.text)) {
+    if (!validarSobre || !validarBandeja) {
+      if(_bandejaController.text.length==0){
+            return true;
+      }
       return false;
     }
 
@@ -105,10 +186,19 @@ class _EnvioPageState extends State<EnvioPage> {
             onPressed: () {
               indice = 1;
               indicebandeja = 1;
+
               if (_formKey.currentState.validate() && validarenvio()) {
-                print("Realiza funcion del boton");
-                
-              }else{
+                setState(() {
+                    confirmaciondeenvio=true;
+                });
+                print("SI puede enviar");
+                envioController.crearEnvio(context,1, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
+                setState(() {
+                  _sobreController.text="";
+                  _bandejaController.text="";
+                  _observacionController.text="";
+                });
+              } else {
                 print("No se puede enviar");
               }
               //performLogin(context);
@@ -140,7 +230,6 @@ class _EnvioPageState extends State<EnvioPage> {
     );
 
     var bandeja = TextFormField(
-      enabled: false,
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _bandejaController,
@@ -149,9 +238,9 @@ class _EnvioPageState extends State<EnvioPage> {
           if (text.length > 0 && text.length < 5) {
             indicebandeja = 2;
           }
-          if (!envioController.validarexistencia(text)) {
+          /*if (!envioController.validarexistencia(text)) {
             indicebandeja = 3;
-          }
+          }*/
         });
       },
       validator: (String valuee) {
@@ -185,7 +274,6 @@ class _EnvioPageState extends State<EnvioPage> {
     );
 
     var sobre = TextFormField(
-      enabled: false,
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
@@ -194,9 +282,10 @@ class _EnvioPageState extends State<EnvioPage> {
           if (text.length > 0 && text.length < 5) {
             indice = 2;
           }
-          if (!envioController.validarexistencia(text)) {
+          //_sobreController.text=text;
+          /*if (!envioController.validarexistencia(text)) {
             indice = 3;
-          }
+          }*/
         });
       },
       validator: (String valuee) {
@@ -263,22 +352,24 @@ class _EnvioPageState extends State<EnvioPage> {
                         height: 35,
                         child: ListTile(
                           leading: Icon(Icons.perm_identity), //account_circle
-                          title: Align(
-                            child: new Text(
-                                /*recordObject.nombre*/ "Katheleen Macedo",
-                                style: TextStyle(fontSize: 15)),
-                            alignment: Alignment(-1.2, 0),
-                          ),
+                          title:
+                              /* Align(
+                            child: */
+                              new Text(recordObject.nombre,
+                                  style: TextStyle(fontSize: 15)),
+                          //alignment: Alignment(-1.2, 0),
+                          /*),*/
                         ),
                       ), //recordObject.area + " - " + recordObject.sede
                       ListTile(
                         leading: Icon(Icons.location_on), //account_circle
-                        title: Align(
-                          child: new Text(
-                              /*recordObject.area + " - " + recordObject.sede*/ "Proyectos TI - Proyectos",
-                              style: TextStyle(fontSize: 15)),
-                          alignment: Alignment(-1.2, 0),
-                        ),
+                        title: /*Align(
+                          child:*/
+                            new Text(
+                                recordObject.area + " - " + recordObject.sede,
+                                style: TextStyle(fontSize: 15)),
+                        //   alignment: Alignment(-1.2, 0),
+                        /*),*/
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 15),
@@ -302,7 +393,7 @@ class _EnvioPageState extends State<EnvioPage> {
                           ),
                         ),
                       ]),
-                      errorsobre(_sobreController.text, indice),
+                      errorsobre(_sobreController.text, indice, confirmaciondeenvio),
                       Container(
                         margin: const EdgeInsets.only(top: 15),
                         height: 40,
@@ -325,7 +416,7 @@ class _EnvioPageState extends State<EnvioPage> {
                           ),
                         ),
                       ]),
-                      errorbandeja(_bandejaController.text, indicebandeja),
+                      errorbandeja(_bandejaController.text, indicebandeja,confirmaciondeenvio),
                       Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: ListTile(
@@ -336,5 +427,7 @@ class _EnvioPageState extends State<EnvioPage> {
                       sendButton
                     ]))));
   }
+
+
 }
 //                  Navigator.of(context).pushNamed(men.link);

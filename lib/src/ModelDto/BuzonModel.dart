@@ -7,11 +7,13 @@ String buzonModelToJson(BuzonModel data) => json.encode(data.toJson() );
 class BuzonModel {
   int id;
   String nombre;
+  String codigoUbicacion;
   TipoBuzonModel tipoBuzon;
 
       BuzonModel({
         this.id,
-        this.nombre = ''
+        this.nombre = '',
+        this.codigoUbicacion=''
     });
 
     List<BuzonModel> fromJson(List< dynamic> jsons){
@@ -22,6 +24,7 @@ class BuzonModel {
            TipoBuzonModel tipobuzons = new TipoBuzonModel();
             men.id  = json["id"];
             men.nombre  = json["nombre"];
+            men.codigoUbicacion = json['codigoUbicacion'];
             Map<String, dynamic> tipobuzon = json["tipoBuzon"];
             tipobuzons.id =tipobuzon["id"];
             tipobuzons.nombre =tipobuzon['nombre'];
@@ -35,6 +38,7 @@ class BuzonModel {
        BuzonModel buzones= new BuzonModel();
             buzones.id  = json["id"];
             buzones.nombre  = json["nombre"];
+            buzones.codigoUbicacion = json["codigoUbicacion"];
           return buzones;
     }
          
@@ -43,6 +47,7 @@ class BuzonModel {
         "id"         : id,
         "nombre"     : nombre,
         "tipoBuzon"      : tipoBuzon,
+        "codigoUbicacion"     : nombre,
     };
 
 }
