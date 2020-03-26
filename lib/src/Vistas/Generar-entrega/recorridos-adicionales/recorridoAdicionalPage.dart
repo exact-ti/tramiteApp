@@ -1,23 +1,25 @@
 import 'dart:collection';
-import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
+import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
+import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-adicionales/recorridoAdicionalController.dart';
+import 'package:tramiteapp/src/Vistas/Generar-entrega/validar-envios/validarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 
-import 'ListarTurnosController.dart';
-
-class ListarTurnosPage extends StatefulWidget {
+class RecorridosAdicionalesPage extends StatefulWidget {
   @override
-  _ListarTurnosPageState createState() => _ListarTurnosPageState();
+  _RecorridosAdicionalesPageState createState() =>
+      _RecorridosAdicionalesPageState();
 }
 
-class _ListarTurnosPageState extends State<ListarTurnosPage> {
-  ListarTurnosController principalcontroller = new ListarTurnosController();
+class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
+  RecorridoAdicionalController principalcontroller =
+      new RecorridoAdicionalController();
   EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
+
   var listadestinatarios;
   String textdestinatario = "";
 
@@ -53,10 +55,10 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     var booleancolor = true;
     var colorwidget = colorplomo;
 
-    Widget informacionEntrega(EntregaModel entrega) {
-      String recorrido = entrega.nombreRecorrido;
-      String estado = entrega.estado;
-      String usuario = entrega.usuario;
+    Widget informacionEntrega(RecorridoModel envio) {
+      String recorrido = envio.nombre;
+      String horario = envio.horaInicio + " - " + envio.horaFin;
+      String usuario = envio.usuario;
 
       return Container(
           height: 100,
@@ -68,7 +70,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
             Container(
                 height: 20,
                 child: ListTile(
-                    title: Text("$estado", style: TextStyle(fontSize: 11)))),
+                    title: Text("$horario", style: TextStyle(fontSize: 11)))),
             Container(
                 height: 20,
                 child: ListTile(
@@ -81,16 +83,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           ]));
     }
 
-    Widget crearItem(EntregaModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
-      if (booleancolor) {
-        colorwidget = colorplomo;
-        booleancolor = false;
-      } else {
-        colorwidget = colorblanco;
-        booleancolor = true;
-      }
+    Widget crearItem(RecorridoModel recorridoModel) {
       return Container(
         decoration: myBoxDecoration(),
         margin: EdgeInsets.only(bottom: 5),
@@ -98,7 +91,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: informacionEntrega(entrega),
+                child: informacionEntrega(recorridoModel),
                 flex: 5,
               ),
               Expanded(
@@ -107,11 +100,19 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 100,
+                            height: 100,
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: _onSearchButtonPressed))
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ValidacionEnvioPage(
+                                          recorridopage: recorridoModel),
+                                    ),
+                                  );
+                                }))
                       ])),
             ]),
       );
@@ -121,42 +122,69 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
       return Container();
     }
 
-    Widget _crearListado() {
+    Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
       colorwidget = colorplomo;
       return FutureBuilder(
-          future: principalcontroller.listarentregasController(),
+          future: principalcontroller.recorridosController(texto),
           builder: (BuildContext context,
-              AsyncSnapshot<List<EntregaModel>> snapshot) {
+              AsyncSnapshot<List<RecorridoModel>> snapshot) {
             if (snapshot.hasData) {
               booleancolor = true;
-              colorwidget = colorplomo;
-              final entregas = snapshot.data;
+              final recorridos = snapshot.data;
               return ListView.builder(
-                  itemCount: entregas.length,
-                  itemBuilder: (context, i) => crearItem(entregas[i]));
+                  itemCount: recorridos.length,
+                  itemBuilder: (context, i) => crearItem(recorridos[i]));
             } else {
-              return Container();
+              return ListView.builder(
+                  itemCount: 1, itemBuilder: (context, i) => crearItemVacio());
             }
           });
     }
 
-    final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+    Widget _myListView(String buscador) {
+      List<Widget> list = new List<Widget>();
+      List<Map<String, dynamic>> listadestinataris;
+      if (buscador == "") {
+        return Container();
+      } else {
+        return _crearListadoporfiltro(buscador);
+      }
+    }
+
+    final destinatario = TextFormField(
+      keyboardType: TextInputType.text,
+      autofocus: false,
+      onChanged: (text) {
+        setState(() {
+          textdestinatario = text;
+        });
+      },
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.search),
+        contentPadding: new EdgeInsets.symmetric(vertical: 11.0),
+        filled: true,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(
+            color: Colors.blue,
+          ),
         ),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Nueva entrega', style: TextStyle(color: Colors.white)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(
+            color: Color(0xffF0F3F4),
+            width: 0.0,
+          ),
+        ),
+        hintText: 'Ingrese nombre',
       ),
-    ));
+    );
+
+    final titulo = Row(children: <Widget>[
+      Text('Generar envío', style: TextStyle(fontSize: 10)),
+      SizedBox(width: 250, child: TextField()),
+    ]);
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -168,7 +196,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entregas en sede',
+          title: Text('Nueva entrega en sede',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -182,16 +210,18 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.topCenter,
                 child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
+                    alignment: Alignment.center,
+                    height:
+                        screenHeightExcludingToolbar(context, dividedBy: 10),
                     width: double.infinity,
-                    child: sendButton),
+                    child: destinatario),
               ),
               Expanded(
                 child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
+                    alignment: Alignment.bottomCenter,
+                    child: _myListView(textdestinatario)),
               )
             ],
           ),
@@ -212,8 +242,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-
-  void _onSearchButtonPressed() {}
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(

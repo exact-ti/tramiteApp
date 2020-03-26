@@ -23,4 +23,5 @@ class UsuarioImpl implements UsuarioInterface {
      List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuariosporFiltro(texto);
       return usuariosfrecuentes;
   }
+  
 }
