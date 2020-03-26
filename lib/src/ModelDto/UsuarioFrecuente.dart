@@ -5,6 +5,7 @@
 //String usuarioFrecuenteToJson(UsuarioFrecuente data) => json.encode(data);
 
 class UsuarioFrecuente {
+  
   int id;
   String nombre;
   String sede;

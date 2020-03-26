@@ -1,23 +1,24 @@
-import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
+import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-propios/recorridoPropioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 
-import 'ListarTurnosController.dart';
-
-class ListarTurnosPage extends StatefulWidget {
+class RecorridosPropiosPage extends StatefulWidget {
   @override
-  _ListarTurnosPageState createState() => _ListarTurnosPageState();
+  _RecorridosPropiosPageState createState() => _RecorridosPropiosPageState();
 }
 
-class _ListarTurnosPageState extends State<ListarTurnosPage> {
-  ListarTurnosController principalcontroller = new ListarTurnosController();
+class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
+  RecorridoPropioController principalcontroller =
+      new RecorridoPropioController();
   EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
+
   var listadestinatarios;
   String textdestinatario = "";
 
@@ -53,10 +54,10 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     var booleancolor = true;
     var colorwidget = colorplomo;
 
-    Widget informacionEntrega(EntregaModel entrega) {
-      String recorrido = entrega.nombreRecorrido;
-      String estado = entrega.estado;
-      String usuario = entrega.usuario;
+    Widget informacionEntrega(RecorridoModel envio) {
+      String recorrido = envio.nombre;
+      String horario = envio.horaInicio + " - " + envio.horaFin;
+      String usuario = envio.usuario;
 
       return Container(
           height: 100,
@@ -68,7 +69,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
             Container(
                 height: 20,
                 child: ListTile(
-                    title: Text("$estado", style: TextStyle(fontSize: 11)))),
+                    title: Text("$horario", style: TextStyle(fontSize: 11)))),
             Container(
                 height: 20,
                 child: ListTile(
@@ -81,7 +82,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           ]));
     }
 
-    Widget crearItem(EntregaModel entrega) {
+    Widget crearItem(RecorridoModel entrega) {
       //String nombrearea = usuario.area;
       //String nombresede = usuario.sede;
       if (booleancolor) {
@@ -107,11 +108,11 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 100,
+                            height: 100,
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: _onSearchButtonPressed))
+                                onPressed: _onSearchButtonPresseds))
                       ])),
             ]),
       );
@@ -127,36 +128,40 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
-              AsyncSnapshot<List<EntregaModel>> snapshot) {
+              AsyncSnapshot<List<RecorridoModel>> snapshot) {
             if (snapshot.hasData) {
               booleancolor = true;
               colorwidget = colorplomo;
-              final entregas = snapshot.data;
+              final recorridos = snapshot.data;
               return ListView.builder(
-                  itemCount: entregas.length,
-                  itemBuilder: (context, i) => crearItem(entregas[i]));
+                  itemCount: recorridos.length,
+                  itemBuilder: (context, i) => crearItem(recorridos[i]));
             } else {
               return Container();
             }
           });
     }
 
-    final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Nueva entrega', style: TextStyle(color: Colors.white)),
+    //final subtitulo = Text('Elige el recorrido', style: TextStyle(color: colorletra));
+
+    final subtitulo =
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      Expanded(
+        child: Text('Elige el recorrido', style: TextStyle(color: colorletra)),
+        flex: 5,
       ),
-    ));
+      Expanded(
+          flex: 2,
+          child: InkWell(
+            onTap: () {
+              _onSearchButtonPressed();
+            },
+            child: Text(
+              'Más recorridos',
+              style: TextStyle(color: Colors.blue),
+            ),
+          )),
+    ]);
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -168,7 +173,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entregas en sede',
+          title: Text('Nueva entrega en sede',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -187,7 +192,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                     alignment: Alignment.centerLeft,
                     height: screenHeightExcludingToolbar(context, dividedBy: 6),
                     width: double.infinity,
-                    child: sendButton),
+                    child: subtitulo),
               ),
               Expanded(
                 child: Container(
@@ -213,11 +218,15 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 
-  void _onSearchButtonPressed() {}
+  void _onSearchButtonPressed() {
+    Navigator.of(context).pushNamed('/entregas-pisos-adicionales');
+  }
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(color: colorletra),
     );
   }
+
+  void _onSearchButtonPresseds() {}
 }
