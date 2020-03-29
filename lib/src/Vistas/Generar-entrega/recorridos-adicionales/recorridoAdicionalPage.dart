@@ -104,8 +104,8 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: () {
-                                  Navigator.push(
+                                onPressed: () {  
+                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ValidacionEnvioPage(
@@ -203,7 +203,6 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
-        drawer: sd.crearMenu(context),
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(

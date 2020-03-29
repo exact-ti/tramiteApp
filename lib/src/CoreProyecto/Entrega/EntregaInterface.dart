@@ -13,6 +13,9 @@ class EntregaInterface {
 
     Future<List<EnvioModel>> listarEnviosValidacion(int recorridoId){}
 
+    Future<int> listarEnviosValidados(List<EnvioModel> envios,int id){}
+
+    Future<EnvioModel> validarCodigo(String codigo, int id){}
     }
 
 

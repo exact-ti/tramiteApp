@@ -18,6 +18,6 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entregas-pisos': (BuildContext context) => ListarTurnosPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
-    '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
+    //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
   };
 }

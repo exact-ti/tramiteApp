@@ -13,4 +13,8 @@ abstract class IEntregaProvider{
 
   Future<List<EnvioModel>> listarEnviosValidacion(int recorridoId);  
 
+  Future<int> listarEnviosValidados(List<EnvioModel> enviosvalidados,int id);
+
+  Future<EnvioModel> validarCodigoProvider(String codigo,int id);
+
 }
