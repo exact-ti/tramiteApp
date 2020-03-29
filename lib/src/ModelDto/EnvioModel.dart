@@ -28,7 +28,15 @@ class EnvioModel {
             envios.add(envio);
         }
           return envios;
-    }     
+    }    
+
+
+  EnvioModel fromOneJson(dynamic json){
+           EnvioModel  envio = new EnvioModel();
+            envio.id  = json["id"];
+            envio.codigoPaquete = json["codigoPaquete"];
+          return envio;
+    }   
 
     Map<String, dynamic> toJson() => {
         "id"                    :id,

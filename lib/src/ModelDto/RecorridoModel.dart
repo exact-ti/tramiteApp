@@ -27,4 +27,10 @@ class RecorridoModel {
           return recorridos;
     }
 
+    RecorridoModel fromJsonID(dynamic json){
+           RecorridoModel recorrido = new RecorridoModel();
+            recorrido.id  = json["id"];
+          return recorrido;
+    }
+
 }

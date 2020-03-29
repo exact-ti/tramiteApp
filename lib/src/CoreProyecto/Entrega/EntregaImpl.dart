@@ -40,5 +40,17 @@ class EntregaImpl implements EntregaInterface {
       return recorridos;
   }
 
+  @override
+  Future<int>  listarEnviosValidados(List<EnvioModel> envios,int id) async{
+    int i = await entrega.listarEnviosValidados(envios,id);
+    return i;
+  }
+
+  @override
+  Future<EnvioModel> validarCodigo(String codigo,int id) async{
+     EnvioModel envio = await entrega.validarCodigoProvider(codigo,id);
+    return envio;
+  }
+
 
 }

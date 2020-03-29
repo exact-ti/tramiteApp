@@ -180,7 +180,6 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
-        drawer: sd.crearMenu(context),
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
