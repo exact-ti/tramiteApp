@@ -20,6 +20,7 @@ class ValidacionController {
       List<EnvioModel> enviosvalidados, BuildContext context,int id) async {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id= await entregaInterface.listarEnviosValidados(enviosvalidados,id);
+    recorrido.indicepagina=1;
     Navigator.push(
         context,
         MaterialPageRoute(

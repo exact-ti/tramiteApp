@@ -43,7 +43,7 @@ class PaqueteProvider implements IPaqueteProvider {
 
   @override
   Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async{
-    Response resp = await req.get('/servicio-buzon/buzones?filtro=$texto');
+    Response resp = await req.get('/servicio-tramite/buzones?filtro=$texto');
     List<dynamic> menus = resp.data;
     List<UsuarioFrecuente> listusuarios = usuarioFrecuente.fromJson(menus);
     print("dar");
@@ -57,8 +57,8 @@ class PaqueteProvider implements IPaqueteProvider {
       'codigo': texto,
     };
 
-    Response resp = await req.get('/servicio-paquete/tipospaquetes/$indicepaquete/paquetes?codigo=$texto');
-    if(resp.data==""){
+    Response resp = await req.get('/servicio-tramite/tipospaquetes/$indicepaquete/paquetes/parauso?codigo=$texto');
+    if(resp.data==false){
         return false;
     }else{
       return true;

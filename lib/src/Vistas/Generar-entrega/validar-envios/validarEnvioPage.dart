@@ -35,7 +35,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
-
   var nuevo = 0;
 
   @override
@@ -344,8 +343,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               Expanded(
                 child: Container(
                     alignment: Alignment.bottomCenter,
-                    child:
-                        _validarListado(listaCodigosValidados, codigoValidar)),
+                    child:_validarListado(listaCodigosValidados, codigoValidar)),
               ),
               Align(
                 alignment: Alignment.center,

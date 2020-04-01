@@ -54,7 +54,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     var colorwidget = colorplomo;
 
     Widget informacionEntrega(EntregaModel entrega) {
-      String recorrido = entrega.nombreRecorrido;
+      String recorrido = entrega.nombreTurno;
       String estado = entrega.estado;
       String usuario = entrega.usuario;
 

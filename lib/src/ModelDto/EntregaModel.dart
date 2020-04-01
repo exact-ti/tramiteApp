@@ -2,13 +2,13 @@ class EntregaModel {
   int id;
   String estado;
   String usuario;
-  String nombreRecorrido;
+  String nombreTurno;
 
     EntregaModel({
         this.id,
         this.estado = '',
         this.usuario = '',
-        this.nombreRecorrido = '',
+        this.nombreTurno = '',
     });
 
     List<EntregaModel> fromJson(List< dynamic> jsons){
@@ -18,7 +18,7 @@ class EntregaModel {
             men.id  = json["id"];
             men.estado = json["estado"];
             men.usuario = json["usuario"];
-            men.nombreRecorrido = json["nombreRecorrido"];
+            men.nombreTurno = json["nombreTurno"];
             entregas.add(men);
         }
           return entregas;

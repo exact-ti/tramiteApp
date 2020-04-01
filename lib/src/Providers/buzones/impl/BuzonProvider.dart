@@ -12,7 +12,7 @@ class BuzonProvider implements IBuzonProvider {
 
   @override
   Future<List<BuzonModel>> listarBuzonesDelUsuarioAutenticado() async {
-    Response resp = await req.get('/servicio-buzon/buzones');
+    Response resp = await req.get('/servicio-tramite/usuarios/buzones');
     List<dynamic>  buzones = resp.data;
     List<BuzonModel> listbuzon = buzonmodel.fromJson(buzones);
     return listbuzon;

@@ -18,8 +18,8 @@ class BandejaProvider implements IBandejaProvider {
 
   @override
   Future<bool> validarBandejaSobrePorCodigo(String texto) async{
-    Response resp = await req.get('/servicio-tramite/bandejas?codigo=$texto');
-    if(resp.data==""){
+    Response resp = await req.get('/servicio-tramite/areas?codigo=$texto');
+    if(resp.data==false){
         return false;
     }else{
       return true;

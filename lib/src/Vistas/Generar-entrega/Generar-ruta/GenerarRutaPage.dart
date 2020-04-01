@@ -1,7 +1,5 @@
-import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 
@@ -67,8 +65,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     }
 
     Widget informacionRecojo(RutaModel ruta) {
-      int total = ruta.rutaModelRecojo.total;
-      int procesados = ruta.rutaModelRecojo.procesados;
+      int total = ruta.cantidadRecojo;
 
       return Container(
           alignment: Alignment.center,
@@ -91,8 +88,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     }
 
     Widget informacionEntrega(RutaModel ruta) {
-      int total = ruta.rutaModelEntrega.total;
-      int procesados = ruta.rutaModelEntrega.procesados;
+      int total = ruta.cantidadEntrega;
 
       return Container(
           height: 80,
@@ -116,11 +112,11 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     Widget crearItem(RutaModel ruta) {
       //String nombrearea = usuario.area;
       //String nombresede = usuario.sede;
-      if (ruta.visitada) {
+      /*if (ruta.visitada) {
         colorwidget = colorplomo;
       } else {
         colorwidget = colorblanco;
-      }
+      }*/
       return Container(
         decoration: myBoxDecoration(),
         margin: EdgeInsets.only(bottom: 5),
@@ -186,12 +182,12 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          //Navigator.of(context).pushNamed('/entregas-pisos-propios');
           print("LLEgo");
+          principalcontroller.opcionRecorrido(recorridoUsuario,context);
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Empezar', style: TextStyle(color: Colors.white)),
+        child: recorridoUsuario.indicepagina==1 ? Text('Empezar', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
       ),
     ));
 

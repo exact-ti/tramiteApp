@@ -30,7 +30,7 @@ class UsuarioProvider implements IUsuariosProvider {
             cantidad = int.parse(confi.valor);
         }
     }
-    Response resp = await req.get('/servicio-buzon/buzones/$id/destinatariosfrecuentes?cantidad=$cantidad');
+    Response resp = await req.get('/servicio-tramite/buzones/$id/destinatariosfrecuentes?cantidad=$cantidad');
     List<dynamic> menus = resp.data;
     List<UsuarioFrecuente> listusuarios = usuarioFrecuente.fromJson(menus);
     print("dar");
@@ -39,7 +39,7 @@ class UsuarioProvider implements IUsuariosProvider {
 
   @override
   Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async{
-    Response resp = await req.get('/servicio-buzon/buzones?filtro=$texto');
+    Response resp = await req.get('/servicio-tramite/buzones?filtro=$texto');
     List<dynamic> menus = resp.data;
     List<UsuarioFrecuente> listusuarios = usuarioFrecuente.fromJson(menus);
     print("dar");

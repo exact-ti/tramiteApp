@@ -4,14 +4,19 @@ import 'RutaModelEntrega.dart';
 import 'RutaModelId.dart';
 
 class RutaModel {
-
+  String nombre;
+  int orden;
+  int cantidadRecojo;
+  int cantidadEntrega;
+/*
   RutaModelId id;
   String nombre;
   int orden;
   RutaModelEntrega rutaModelEntrega;
   RutaModelRecojo rutaModelRecojo;
   bool visitada;
-
+*/
+/*
     RutaModel({
         this.id,
         this.nombre = '',
@@ -20,7 +25,8 @@ class RutaModel {
         this.rutaModelRecojo,
         this. visitada = true,
     });
-
+*/
+/*
     List<RutaModel> fromJson(List< dynamic> jsons){
        List<RutaModel> rutas= new List();
         for(Map<String, dynamic> json in jsons){
@@ -43,6 +49,21 @@ class RutaModel {
             ruta.id=rutaId;
             ruta.rutaModelRecojo=rutarecojo;
             ruta.rutaModelEntrega=rutaentrega;     
+            rutas.add(ruta);
+        }
+          return rutas;
+    }
+
+    */
+
+        List<RutaModel> fromJson(List< dynamic> jsons){
+       List<RutaModel> rutas= new List();
+        for(Map<String, dynamic> json in jsons){
+          RutaModel ruta = new RutaModel();
+            ruta.nombre  = json["nombre"];
+            ruta.orden = json["orden"]; 
+            ruta.cantidadRecojo  = json["cantidadRecojo"];
+            ruta.cantidadEntrega = json["cantidadEntrega"];             
             rutas.add(ruta);
         }
           return rutas;
