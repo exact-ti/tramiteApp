@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'EntregaRegularController.dart';
 
@@ -214,10 +215,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: Icon(
-                Icons.perm_media,
-                color: Color(0xffC7C7C7),
-              ),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
               trailing: Text(""),
             ));
     }

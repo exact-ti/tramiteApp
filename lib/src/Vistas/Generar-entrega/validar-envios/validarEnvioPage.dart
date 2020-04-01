@@ -2,7 +2,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 
@@ -197,10 +197,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: Icon(
-                Icons.perm_media,
-                color: Color(0xffC7C7C7),
-              ),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
               trailing: Icon(
                 Icons.check,
                 color: Color(0xffC7C7C7),
@@ -212,10 +209,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: Icon(
-                Icons.perm_media,
-                color: Color(0xffC7C7C7),
-              ),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
               trailing: Text(""),
             ));
       }
