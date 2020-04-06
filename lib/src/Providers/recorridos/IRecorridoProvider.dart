@@ -8,9 +8,9 @@ abstract class IRecorridoProvider{
 
   Future<List<EnvioModel>> enviosRecojoProvider(String codigo,int recorridoId);  
 
-  void registrarEntregaProvider(String codigo,int recorridoId, String codigopaquete);  
+  Future<bool> registrarEntregaProvider(String codigo,int recorridoId, String codigopaquete);  
 
-  void registrarRecojoProvider(String codigo,int recorridoId, String codigopaquete);  
+  Future<bool> registrarRecojoProvider(String codigo,int recorridoId, String codigopaquete);  
 
   Future<bool> registrarEntregaPersonalizadaProvider(String dni,int recorridoId, String codigopaquete);  
 

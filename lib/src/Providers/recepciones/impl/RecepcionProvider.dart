@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
@@ -8,11 +7,10 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-import 'dart:convert';
 
-import '../IRecorridoProvider.dart';
+import '../IRecepcionProvider.dart';
 
-class RecorridoProvider implements IRecorridoProvider {
+class RecepcionProvider implements IRecepcionProvider {
   Requester req = Requester();
   final _prefs = new PreferenciasUsuario();
   UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
@@ -23,9 +21,9 @@ class RecorridoProvider implements IRecorridoProvider {
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
 
   @override
-  Future<List<EnvioModel>> enviosEntregaProvider(String codigo, int id) async {
+  Future<List<EnvioModel>> recepcionJumboProvider(String codigo) async {
     Response resp = await req.get(
-        '/servicio-tramite/recorridos/$id/areas/$codigo/envios/paraentrega');
+        '/servicio-tramite/recorridos/areas/$codigo/envios/paraentrega');
     if (resp.data == "") {
       return null;
     }
@@ -35,8 +33,8 @@ class RecorridoProvider implements IRecorridoProvider {
   }
 
   @override
-  Future<List<EnvioModel>> enviosRecojoProvider(
-      String codigo, int recorridoId) async {
+  Future<List<EnvioModel>> recepcionValijaProvider(
+      String codigo) async {
     Response resp = await req.get('/servicio-tramite/areas/$codigo/envios');
     if (resp.data == "") {
       return null;
@@ -47,10 +45,10 @@ class RecorridoProvider implements IRecorridoProvider {
   }
 
   @override
-  Future<bool> registrarEntregaProvider(
-      String codigo, int recorridoId, String codigopaquete) async {
+  Future<bool> registrarJumboProvider(
+      String codigo, String codigopaquete) async {
     Response resp = await req.post(
-        '/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/entrega',
+        '/servicio-tramite/recorridos/areas/$codigo/paquetes/$codigopaquete/entrega',
         null,
         null);
     if (resp.data) {
@@ -60,10 +58,10 @@ class RecorridoProvider implements IRecorridoProvider {
   }
 
   @override
-  Future<bool> registrarRecojoProvider(
-      String codigo, int recorridoId, String codigopaquete) async {
+  Future<bool> registrarValijaProvider(
+      String codigo, String codigopaquete) async {
     Response resp = await req.post(
-        '/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/recojo',
+        '/servicio-tramite/recorridos/areas/$codigo/paquetes/$codigopaquete/recojo',
         null,
         null);
     if (resp.data) {
@@ -72,19 +70,4 @@ class RecorridoProvider implements IRecorridoProvider {
     return false;
   }
 
-  @override
-  Future<bool> registrarEntregaPersonalizadaProvider(
-      String dni, int recorridoId, String codigopaquete) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.post(
-        '/servicio-tramite/utds/$id/paquetes/$codigopaquete/entregapersonalizada?codigo_usuario=$dni',
-        null,
-        null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
-  }
 }

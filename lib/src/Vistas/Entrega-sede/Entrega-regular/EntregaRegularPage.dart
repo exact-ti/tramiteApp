@@ -364,32 +364,27 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     );
 
-    bool contieneCodigo(codigo){ 
+     contieneCodigo(codigo){ 
       bool pertenecia = false; 
-
         for(EnvioModel envio in listaEnvios){
           if(envio.codigoPaquete==codigo){
               pertenecia=true;  
           }
         } 
        if(pertenecia==true){
-          envioController.recogerdocumento(recorridoUsuario.id, codigoBandeja, codigo, isSwitched);  
+          envioController.recogerdocumento(context,recorridoUsuario.id, codigoBandeja, codigo, isSwitched);  
           listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
+       }else{
+          envioController.recogerdocumento(context, recorridoUsuario.id, codigoBandeja, codigo, isSwitched);  
        } 
-       return pertenecia; 
     }
 
     Widget _validarListado(String codigo) {
       if (codigo == "") {
         return _crearListado();
       } else {
-        if (contieneCodigo(codigo)) {
+          contieneCodigo(codigo); 
           return _crearListadoinMemoria();
-        } else {
-          print("Falta el metodo validar");
-          return Container();
-          //return _crearListadoAgregar(codigos, codigo);
-        }
       }
     }
 

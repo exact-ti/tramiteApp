@@ -21,9 +21,13 @@ class EntregaregularController {
     return recorridos;
   }
 
-  void recogerdocumento(
+  void recogerdocumento(BuildContext context,
       int id, String codigo, String paquete, bool opcion) async {
-    recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);
+    bool respuesta = await recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);
+    if(respuesta==false){
+      mostrarAlerta(context,"No se pudo completar la operación", "Código incorrecto");
+    }
+
   }
 
   void redirectMiRuta(RecorridoModel recorrido, BuildContext context) async {

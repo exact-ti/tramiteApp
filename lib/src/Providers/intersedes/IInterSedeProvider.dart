@@ -8,5 +8,9 @@ abstract class IInterSedeProvider{
 
     Future<List<EnvioModel>> listarEnviosByCodigo(EnvioInterSedeModel interSedeModel, String codigo);  
 
+    Future<EnvioModel> validarCodigoProvider(String codigo,int id);
+
+      Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,int id);
+
 
 }
