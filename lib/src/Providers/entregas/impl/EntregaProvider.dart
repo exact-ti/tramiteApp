@@ -80,12 +80,17 @@ class EntregaProvider implements IEntregaProvider {
 
   @override
   Future<EnvioModel> validarCodigoProvider(String codigo, int id) async {
+    try{
     Response resp = await req.get('/servicio-tramite/turnos/$id/envios/paraagregaralrecorrido?paqueteId=$codigo');
     if(resp.data==""){
         return null;
     }
-    List<dynamic> envio = resp.data;
+        dynamic envio = resp.data;
     EnvioModel envioMode = envioModel.fromOneJson(envio);
     return envioMode;
+    }catch(e){
+              return null;
+    }
+
   }
 }

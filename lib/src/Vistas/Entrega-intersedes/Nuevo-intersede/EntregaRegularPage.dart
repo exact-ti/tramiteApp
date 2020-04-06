@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
-
 import 'EntregaRegularController.dart';
 
-class EntregaRegularPage extends StatefulWidget {
-  final RecorridoModel recorridopage;
+class NuevoIntersedePage extends StatefulWidget {
+  final EnvioInterSedeModel envioInterSede;
 
-  const EntregaRegularPage({Key key, this.recorridopage}) : super(key: key);
+  const NuevoIntersedePage({Key key, this.envioInterSede}) : super(key: key);
 
   @override
-  _EntregaRegularPageState createState() =>
-      new _EntregaRegularPageState(recorridopage);
+  _NuevoIntersedePageState createState() =>
+      new _NuevoIntersedePageState(envioInterSede);
 }
 
-class _EntregaRegularPageState extends State<EntregaRegularPage> {
-  RecorridoModel recorridoUsuario;
-  _EntregaRegularPageState(this.recorridoUsuario);
+class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
+  EnvioInterSedeModel intersedeModel;
+  _NuevoIntersedePageState(this.intersedeModel);
   EntregaregularController envioController = new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
@@ -37,6 +35,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   String codigoBandeja = "";
   String codigoSobre = "";
   String textdestinatario = "";
+  int cantidadPendientes = 0;
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var listadetinatario;
@@ -48,7 +47,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   var validarSobre = false;
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
-  String _name = '';
   int indice = 0;
   int indicebandeja = 0;
   @override
@@ -63,6 +61,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     const PrimaryColor = const Color(0xFF2C6983);
     const SecondColor = const Color(0xFF6698AE);
 
+      String destino = intersedeModel.destino ;
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
@@ -132,38 +131,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       }
     }
 
-    final botonesinferiores = Row(children: [
-      Expanded(
-        child: InkWell(
-          onTap: () {
-        Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              EntregapersonalizadoPage(recorridopage: recorridoUsuario),
-        ),
-      );
-          },
-          child: Text(
-            'Entrega Personalizada',
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-        flex: 5,
-      ),
-      Expanded(
-        child: InkWell(
-          onTap: () {
-            envioController.redirectMiRuta(recorridoUsuario,context);
-          },
-          child: Text(
-            'Mi ruta',
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-      ),
-    ]);
-
     final valorswitch = Center(
       child: Switch(
         value: isSwitched,
@@ -188,12 +155,12 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     );
 
     final textBandeja = Container(
-      child: Text("Código de bandeja"),
+      child: Text("Valija"),
       margin: const EdgeInsets.only(left: 15),
     );
 
     final textSobre = Container(
-      child: Text("Código de sobre"),
+      child: Text("Código"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -248,10 +215,11 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       _validarBandejaText(qrbarra);
     }
 
+
     Widget _crearListado() {
       return FutureBuilder(
           future: principalcontroller.listarEnvios(context,
-              recorridoUsuario.id, codigoBandeja,isSwitched),
+              intersedeModel, codigoBandeja),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
@@ -300,6 +268,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           });
     }
 */
+    final textoPendientes = Text("Quedan $cantidadPendientes documentos pendientes");
+
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
@@ -364,7 +334,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     );
 
-    bool contieneCodigo(codigo){ 
+  /*  bool contieneCodigo(codigo){ 
       bool pertenecia = false; 
 
         for(EnvioModel envio in listaEnvios){
@@ -377,7 +347,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
        } 
        return pertenecia; 
-    }
+    }*/
 
     Widget _validarListado(String codigo) {
       if (codigo == "") {
@@ -447,7 +417,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entrega 1025 en sede',
+          title: Text('Agregar valija a la $destino',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -460,16 +430,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: contenerSwitch2,
-                  margin: const EdgeInsets.only(bottom: 20),
-                ),
-              ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
@@ -507,27 +467,28 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                     child: campodetextoandIconoSobre,
                     margin: const EdgeInsets.only(bottom: 40),),
               ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: codigoBandeja == ""
+                      ? Container(): Container(
+                    alignment: Alignment.bottomLeft,
+                    height:
+                        screenHeightExcludingToolbar(context, dividedBy: 30),
+                    //width: double.infinity,
+                    child: textoPendientes),
+              ),              
               Expanded(
                   child: codigoBandeja == ""
                       ? Container()
                       : Container(
                           child: _validarListado(codigoSobre))),
-              /*Align(
+              Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
                     height: screenHeightExcludingToolbar(context, dividedBy: 8),
                     width: double.infinity,
                     child: sendButton),
-              ),*/
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: botonesinferiores),
               ),
             ],
           ),

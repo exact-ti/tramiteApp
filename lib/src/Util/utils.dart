@@ -6,6 +6,9 @@ import 'dart:convert';
 
 EnvioController envioController = new EnvioController();
 
+
+
+
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
       context: context,
@@ -117,3 +120,9 @@ final _icons= <String, IconData>{
 Icon getICon ( String nombreIcono){
   return Icon(_icons[nombreIcono],color: Colors.blue);
 }
+
+
+void redirection(BuildContext context, String ruta){
+Navigator.pushReplacementNamed(context,ruta);
+}
+

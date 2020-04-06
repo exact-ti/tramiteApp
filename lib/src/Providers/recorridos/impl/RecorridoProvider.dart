@@ -49,17 +49,26 @@ class RecorridoProvider implements IRecorridoProvider {
 
   @override
   void registrarEntregaProvider(String codigo, int recorridoId, String codigopaquete) async{
-      Response resp = await req.post('/api/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/entrega',null,null);
+      Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/entrega',null,null);
+       if(resp.data!=""){
+        print("funciono");
+    }
    }
 
   @override
   void registrarRecojoProvider(String codigo, int recorridoId, String codigopaquete) async{
-      Response resp = await req.post('/api/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/recojo',null,null);
+      Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/recojo',null,null);
+          if(resp.data!=""){
+        print("funciono");
+    }
    }
 
   @override
   Future<bool> registrarEntregaPersonalizadaProvider(String dni, int recorridoId, String codigopaquete) async{
-    Response resp = await req.post('/api/servicio-tramite/recorridos/$recorridoId/areas/$codigopaquete/paquetes/$codigopaquete/recojo',null,null);
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.post('/servicio-tramite/utds/$id/paquetes/$codigopaquete/entregapersonalizada?codigo_usuario=$dni',null,null);
     if(resp.data){
       return true;
     }

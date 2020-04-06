@@ -34,7 +34,7 @@ class EnvioModel {
   EnvioModel fromOneJson(dynamic json){
            EnvioModel  envio = new EnvioModel();
             envio.id  = json["id"];
-            envio.codigoPaquete = json["codigoPaquete"];
+            envio.codigoPaquete = json["paqueteId"];
           return envio;
     }   
 

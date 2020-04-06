@@ -57,7 +57,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
 
     void _validarSobreText(String value) {
       if (value != "") {
-        personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,codigoDNI,value);
+        personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
           setState(() {
             _sobreController.text = "";
             _dniController.text="";
@@ -109,9 +109,9 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (codigoDNI == "") {
+      if (_dniController.text== "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
+        mostrarAlerta(context, "Primero debe ingresar el DNI",
             "Ingreso incorrecto");
       } else {
         _validarSobreText(qrbarra);
@@ -153,7 +153,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if (codigoDNI == "") {
+        if (_dniController.text == "") {
           _sobreController.text = "";
           mostrarAlerta(
               context,
@@ -225,13 +225,14 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entrega 1025 en sede',
+          title: Text('Entrega personalizada',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
+        drawer: crearMenu(context),
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(

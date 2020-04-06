@@ -44,7 +44,7 @@ class RutaProvider implements IRutaProvider {
 
     @override
   Future<bool> terminarRecorrido(int recorridoId) async{
-    Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/inicio',null,null);
+    Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/termino',null,null);
     if(resp.data==false){
         return false;
     }else{

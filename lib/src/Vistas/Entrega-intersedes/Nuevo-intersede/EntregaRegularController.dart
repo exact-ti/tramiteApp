@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
+import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
@@ -12,7 +13,7 @@ class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
-      int id, String codigo, bool opcion) async {
+      EnvioInterSedeModel interSedeModel, String codigo) async {
     List<EnvioModel> recorridos =
         await recorridoCore.enviosCore(codigo, id, opcion);
         if(recorridos.isEmpty){
