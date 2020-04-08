@@ -26,10 +26,30 @@ class RutaProvider implements IRutaProvider {
 
   @override
   Future<List<RutaModel>> listarMiRuta(int recorridoId) async {
-    Response resp = await req.get('/servicio-tramite/entregas/$recorridoId/areas');
+    Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/areas');
     List<dynamic> rutas = resp.data;
     List<RutaModel> listrutas = rutaModel.fromJson(rutas);
     return listrutas;
+  }
+
+  @override
+  Future<bool> iniciarRecorrido(int recorridoId) async{
+    Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/inicio',null,null);
+    if(resp.data==false){
+        return false;
+    }else{
+      return true;
+    }
+  }
+
+    @override
+  Future<bool> terminarRecorrido(int recorridoId) async{
+    Response resp = await req.post('/servicio-tramite/recorridos/$recorridoId/termino',null,null);
+    if(resp.data==false){
+        return false;
+    }else{
+      return true;
+    }
   }
 
   

@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-propios/recorridoPropioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
@@ -180,6 +181,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
+        drawer: crearMenu(context),
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
