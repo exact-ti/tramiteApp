@@ -14,7 +14,7 @@ class ConfiguracionProvider implements IConfiguracionProvider {
 
   @override
   Future<List<ConfiguracionModel>> listarConfiguraciones() async{
-    Response resp = await req.get('/servicio-configuracion/configuraciones');
+    Response resp = await req.get('/servicio-tramite/configuraciones');
     List<dynamic>  configuraciones = resp.data;
     List<ConfiguracionModel> listbuzon = configuracionmodel.fromJson(configuraciones);
     return listbuzon;

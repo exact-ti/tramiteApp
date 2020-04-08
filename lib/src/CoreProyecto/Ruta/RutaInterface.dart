@@ -7,6 +7,9 @@ class RutaInterface {
 
     Future<List<RutaModel>> listarMiruta(int recorridoId){}
 
+    Future<bool> opcionRecorrido(RecorridoModel recorrido){}
+
+
     }
 
 

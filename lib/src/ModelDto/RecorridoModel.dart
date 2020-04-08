@@ -4,10 +4,12 @@ class RecorridoModel {
   String horaInicio;
   String horaFin;
   String usuario;
+  int indicepagina;
 
     RecorridoModel({
         this.id,
         this.nombre = '',
+        this.indicepagina,
         this.horaInicio = '',
         this.horaFin = '',
         this.usuario = '',

@@ -2,6 +2,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
@@ -35,7 +36,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
-
   var nuevo = 0;
 
   @override
@@ -89,22 +89,14 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
     listarNovalidados() {
       bool esvalidado = false;
+      List<dynamic> as =  listaEnvios;
+      List<dynamic> ads =  listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
-        for (String codigo in listaCodigosValidados) {
-          if (envio.codigoPaquete == codigo) {
-            //setState(() {
+          if(listaCodigosValidados.contains(envio.codigoPaquete)){
               listaEnviosValidados.add(envio);
-            //});
-            esvalidado = true;
           }else{
-            esvalidado = false;
-          }
-        }
-        if (esvalidado == false) {
-          //setState(() {
             listaEnviosNoValidados.add(envio);
-          //});
-        }
+          }
       }
     }
 
@@ -198,10 +190,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: Icon(
-                Icons.perm_media,
-                color: Color(0xffC7C7C7),
-              ),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
               trailing: Icon(
                 Icons.check,
                 color: Color(0xffC7C7C7),
@@ -213,10 +202,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: Icon(
-                Icons.perm_media,
-                color: Color(0xffC7C7C7),
-              ),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
               trailing: Text(""),
             ));
       }
@@ -328,6 +314,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
+        drawer: crearMenu(context),
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
@@ -344,8 +331,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               Expanded(
                 child: Container(
                     alignment: Alignment.bottomCenter,
-                    child:
-                        _validarListado(listaCodigosValidados, codigoValidar)),
+                    child:_validarListado(listaCodigosValidados, codigoValidar)),
               ),
               Align(
                 alignment: Alignment.center,
@@ -413,6 +399,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                 child: Text('Volver a leer'),
                 onPressed: () {
                   listaEnviosNoValidados.clear();
+                  listaEnviosValidados.clear();
                   Navigator.of(context).pop();
                 } 
               )

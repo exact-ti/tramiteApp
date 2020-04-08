@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Listar-turnos/ListarTurnosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-adicionales/recorridoAdicionalPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-propios/recorridoPropioPage.dart';
@@ -15,9 +18,13 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/principal-admin': (BuildContext context) => HomePage(),
     '/generar-envio': (BuildContext context) => PrincipalPage(),
     '/crear-envio': (BuildContext context) => EnvioPage(),
-    '/entregas-pisos': (BuildContext context) => ListarTurnosPage(),
+    '/recorridos': (BuildContext context) => ListarTurnosPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
-    //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
+    '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
+    '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
+    '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
+    '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
+    
   };
 }

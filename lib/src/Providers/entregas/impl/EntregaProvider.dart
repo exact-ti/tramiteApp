@@ -29,7 +29,7 @@ class EntregaProvider implements IEntregaProvider {
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     int tipoentregaId = entregaPisoId;
-    Response resp = await req.get('/servicio-tramite/utds/$id/tiposentregas/$tipoentregaId/entregas/activas');
+    Response resp = await req.get('/servicio-tramite/utds/$id/recorridos');
     List<dynamic> entregas = resp.data;
     List<EntregaModel> listEntrega = entregaModel.fromJson(entregas);
     return listEntrega;
@@ -37,7 +37,10 @@ class EntregaProvider implements IEntregaProvider {
 
   @override
   Future<List<RecorridoModel>> listarRecorridoUsuario() async {
-    Response resp = await req.get('/servicio-tramite/recorridos');
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.get('/servicio-tramite/utds/$id/turnos/usuarioautenticado');
     List<dynamic> recorridos = resp.data;
     List<RecorridoModel> listRecorrido = recorridoModel.fromJson(recorridos);
     return listRecorrido;
@@ -45,7 +48,7 @@ class EntregaProvider implements IEntregaProvider {
 
   @override
   Future<List<EnvioModel>> listarEnviosValidacion(int recorridoId) async {
-    Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/envios/paraentrega');
+    Response resp = await req.get('/servicio-tramite/turnos/$recorridoId/envios/paraentrega');
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
@@ -56,8 +59,7 @@ class EntregaProvider implements IEntregaProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/recorridos?nombre=$nombre');
+    Response resp =await req.get('/servicio-tramite/utds/$id/turnos?nombre=$nombre');
     List<dynamic> recorridos = resp.data;
     List<RecorridoModel> listEntrega = recorridoModel.fromJson(recorridos);
     return listEntrega;
@@ -71,23 +73,24 @@ class EntregaProvider implements IEntregaProvider {
       ids.add(envio.id);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post('/servicio-tramite/recorridos/$id/entregas/pisos', listaIds, null);
+    Response resp = await req.post('/servicio-tramite/turnos/$id/recorridos', listaIds, null);
     int idresp = resp.data;
     return idresp;
   }
 
   @override
   Future<EnvioModel> validarCodigoProvider(String codigo, int id) async {
-    Response resp = await req.get('/servicio-tramite/recorridos/$id/envios/paraagregaralrecorrido?codigoPaquete=$codigo');
+    try{
+    Response resp = await req.get('/servicio-tramite/turnos/$id/envios/paraagregaralrecorrido?paqueteId=$codigo');
     if(resp.data==""){
         return null;
     }
-    
-    List<dynamic> envio = resp.data;
+        dynamic envio = resp.data;
     EnvioModel envioMode = envioModel.fromOneJson(envio);
     return envioMode;
-
-    
+    }catch(e){
+              return null;
+    }
 
   }
 }

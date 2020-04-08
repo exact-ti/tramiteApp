@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'EnvioController.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
@@ -339,6 +340,7 @@ class _EnvioPageState extends State<EnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         backgroundColor: Colors.white,
+        drawer: crearMenu(context),
         body: Form(
             key: _formKey,
             child: SingleChildScrollView(

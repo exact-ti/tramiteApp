@@ -24,7 +24,7 @@ class EnvioModel {
         for(Map<String, dynamic> json in jsons){
            EnvioModel  envio = new EnvioModel();
             envio.id  = json["id"];
-            envio.codigoPaquete = json["codigoPaquete"];
+            envio.codigoPaquete = json["paqueteId"];
             envios.add(envio);
         }
           return envios;
@@ -34,7 +34,7 @@ class EnvioModel {
   EnvioModel fromOneJson(dynamic json){
            EnvioModel  envio = new EnvioModel();
             envio.id  = json["id"];
-            envio.codigoPaquete = json["codigoPaquete"];
+            envio.codigoPaquete = json["paqueteId"];
           return envio;
     }   
 

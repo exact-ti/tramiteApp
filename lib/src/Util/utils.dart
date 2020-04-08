@@ -6,6 +6,9 @@ import 'dart:convert';
 
 EnvioController envioController = new EnvioController();
 
+
+
+
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
       context: context,
@@ -105,3 +108,39 @@ List<Widget> milistview(BuildContext context) {
   }
   return list;
 }
+
+
+final _icons= <String, IconData>{
+  'add_alert'     : Icons.add_alert,
+  'accessibility' : Icons.accessibility,
+  'folder_open'   : Icons.folder_open,
+};
+
+
+Icon getICon ( String nombreIcono){
+  return Icon(_icons[nombreIcono],color: Colors.blue);
+}
+
+
+void redirection(BuildContext context, String ruta){
+Navigator.pushReplacementNamed(context,ruta);
+}
+
+////////////
+
+  Size screenSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
+  double screenHeight(BuildContext context,
+      {double dividedBy = 1, double reducedBy = 0.0}) {
+    return (screenSize(context).height - reducedBy) / dividedBy;
+  }
+
+  double screenHeightExcludingToolbar(BuildContext context,
+      {double dividedBy = 1}) {
+    return screenHeight(context,
+        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+  }
+
+
