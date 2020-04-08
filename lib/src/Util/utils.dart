@@ -23,6 +23,41 @@ void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
       });
 }
 
+Future<bool> confirmarRespuesta(BuildContext context, String title, String description) async {
+   
+  
+
+  bool respuesta = await showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(description),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.pop(context,true);
+              // Navigator.of(context).pop();
+            }, 
+            child: Text('Aceptar'),
+          ),
+          FlatButton(
+            onPressed: () {
+              Navigator.pop(context,false);
+              // Navigator.of(context).pop();
+              return false;
+            },
+            child: Text('Cancelar'),
+          )
+        ],
+      );
+    }
+  );
+
+  return respuesta;
+}
+
 
 Drawer crearMenu(BuildContext context) {
   return Drawer(

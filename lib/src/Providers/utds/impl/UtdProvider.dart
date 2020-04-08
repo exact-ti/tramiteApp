@@ -15,7 +15,7 @@ class UtdProvider implements IUtdProvider {
 
   @override
   Future<List<UtdModel>> listarUtdsDelUsuarioAutenticado() async{
-    Response resp = await req.get('/servicio-utd/usuarios/utds');
+    Response resp = await req.get('/servicio-tramite/usuarios/utds');
     List<dynamic>  buzones = resp.data;
     List<UtdModel> listbuzon = utdmodel.fromJson(buzones);
     return listbuzon;
