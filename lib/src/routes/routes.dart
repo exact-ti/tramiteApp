@@ -10,6 +10,9 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
+import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+
 
 
 Map<String, WidgetBuilder> getAplicationRoutes() {
@@ -21,6 +24,9 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/recorridos': (BuildContext context) => ListarTurnosPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
+    //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
+    '/paquete-externo':(BuildContext context) => PaqueteExternoPage(),
+    '/paquete-externo-custodia': (BuildContext context) => CustodiaExternoPage(),
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
