@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nuevo-intersede/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Listar-turnos/ListarTurnosPage.dart';
@@ -25,6 +27,6 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
-    
+    '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),
   };
 }

@@ -1,15 +1,13 @@
 class EnvioInterSedeModel {
-  int id;
+  int utdId;
   int numdocumentos;
   int numvalijas;
   String destino;
-  int codigoEnvio;
 
       EnvioInterSedeModel({
-        this.id,
+        this.utdId,
         this.numdocumentos,
         this.numvalijas,
-        this.codigoEnvio,
         this.destino='',
     });
 
@@ -18,11 +16,10 @@ class EnvioInterSedeModel {
        List<EnvioInterSedeModel> envios= new List();
         for(Map<String, dynamic> json in jsons){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
-            envio.id  = json["id"];
-            envio.codigoEnvio = json["paqueteId"];
-            envio.numdocumentos  = json["id"];
-            envio.numvalijas = json["paqueteId"];
-            envio.destino = json["paqueteId"];
+            envio.utdId  = json["utdId"];
+            envio.numdocumentos  = json["cantidadEnvios"];
+            envio.numvalijas = json["cantidadValijas"];
+            envio.destino = json["utd"];
             envios.add(envio);
         }
           return envios;
@@ -31,8 +28,7 @@ class EnvioInterSedeModel {
 
   EnvioInterSedeModel fromOneJson(dynamic json){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
-            envio.id  = json["id"];
-            envio.codigoEnvio = json["paqueteId"];
+            envio.utdId  = json["id"];
           return envio;
     }   
 

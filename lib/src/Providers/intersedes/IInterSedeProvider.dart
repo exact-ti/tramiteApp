@@ -10,7 +10,9 @@ abstract class IInterSedeProvider{
 
     Future<EnvioModel> validarCodigoProvider(String codigo,int id);
 
-      Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,int id);
+    Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,int id,String codigo);
+
+    Future<bool> iniciarEntregaIntersede(int utdDestino);  
 
 
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 
 import 'loginController.dart';
 
@@ -10,6 +12,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  
+  SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  checkLoginStatus() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+      if (sharedPreferences.getString("token")!=null) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+            (Route<dynamic> route) => false);
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _usernameController = TextEditingController();

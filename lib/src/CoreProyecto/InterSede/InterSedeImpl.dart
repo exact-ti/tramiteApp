@@ -36,8 +36,14 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<int>  listarEnviosValidadosInterSede(List<EnvioModel> envios,int id) async{
-    int i = await intersede.listarEnviosValidadosInterSede(envios, id);
+  Future<int>  listarEnviosValidadosInterSede(List<EnvioModel> envios,int id,String codigo) async{
+    int i = await intersede.listarEnviosValidadosInterSede(envios, id, codigo);
+    return i;
+  }
+
+  @override
+  Future<bool> iniciarEntregaIntersede(int utdDestino) async{
+    bool i = await intersede.iniciarEntregaIntersede(utdDestino);
     return i;
   }
 

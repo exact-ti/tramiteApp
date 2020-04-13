@@ -21,8 +21,7 @@ class EntregaregularController {
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       EnvioInterSedeModel interSedeModel, String codigo) async {
-    List<EnvioModel> recorridos =
-        await intersedeInterface.listarEnviosByCodigo(interSedeModel, codigo);
+    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(interSedeModel, codigo);
 
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
@@ -55,19 +54,40 @@ class EntregaregularController {
     return envio;
   }
 
-
-    void confirmacionDocumentosValidados(EnvioInterSedeModel sede,
-      List<EnvioModel> enviosvalidados, BuildContext context,int id) async {
+  void confirmacionDocumentosValidados(
+      EnvioInterSedeModel sede,
+      List<EnvioModel> enviosvalidados,
+      BuildContext context,
+      int id,
+      String codigo) async {
     RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id= await intersedeInterface.listarEnviosValidadosInterSede(enviosvalidados, id);
+    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+        enviosvalidados, id, codigo);
 
-    mostrarAlerta(context,"Se ha registrado correctamente la valija","Registro");
+    confirmarAlerta(
+        context, "Se ha registrado correctamente la valija", "Registro",sede);
+  }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NuevoIntersedePage(envioInterSede: sede),
-      ),
-    );
+  void confirmarAlerta(BuildContext context, String mensaje, String titulo,
+      EnvioInterSedeModel sedeModel) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('$titulo'),
+            content: Text(mensaje),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              NuevoIntersedePage(envioInterSede: sedeModel),
+                        ),
+                      ))
+            ],
+          );
+        });
   }
 }

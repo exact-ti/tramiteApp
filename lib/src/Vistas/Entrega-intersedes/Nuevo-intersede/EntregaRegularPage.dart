@@ -22,36 +22,21 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   EntregaregularController envioController = new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  //final _sobreController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
   EntregaregularController principalcontroller = new EntregaregularController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String codigoBandeja = "";
   String codigoSobre = "";
-  String textdestinatario = "";
   int cantidadPendientes = 0;
+  int cantidadInicial = 0;
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
-  var listadetinatario;
-  var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  var nuevo = 0;
-  bool isSwitched = true;
-  var validarSobre = false;
-  var validarBandeja = false;
-  bool confirmaciondeenvio = false;
-  int indice = 0;
-  int indicebandeja = 0;
-  @override
   void initState() {
-    valuess = "";
     super.initState();
   }
 
@@ -61,24 +46,24 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     const PrimaryColor = const Color(0xFF2C6983);
     const SecondColor = const Color(0xFF6698AE);
 
-      String destino = intersedeModel.destino ;
+    String destino = intersedeModel.destino;
     listarNovalidados() {
       bool esvalidado = false;
-      List<dynamic> as =  listaEnvios;
-      List<dynamic> ads =  listaCodigosValidados;
+      List<dynamic> as = listaEnvios;
+      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
-          if(listaCodigosValidados.contains(envio.codigoPaquete)){
-              listaEnviosValidados.add(envio);
-          }else{
-            listaEnviosNoValidados.add(envio);
-          }
+        if (listaCodigosValidados.contains(envio.codigoPaquete)) {
+          listaEnviosValidados.add(envio);
+        } else {
+          listaEnviosNoValidados.add(envio);
+        }
       }
     }
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
@@ -86,8 +71,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             onPressed: () {
               listarNovalidados();
               if (listaEnviosNoValidados.length == 0) {
-                principalcontroller.confirmacionDocumentosValidados(intersedeModel,
-                    listaEnviosValidados, context, intersedeModel.id);
+                principalcontroller.confirmacionDocumentosValidados(
+                    intersedeModel,
+                    listaEnviosValidados,
+                    context,
+                    intersedeModel.utdId,
+                    codigoBandeja);
               } else {
                 confirmarNovalidados(
                     context,
@@ -96,8 +85,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               }
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Nueva Valija', style: TextStyle(color: Colors.white)),
+            child:
+                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -128,11 +117,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       if (value != "") {
         setState(() {
           codigoBandeja = value;
-          _bandejaController.text = "";
+          _bandejaController.text = value;
         });
       }
     }
-
 
     final textBandeja = Container(
       child: Text("Valija"),
@@ -149,24 +137,13 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       if (listaEnvios.length == 0) {
         listaEnvios.add(envio);
       } else {
-
-         if(!listaEnvios.contains(envio)){
-            listaEnvios.add(envio);
-         } 
-
-/*
-        for (EnvioModel envioModel in listaEnvios) {
-          if (envioModel.id == envio.id) {
-            pertenece = true;
-          }
-        }
-        if (!pertenece) {
+        if (!listaEnvios.contains(envio)) {
           listaEnvios.add(envio);
-        }*/
+        }
       }
     }
 
-    Widget crearItem(EnvioModel envio, List<String> validados) {
+    Widget crearItem(EnvioModel envio, List<String> validados, int i) {
       int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
@@ -177,14 +154,17 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           }
         }
       }
-      agregaralista(envio);
+      if (i == 1) {
+        agregaralista(envio);
+      }
       if (estado) {
         return Container(
             decoration: myBoxDecoration(),
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
+              leading:
+                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
               trailing: Icon(
                 Icons.check,
                 color: Color(0xffC7C7C7),
@@ -196,7 +176,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
+              leading:
+                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
               trailing: Text(""),
             ));
       }
@@ -220,19 +201,45 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       _validarBandejaText(qrbarra);
     }
 
+    Widget pendientes(int cantidad) {
+      int cantidadp = listaEnvios.length - listaCodigosValidados.length;
+      if(cantidadp==0){
+          cantidadp=cantidad;
+      }
+      if (cantidadp == 1) {
+        return Text("Queda $cantidadp documento pendiente");
+      }
+      return Text("Quedan $cantidad documentos pendientes");
+    }
 
     Widget _crearListado(List<String> validados) {
       return FutureBuilder(
-          future: principalcontroller.listarEnvios(context,
-              intersedeModel, codigoBandeja),
+          future: principalcontroller.listarEnvios(
+              context, intersedeModel, codigoBandeja),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
               final envios = snapshot.data;
-              cantidadPendientes=envios.length;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i],validados));
+              return Container(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Align(
+                    child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.bottomLeft,
+                        height: screenHeightExcludingToolbar(context,
+                            dividedBy: 30),
+                        //width: double.infinity,
+                        child: pendientes(envios.length)),
+                  ),
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: envios.length,
+                          itemBuilder: (context, i) =>
+                              crearItem(envios[i], validados, 1)))
+                ],
+              ));
             } else {
               return Container();
             }
@@ -242,10 +249,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     Widget _crearListadoinMemoria(List<String> validados) {
       return ListView.builder(
           itemCount: listaEnvios.length,
-          itemBuilder: (context, i) => crearItem(listaEnvios[i],validados));
+          itemBuilder: (context, i) => crearItem(listaEnvios[i], validados, 0));
     }
 
-    final textoPendientes = Text("Quedan $cantidadPendientes documentos pendientes");
+
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
@@ -311,12 +318,11 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       ),
     );
 
-      Widget _crearListadoAgregar(
+    Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
-
       return FutureBuilder(
           future: principalcontroller.validarCodigo(
-              codigoporValidar, intersedeModel.id, context),
+              codigoporValidar, intersedeModel.utdId, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
@@ -326,13 +332,13 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados));
+                      crearItem(listaEnvios[i], validados, 1));
             } else {
               if (listaEnvios.length != 0) {
                 return ListView.builder(
                     itemCount: listaEnvios.length,
                     itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados));
+                        crearItem(listaEnvios[i], validados, 1));
               } else {
                 return Container();
               }
@@ -340,7 +346,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           });
     }
 
-    Widget _validarListado(List<String> validados,String codigo) {
+    Widget _validarListado(List<String> validados, String codigo) {
       if (codigo == "") {
         return _crearListado(validados);
       } else {
@@ -384,7 +390,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       ),
     ]);
 
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: PrimaryColor,
@@ -394,7 +399,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               onPressed: () {},
             )
           ],
-          title: Text('Agregar valija a la $destino',
+          title: Text('Agregar valija a $destino',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -410,6 +415,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
+                    margin: const EdgeInsets.only(top: 50),
                     alignment: Alignment.bottomLeft,
                     height:
                         screenHeightExcludingToolbar(context, dividedBy: 30),
@@ -437,33 +443,36 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoSobre,
-                    margin: const EdgeInsets.only(bottom: 40),),
+                  alignment: Alignment.centerLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
+                  width: double.infinity,
+                  child: campodetextoandIconoSobre,
+                  margin: const EdgeInsets.only(bottom: 30),
+                ),
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: cantidadPendientes == 0
-                      ? Container(): Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textoPendientes),
-              ),              
+                child: listaEnvios.length != listaCodigosValidados.length
+                    ? Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.bottomLeft,
+                        height: screenHeightExcludingToolbar(context,
+                            dividedBy: 30),
+                        //width: double.infinity,
+                        child: pendientes(listaEnvios.length))
+                    : Container(),
+              ),
               Expanded(
                   child: codigoBandeja == ""
                       ? Container()
                       : Container(
-                          child: _validarListado(listaCodigosValidados,codigoSobre))),
+                          child: _validarListado(
+                              listaCodigosValidados, codigoSobre))),
               Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
+                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
                     width: double.infinity,
                     child: sendButton),
               ),
@@ -493,7 +502,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 
-   void confirmarNovalidados(
+  void confirmarNovalidados(
       BuildContext context, String titulo, List<EnvioModel> novalidados) {
     List<Widget> listadecodigos = new List();
 
@@ -514,23 +523,35 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               FlatButton(
                   child: Text('Seguir sin estos documentos'),
                   onPressed: () {
-                    listaEnviosNoValidados.clear();
-                    principalcontroller.confirmacionDocumentosValidados(intersedeModel,
-                        listaEnviosValidados, context, intersedeModel.id);
+                    /*listaEnviosNoValidados.clear();
+                                                                  listaEnvios.clear();
+                                                                  listaEnviosValidados.clear();
+                                                                  listaCodigosValidados.clear();
+                                                                  _sobreController.text = "";
+                                                                  _bandejaController.text = "";
+                                                                  codigoValidar = "";
+                                                                   codigoBandeja = "";
+                                                                   codigoSobre = "";*/
+                    principalcontroller.confirmacionDocumentosValidados(
+                        intersedeModel,
+                        listaEnviosValidados,
+                        context,
+                        intersedeModel.utdId,
+                        codigoBandeja);
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(
-                child: Text('Volver a leer'),
-                onPressed: () {
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                  Navigator.of(context).pop();
-                } 
-              )
+                  child: Text('Volver a leer'),
+                  onPressed: () {
+                    listaEnviosNoValidados.clear();
+                    listaEnviosValidados.clear();
+                    Navigator.of(context).pop();
+                  })
             ],
           );
         });
   }
+
 }
 
 //                  Navigator.of(context).pushNamed(men.link);

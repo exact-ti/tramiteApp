@@ -27,6 +27,7 @@ void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
 }
 
 
+
 Drawer crearMenu(BuildContext context) {
   return Drawer(
     child: ListView(padding: EdgeInsets.zero, children: milistview(context)),
@@ -90,7 +91,9 @@ Widget errorbandeja(String rest, int numero) {
 
 List<Widget> milistview(BuildContext context) {
   List<Widget> list = new List<Widget>();
+
   final _prefs = new PreferenciasUsuario();
+  if(_prefs.token!=""){
   Menu menuu = new Menu();
   List<dynamic> menus = json.decode(_prefs.menus);
   List<Menu> listmenu = menuu.fromPreferencs(menus);
@@ -105,6 +108,7 @@ List<Widget> milistview(BuildContext context) {
         leading: Icon(Icons.pages, color: Colors.blue),
         title: Text(men.nombre),
         onTap: () => Navigator.pushReplacementNamed(context, men.link)));
+  }
   }
   return list;
 }

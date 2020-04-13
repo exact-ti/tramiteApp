@@ -48,6 +48,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     const colorplomo = const Color(0xFFEAEFF2);
     const colorblanco = const Color(0xFFFFFFFF);
     const colorborde = const Color(0xFFD5DCDF);
+    const othercolor = const Color(0xFF6F7375);
+
     var booleancolor = true;
     var colorwidget = colorplomo;
 
@@ -60,97 +62,85 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
           height: 100,
           child: ListView(shrinkWrap: true, children: <Widget>[
             Container(
+              padding: const EdgeInsets.only(left: 10),
               height: 50,
               child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                        flex: 5,
-                        child: Text("$destino",
-                            style: TextStyle(
-                                fontSize: 11, fontWeight: FontWeight.bold))),
-                    Expanded(
-                      child: Text("$numvalijas valijas"),
-                      flex: 5,
+                    Text("$destino",
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold)),
+                    Container(
+                      padding: const EdgeInsets.only(left: 30),
+                      child: Text("$numvalijas valijas",
+                          style: TextStyle(fontSize: 12)),
                     ),
                   ]),
             ),
             Container(
+                padding: const EdgeInsets.only(left: 10, top: 10),
                 height: 50,
-                child: ListTile(
-                    title: Text("$numdocumentos documentos listos para enviar",
-                        style: TextStyle(fontSize: 11)))),
+                child: Text("$numdocumentos documentos listos para enviar",
+                    style: TextStyle(fontSize: 12))),
           ]));
     }
 
     Widget crearItem(EnvioInterSedeModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
-      if (booleancolor) {
-        colorwidget = colorplomo;
-        booleancolor = false;
-      } else {
-        colorwidget = colorblanco;
-        booleancolor = true;
-      }
       return Container(
         decoration: myBoxDecoration(),
         margin: EdgeInsets.only(bottom: 5),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: FaIcon(
-                                  FontAwesomeIcons.cube,
-                                  color: Color(0xffC7C7C7),
-                                  size: 50,
-                                ),
-                                onPressed: onSearchButtonPressed(entrega)))
-                      ])),
-              Expanded(
-                child: informacionEntrega(entrega),
-                flex: 5,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: FaIcon(
-                                  FontAwesomeIcons.locationArrow,
-                                  color: Color(0xffC7C7C7),
-                                  size: 50,
-                                ),
-                                onPressed: onSearchButtonPressed(entrega)))
-                      ])),
-            ]),
+        child: Row(children: <Widget>[
+          Expanded(
+              flex: 1,
+              child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.only(right: 26, bottom: 30),
+                  child: Center(
+                      child: IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.cube,
+                      color: Color(0xff000000),
+                      size: 60,
+                    ),
+                    onPressed: () {
+                      principalcontroller.onSearchButtonPressed(
+                          context, entrega);
+                    },
+                  )))),
+          Expanded(
+            child: informacionEntrega(entrega),
+            flex: 3,
+          ),
+          Expanded(
+              flex: 1,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                        height: 100,
+                        child: IconButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.locationArrow,
+                              color: Color(0xffC7C7C7),
+                              size: 25,
+                            ),
+                            onPressed: () {
+                              principalcontroller.onSearchButtonPressed(
+                                  context, entrega);
+                            }))
+                  ])),
+        ]),
       );
     }
 
-    Widget crearItemVacio() {
-      return Container();
-    }
-
     Widget _crearListado() {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.listarentregasInterSedeController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {
               booleancolor = true;
-              colorwidget = colorplomo;
               final entregas = snapshot.data;
               return ListView.builder(
                   itemCount: entregas.length,
@@ -162,21 +152,18 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     }
 
     final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
+          //Navigator.of(context).pushNamed('/entregas-pisos-propios');
         },
         color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         child: Text('Nuevo', style: TextStyle(color: Colors.white)),
       ),
-    ));
+    );
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -205,18 +192,14 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                 alignment: Alignment.centerLeft,
                 child: Container(
                     alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
+                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
                     width: double.infinity,
                     child: sendButton),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: Text("Se puede editar la entrega")),
+              Container(
+                child: Text("Se puede editar la entrega",
+                    style: TextStyle(fontSize: 15, color: othercolor)),
+                margin: const EdgeInsets.only(bottom: 10),
               ),
               Expanded(
                 child: Container(
@@ -245,15 +228,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(color: colorletra),
-    );
-  }
-
-  onSearchButtonPressed(EnvioInterSedeModel enviomodel) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NuevoIntersedePage(envioInterSede: enviomodel),
-      ),
     );
   }
 }
