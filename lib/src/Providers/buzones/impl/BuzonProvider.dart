@@ -18,4 +18,18 @@ class BuzonProvider implements IBuzonProvider {
     return listbuzon;
   }
 
+  @override
+  Future<List<BuzonModel>> listarBuzonesPorIds(List<int> ids) async {
+    //ids.asMap();
+    String buzonesId = "";
+    for (var i = 0; i < ids.length; i++) {
+      if (i == 0) buzonesId += ids[i].toString();
+      else buzonesId += "," + ids[i].toString();
+    }
+    Response resp = await req.get('/servicio-tramite/buzones?ids=$buzonesId');
+    List<dynamic> buzones = resp.data;
+    List<BuzonModel> listbuzon = buzonmodel.fromJsonValidos(buzones);
+    return listbuzon;
+  }
+
 }

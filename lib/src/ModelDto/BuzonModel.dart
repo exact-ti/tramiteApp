@@ -41,6 +41,18 @@ class BuzonModel {
             buzones.codigoUbicacion = json["codigoUbicacion"];
           return buzones;
     }
+
+    List<BuzonModel> fromJsonValidos(List< dynamic> jsons){
+
+      List<BuzonModel> buzones= new List();
+      for(Map<String, dynamic> json in jsons){
+          BuzonModel men = new BuzonModel();          
+          men.id  = json["id"];
+          men.nombre  = json["nombre"];
+          buzones.add(men);
+      }
+      return buzones;
+    }
          
 
     Map<String, dynamic> toJson() => {
