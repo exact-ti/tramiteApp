@@ -18,14 +18,25 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario() async {
-     List<EnvioInterSedeModel> envios = await intersede.listarEnvioByUsuario();
+  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(int switched) async {
+    List<EnvioInterSedeModel> envios;
+      if(switched==0){
+      envios = await intersede.listarEnvioByUsuario();
+      }else{
+       envios = await intersede.listarEnvioByUsuario();       
+      }
       return envios;
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosByCodigo(EnvioInterSedeModel envioInterSedeModel, String codigo) async{
-     List<EnvioModel> envios = await intersede.listarEnviosByCodigo(envioInterSedeModel, codigo);
+  Future<List<EnvioModel>> listarEnviosByCodigo(String codigo) async{
+     List<EnvioModel> envios = await intersede.listarEnviosByCodigo( codigo);
+      return envios; 
+  }
+
+  @override
+  Future<List<EnvioModel>> listarRecepcionesByCodigo(String codigo) async{
+     List<EnvioModel> envios = await intersede.listarRecepcionByCodigo(codigo);
       return envios; 
   }
 
@@ -36,14 +47,20 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<int>  listarEnviosValidadosInterSede(List<EnvioModel> envios,int id,String codigo) async{
-    int i = await intersede.listarEnviosValidadosInterSede(envios, id, codigo);
+  Future<int>  listarEnviosValidadosInterSede(List<EnvioModel> envios,String codigo) async{
+    int i = await intersede.listarEnviosValidadosInterSede(envios, codigo);
     return i;
   }
 
   @override
   Future<bool> iniciarEntregaIntersede(int utdDestino) async{
     bool i = await intersede.iniciarEntregaIntersede(utdDestino);
+    return i;
+  }
+
+  @override
+  Future<bool> registrarRecojoIntersedeProvider(String codigo,EnvioInterSedeModel envio, String codigopaquete)async {
+    bool i = await intersede.registrarRecojoIntersedeProvider(codigo, envio, codigopaquete);
     return i;
   }
 

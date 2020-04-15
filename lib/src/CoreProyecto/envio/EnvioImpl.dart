@@ -1,6 +1,7 @@
 
 
 
+import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/bandejas/IBandejaProvider.dart';
 import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
@@ -21,6 +22,7 @@ class EnvioImpl implements EnvioInterface {
     this.bandeja = bandeja;
   }
 
+
   @override
   void crearEnvio(EnvioModel envioModel) {
     envio.crearEnvioProvider(envioModel);
@@ -36,6 +38,12 @@ class EnvioImpl implements EnvioInterface {
   Future<bool> validarBandejaCodigo(String texto) async {
     bool respuestaValidarBandeja =  await bandeja.validarBandejaSobrePorCodigo(texto);
     return respuestaValidarBandeja;
+  }
+
+  @override
+  Future<List<EnvioInterSedeModel>> listarAgenciasUsuario()async {
+     List<EnvioInterSedeModel> envios = await envio.listarEnvioAgenciasByUsuario();
+      return envios;
   }
 
 

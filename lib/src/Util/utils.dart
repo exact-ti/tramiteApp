@@ -183,3 +183,8 @@ Navigator.pushReplacementNamed(context,ruta);
   }
 
 
+  BoxDecoration myBoxDecoration(Color colorletra) {
+    return BoxDecoration(
+      border: Border.all(color: colorletra),
+    );
+  }

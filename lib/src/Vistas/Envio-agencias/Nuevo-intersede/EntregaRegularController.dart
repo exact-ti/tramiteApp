@@ -21,7 +21,7 @@ class EntregaregularController {
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       EnvioInterSedeModel interSedeModel, String codigo) async {
-    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(interSedeModel, codigo);
+    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
 
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
@@ -62,7 +62,7 @@ class EntregaregularController {
       String codigo) async {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
-        enviosvalidados, id, codigo);
+        enviosvalidados, codigo);
 
     confirmarAlerta(
         context, "Se ha registrado correctamente la valija", "Registro",sede);
