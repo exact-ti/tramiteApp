@@ -1,10 +1,14 @@
+import 'dart:collection';
+
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
+
 class EnvioInterSedeModel {
   int utdId;
   int numdocumentos;
   int numvalijas;
   String destino;
-  int estadoEnvio;
   String codigo;
+  EstadoEnvio estadoEnvio;
 
       EnvioInterSedeModel({
         this.utdId,
@@ -18,11 +22,16 @@ class EnvioInterSedeModel {
        List<EnvioInterSedeModel> envios= new List();
         for(Map<String, dynamic> json in jsons){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
+            EstadoEnvio estado = new EstadoEnvio();
+              Map<String, dynamic> estadoMap = new HashMap();
             envio.utdId  = json["utdId"];
             envio.numdocumentos  = json["cantidadEnvios"];
             envio.numvalijas = json["cantidadValijas"];
-            envio.estadoEnvio=json["estadoEnvio"];
             envio.destino = json["utd"];
+            estadoMap =json["estado"];
+            estado.id=estadoMap["id"];
+            estado.nombre=estadoMap["nombre"];
+            envio.estadoEnvio=estado;
             envios.add(envio);
         }
           return envios;

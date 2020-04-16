@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'EntregaRegularController.dart';
+import 'NuevaEntregaExternaController.dart';
 
-class NuevoIntersedePage extends StatefulWidget {
-  final EnvioInterSedeModel envioInterSede;
+class NuevoAgendaExternaPage extends StatefulWidget {
 
-  const NuevoIntersedePage({Key key, this.envioInterSede}) : super(key: key);
 
   @override
-  _NuevoIntersedePageState createState() =>
-      new _NuevoIntersedePageState(envioInterSede);
+  _NuevoAgendaExternaPagePageState createState() =>
+      new _NuevoAgendaExternaPagePageState();
 }
 
-class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
-  EnvioInterSedeModel intersedeModel;
-  _NuevoIntersedePageState(this.intersedeModel);
-  EntregaregularController envioController = new EntregaregularController();
+class _NuevoAgendaExternaPagePageState extends State<NuevoAgendaExternaPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
-  EntregaregularController principalcontroller = new EntregaregularController();
+  NuevoAgendaExternaController principalcontroller = new NuevoAgendaExternaController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
@@ -46,7 +40,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     const PrimaryColor = const Color(0xFF2C6983);
     const SecondColor = const Color(0xFF6698AE);
 
-    String destino = intersedeModel.destino;
     listarNovalidados() {
       bool esvalidado = false;
       List<dynamic> as = listaEnvios;
@@ -71,11 +64,9 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             onPressed: () {
               listarNovalidados();
               if (listaEnviosNoValidados.length == 0) {
-                principalcontroller.confirmacionDocumentosValidados(
-                    intersedeModel,
+                principalcontroller.confirmacionDocumentosValidadosEntrega(
                     listaEnviosValidados,
                     context,
-                    intersedeModel.utdId,
                     codigoBandeja);
               } else {
                 confirmarNovalidados(
@@ -116,6 +107,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     void _validarBandejaText(String value) {
       if (value != "") {
         setState(() {
+          codigoSobre="";
+          listaEnvios.clear();
+          listaCodigosValidados.clear();
+          _sobreController.text="";
           codigoBandeja = value;
           _bandejaController.text = value;
         });
@@ -128,7 +123,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     );
 
     final textSobre = Container(
-      child: Text("Código"),
+      child: Text("Envío"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -201,7 +196,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       _validarBandejaText(qrbarra);
     }
 
-    Widget pendientes(int cantidad) {
+    /*Widget pendientes(int cantidad) {
       int cantidadp = listaEnvios.length - listaCodigosValidados.length;
       if(cantidadp==0){
           cantidadp=cantidad;
@@ -210,12 +205,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         return Text("Queda $cantidadp documento pendiente");
       }
       return Text("Quedan $cantidad documentos pendientes");
-    }
+    }*/
 
     Widget _crearListado(List<String> validados) {
       return FutureBuilder(
-          future: principalcontroller.listarEnvios(
-              context, intersedeModel, codigoBandeja),
+          future: principalcontroller.listarEnviosEntrega(
+              context, codigoBandeja),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
@@ -224,7 +219,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Align(
+                  /*Align(
                     child: Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         alignment: Alignment.bottomLeft,
@@ -232,7 +227,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                             dividedBy: 30),
                         //width: double.infinity,
                         child: pendientes(envios.length)),
-                  ),
+                  ),*/
                   Expanded(
                       child: ListView.builder(
                           itemCount: envios.length,
@@ -251,8 +246,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           itemCount: listaEnvios.length,
           itemBuilder: (context, i) => crearItem(listaEnvios[i], validados, 0));
     }
-
-
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
@@ -321,8 +314,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
-          future: principalcontroller.validarCodigo(
-              codigoporValidar, intersedeModel.utdId, context),
+          future: principalcontroller.validarCodigoEntrega(
+              codigoporValidar, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
@@ -399,7 +392,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               onPressed: () {},
             )
           ],
-          title: Text('Agregar valija a $destino',
+          title: Text('Recibir valijas',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -449,18 +442,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   child: campodetextoandIconoSobre,
                   margin: const EdgeInsets.only(bottom: 30),
                 ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: listaEnvios.length != listaCodigosValidados.length
-                    ? Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        height: screenHeightExcludingToolbar(context,
-                            dividedBy: 30),
-                        //width: double.infinity,
-                        child: pendientes(listaEnvios.length))
-                    : Container(),
               ),
               Expanded(
                   child: codigoBandeja == ""
@@ -523,20 +504,9 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               FlatButton(
                   child: Text('Seguir sin estos documentos'),
                   onPressed: () {
-                    /*listaEnviosNoValidados.clear();
-                                                                  listaEnvios.clear();
-                                                                  listaEnviosValidados.clear();
-                                                                  listaCodigosValidados.clear();
-                                                                  _sobreController.text = "";
-                                                                  _bandejaController.text = "";
-                                                                  codigoValidar = "";
-                                                                   codigoBandeja = "";
-                                                                   codigoSobre = "";*/
-                    principalcontroller.confirmacionDocumentosValidados(
-                        intersedeModel,
+                    principalcontroller.confirmacionDocumentosValidadosEntrega(
                         listaEnviosValidados,
                         context,
-                        intersedeModel.utdId,
                         codigoBandeja);
                   }),
               SizedBox(height: 1.0, width: 5.0),

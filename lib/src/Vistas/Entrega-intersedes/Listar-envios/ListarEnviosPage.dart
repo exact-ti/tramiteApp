@@ -1,3 +1,4 @@
+import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     Widget iconoEnvio(EnvioInterSedeModel entrega) {
       return Container(
           height: 70,
-          child: entrega.estadoEnvio == 1
+          child: entrega.estadoEnvio.id == creado
               ? IconButton(
                   icon: FaIcon(
                     FontAwesomeIcons.locationArrow,
@@ -166,7 +167,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    switched == 1
+                    switched == 0
                         ? iconoEnvio(entrega)
                         : iconoRecepcion(entrega, context)
                   ])),

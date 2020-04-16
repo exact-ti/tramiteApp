@@ -19,9 +19,10 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       new ListarEnviosAgenciasController();
   EnvioController envioController = new EnvioController();
   Map<String, dynamic> validados = new HashMap();
-
   String textdestinatario = "";
   var colorletra = const Color(0xFFACADAD);
+  var colorseleccion = const Color(0xFF6DA1BB);
+
   var prueba;
   var inicio = false;
   var nuevo = 0;
@@ -52,7 +53,6 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       int numdocumentos = entrega.numdocumentos;
 
       return Container(
-          decoration: myBoxDecoration2(),
           height: 70,
           child: ListView(shrinkWrap: true, children: <Widget>[
             Container(
@@ -75,7 +75,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             Container(
                 padding: const EdgeInsets.only(left: 10, top: 10),
                 height: 35,
-                child: Text("$numdocumentos documentos listos para enviar",
+                child: Text("$numdocumentos destinos",
                     style: TextStyle(fontSize: 12))),
           ]));
     }
@@ -88,54 +88,66 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
               validados["$codigoUtd"] = true;
             });
           },
+          onTap: () {
+            bool contienevalidados = validados.containsValue(true);
+            if (contienevalidados && validados["$codigoUtd"] == false) {
+              setState(() {
+                validados["$codigoUtd"] = true;
+              });
+            } else {
+              setState(() {
+                validados["$codigoUtd"] = false;
+              });
+            }
+          },
           child: Container(
+            decoration: myBoxDecoration(validados["$codigoUtd"]),
+            /* color:  validados["$codigoUtd"] ==false ? Colors.white : Colors.black,*/
             margin: const EdgeInsets.only(bottom: 5),
             child: Row(children: <Widget>[
-               validados["$codigoUtd"] == null ?               Opacity(
-                opacity: 0.0,
-                child:Container(
-                  child: Checkbox(
-                value: validados["$codigoUtd"] == null ? false : true,
-                onChanged: (bool value) {},
-              )) ,
-              ) : Container(
-                  child: Checkbox(
-                value: validados["$codigoUtd"] == null ? false : true,
-                onChanged: (bool value) {},
-              )) ,
-              Container(
-                  height: 70,
-                  //padding: const EdgeInsets.only(right: 26, bottom: 30),
-                  decoration: myBoxDecoration(),
-                  child: Center(
-                      child: IconButton(
-                    icon: FaIcon(
+              Expanded(
+                child: Container(
+                    height: 70,
+                    child: Center(
+                        child: FaIcon(
                       FontAwesomeIcons.cube,
                       color: Color(0xff000000),
                       size: 30,
-                    ),
-                    onPressed: () {
-                      principalcontroller.onSearchButtonPressed(
-                          context, entrega);
-                    },
-                  ))),
+                    ))),
+                flex: 1,
+              ),
               Expanded(
                 child: informacionEntrega(entrega),
                 flex: 3,
               ),
-              Container(
-                  decoration: myBoxDecoration3(),
+              Expanded(
+                child: Container(
                   height: 70,
-                  child: IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.locationArrow,
-                        color: Color(0xffC7C7C7),
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        principalcontroller.onSearchButtonPressed(
-                            context, entrega);
-                      }))
+                  child:Center(
+                    child: 
+            
+                   validados["$codigoUtd"] == null ||
+                          validados["$codigoUtd"] == false
+                      ? IconButton(
+                          icon: FaIcon(
+                            FontAwesomeIcons.locationArrow,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            if (!validados.containsValue(true)) {
+                              principalcontroller.onSearchButtonPressed(
+                                  context, entrega);
+                            }
+                          })
+                      : FaIcon(
+                          FontAwesomeIcons.locationArrow,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                ), ),
+                flex: 1,
+              ),
             ]),
           ));
     }
@@ -165,26 +177,27 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         onPressed: () {
           //Navigator.of(context).pushNamed('/nueva-entrega-intersede');
         },
+        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Nuevo', style: TextStyle(color: Colors.white)),
       ),
     );
 
-    final botonessuperiores = Row(children: [
-      Expanded(
-        child: Text(
-          'Grupo Agencias',
-          style: TextStyle(
-            fontSize: 15,
-            color: othercolor,
-          ),
+
+    final sendButton2 = Container(
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
         ),
-        flex: 3,
+        onPressed: () {
+          //Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+        },
+        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
+        color: Color(0xFF2C6983),
+        child: Text('Enviar', style: TextStyle(color: Colors.white)),
       ),
-      Expanded(
-        child: sendButton,
-      ),
-    ]);
+    );
+
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -218,15 +231,26 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                 alignment: Alignment.center,
                 child: Container(
                     margin: const EdgeInsets.only(bottom: 20),
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.bottomLeft,
                     height: screenHeightExcludingToolbar(context, dividedBy: 8),
                     width: double.infinity,
-                    child: botonessuperiores),
+                    child: sendButton),
               ),
               Expanded(
                 child: Container(
                     alignment: Alignment.bottomCenter, child: _crearListado()),
-              )
+              ),
+
+              validados.containsValue(true) ?
+          Align(
+                alignment: Alignment.center,
+                child: Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    alignment: Alignment.center,
+                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
+                    width: double.infinity,
+                    child: sendButton2),
+              ): Container(),
             ],
           ),
         ));
@@ -247,35 +271,12 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 
-  BoxDecoration myBoxDecoration() {
+  BoxDecoration myBoxDecoration(bool seleccionado) {
     return BoxDecoration(
-      border: Border(
-        top: BorderSide(color: colorletra),
-        bottom: BorderSide(color: colorletra),
-        left: BorderSide(color: colorletra),
-      ),
-      color: Colors.white,
-    );
-  }
-
-  BoxDecoration myBoxDecoration2() {
-    return BoxDecoration(
-      border: Border(
-        top: BorderSide(color: colorletra),
-        bottom: BorderSide(color: colorletra),
-      ),
-      color: Colors.white,
-    );
-  }
-
-  BoxDecoration myBoxDecoration3() {
-    return BoxDecoration(
-      border: Border(
-        top: BorderSide(color: colorletra),
-        right: BorderSide(color: colorletra),
-        bottom: BorderSide(color: colorletra),
-      ),
-      color: Colors.white,
+      border: Border.all(color: colorletra),
+      color: seleccionado == null || seleccionado == false
+          ? Colors.white
+          : colorseleccion,
     );
   }
 }
