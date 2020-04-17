@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-entrega/EntregaInterPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
@@ -36,6 +37,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
+    '/entrega-lotes' :  (BuildContext context) => ListaEntregaLotePage(),
+    
     '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),
     '/recepcionar-jumbo' :  (BuildContext context) => RecepcionJumboPage(),
     '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
