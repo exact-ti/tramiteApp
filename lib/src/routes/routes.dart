@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-entrega/EntregaInterPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Listar-turnos/ListarTurnosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-adicionales/recorridoAdicionalPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-propios/recorridoPropioPage.dart';
@@ -12,6 +15,8 @@ import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/recepcion/RecepcionJumboPage.dart';
+import 'package:tramiteapp/src/Vistas/recepcion/RecepcionValijaPage.dart';
 
 
 
@@ -31,6 +36,10 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
-    
+    '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),
+    '/recepcionar-jumbo' :  (BuildContext context) => RecepcionJumboPage(),
+    '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
+    '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage(),
+    '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
   };
 }

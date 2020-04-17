@@ -52,7 +52,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
     var colorwidget = colorplomo;
 
 
-    Widget crearItem(UsuarioFrecuente usuario) {
+    Widget  crearItem(UsuarioFrecuente usuario) {
           if (booleancolor) {
                 colorwidget = colorplomo;
                 booleancolor = false;

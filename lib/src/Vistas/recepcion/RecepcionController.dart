@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recepcion/RecepcionImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recepcion/RecepcionInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
@@ -48,6 +49,43 @@ class RecepcionController {
         ));
   }
 
+Widget contenidoPopUp(Color color,String destino, int cantidad){
 
+      return Container(
+        decoration: myBoxDecoration(color),
+        margin: EdgeInsets.only(bottom: 5),
+        child: Row(children: <Widget>[
+          Expanded(
+              flex: 1,
+              child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.only(right: 26, bottom: 30),
+                  child: Center(
+                    child: IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.cube,
+                      color: Color(0xff000000),
+                      size: 60,
+                    ), onPressed: () {},
+                  )))),
+          Expanded(
+            child: Text("$destino",style: TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 40, color: Colors.black),),
+            flex: 1,
+          ),
+          Expanded(
+              flex: 2,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                        height: 100,
+                        child: Text("$cantidad documentos pendientes"))
+                  ])),
+        ]),
+      );
+
+
+}
   
 }

@@ -6,9 +6,10 @@ import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
-import '../IInterSedeProvider.dart';
+import '../IAgenciasExternasProvider.dart';
 
-class InterSedeProvider implements IInterSedeProvider {
+
+class AgenciaExternaProvider implements IAgenciaExternaProvider {
   Requester req = Requester();
   final _prefs = new PreferenciasUsuario();
   EnvioInterSedeModel sedeModel = new EnvioInterSedeModel();
@@ -16,7 +17,7 @@ class InterSedeProvider implements IInterSedeProvider {
   UtdModel utdModel = new UtdModel();
 
   @override
-  Future<List<EnvioInterSedeModel>> listarEnvioByUsuario() async {
+  Future<List<EnvioInterSedeModel>> listarEnvioAgenciaByUsuario() async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
@@ -27,7 +28,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosByCodigo(String codigo) async {
+  Future<List<EnvioModel>> listarEnviosAgenciaByCodigo(String codigo) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
@@ -39,7 +40,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<EnvioModel> validarCodigoProvider(String codigo, int id) async {
+  Future<EnvioModel> validarCodigoAgenciaProvider(String codigo, int id) async {
     try {
       Response resp = await req.get(
           '/servicio-tramite/turnos/$id/envios/paraagregaralrecorrido?paqueteId=$codigo');
@@ -55,7 +56,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<int> listarEnviosValidadosInterSede(
+  Future<int> listarEnviosAgenciaValidadosInterSede(
       List<EnvioModel> enviosvalidados, String codigo) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
@@ -72,7 +73,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<bool> iniciarEntregaIntersede(int utdDestino) async {
+  Future<bool> iniciarEntregaExternaIntersede(int utdDestino) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
@@ -86,40 +87,6 @@ class InterSedeProvider implements IInterSedeProvider {
     return false;
   }
 
-  @override
-  Future<List<EnvioInterSedeModel>> listarRecepcionesByUsuario() async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
-    List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonValidar(envios);
-    return listEnvio;
-  }
 
-  @override
-  Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
-    List<dynamic> envios = resp.data;
-    List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
-    return listEnvio;
-  }
-
-
-    @override
-  Future<bool> registrarRecojoIntersedeProvider(
-      String codigo, EnvioInterSedeModel envio, String codigopaquete) async {
-    Response resp = await req.post(
-        '/servicio-tramite/recorridos/areas/$codigo/paquetes/$codigopaquete/recojo',
-        null,
-        null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
-  }
 
 }

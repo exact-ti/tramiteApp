@@ -1,3 +1,4 @@
+
 class EnvioModel {
   int id;
   int remitenteId;
@@ -6,6 +7,7 @@ class EnvioModel {
   String codigoUbicacion;
   String observacion;
   bool estado;
+
 
 
       EnvioModel({

@@ -12,7 +12,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return MaterialApp(
       title: 'Componentes App',
       debugShowCheckedModeBanner: false,
