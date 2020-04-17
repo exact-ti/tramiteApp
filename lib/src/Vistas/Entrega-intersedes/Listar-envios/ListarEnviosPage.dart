@@ -1,7 +1,8 @@
+import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nuevo-intersede/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -18,7 +19,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
-
+  List<bool> isSelected;
+  int indexSwitch = 0;
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
@@ -28,16 +30,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
-    prueba = Text("Usuarios frecuentes",
-        style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
+    isSelected = [true, false];
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -48,6 +42,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     const colorplomo = const Color(0xFFEAEFF2);
     const colorblanco = const Color(0xFFFFFFFF);
     const colorborde = const Color(0xFFD5DCDF);
+    const othercolor = const Color(0xFF6F7375);
+
     var booleancolor = true;
     var colorwidget = colorplomo;
 
@@ -57,104 +53,141 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       int numdocumentos = entrega.numdocumentos;
 
       return Container(
-          height: 100,
+          height: 70,
           child: ListView(shrinkWrap: true, children: <Widget>[
             Container(
-              height: 50,
+              padding: const EdgeInsets.only(left: 20),
+              height: 35,
               child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                        flex: 5,
-                        child: Text("$destino",
-                            style: TextStyle(
-                                fontSize: 11, fontWeight: FontWeight.bold))),
-                    Expanded(
-                      child: Text("$numvalijas valijas"),
-                      flex: 5,
+                    Text("$destino",
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold)),
+                    Container(
+                      padding: const EdgeInsets.only(left: 30),
+                      child: Text("$numvalijas valijas",
+                          style: TextStyle(fontSize: 12)),
                     ),
                   ]),
             ),
             Container(
-                height: 50,
-                child: ListTile(
-                    title: Text("$numdocumentos documentos listos para enviar",
-                        style: TextStyle(fontSize: 11)))),
+                padding: const EdgeInsets.only(left: 20, top: 10),
+                height: 35,
+                child: Text("$numdocumentos documentos listos para enviar",
+                    style: TextStyle(fontSize: 12))),
           ]));
     }
 
-    Widget crearItem(EnvioInterSedeModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
-      if (booleancolor) {
-        colorwidget = colorplomo;
-        booleancolor = false;
+    void iniciarEnvio(EnvioInterSedeModel entrega) async {
+      bool respuesta =
+          await principalcontroller.onSearchButtonPressed(context, entrega);
+      if (respuesta) {
+        principalcontroller.confirmarAlerta(context,
+            "Se ha iniciado el envío correctamente", "Inicio Correcto");
+        setState(() {
+          indexSwitch = indexSwitch;
+        });
       } else {
-        colorwidget = colorblanco;
-        booleancolor = true;
+        principalcontroller.confirmarAlerta(
+            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
       }
+    }
+
+    Widget iconoRecepcion(EnvioInterSedeModel entrega, BuildContext context) {
+      return Container(
+          height: 70,
+          child: entrega.estadoEnvio == 1
+              ? IconButton(
+                  icon: FaIcon(
+                    FontAwesomeIcons.locationArrow,
+                    color: Color(0xffC7C7C7),
+                    size: 25,
+                  ),
+                  onPressed: () {
+                       Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecepcionInterPage(recorridopage: entrega),
+      ));
+                  })
+              : Opacity(
+                  opacity: 0.0,
+                  child: FaIcon(
+                    FontAwesomeIcons.locationArrow,
+                    color: Color(0xffC7C7C7),
+                    size: 25,
+                  )));
+    }
+
+    Widget iconoEnvio(EnvioInterSedeModel entrega) {
+      return Container(
+          height: 70,
+          child: entrega.estadoEnvio.id == creado
+              ? IconButton(
+                  icon: FaIcon(
+                    FontAwesomeIcons.locationArrow,
+                    color: Color(0xffC7C7C7),
+                    size: 25,
+                  ),
+                  onPressed: () {
+                    iniciarEnvio(entrega);
+                  })
+              : Opacity(
+                  opacity: 0.0,
+                  child: FaIcon(
+                    FontAwesomeIcons.locationArrow,
+                    color: Color(0xffC7C7C7),
+                    size: 25,
+                  )));
+    }
+
+    Widget crearItem(EnvioInterSedeModel entrega, int switched) {
       return Container(
         decoration: myBoxDecoration(),
         margin: EdgeInsets.only(bottom: 5),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: FaIcon(
-                                  FontAwesomeIcons.cube,
-                                  color: Color(0xffC7C7C7),
-                                  size: 50,
-                                ),
-                                onPressed: onSearchButtonPressed(entrega)))
-                      ])),
-              Expanded(
-                child: informacionEntrega(entrega),
-                flex: 5,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: FaIcon(
-                                  FontAwesomeIcons.locationArrow,
-                                  color: Color(0xffC7C7C7),
-                                  size: 50,
-                                ),
-                                onPressed: onSearchButtonPressed(entrega)))
-                      ])),
-            ]),
+        child: Row(children: <Widget>[
+          Expanded(
+              flex: 1,
+              child: Container(
+                  height: 70,
+                  child: Center(
+                      child: FaIcon(
+                    FontAwesomeIcons.cube,
+                    color: Color(0xff000000),
+                    size: 40,
+                  )))),
+          Expanded(
+            child: informacionEntrega(entrega),
+            flex: 3,
+          ),
+          Expanded(
+              flex: 1,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    switched == 0
+                        ? iconoEnvio(entrega)
+                        : iconoRecepcion(entrega, context)
+                  ])),
+        ]),
       );
     }
 
-    Widget crearItemVacio() {
-      return Container();
-    }
-
-    Widget _crearListado() {
-      booleancolor = true;
-      colorwidget = colorplomo;
+    Widget _crearListado(int switched) {
       return FutureBuilder(
-          future: principalcontroller.listarentregasInterSedeController(),
+          future:
+              principalcontroller.listarentregasInterSedeController(switched),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {
               booleancolor = true;
-              colorwidget = colorplomo;
               final entregas = snapshot.data;
               return ListView.builder(
                   itemCount: entregas.length,
-                  itemBuilder: (context, i) => crearItem(entregas[i]));
+                  itemBuilder: (context, i) =>
+                      crearItem(entregas[i], switched));
             } else {
               return Container();
             }
@@ -162,21 +195,52 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     }
 
     final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
+          Navigator.of(context).pushNamed('/nueva-entrega-intersede');
         },
         color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         child: Text('Nuevo', style: TextStyle(color: Colors.white)),
       ),
-    ));
+    );
+
+    final tabs = ToggleButtons(
+      borderColor: colorletra,
+      fillColor: colorletra,
+      borderWidth: 1,
+      selectedBorderColor: colorletra,
+      selectedColor: Colors.white,
+      borderRadius: BorderRadius.circular(0),
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Text(
+            'Enviados',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Text(
+            'Por recibir',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ],
+      onPressed: (int index) {
+        setState(() {
+          for (int i = 0; i < isSelected.length; i++) {
+            isSelected[i] = i == index;
+          }
+          indexSwitch = index;
+        });
+      },
+      isSelected: isSelected,
+    );
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -188,7 +252,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Envios Intersedes',
+          title: Text('Entregas InterUTD',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -197,7 +261,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         ),
         drawer: sd.crearMenu(context),
         body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -205,22 +269,20 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                 alignment: Alignment.centerLeft,
                 child: Container(
                     alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
+                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
                     width: double.infinity,
                     child: sendButton),
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: Text("Se puede editar la entrega")),
-              ),
+              Container(
+                  height: screenHeightExcludingToolbar(context, dividedBy: 20),
+                  child: tabs),
               Expanded(
                 child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
+                    decoration: myBoxDecoration(),
+                    padding: const EdgeInsets.only(
+                        left: 5, right: 5, top: 5, bottom: 5),
+                    alignment: Alignment.bottomCenter,
+                    child: _crearListado(indexSwitch)),
               )
             ],
           ),
@@ -245,15 +307,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(color: colorletra),
-    );
-  }
-
-  onSearchButtonPressed(EnvioInterSedeModel enviomodel) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NuevoIntersedePage(envioInterSede: enviomodel),
-      ),
     );
   }
 }

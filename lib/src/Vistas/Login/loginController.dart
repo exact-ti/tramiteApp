@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoInterface.dart';
@@ -13,27 +12,32 @@ import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 class LoginController {
+  AccesoInterface accesoInterface = new AccesoImpl(
+      new LogeoFusionAuth(),
+      new BuzonProvider(),
+      new MenuProvider(),
+      new ConfiguracionProvider(),
+      new UtdProvider());
+  final _prefs = new PreferenciasUsuario();
 
-    AccesoInterface accesoInterface = new AccesoImpl(new LogeoFusionAuth(), new BuzonProvider(),new MenuProvider(), new ConfiguracionProvider(), new UtdProvider());
-      final _prefs = new PreferenciasUsuario();
-
-    validarlogin(BuildContext context, String username , String password) {
-        print("adsa");
-        accesoInterface.login( username , password).then((data){
-          print(data);
-          if(data==null){
-          mostrarAlerta(context, 'El usuario y contraseña son incorrectos','Información incorrecta');
-          }else{
-          Menu menuu = new Menu();
-          List<dynamic> menus = json.decode(_prefs.menus);
-          List<Menu> listmenu = menuu.fromPreferencs(menus);
-            for (Menu men in listmenu) {
-                  if(men.home){
-                  Navigator.of(context).pushNamed(men.link);
-                  }
-              }
+  validarlogin(BuildContext context, String username, String password) {
+    print("adsa");
+    accesoInterface.login(username, password).then((data) {
+      print(data);
+      if (data == null) {
+        mostrarAlerta(context, 'El usuario y contraseña son incorrectos',
+            'Información incorrecta');
+      } else {
+        Menu menuu = new Menu();
+        List<dynamic> menus = json.decode(_prefs.menus);
+        List<Menu> listmenu = menuu.fromPreferencs(menus);
+        for (Menu men in listmenu) {
+          if (men.home) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                men.link, (Route<dynamic> route) => false);
           }
-        });
-    }
-
+        }
+      }
+    });
+  }
 }

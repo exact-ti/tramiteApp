@@ -63,6 +63,7 @@ Future<bool> confirmarRespuesta(BuildContext context, String title, String descr
 }
 
 
+
 Drawer crearMenu(BuildContext context) {
   return Drawer(
     child: ListView(padding: EdgeInsets.zero, children: milistview(context)),
@@ -126,7 +127,9 @@ Widget errorbandeja(String rest, int numero) {
 
 List<Widget> milistview(BuildContext context) {
   List<Widget> list = new List<Widget>();
+
   final _prefs = new PreferenciasUsuario();
+  if(_prefs.token!=""){
   Menu menuu = new Menu();
   List<dynamic> menus = json.decode(_prefs.menus);
   List<Menu> listmenu = menuu.fromPreferencs(menus);
@@ -141,6 +144,7 @@ List<Widget> milistview(BuildContext context) {
         leading: Icon(Icons.pages, color: Colors.blue),
         title: Text(men.nombre),
         onTap: () => Navigator.pushReplacementNamed(context, men.link)));
+  }
   }
   return list;
 }
@@ -180,6 +184,7 @@ Navigator.pushReplacementNamed(context,ruta);
   }
 
 
+<<<<<<< HEAD
 Widget crearTitulo(String titulo){
   return AppBar(
     backgroundColor: primaryColor,
@@ -203,3 +208,10 @@ Future<String> getDataFromCamera() async {
   String qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
   return qrbarra;
 }
+=======
+  BoxDecoration myBoxDecoration(Color colorletra) {
+    return BoxDecoration(
+      border: Border.all(color: colorletra),
+    );
+  }
+>>>>>>> c2ecc6d1cff7d7404074233279653c8cc805a44f

@@ -1,15 +1,19 @@
+import 'dart:collection';
+
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
+
 class EnvioInterSedeModel {
-  int id;
+  int utdId;
   int numdocumentos;
   int numvalijas;
   String destino;
-  int codigoEnvio;
+  String codigo;
+  EstadoEnvio estadoEnvio;
 
       EnvioInterSedeModel({
-        this.id,
+        this.utdId,
         this.numdocumentos,
         this.numvalijas,
-        this.codigoEnvio,
         this.destino='',
     });
 
@@ -18,21 +22,39 @@ class EnvioInterSedeModel {
        List<EnvioInterSedeModel> envios= new List();
         for(Map<String, dynamic> json in jsons){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
-            envio.id  = json["id"];
-            envio.codigoEnvio = json["paqueteId"];
-            envio.numdocumentos  = json["id"];
-            envio.numvalijas = json["paqueteId"];
-            envio.destino = json["paqueteId"];
+            EstadoEnvio estado = new EstadoEnvio();
+              Map<String, dynamic> estadoMap = new HashMap();
+            envio.utdId  = json["utdId"];
+            envio.numdocumentos  = json["cantidadEnvios"];
+            envio.numvalijas = json["cantidadValijas"];
+            envio.destino = json["utd"];
+            estadoMap =json["estado"];
+            estado.id=estadoMap["id"];
+            estado.nombre=estadoMap["nombre"];
+            envio.estadoEnvio=estado;
             envios.add(envio);
         }
           return envios;
-    }    
+    }   
+
+    List<EnvioInterSedeModel> fromJsonValidarRecepcion(List< dynamic> jsons){
+       List<EnvioInterSedeModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioInterSedeModel  envio = new EnvioInterSedeModel();
+            envio.utdId  = json["utdId"];
+            envio.numdocumentos  = json["cantidadEnvios"];
+            envio.codigo = json["codigo"];
+            envio.estadoEnvio=json["estadoEnvio"];
+            envio.destino = json["utd"];
+            envios.add(envio);
+        }
+          return envios;
+    }     
 
 
   EnvioInterSedeModel fromOneJson(dynamic json){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
-            envio.id  = json["id"];
-            envio.codigoEnvio = json["paqueteId"];
+            envio.utdId  = json["id"];
           return envio;
     }   
 
