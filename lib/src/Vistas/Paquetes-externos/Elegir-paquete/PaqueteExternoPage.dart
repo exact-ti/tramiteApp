@@ -19,8 +19,11 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
 
   PaqueteExternoController paqueteExternoController = new PaqueteExternoController();
 
-  final paquetesExternos = ['Chequeras','Verbales','Campañas'];
-  final  primaryColor = Color(0xFF2C6983);
+ 
+
+  final subtituloStyle = TextStyle(color: sd.colorletra);
+  var booleancolor = true;
+  var colorwidget = sd.colorplomo;
 
   @override
   Widget build(BuildContext context) {
@@ -43,142 +46,159 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         booleancolor = true;
       }
 
-
-    Size screenSize(BuildContext context) {
-      return MediaQuery.of(context).size;
-    }
-
-    double screenHeight(BuildContext context,
-        {double dividedBy = 1, double reducedBy = 0.0}) {
-      return (screenSize(context).height - reducedBy) / dividedBy;
-    }
-
-    double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-      return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-    }
-
     
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Text('Custodia de documentos externos',
-              style: TextStyle(
-                        fontSize: 18,
-                        decorationStyle: TextDecorationStyle.wavy,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.normal))
-      ),
+      appBar: sd.crearTitulo('Custodia de documentos externos'),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
-      body: Container(
-        //padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 0),
-              child: Align(                
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 10),
-                    width: double.infinity,
-                    child: Text('Elige el tipo de paquete',
-
-                      style: TextStyle(
-                        fontSize: 18,
-                        decorationStyle: TextDecorationStyle.wavy,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.normal)
-
-                    )),
-              ),
-              
-              
-            ),
-
-            
-            SafeArea(
-              //padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 0),
-               
-              child: Align(
-
-                child: Column(
-                  children : <Widget>[_listadoTipoPaqueteExterno()]
-                )                
-              ),
-            )
-              //alignment: Alignment.center,
-              // decoration: new BoxDecoration(
-              // color: colorwidget,
-              // border: new Border(top: BorderSide(color: colorplomo)))
-
-
-            
-          ],
-
-        ),
-
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Container(        
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _subtitulo(),
+              _crearListaTipoPaquete()              
+            ],
+          ),
+        )
       )
-                      
-    
     );
 
 
 
   }
 
-  Widget _listadoTipoPaqueteExterno(){
+  
 
-    return FutureBuilder(
-      future: paqueteExternoController.listarPaquetesPorTipo(false),
-      //initialData: InitialData,
-      builder: (BuildContext context, AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
+  Widget _subtitulo(){
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        alignment: Alignment.centerLeft,
+        height: sd.screenHeightExcludingToolbar(context, dividedBy: 6),
+        width: double.infinity,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text('Elige el tipo de paquete',
+              style: subtituloStyle
+              ),
+              flex: 5,
+            )
+          ],
+        ),
+      )
+    );
+  }
 
-        var widgets;
+  Widget _crearListaTipoPaquete() {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        child: FutureBuilder(
+          future: paqueteExternoController.listarPaquetesPorTipo(false),
+          builder: (BuildContext context, AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
+            if (snapshot.hasData) {
+              final tipoPaquetes = snapshot.data;
+              return ListView.builder(
+                itemCount: tipoPaquetes.length,
+                itemBuilder: (context,i) => _crearItem(tipoPaquetes[i]),
+              );
+            }
+            else{
+              return Container();
+            }
+          }
+        ),
+      ),
+    );
+  }
 
-        if (snapshot.hasData){
-
-          widgets = snapshot.data.map((item){
-            return Column (
+  Widget _crearItem(TipoPaqueteModel item){
+    if (booleancolor) {
+      colorwidget = sd.colorplomo;
+      booleancolor = false;
+    } else {
+      colorwidget = sd.colorblanco;
+      booleancolor = true;
+    }
+    return Container(
+      decoration: myBoxDecoration(),
+      margin: EdgeInsets.only(bottom: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: _informacionItem(item),
+            flex: 5,
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ImportarArchivoPage(tipoPaqueteModel: item),
-                      ),
-                    );
-                  },
-                  title: Text(item.nombre),
-                  trailing: Icon(
+                Container(
+                  height: 100,
+                  child: IconButton(
+                    icon: Icon(
                       Icons.keyboard_arrow_right,
-                      color: Color(0xffC7C7C7),
+                      color: Color(0xffC7C7C7), 
+                      size: 50
+                    ),
+                    onPressed: (){
+                      _onSearchButtonPressed(item);
+                    }
                   )
-                ),
-                Divider(color: primaryColor,)
+                )
               ]
-            );
-          }).toList();
-
-        } else if (snapshot.hasError){
-          widgets = <Widget>[Column()].toList();
-        }
-        else {
-          widgets = <Widget>[Column()].toList();
-        }
-        return Column(
-          children: widgets,
-          );
-
-      },
+            )
+          )
+        ]
+      )
+    );
+  }
+ 
+  void _onSearchButtonPressed(TipoPaqueteModel item){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImportarArchivoPage(tipoPaqueteModel: item),
+      ),
     );
   }
 
+  Widget _informacionItem(TipoPaqueteModel item){
+      
+      String descripcion = item.nombre;
+
+      return Container(          
+          child: ListView(
+            shrinkWrap: true, 
+            children: <Widget>[
+                                
+              Container(                
+                child: ListTile(
+                  title: Text("$descripcion"),
+                  leading: Icon(
+                    Icons.description,
+                    color: Color(0xffC7C7C7),
+                  ),
+                )
+              ),
+               
+              
+            ]
+          )
+      );
+  }
+
+  BoxDecoration myBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(color: sd.colorletra),
+    );
+  }
   
 
 }

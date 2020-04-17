@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -179,3 +180,26 @@ Navigator.pushReplacementNamed(context,ruta);
   }
 
 
+Widget crearTitulo(String titulo){
+  return AppBar(
+    backgroundColor: primaryColor,
+    title: Text(titulo,
+      style: TextStyle(
+        fontSize: 18,
+        decorationStyle: TextDecorationStyle.wavy,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.normal
+      )
+    )
+  );
+}
+
+final  primaryColor = Color(0xFF2C6983);
+final  colorletra = Color(0xFFACADAD);
+final colorplomo = Color(0xFFEAEFF2);
+final colorblanco = Color(0xFFFFFFFF);
+
+Future<String> getDataFromCamera() async {
+  String qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+  return qrbarra;
+}

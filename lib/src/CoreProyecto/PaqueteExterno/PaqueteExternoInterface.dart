@@ -9,5 +9,7 @@ class PaqueteExternoInterface {
   Future<bool> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete){}
 
   Future<List<PaqueteExterno>> listarPaquetesExternosCreados(){}
+
+  Future<bool> custodiarPaquete(PaqueteExterno paqueteExterno){}
   
 }

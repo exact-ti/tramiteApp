@@ -12,4 +12,9 @@ class CustodiaController {
     List<PaqueteExterno> tipoPaqueteList = await paqueteExterno.listarPaquetesExternosCreados();
     return tipoPaqueteList;
   }
+
+  Future<bool> custodiarPaquete(PaqueteExterno paquete) async {
+    bool resp = await paqueteExterno.custodiarPaquete(paquete);
+    return resp;
+  }
 }

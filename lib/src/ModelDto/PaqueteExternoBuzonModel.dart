@@ -4,7 +4,7 @@ class PaqueteExternoBuzonModel {
 
   String id;  
   String nombre;
-  int idBuzon;
+  String idBuzon;
 
   List<PaqueteExternoBuzonModel> fromJson(List< dynamic> jsons){
        List<PaqueteExternoBuzonModel> registrosProValidar = new List();
