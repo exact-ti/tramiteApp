@@ -6,11 +6,9 @@ import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
 
 class RecepcionInterController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -25,9 +23,8 @@ class RecepcionInterController {
     return recorridos;
   }
 
-  void recogerdocumento(BuildContext context,
-      EnvioInterSedeModel envioInterSedeModel, String codigo, String paquete) async {
-    bool respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, envioInterSedeModel, paquete);
+  void recogerdocumento(BuildContext context, String codigo, String paquete) async {
+    bool respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
     if(respuesta==false){
       mostrarAlerta(context,"No se pudo completar la operación", "Código incorrecto");
     }

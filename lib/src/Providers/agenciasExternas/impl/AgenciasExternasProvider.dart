@@ -40,10 +40,10 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   }
 
   @override
-  Future<EnvioModel> validarCodigoAgenciaProvider(String codigo, int id) async {
+  Future<EnvioModel> validarCodigoAgenciaProvider(String codigo) async {
     try {
       Response resp = await req.get(
-          '/servicio-tramite/turnos/$id/envios/paraagregaralrecorrido?paqueteId=$codigo');
+          '/servicio-tramite/turnos/envios/paraagregaralrecorrido?paqueteId=$codigo');
       if (resp.data == "") {
         return null;
       }
@@ -73,12 +73,12 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   }
 
   @override
-  Future<bool> iniciarEntregaExternaIntersede(int utdDestino) async {
+  Future<bool> iniciarEntregaExternaIntersede(EnvioInterSedeModel envio) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/utdsdestinos/$utdDestino/iniciar',
+        '/servicio-tramite/utds/$id/utdsdestinos/$envio/iniciar',
         null,
         null);
     if (resp.data) {

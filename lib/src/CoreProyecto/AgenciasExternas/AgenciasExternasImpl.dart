@@ -29,8 +29,8 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
 
 
   @override
-  Future<EnvioModel> validarCodigoAgencia(String codigo,int id) async{
-     EnvioModel envio = await agenciaExterna.validarCodigoAgenciaProvider(codigo, id);
+  Future<EnvioModel> validarCodigoAgencia(String codigo) async{
+     EnvioModel envio = await agenciaExterna.validarCodigoAgenciaProvider(codigo);
     return envio;
   }
 
@@ -41,8 +41,8 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
   }
 
   @override
-  Future<bool> iniciarEntregaAgencia(int utdDestino) async{
-    bool i = await agenciaExterna.iniciarEntregaExternaIntersede(utdDestino);
+  Future<bool> iniciarEntregaAgencia(EnvioInterSedeModel envio) async{
+    bool i = await agenciaExterna.iniciarEntregaExternaIntersede(envio);
     return i;
   }
 

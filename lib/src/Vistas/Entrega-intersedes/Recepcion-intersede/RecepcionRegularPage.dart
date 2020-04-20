@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-entrega/EntregaInterController.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
 import 'RecepcionRegularController.dart';
 
 
 class RecepcionInterPage extends StatefulWidget {
-  final EnvioInterSedeModel recorridopage;
+  /*final EnvioInterSedeModel recorridopage;
 
-  const RecepcionInterPage({Key key, this.recorridopage}) : super(key: key);
+  const RecepcionInterPage({Key key, this.recorridopage}) : super(key: key);*/
 
   @override
   _RecepcionInterPageState createState() =>
-      new _RecepcionInterPageState(recorridopage);
+      new _RecepcionInterPageState(/*recorridopage*/);
 }
 
 class _RecepcionInterPageState extends State<RecepcionInterPage> {
-  EnvioInterSedeModel recorridoUsuario;
-  _RecepcionInterPageState(this.recorridoUsuario);
+  /*EnvioInterSedeModel recorridoUsuario;
+  _RecepcionInterPageState(this.recorridoUsuario);*/
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   //final _sobreController = TextEditingController();
@@ -55,8 +53,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   @override
   void initState() {
     valuess = "";
-    _bandejaController.text = recorridoUsuario.codigo;
-    codigoBandeja=recorridoUsuario.codigo;
+    /*_bandejaController.text = recorridoUsuario.codigo;
+    codigoBandeja=recorridoUsuario.codigo;*/
     super.initState();
   }
 
@@ -79,12 +77,13 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                 if(listaEnvios.length > 0){
                         confirmarNovalidados( context, "Validación incompleta");
                 }else{
+                      codigoBandeja = "";
                       entregaController.confirmarAlerta(context, "Se ha completado con la recepción de documentos", "Recepción completa");
                 }
             },
             color: Color(0xFF2C6983),
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Guardar', style: TextStyle(color: Colors.white)),
+            child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -105,7 +104,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         } else {
           setState(() {
             _sobreController.text = "";
-            //codigoSobre = value;
+            codigoSobre = value;
           });
         }
       }
@@ -304,13 +303,14 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
         } 
        if(pertenecia==true){
-          principalcontroller.recogerdocumento(context,recorridoUsuario, codigoBandeja, codigoSobre);  
+          principalcontroller.recogerdocumento(context,codigoBandeja, codigoSobre);  
           listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
           if(listaEnvios.length==0){
+              codigoSobre="";
               entregaController.confirmarAlerta(context, "Se ha recepcionado los documentos con éxito", "Recepción completa");
           }
        }else{
-          principalcontroller.recogerdocumento(context, recorridoUsuario, codigoBandeja, codigo);  
+          principalcontroller.recogerdocumento(context, codigoBandeja, codigo);  
        } 
     }
 
@@ -364,7 +364,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entrega 1025 en sede',
+          title: Text('Recibir Valijas',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -424,7 +424,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
+                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
                     width: double.infinity,
                     child: sendButton),
               ) : Container(),
@@ -474,6 +474,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               FlatButton(
                   child: Text('Seguir sin estos documentos'),
                   onPressed: () {
+                        codigoBandeja = "";
                         entregaController.confirmarAlerta(context, "Se ha recepcionado los documentos con éxito", "Recepción de documentos");
                   }),
               SizedBox(height: 1.0, width: 5.0),

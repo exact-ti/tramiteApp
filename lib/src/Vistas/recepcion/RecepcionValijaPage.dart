@@ -17,7 +17,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
   List<EnvioModel> listaEnvios = new List();
   RecepcionController principalcontroller = new RecepcionController();
   String qrsobre, qrbarra = "";
-  String codigoBandeja = "";
   String codigoSobre = "";
   var listadetinatario;
   var colorletra = const Color(0xFFACADAD);
@@ -42,14 +41,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
       }
     }
 
-    void _validarBandejaText(String value) {
-      if (value != "") {
-        setState(() {
-          codigoBandeja = value;
-          _bandejaController.text = value;
-        });
-      }
-    }
 
     void agregaralista(EnvioModel envio) {
       bool pertenece = false;
@@ -86,25 +77,14 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (codigoBandeja == "") {
-        _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
-      } else {
         _validarSobreText(qrbarra);
-      }
     }
 
-    Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      _validarBandejaText(qrbarra);
-    }
 
     Widget _crearListado() {
       return FutureBuilder(
           future: principalcontroller.listarEnvios(
-              context, codigoBandeja, isSwitched),
+              context),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
@@ -130,7 +110,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
               if (listaEnvios.length == 0) {
                 listaEnvios.clear();
                 _bandejaController.text = "";
-                codigoBandeja = "";
                 _sobreController.text = "";
                 codigoSobre = "";
               } else {
@@ -150,33 +129,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
           itemBuilder: (context, i) => crearItem(listaEnvios[i]));
     }
 
-    var bandeja = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: _bandejaController,
-      textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        _validarBandejaText(value);
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
 
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
@@ -184,15 +136,7 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if (codigoBandeja == "") {
-          _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
-        } else {
           _validarSobreText(value);
-        }
       },
       decoration: InputDecoration(
         contentPadding:
@@ -223,11 +167,11 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
       }
       if (pertenecia == true) {
         principalcontroller.recogerdocumento(
-            context, codigoBandeja, codigo, isSwitched);
+            context, codigo);
         listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
       } else {
         principalcontroller.recogerdocumento(
-            context, codigoBandeja, codigo, isSwitched);
+            context, codigo);
       }
     }
 
@@ -239,22 +183,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
         return _crearListadoinMemoria();
       }
     }
-
-    final campodetextoandIconoBandeja = Row(children: <Widget>[
-      Expanded(
-        child: bandeja,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerBandeja),
-        ),
-      ),
-    ]);
 
     final campodetextoandIconoSobre = Row(children: <Widget>[
       Expanded(
@@ -297,25 +225,6 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: principalcontroller.labeltext("Valija")),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
                     alignment: Alignment.bottomLeft,
                     height:
                         screenHeightExcludingToolbar(context, dividedBy: 30),
@@ -333,9 +242,7 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
                 ),
               ),
               Expanded(
-                  child: codigoBandeja == ""
-                      ? Container()
-                      : Container(child: _validarListado(codigoSobre))),
+                   child: Container(child: _validarListado(codigoSobre))),
               Align(
                 alignment: Alignment.center,
                 child: Container(
@@ -374,7 +281,7 @@ class _RecepcionValijaPageState extends State<RecepcionValijaPage> {
                   onPressed: () {
                     listaEnvios.clear();
                     _bandejaController.text = "";
-                    codigoBandeja = "";
+
                     _sobreController.text = "";
                     codigoSobre = "";
                     Navigator.of(context).pop();

@@ -13,14 +13,14 @@ abstract class IInterSedeProvider{
     Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo);  
 
 
-    Future<EnvioModel> validarCodigoProvider(String codigo,int id);
+    Future<EnvioModel> validarCodigoProvider(String codigo,String codigobandeja);
 
     Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,String codigo);
 
     Future<bool> iniciarEntregaIntersede(int utdDestino);  
 
      Future<bool> registrarRecojoIntersedeProvider(
-      String codigo, EnvioInterSedeModel envio, String codigopaquete);
+      String codigo, String codigopaquete);
 
 
 }

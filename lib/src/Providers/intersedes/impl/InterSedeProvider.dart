@@ -31,18 +31,20 @@ class InterSedeProvider implements IInterSedeProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
+    Response resp =await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
+          if (resp.data == "") {
+        return null;
+      }
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
   }
 
   @override
-  Future<EnvioModel> validarCodigoProvider(String codigo, int id) async {
+  Future<EnvioModel> validarCodigoProvider(String codigo, String codigobandeja) async {
     try {
       Response resp = await req.get(
-          '/servicio-tramite/turnos/$id/envios/paraagregaralrecorrido?paqueteId=$codigo');
+          '/servicio-tramite/tipospaquetes/valijas/$codigobandeja/paquetes/$codigo');
       if (resp.data == "") {
         return null;
       }
@@ -61,12 +63,11 @@ class InterSedeProvider implements IInterSedeProvider {
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     List<int> ids = new List();
-    for (EnvioModel envio in enviosvalidados) {
+    for (EnvioModel envio in enviosvalidados) { 
       ids.add(envio.id);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo', listaIds, null);
+    Response resp = await req.post('/servicio-tramite/utds/$id/valijas/$codigo', listaIds, null);
     int idresp = resp.data;
     return idresp;
   }
@@ -102,7 +103,7 @@ class InterSedeProvider implements IInterSedeProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
+    Response resp = await req.get('/servicio-tramite/utds/$id/entregas/$codigo/recepcion');
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
@@ -111,9 +112,12 @@ class InterSedeProvider implements IInterSedeProvider {
 
     @override
   Future<bool> registrarRecojoIntersedeProvider(
-      String codigo, EnvioInterSedeModel envio, String codigopaquete) async {
+      String codigo, String codigopaquete) async {
+            Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
     Response resp = await req.post(
-        '/servicio-tramite/recorridos/areas/$codigo/paquetes/$codigopaquete/recojo',
+        '/servicio-tramite/utds/$id/paquetes/$codigopaquete/custodia',
         null,
         null);
     if (resp.data) {

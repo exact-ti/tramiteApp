@@ -154,7 +154,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
     Widget _crearListado() {
       return FutureBuilder(
-          future: principalcontroller.listarentregasInterSedeController(),
+          future: principalcontroller.listarAgenciasExternasController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {

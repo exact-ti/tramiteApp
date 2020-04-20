@@ -109,7 +109,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                        Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecepcionInterPage(recorridopage: entrega),
+        builder: (context) => RecepcionInterPage(/*recorridopage: entrega*/),
       ));
                   })
               : Opacity(

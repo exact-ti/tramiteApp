@@ -107,7 +107,7 @@ class _RecepcionJumboPageState extends State<RecepcionJumboPage> {
 
     Widget _crearListado() {
       return FutureBuilder(
-          future: principalcontroller.listarEnvios(
+          future: principalcontroller.listarEnviosLotes(
               context, codigoBandeja, isSwitched),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
@@ -229,11 +229,11 @@ class _RecepcionJumboPageState extends State<RecepcionJumboPage> {
         }
       }
       if (pertenecia == true) {
-        principalcontroller.recogerdocumento(
+        principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo, isSwitched);
         listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
       } else {
-        principalcontroller.recogerdocumento(
+        principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo, isSwitched);
       }
     }

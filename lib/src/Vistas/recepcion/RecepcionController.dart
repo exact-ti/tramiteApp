@@ -20,7 +20,7 @@ class RecepcionController {
   );
   }
 
-  Future<List<EnvioModel>> listarEnvios(
+  Future<List<EnvioModel>> listarEnviosLotes(
       BuildContext context,  String codigo, bool opcion) async {
     List<EnvioModel> recorridos =
         await recorridoCore.enviosCore(codigo, opcion);
@@ -30,10 +30,30 @@ class RecepcionController {
     return recorridos;
   }
 
-  void recogerdocumento(BuildContext context, String codigo,
+    Future<List<EnvioModel>> listarEnvios(
+      BuildContext context) async {
+    List<EnvioModel> recorridos =
+        await recorridoCore.listarEnviosCore();
+    if (recorridos.isEmpty) {
+      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+    }
+    return recorridos;
+  }
+
+  void recogerdocumentoLote(BuildContext context, String codigo,
       String paquete, bool opcion) async {
     bool respuesta =
         await recorridoCore.registrarRecorridoCore(codigo, paquete, opcion);
+    if (respuesta == false) {
+      mostrarAlerta(
+          context, "No se pudo completar la operación", "Código incorrecto");
+    }
+  }
+
+
+    void recogerdocumento(BuildContext context, String codigo) async {
+    bool respuesta =
+        await recorridoCore.registrarEnvioCore(codigo);
     if (respuesta == false) {
       mostrarAlerta(
           context, "No se pudo completar la operación", "Código incorrecto");

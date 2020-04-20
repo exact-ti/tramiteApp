@@ -41,8 +41,8 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<EnvioModel> validarCodigo(String codigo,int id) async{
-     EnvioModel envio = await intersede.validarCodigoProvider(codigo,id);
+  Future<EnvioModel> validarCodigo(String codigo,String codigobandeja) async{
+     EnvioModel envio = await intersede.validarCodigoProvider(codigo,codigobandeja);
     return envio;
   }
 
@@ -59,8 +59,8 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<bool> registrarRecojoIntersedeProvider(String codigo,EnvioInterSedeModel envio, String codigopaquete)async {
-    bool i = await intersede.registrarRecojoIntersedeProvider(codigo, envio, codigopaquete);
+  Future<bool> registrarRecojoIntersedeProvider(String codigo, String codigopaquete)async {
+    bool i = await intersede.registrarRecojoIntersedeProvider(codigo, codigopaquete);
     return i;
   }
 
