@@ -36,36 +36,18 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
   List<PaqueteExternoBuzonModel> data = new List<PaqueteExternoBuzonModel>();
   
   ImportarArchivoController imp = new ImportarArchivoController();
+
+  String titulo = 'Importar envíos';
   
   @override
   Widget build(BuildContext context) {
     
-    const PrimaryColor = const Color(0xFF2C6983);
-    const LetraColor = const Color(0xFF68A1C8); 
-
-    Size screenSize(BuildContext context) {
-      return MediaQuery.of(context).size;
-    }
-
-    double screenHeight(BuildContext context, {double dividedBy = 1, double reducedBy = 0.0}) {
-      return (screenSize(context).height - reducedBy) / dividedBy;
-    }
-
-    double screenHeightExcludingToolbar(BuildContext context, {double dividedBy = 1}) {
-      return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-    }
+    // const PrimaryColor = const Color(0xFF2C6983);
+    // const LetraColor = const Color(0xFF68A1C8); 
+   
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: PrimaryColor,
-        title: Text('Custodia de documentos externos',
-              style: TextStyle(
-                        fontSize: 18,
-                        decorationStyle: TextDecorationStyle.wavy,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.normal))
-      ),
+      appBar: sd.crearTitulo(titulo),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
       body: Container(
@@ -75,79 +57,73 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
           
           children: <Widget>[
 
-            Container(
-              padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 0),
-              child: Align(                
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 10),
-                    width: double.infinity,
-                    child: FlatButton.icon(
-                      padding: const EdgeInsets.all(15.0),                      
-                      textColor: Colors.white,
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30.0),
-                      ),
-                      onPressed: () {
-                        
-                        contenido = _adjuntarArchivo(context);
+            _generarBotonAdjuntar(context),
+            // Container(
+            //   child: DataTable (
+                
+            //     columns: [
+            //       DataColumn(label:Text('Código')),
+            //       DataColumn(label:Text('Id-buzón')),
+            //       DataColumn(label: Text('Buzón'))
+            //     ],
 
-
-                        // setState(() {
-
-                        //   // mensajeResultado = _mensajeResultadoImportacion();
-                        // });
-                        
-                        // _mensajeResultadoImportacion(context);
-
-                      },
-                      icon: Icon(
-                        Icons.attach_file,
-                        color: Colors.white,
-                      ),
-                      label: Text('Adjuntar',
-                        style: TextStyle(
-                          fontSize: 16,
-                        )
-                      ),
-                      
-                    )),
-              ),
-            ),
-
-            SafeArea(
-              child:
-              SingleChildScrollView(
-                child: Column(
-                                
-                  children: <Widget>[
-                    mensajeResultado, 
-                    (contenido == null ? Text('') : contenido)
-                  ]
-
+            //     rows: <DataRow>[
+            //         DataRow(
+            //           cells:[
+            //             DataCell(Text('prueba')),
+            //             DataCell(Text('prueba')),
+            //             DataCell(Text('prueba'))
+            //           ]
+            //         )
+            //     ],
+            //   )
+            // ),
+            Expanded(
+              child: Container(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  
+                  child: (contenido == null ? Text('') : contenido)
+                  // child: Column(                                  
+                  //   children: <Widget>[
+                  //     mensajeResultado, 
+                  //     (contenido == null ? Text('') : contenido)
+                  //   ]
+                  // )
                 )
               )
             )
+            ,
+            _generarBotonImportar(context)
           ],
 
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        
-        onPressed: (){
-          _importarRegistros(context);
-          contenido = Container();          
 
-          setState(() {
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.file_upload),
+      //       title : Text('Importar')
+      //     )
+      //   ],
+      //   currentIndex: 0,
+      // )
+      // ,
+      // floatingActionButton: FloatingActionButton.extended(
+        
+      //   onPressed: (){
+      //     _importarRegistros(context);
+      //     contenido = Container();          
+
+      //     setState(() {
             
-          });
-        },
-        label: Text('Guardar'),
-        icon: Icon(Icons.file_upload),
-        backgroundColor: Colors.green,
-      ),
+      //     });
+      //   },
+      //   label: Text('Guardar'),
+      //   icon: Icon(Icons.file_upload),
+      //   backgroundColor: Colors.green,
+      // ),
     );
 
 
@@ -159,8 +135,67 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
   final valorCampo = 'No encontrado';
   int totalFilas = 0;
   int codigosEncontrados = 0;
+  int codigo_paquete_incorrecto = 0;
   var mensajeResultado = Text('');  
   var contenido;
+  final tituloVentana = "Importar envíos";
+
+  Widget _generarBotonAdjuntar(BuildContext context){
+    return Container(
+      padding: const EdgeInsets.only(
+            left: 20, right: 20, top: 10, bottom: 0),
+      child: Align(                
+        child: Container(
+            alignment: Alignment.center,
+            height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
+            width: double.infinity,
+            child: RaisedButton(
+              padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),                      
+              textColor: Colors.white,                      
+              color: sd.primaryColor,
+              
+              child: Text('Adjuntar', style: TextStyle(color: Colors.white)),
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(5.0),
+              ),
+              onPressed: () {
+                contenido = _adjuntarArchivo(context);
+              }              
+            )),
+      ),
+    );
+  }
+
+  Widget _generarBotonImportar(BuildContext context){
+    return Container(
+      padding: const EdgeInsets.only(
+            left: 20, right: 20, top: 10, bottom: 0),
+      child: Align(                
+        child: Container(
+            alignment: Alignment.center,
+            height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
+            width: double.infinity,
+            child: RaisedButton(
+              padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),                      
+              textColor: Colors.white,                      
+              color: sd.primaryColor,
+              
+              child: Text('Importar', style: TextStyle(color: Colors.white)),
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(5.0),
+              ),
+                onPressed: (){
+                  _importarRegistros(context);
+                  //contenido = Container();          
+
+                  setState(() {
+                    
+                  });
+                },             
+            )),
+      ),
+    );
+  }
 
   void _importarRegistros(BuildContext context) async {
 
@@ -169,19 +204,44 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
     if (this.data.length > 0){
 
       for (var item in this.data) {
-        if (item.nombre != 'No encontrado'){
+        if (item.nombre != 'No encontrado' && item.id != null && item.id.trim() != ""){
           PaqueteExterno paquete = new PaqueteExterno();
           paquete.paqueteId = item.id;
           paquete.destinatarioId = item.idBuzon.toString();
           paqueteExternoList.add(paquete);
         }
+        if (item.id == null || item.id.trim() == ""){
+          this.codigo_paquete_incorrecto++;
+        }
       }
 
       if (this.data.length > paqueteExternoList.length){
+
+        var noencontrados = totalFilas - codigosEncontrados;
+
+        var description = "";
+
+        if (noencontrados > 1){
+          description = 'Existen ' + noencontrados.toString() + ' destinos no encontrados';
+        }
+        else {
+          if (noencontrados == 1) {
+            description = 'Existe ' + noencontrados.toString() + ' destino no encontrado';
+          }
+        }
         
-        var description = 'Existen ' + (totalFilas - codigosEncontrados).toString() + ' destinos no encontrados';
-      
-        bool respuesta = await sd.confirmarRespuesta(context, 'Importar paquetes', description);
+        
+
+        if (this.codigo_paquete_incorrecto > 1) {
+          description = description + ' y ' + this.codigo_paquete_incorrecto.toString() + ' códigos de paquete vacíos';
+        }
+        else {
+          if (this.codigo_paquete_incorrecto == 1) {
+            description = description + ' y ' + this.codigo_paquete_incorrecto.toString() + ' código de paquetes vacío';
+          }
+        }
+
+        bool respuesta = await sd.confirmarRespuesta(context, tituloVentana, description);
 
         if (!respuesta){
           return;
@@ -190,32 +250,60 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
         bool resp = await imp.importarPaquetesExternos(paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp){
-          sd.mostrarAlerta(context, 'Correcto', 'Importar paquetes');
+          sd.mostrarAlerta(context, 'Correcto', tituloVentana);
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
+          contenido = Container();  
+          setState(() {
+            contenido = Container();  
+          });
         }
         else{
-          sd.mostrarAlerta(context, 'Error', 'Importar paquetes');
+          sd.mostrarAlerta(context, 'Error', tituloVentana);
         }
       }
       else{
+
+        var descrip = "";
+
+        if (this.codigo_paquete_incorrecto > 1) {          
+          descrip = 'Existen ' + this.codigo_paquete_incorrecto.toString() + ' códigos de paquete vacíos';
+        }
+        else{
+          if (this.codigo_paquete_incorrecto == 1){
+            descrip = 'Existe ' + this.codigo_paquete_incorrecto.toString() + ' código de paquete vacío';
+          }
+        }
+
+        bool respuesta = await sd.confirmarRespuesta(context, tituloVentana, descrip);
+
+        if (!respuesta){
+          return;
+        }
+
+
         bool resp = await imp.importarPaquetesExternos(paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp){
-          sd.mostrarAlerta(context, 'Correcto', 'Importar paquetes');
+          sd.mostrarAlerta(context, 'Correcto', tituloVentana);
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
+          this.codigo_paquete_incorrecto = 0;
+          contenido = Container();  
+          setState(() {
+            contenido = Container();  
+          });
         }
         else{
-          sd.mostrarAlerta(context, 'Error', 'Importar paquetes');
+          sd.mostrarAlerta(context, 'Error', tituloVentana);
         }
       }
       
     }
     else{
-      sd.mostrarAlerta(context, 'No hay registros para exportar', 'Importar paquetes');
+      sd.mostrarAlerta(context, 'No hay registros para exportar', tituloVentana);
     }
 
   }
@@ -234,14 +322,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
 
     var mensaje = '';
     TextStyle estilo;
-    
-
-    // if (contenido == null)
-    // {
-    //   // return Text('');
-    //   // sd.mostrarAlerta(context, mensaje, titulo)
-    //   return;
-    // }
+   
 
     if (totalFilas == 0){
       return;
@@ -277,6 +358,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
           return Container(
             child: Column(
               children: <Widget>[
+
+                
                  _createDataTableControl(context,snapshot.data)
               ],
             )
@@ -332,8 +415,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
     for (var row in tabla.rows) {
       if (fila > 0){      
         PaqueteExternoBuzonModel paqueteBuzon = new PaqueteExternoBuzonModel();
-        paqueteBuzon.id = row[0].toString();
-        paqueteBuzon.idBuzon = row[1];
+        paqueteBuzon.id = row[0] == null ? '' : row[0].toString();
+        paqueteBuzon.idBuzon = row[1] == null ? '' :  row[1].toString();
         paqueteBuzon.nombre = '';
         paquetesBuzonValidar.add(paqueteBuzon);  
       }   
@@ -343,6 +426,16 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
     this.data = paquetesBuzonValidar;
     return  await _validarRegistroBuzones(paquetesBuzonValidar);
   }  
+
+  bool isNumeric(String s){
+    if(s == null){
+      return false;
+    }
+    return int.tryParse(s) != null;
+  }
+
+  List<PaqueteExternoBuzonModel> listaNoValidos = new List<PaqueteExternoBuzonModel>();
+
 
   Future<List<PaqueteExternoBuzonModel>> _validarRegistroBuzones(List<PaqueteExternoBuzonModel> lista) async {
 
@@ -355,8 +448,13 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
 
     for (PaqueteExternoBuzonModel item in lista) {
 
+      if (!isNumeric(item.idBuzon)){
+        continue;
+      }
+
       if(!ids.contains(item.idBuzon)){
-        ids.add(item.idBuzon);
+
+        ids.add(int.tryParse(item.idBuzon));
       }
     }
     
@@ -365,13 +463,14 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
     for (PaqueteExternoBuzonModel item in lista) {
       
       item.nombre = valorCampo;
-
+      
       for (var buzon in buzonModelList) {
-        if (item.idBuzon == buzon.id){
+        if (int.tryParse(item.idBuzon) == buzon.id){
           item.nombre = buzon.nombre;
           encontrados++;
           break;
         }
+        
       }
 
     }
@@ -415,11 +514,11 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage>{
       return Container();
     }
 
-    return DataTable (
+    return DataTable (headingRowHeight: 50.0,  //horizontalMargin: 2.0,
       columns: [
         DataColumn(label:Text('Código')),
-        DataColumn(label:Text('Destino')),
-        DataColumn(label: Text('Buzon'))
+        DataColumn(label:Text('Id-buzón')),
+        DataColumn(label: Text('Buzón'))
       ],
       rows: widgets,              
     );

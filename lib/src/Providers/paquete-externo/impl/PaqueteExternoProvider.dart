@@ -53,6 +53,20 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
     return creadosList;
   }
 
+  @override
+  Future<bool> custodiarPaquete(PaqueteExterno paqueteExterno) async {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int utdId = umodel.id;
+    String codigo = paqueteExterno.paqueteId;
+
+    Response resp = await req.post('/servicio-tramite/utds/$utdId/paquetes/$codigo/custodia',null,null);
+    
+    bool b = resp.data;
+
+    return b;
+  }
+
   
 
 }
