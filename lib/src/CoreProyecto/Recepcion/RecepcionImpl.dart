@@ -6,7 +6,7 @@ class RecepcionImpl implements RecepcionInterface {
 
   IRecepcionProvider recepcion;
 
-  RecepcionImpl(IRecepcionProvider recorrido) {
+  RecepcionImpl(IRecepcionProvider recepcion) {
     this.recepcion = recepcion;
   }
 
@@ -44,6 +44,18 @@ class RecepcionImpl implements RecepcionInterface {
   @override
   Future<bool> registrarEnvioCore(String codigoPaquete)async {
     bool respuesta= await recepcion.registrarEnvioProvider(codigoPaquete);
+    return respuesta;
+  }
+
+  @override
+  Future<List<EnvioModel>> listarEnviosPrincipalCore() async{
+    List<EnvioModel> envios = await recepcion.listarenviosPrincipal2();
+    return envios;
+  }
+
+  @override
+  Future<bool> registrarEnvioPrincipalCore(String codigoPaquete) async {
+    bool respuesta= await recepcion.registrarEnvioPrincipalProvider(codigoPaquete);
     return respuesta;
   }
 

@@ -6,6 +6,7 @@ class EnvioModel {
   String codigoPaquete;
   String codigoUbicacion;
   String observacion;
+  String usuario;
   bool estado;
 
 
@@ -31,6 +32,19 @@ class EnvioModel {
         }
           return envios;
     }    
+
+
+    List<EnvioModel> fromJsonValidarRecepcion(List< dynamic> jsons){
+       List<EnvioModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioModel  envio = new EnvioModel();
+            envio.usuario = json["usuario"];
+            envio.codigoPaquete = json["paqueteId"];
+            envio.observacion = json["observacion"];
+            envios.add(envio);
+        }
+          return envios;
+    }  
 
 
   EnvioModel fromOneJson(dynamic json){

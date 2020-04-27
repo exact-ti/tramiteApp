@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -176,7 +177,11 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          //Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NuevoEntregaExternaPage(),
+                ));
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),

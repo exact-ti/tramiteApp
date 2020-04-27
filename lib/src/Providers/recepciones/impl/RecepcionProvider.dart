@@ -94,4 +94,53 @@ class RecepcionProvider implements IRecepcionProvider {
     return false;
   }
 
+  @override
+  Future<List<EnvioModel>> listarenviosPrincipal() async{
+    Response resp = await req.get(
+        '/servicio-tramite/recorridos/areas//envios/paraentrega');
+    if (resp.data == "") {
+      return null;
+    }
+    List<dynamic> envio = resp.data;
+    List<EnvioModel> enviosMode = envioModel.fromJsonValidarRecepcion(envio);
+    return enviosMode;
+  }
+
+  @override
+  Future<List<EnvioModel>> listarenviosPrincipal2() async {
+    List<EnvioModel> listEnvio = await listarfake();
+    return listEnvio;
+  }
+
+  Future<List<EnvioModel>> listarfake() async{
+    List<EnvioModel> listarenvios = new List();
+    EnvioModel envio1 = new EnvioModel();
+    EnvioModel envio2 = new EnvioModel();
+    envio1.observacion="San Isidro";
+    envio1.usuario="Ronald Santos";
+    envio1.codigoPaquete="541534";
+    envio2.observacion="San Isidro";
+    envio2.usuario="Ronald Santos";
+    envio2.codigoPaquete="541534";
+    listarenvios.add(envio1);
+    listarenvios.add(envio2);
+
+    return Future.delayed(new Duration(seconds: 1), () {
+      return listarenvios;
+    });
+
+  }
+
+  @override
+  Future<bool> registrarEnvioPrincipalProvider(String codigopaquete) async {
+    Response resp = await req.post(
+        '/servicio-tramite/recorridos/areas/paquetes/$codigopaquete/entrega',
+        null,
+        null);
+    if (resp.data) {
+      return true;
+    }
+    return false;
+  }
+
 }

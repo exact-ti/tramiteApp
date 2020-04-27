@@ -5,21 +5,21 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'NuevaEntregaExternaController.dart';
 
-class NuevoAgendaExternaPage extends StatefulWidget {
+class NuevoEntregaExternaPage extends StatefulWidget {
 
 
   @override
-  _NuevoAgendaExternaPagePageState createState() =>
-      new _NuevoAgendaExternaPagePageState();
+  _NuevoEntregaExternaPageState createState() =>
+      new _NuevoEntregaExternaPageState();
 }
 
-class _NuevoAgendaExternaPagePageState extends State<NuevoAgendaExternaPage> {
+class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
-  NuevoAgendaExternaController principalcontroller = new NuevoAgendaExternaController();
+  NuevoEntregaExternaController principalcontroller = new NuevoEntregaExternaController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
@@ -77,7 +77,7 @@ class _NuevoAgendaExternaPagePageState extends State<NuevoAgendaExternaPage> {
             },
             color: Color(0xFF2C6983),
             child:
-                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
+                Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -392,7 +392,7 @@ class _NuevoAgendaExternaPagePageState extends State<NuevoAgendaExternaPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Recibir valijas',
+          title: Text('Entregas externas',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,

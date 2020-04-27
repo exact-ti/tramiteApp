@@ -11,7 +11,7 @@ import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPa
 
 class RecepcionController {
 
-  RecepcionInterface recorridoCore = new RecepcionImpl(new RecepcionProvider());
+  RecepcionInterface recepcionInterface = new RecepcionImpl(new RecepcionProvider());
 
   Widget labeltext(String mensaje){
   return Container(
@@ -23,17 +23,43 @@ class RecepcionController {
   Future<List<EnvioModel>> listarEnviosLotes(
       BuildContext context,  String codigo, bool opcion) async {
     List<EnvioModel> recorridos =
-        await recorridoCore.enviosCore(codigo, opcion);
+        await recepcionInterface.enviosCore(codigo, opcion);
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
     }
     return recorridos;
   }
 
+   Future<List<EnvioModel>> listarEnviosPrincipal(
+      BuildContext context,List<String> codigos, String codigo) async {
+    
+        if(codigo==""){
+              List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
+              return envios;
+        }else{
+              bool respuesta = await recepcionInterface.registrarEnvioPrincipalCore(codigo);
+            if(codigos.contains(codigo)){
+              if(!respuesta){
+                mostrarAlerta(context,"No se pudo registrar el documento", "registro incorrecto");
+              }
+              List<EnvioModel> envios = await recepcionInterface.listarEnviosCore();
+              return envios;
+            }else{
+              if(!respuesta){
+                mostrarAlerta(context,"El documento no pertenece a este envío", "registro incorrecto");
+              }else{
+                mostrarAlerta(context,"Registro correcto", "Mensaje");
+              }
+              List<EnvioModel> envios = await recepcionInterface.listarEnviosCore();
+              return envios;
+            }
+        }
+  }
+
     Future<List<EnvioModel>> listarEnvios(
       BuildContext context) async {
     List<EnvioModel> recorridos =
-        await recorridoCore.listarEnviosCore();
+        await recepcionInterface.listarEnviosCore();
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
     }
@@ -43,7 +69,7 @@ class RecepcionController {
   void recogerdocumentoLote(BuildContext context, String codigo,
       String paquete, bool opcion) async {
     bool respuesta =
-        await recorridoCore.registrarRecorridoCore(codigo, paquete, opcion);
+        await recepcionInterface.registrarRecorridoCore(codigo, paquete, opcion);
     if (respuesta == false) {
       mostrarAlerta(
           context, "No se pudo completar la operación", "Código incorrecto");
@@ -53,7 +79,7 @@ class RecepcionController {
 
     void recogerdocumento(BuildContext context, String codigo) async {
     bool respuesta =
-        await recorridoCore.registrarEnvioCore(codigo);
+        await recepcionInterface.registrarEnvioCore(codigo);
     if (respuesta == false) {
       mostrarAlerta(
           context, "No se pudo completar la operación", "Código incorrecto");

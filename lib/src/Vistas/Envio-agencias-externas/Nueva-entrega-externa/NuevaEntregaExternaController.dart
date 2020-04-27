@@ -14,7 +14,7 @@ import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart'
 import 'package:tramiteapp/src/Util/utils.dart';
 
 
-class NuevoAgendaExternaController {
+class NuevoEntregaExternaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
   InterSedeInterface intersedeInterface =new InterSedeImpl(new InterSedeProvider());
   IAgenciasExternasInterface agenciacore = new AgenciasExternasImpl(new AgenciaExternaProvider());
@@ -51,7 +51,6 @@ class NuevoAgendaExternaController {
       String codigo) async {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id = await agenciacore.listarEnviosAgenciasValidados(enviosvalidados, codigo);
-
     confirmarAlerta(context, "Se ha registrado correctamente el envio", "Registro");
   }
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {

@@ -15,7 +15,13 @@ abstract class IRecepcionProvider{
 
   Future<bool> registrarValijaProvider(String codigo, String codigopaquete);  
 
-  
   Future<List<EnvioModel>> listarenvios();  
+
+  Future<List<EnvioModel>> listarenviosPrincipal();  
+
+  Future<List<EnvioModel>> listarenviosPrincipal2();  
+
+  Future<bool> registrarEnvioPrincipalProvider(String codigopaquete);  
+
 
 }
