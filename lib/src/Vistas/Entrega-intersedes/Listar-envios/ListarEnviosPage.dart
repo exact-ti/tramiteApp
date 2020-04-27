@@ -16,15 +16,18 @@ class ListarEnviosPage extends StatefulWidget {
 class _ListarEnviosPageState extends State<ListarEnviosPage> {
   ListarEnviosController principalcontroller = new ListarEnviosController();
   EnvioController envioController = new EnvioController();
+  List<EnvioInterSedeModel> envios = new List();
   //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
   List<bool> isSelected;
   int indexSwitch = 0;
+  int numvalijas = 0;
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
+  String codigo = "";
 
   var nuevo = 0;
 
@@ -47,10 +50,15 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     var booleancolor = true;
     var colorwidget = colorplomo;
 
-    Widget informacionEntrega(EnvioInterSedeModel entrega) {
+    Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
       String destino = entrega.destino;
-      int numvalijas = entrega.numvalijas;
       int numdocumentos = entrega.numdocumentos;
+
+      if (switched == 0) {
+        numvalijas = entrega.numvalijas;
+      } else {
+        codigo = entrega.codigo;
+      }
 
       return Container(
           height: 70,
@@ -67,15 +75,18 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                             fontSize: 12, fontWeight: FontWeight.bold)),
                     Container(
                       padding: const EdgeInsets.only(left: 30),
-                      child: Text("$numvalijas valijas",
-                          style: TextStyle(fontSize: 12)),
+                      child: switched == 0
+                          ? Text("$numvalijas valijas",
+                              style: TextStyle(fontSize: 12))
+                          : Text("$codigo",
+                              style: TextStyle(fontSize: 12)),
                     ),
                   ]),
             ),
             Container(
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 height: 35,
-                child: Text("$numdocumentos documentos listos para enviar",
+                child: Text("$numdocumentos envíos",
                     style: TextStyle(fontSize: 12))),
           ]));
     }
@@ -98,27 +109,28 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     Widget iconoRecepcion(EnvioInterSedeModel entrega, BuildContext context) {
       return Container(
           height: 70,
-          child: entrega.estadoEnvio == 1
-              ? IconButton(
+          child: /*entrega.estadoEnvio == 1
+              ? */IconButton(
                   icon: FaIcon(
                     FontAwesomeIcons.locationArrow,
                     color: Color(0xffC7C7C7),
                     size: 25,
                   ),
                   onPressed: () {
-                       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecepcionInterPage(/*recorridopage: entrega*/),
-      ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RecepcionInterPage(recorridopage: entrega),
+                        ));
                   })
-              : Opacity(
+             /* : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
                     FontAwesomeIcons.locationArrow,
                     color: Color(0xffC7C7C7),
                     size: 25,
-                  )));
+                  ))*/);
     }
 
     Widget iconoEnvio(EnvioInterSedeModel entrega) {
@@ -159,7 +171,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                     size: 40,
                   )))),
           Expanded(
-            child: informacionEntrega(entrega),
+            child: informacionEntrega(entrega, switched),
             flex: 3,
           ),
           Expanded(
@@ -176,18 +188,19 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     }
 
     Widget _crearListado(int switched) {
+
+      envios.clear();
+
       return FutureBuilder(
-          future:
-              principalcontroller.listarentregasInterSedeController(switched),
+          future: principalcontroller.listarentregasInterSedeController(switched),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {
-              booleancolor = true;
-              final entregas = snapshot.data;
+              envios = snapshot.data;
               return ListView.builder(
-                  itemCount: entregas.length,
+                  itemCount: envios.length,
                   itemBuilder: (context, i) =>
-                      crearItem(entregas[i], switched));
+                      crearItem(envios[i], switched));
             } else {
               return Container();
             }

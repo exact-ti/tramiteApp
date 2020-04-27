@@ -23,7 +23,7 @@ class InterSedeImpl implements InterSedeInterface {
       if(switched==0){
       envios = await intersede.listarEnvioByUsuario();
       }else{
-       envios = await intersede.listarEnvioByUsuario();       
+       envios = await intersede.listarRecepcionByUsuario();       
       }
       return envios;
   }

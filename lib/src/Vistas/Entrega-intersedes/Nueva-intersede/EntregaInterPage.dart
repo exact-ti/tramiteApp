@@ -64,10 +64,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
+              if(_bandejaController.text==""){
+                mostrarAlerta(context, "Debe ingresar el codigo de bandeja","Mensaje" );
+              }else{
               listarNovalidados();
               codigoSobre="";
-
-              if (listaEnviosNoValidados.length == 0) {
+              if (listaEnviosNoValidados.length == 0) { 
                 principalcontroller.confirmacionDocumentosValidadosEntrega(
                     listaEnviosValidados,
                     context,
@@ -79,6 +81,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                     "Te faltan asociar estos documentos",
                     listaEnviosNoValidados);
               }
+              }
+
             },
             color: Color(0xFF2C6983),
             child:

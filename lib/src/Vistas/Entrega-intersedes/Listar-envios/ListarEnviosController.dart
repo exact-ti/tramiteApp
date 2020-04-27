@@ -11,8 +11,7 @@ class ListarEnviosController {
 
   Future<List<EnvioInterSedeModel>> listarentregasInterSedeController(
       int switched) async {
-    List<EnvioInterSedeModel> entregas =
-        await intersedeInterface.listarIntersedesUsuario(switched);
+    List<EnvioInterSedeModel> entregas =  await intersedeInterface.listarIntersedesUsuario(switched);
     return entregas;
   }
 

@@ -25,4 +25,12 @@ class ListarEnviosAgenciasController {
           context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
     }
   }
+
+
+  void listar(
+      BuildContext context, List<String> lista) async {
+        print("llego");
+  }
+
+
 }

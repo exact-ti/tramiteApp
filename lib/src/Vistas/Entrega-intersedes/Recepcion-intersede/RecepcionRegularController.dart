@@ -23,12 +23,16 @@ class RecepcionInterController {
     return recorridos;
   }
 
-  void recogerdocumento(BuildContext context, String codigo, String paquete) async {
+  Future<bool>  recogerdocumento(BuildContext context, String codigo, String paquete,bool opcion) async {
     bool respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
+    if(!opcion){
     if(respuesta==false){
       mostrarAlerta(context,"No se pudo completar la operación", "Código incorrecto");
+    }else{
+      mostrarAlerta(context,"Se ha recepcionado correctamente", "Recepción correcta");
     }
-
+    }
+    return respuesta;
   }
 
 }
