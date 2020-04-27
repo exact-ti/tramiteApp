@@ -184,7 +184,6 @@ Navigator.pushReplacementNamed(context,ruta);
   }
 
 
-<<<<<<< HEAD
 Widget crearTitulo(String titulo){
   return AppBar(
     backgroundColor: primaryColor,
@@ -208,10 +207,8 @@ Future<String> getDataFromCamera() async {
   String qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
   return qrbarra;
 }
-=======
   BoxDecoration myBoxDecoration(Color colorletra) {
     return BoxDecoration(
       border: Border.all(color: colorletra),
     );
   }
->>>>>>> c2ecc6d1cff7d7404074233279653c8cc805a44f

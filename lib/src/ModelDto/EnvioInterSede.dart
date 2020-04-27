@@ -41,11 +41,9 @@ class EnvioInterSedeModel {
        List<EnvioInterSedeModel> envios= new List();
         for(Map<String, dynamic> json in jsons){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
-            envio.utdId  = json["utdId"];
-            envio.numdocumentos  = json["cantidadEnvios"];
-            envio.codigo = json["codigo"];
-            envio.estadoEnvio=json["estadoEnvio"];
-            envio.destino = json["utd"];
+            envio.numdocumentos  = json["cantidadItems"];
+            envio.codigo = json["paqueteId"];
+            envio.destino = json["origen"];
             envios.add(envio);
         }
           return envios;

@@ -10,7 +10,7 @@ class InterSedeInterface {
   Future<List<EnvioModel>> listarRecepcionesByCodigo(
        String codigo) {}
 
-  Future<EnvioModel> validarCodigo(String codigo, int id) {}
+  Future<EnvioModel> validarCodigo(String codigo, String codigovalija) {}
 
   Future<int> listarEnviosValidadosInterSede(
       List<EnvioModel> envios, String codigo) {}
@@ -19,5 +19,5 @@ class InterSedeInterface {
 
 
   Future<bool> registrarRecojoIntersedeProvider(
-      String codigo, EnvioInterSedeModel envio, String codigopaquete){} 
+      String codigo, String codigopaquete){} 
 }

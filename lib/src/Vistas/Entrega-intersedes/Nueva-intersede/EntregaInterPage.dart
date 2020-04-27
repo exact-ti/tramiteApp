@@ -64,18 +64,25 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
+              if(_bandejaController.text==""){
+                mostrarAlerta(context, "Debe ingresar el codigo de bandeja","Mensaje" );
+              }else{
               listarNovalidados();
-              if (listaEnviosNoValidados.length == 0) {
+              codigoSobre="";
+              if (listaEnviosNoValidados.length == 0) { 
                 principalcontroller.confirmacionDocumentosValidadosEntrega(
                     listaEnviosValidados,
                     context,
                     codigoBandeja);
+              codigoBandeja="";                    
               } else {
                 confirmarNovalidados(
                     context,
                     "Te faltan asociar estos documentos",
                     listaEnviosNoValidados);
               }
+              }
+
             },
             color: Color(0xFF2C6983),
             child:
@@ -316,14 +323,18 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(
+          future: principalcontroller.validarCodigoEntrega(codigoBandeja,
               codigoporValidar, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
               final envio = snapshot.data;
+              if(!listaEnvios.contains(envio)){
               listaEnvios.add(envio);
+              }  
+              if(!validados.contains(envio.codigoPaquete)){
               validados.add(envio.codigoPaquete);
+              }                              
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
@@ -394,7 +405,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               onPressed: () {},
             )
           ],
-          title: Text('Recibir valijas',
+          title: Text('Nueva entrega',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -527,6 +538,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                                                                   codigoValidar = "";
                                                                    codigoBandeja = "";
                                                                    codigoSobre = "";*/
+                     codigoSobre = "";  
+                                                             
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
                         listaEnviosValidados,
                         context,

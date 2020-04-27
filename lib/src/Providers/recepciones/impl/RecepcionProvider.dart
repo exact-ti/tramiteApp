@@ -70,4 +70,28 @@ class RecepcionProvider implements IRecepcionProvider {
     return false;
   }
 
+  @override
+  Future<List<EnvioModel>> listarenvios() async {
+    Response resp = await req.get(
+        '/servicio-tramite/recorridos/areas//envios/paraentrega');
+    if (resp.data == "") {
+      return null;
+    }
+    List<dynamic> envio = resp.data;
+    List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);
+    return enviosMode;
+  }
+
+  @override
+  Future<bool> registrarEnvioProvider(String codigopaquete) async{
+    Response resp = await req.post(
+        '/servicio-tramite/recorridos/areas/paquetes/$codigopaquete/entrega',
+        null,
+        null);
+    if (resp.data) {
+      return true;
+    }
+    return false;
+  }
+
 }

@@ -6,21 +6,23 @@ abstract class IInterSedeProvider{
 
     Future<List<EnvioInterSedeModel>> listarEnvioByUsuario();  
 
-    Future<List<EnvioInterSedeModel>> listarRecepcionesByUsuario();  
+    Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario();  
+
+    Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario2();  
 
     Future<List<EnvioModel>> listarEnviosByCodigo(String codigo);  
 
     Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo);  
 
 
-    Future<EnvioModel> validarCodigoProvider(String codigo,int id);
+    Future<EnvioModel> validarCodigoProvider(String codigo,String codigobandeja);
 
     Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,String codigo);
 
     Future<bool> iniciarEntregaIntersede(int utdDestino);  
 
      Future<bool> registrarRecojoIntersedeProvider(
-      String codigo, EnvioInterSedeModel envio, String codigopaquete);
+      String codigo, String codigopaquete);
 
 
 }

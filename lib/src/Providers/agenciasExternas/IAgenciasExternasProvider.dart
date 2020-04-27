@@ -9,11 +9,11 @@ abstract class IAgenciaExternaProvider{
 
     Future<List<EnvioModel>> listarEnviosAgenciaByCodigo(String codigo);  
 
-    Future<EnvioModel> validarCodigoAgenciaProvider(String codigo,int id);
+    Future<EnvioModel> validarCodigoAgenciaProvider(String codigo);
 
     Future<int> listarEnviosAgenciaValidadosInterSede(List<EnvioModel> enviosvalidados,String codigo);
 
-    Future<bool> iniciarEntregaExternaIntersede(int utdDestino);  
+    Future<bool> iniciarEntregaExternaIntersede(EnvioInterSedeModel envio);  
 
 
 

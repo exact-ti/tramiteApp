@@ -21,7 +21,7 @@ class NuevoAgendaExternaController {
 
     Future<List<EnvioModel>> listarEnviosEntrega(BuildContext context,
       String codigo) async {
-       ///////////////
+
     List<EnvioModel> recorridos= await agenciacore.listarEnviosAgenciasByCodigo(codigo);
 
     if (recorridos.isEmpty) {
@@ -32,7 +32,7 @@ class NuevoAgendaExternaController {
 
     Future<EnvioModel> validarCodigoEntrega(
       String codigo, BuildContext context) async {
-    EnvioModel envio;/* = await agenciacore.validarCodigoAgencia(codigo, id);*/
+    EnvioModel envio= await agenciacore.validarCodigoAgencia(codigo);
     if (envio == null) {
       mostrarAlerta(
           context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");

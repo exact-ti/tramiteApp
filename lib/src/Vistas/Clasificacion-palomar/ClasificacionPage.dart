@@ -48,19 +48,20 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         setState(() {
           _sobreController.text = value;
           codigoValidar = value;
-        });
+     });
       }
     }
 
     Widget crearItem(PalomarModel palomar) {
       String codigopalomar = palomar.codigo;
-      //int fila  = palomar.fila;
-      //int columna = palomar.columna;
+      String tipo = palomar.tipo;
+      int fila = palomar.fila;
+      int columna = palomar.columna;
       return Container(
-        child: new Column(
+          child: new Column(
         children: <Widget>[
           //Text("Este documento va para el palomar $codigopalomar"),
-          Center(
+          /*Center(
             child: RichText(
               text: TextSpan(
                 /*defining default style is optional */
@@ -74,22 +75,80 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                 ],
               ),
             ),
-          ),
+          ),*/
           //Text("Este documento va para el palomar Fila $fila - Columna $columna"),
+
           Container(
-            margin: const EdgeInsets.only(top: 10),
-            child:Text("Este documento va para el palomar Fila - Columna"),
-          )
-          
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      alignment: Alignment.centerRight,
+                      child:
+                          Text('Palomar', style: TextStyle(color: Colors.black,fontSize: 15)),
+                    ),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Text('$codigopalomar',
+                        style: TextStyle(color: Colors.blue)),
+                    flex: 3,
+                  ),
+                ],
+              )),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      alignment: Alignment.centerRight,
+                      child: Text('Tipo', style: TextStyle(color: Colors.black)),
+                    ),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Text('$tipo', style: TextStyle(color: Colors.blue)),
+                    flex: 3,
+                  ),
+                ],
+              )),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      margin: const EdgeInsets.only(right: 20),
+                      child: Text('Ubicación',
+                          style: TextStyle(color: Colors.black,fontSize: 15)),
+                    ),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Text('Columna $columna Fila $fila',
+                        style: TextStyle(color: Colors.blue)),
+                    flex: 3,
+                  ),
+                ],
+              ))
         ],
       ));
     }
 
-    Widget _crearcontenido() {
+    Widget _crearcontenido(String codigo) {
+
       booleancolor = true;
       colorwidget = colorplomo;
+      if(codigoValidar!=""){
+      codigoValidar="";
       return FutureBuilder(
-          future: principalcontroller.listarpalomarByCodigo(context,codigoValidar),
+          future:
+              principalcontroller.listarpalomarByCodigo(context, codigo),
           builder: (BuildContext context,
               AsyncSnapshot<List<PalomarModel>> snapshot) {
             if (snapshot.hasData) {
@@ -103,6 +162,8 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
               return Container();
             }
           });
+      }
+
     }
 
     final sendButton = Container(
@@ -195,15 +256,15 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Align(
+              /* Align(
                 alignment: Alignment.centerRight,
                 child: Container(
                     alignment: Alignment.centerRight,
                     height:
                         screenHeightExcludingToolbar(context, dividedBy: 12),
                     child: sendButton),
-              ),
-              Align(
+              ),*/
+              /* Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
@@ -211,10 +272,11 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                         screenHeightExcludingToolbar(context, dividedBy: 12),
                     width: double.infinity,
                     child: titulotext),
-              ),
+              ),*/
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
+                    margin: const EdgeInsets.only(top: 40),
                     alignment: Alignment.center,
                     height:
                         screenHeightExcludingToolbar(context, dividedBy: 10),
@@ -222,12 +284,12 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                     child: campodetextoandIcono),
               ),
               Expanded(
-                child: codigoValidar == ""
+                child: _sobreController.text == ""
                     ? Container()
                     : Container(
                         margin: const EdgeInsets.only(top: 20),
                         alignment: Alignment.bottomCenter,
-                        child: _crearcontenido()),
+                        child: _crearcontenido(codigoValidar)),
               )
             ],
           ),

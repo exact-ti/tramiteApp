@@ -10,6 +10,12 @@ abstract class IRecepcionProvider{
 
   Future<bool> registrarJumboProvider(String codigo, String codigopaquete);  
 
+  Future<bool> registrarEnvioProvider(String codigopaquete);  
+
+
   Future<bool> registrarValijaProvider(String codigo, String codigopaquete);  
+
+  
+  Future<List<EnvioModel>> listarenvios();  
 
 }

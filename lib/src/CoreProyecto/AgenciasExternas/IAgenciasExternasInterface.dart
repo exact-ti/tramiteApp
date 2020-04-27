@@ -7,11 +7,11 @@ class IAgenciasExternasInterface {
   Future<List<EnvioModel>> listarEnviosAgenciasByCodigo(
        String codigo) {}
 
-  Future<EnvioModel> validarCodigoAgencia(String codigo, int id) {}
+  Future<EnvioModel> validarCodigoAgencia(String codigo) {}
 
   Future<int> listarEnviosAgenciasValidados(
       List<EnvioModel> envios, String codigo) {}
 
-  Future<bool> iniciarEntregaAgencia(int utdDestino) {}
+  Future<bool> iniciarEntregaAgencia(EnvioInterSedeModel envio) {}
 
 }

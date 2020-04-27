@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-entrega/EntregaInterPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
@@ -44,5 +45,6 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
     '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
+    '/recepcion-inter' :  (BuildContext context) => RecepcionInterPage(),
   };
 }

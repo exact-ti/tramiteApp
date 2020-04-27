@@ -4,10 +4,8 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-entrega/EntregaInterController.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
 import 'RecepcionRegularController.dart';
-
 
 class RecepcionInterPage extends StatefulWidget {
   final EnvioInterSedeModel recorridopage;
@@ -32,7 +30,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   RecepcionInterController principalcontroller = new RecepcionInterController();
   //EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String codigoBandeja = "";
@@ -56,7 +54,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   void initState() {
     valuess = "";
     _bandejaController.text = recorridoUsuario.codigo;
-    codigoBandeja=recorridoUsuario.codigo;
+    codigoBandeja = recorridoUsuario.codigo;
     super.initState();
   }
 
@@ -65,7 +63,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
     const SecondColor = const Color(0xFF6698AE);
-
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
@@ -76,15 +73,19 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-                if(listaEnvios.length > 0){
-                        confirmarNovalidados( context, "Validación incompleta");
-                }else{
-                      entregaController.confirmarAlerta(context, "Se ha completado con la recepción de documentos", "Recepción completa");
-                }
+              if (listaEnvios.length > 0) {
+                confirmarNovalidados(context, "Validación incompleta");
+              } else {
+                codigoBandeja = "";
+                entregaController.confirmarAlerta(
+                    context,
+                    "Se ha completado con la recepción de documentos",
+                    "Recepción completa");
+              }
             },
             color: Color(0xFF2C6983),
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Guardar', style: TextStyle(color: Colors.white)),
+            child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -105,7 +106,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         } else {
           setState(() {
             _sobreController.text = "";
-            //codigoSobre = value;
+            codigoSobre = value;
           });
         }
       }
@@ -119,8 +120,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         });
       }
     }
-
-
 
     final textBandeja = Container(
       child: Text("Código de bandeja"),
@@ -153,14 +152,14 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     Widget crearItem(EnvioModel envio) {
       String codigopaquete = envio.codigoPaquete;
       agregaralista(envio);
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
-              trailing: Text(""),
-            ));
+      return Container(
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: ListTile(
+            title: Text("$codigopaquete"),
+            leading: FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
+            trailing: Text(""),
+          ));
     }
 
     Future _traerdatosescanerSobre() async {
@@ -183,7 +182,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
 
     Widget _crearListado() {
       return FutureBuilder(
-          future: principalcontroller.listarEnvios(context,codigoBandeja),
+          future: principalcontroller.listarEnvios(context, codigoBandeja),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
@@ -296,30 +295,43 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       ),
     );
 
-     contieneCodigo(codigo){ 
-      bool pertenecia = false; 
-        for(EnvioModel envio in listaEnvios){
-          if(envio.codigoPaquete==codigo){
-              pertenecia=true;  
-          }
-        } 
-       if(pertenecia==true){
-          principalcontroller.recogerdocumento(context,recorridoUsuario, codigoBandeja, codigoSobre);  
-          listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
-          if(listaEnvios.length==0){
-              entregaController.confirmarAlerta(context, "Se ha recepcionado los documentos con éxito", "Recepción completa");
-          }
-       }else{
-          principalcontroller.recogerdocumento(context, recorridoUsuario, codigoBandeja, codigo);  
-       } 
+    contieneCodigo(codigo) async {
+      bool respuesta = await principalcontroller.recogerdocumento(
+          context, codigoBandeja, codigoSobre, true);
+      if (respuesta) {
+        codigoSobre = "";
+        if (listaEnvios.length == 0) {
+          entregaController.confirmarAlerta(
+              context,
+              "Se ha recepcionado los documentos con éxito",
+              "Recepción completa");
+        }
+      }
+    }
+
+    nocontieneCodigo(codigo) async {
+      principalcontroller.recogerdocumento(
+          context, codigoBandeja, codigo, false);
     }
 
     Widget _validarListado(String codigo) {
       if (codigo == "") {
         return _crearListado();
       } else {
-          contieneCodigo(codigo); 
-          return _crearListadoinMemoria();
+        bool pertenecia = false;
+        for (EnvioModel envio in listaEnvios) {
+          if (envio.codigoPaquete == codigo) {
+            pertenecia = true;
+          }
+        }
+        if (pertenecia) {
+          listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
+          contieneCodigo(codigo);
+        } else {
+          nocontieneCodigo(codigo);
+        }
+        codigoSobre = "";
+        return _crearListadoinMemoria();
       }
     }
 
@@ -364,7 +376,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entrega 1025 en sede',
+          title: Text('Recibir Valijas',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -408,26 +420,28 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoSobre,
-                    margin: const EdgeInsets.only(bottom: 40),),
+                  alignment: Alignment.centerLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
+                  width: double.infinity,
+                  child: campodetextoandIconoSobre,
+                  margin: const EdgeInsets.only(bottom: 40),
+                ),
               ),
               Expanded(
                   child: codigoBandeja == ""
                       ? Container()
-                      : Container(
-                          child: _validarListado(codigoSobre))),
-              listaEnvios.length > 0 ? Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                    width: double.infinity,
-                    child: sendButton),
-              ) : Container(),
+                      : Container(child: _validarListado(codigoSobre))),
+              listaEnvios.length > 0
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 5),
+                          width: double.infinity,
+                          child: sendButton),
+                    )
+                  : Container(),
             ],
           ),
         ));
@@ -453,8 +467,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-  void confirmarNovalidados(
-      BuildContext context, String titulo) {
+
+  void confirmarNovalidados(BuildContext context, String titulo) {
     List<Widget> listadecodigos = new List();
 
     for (EnvioModel codigo in listaEnvios) {
@@ -474,7 +488,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               FlatButton(
                   child: Text('Seguir sin estos documentos'),
                   onPressed: () {
-                        entregaController.confirmarAlerta(context, "Se ha recepcionado los documentos con éxito", "Recepción de documentos");
+                    codigoBandeja = "";
+                    entregaController.confirmarAlerta(
+                        context,
+                        "Se ha recepcionado los documentos con éxito",
+                        "Recepción de documentos");
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(
@@ -486,6 +504,5 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           );
         });
   }
-
 }
 //                  Navigator.of(context).pushNamed(men.link);

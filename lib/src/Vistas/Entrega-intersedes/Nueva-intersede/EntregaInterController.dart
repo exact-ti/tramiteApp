@@ -14,14 +14,15 @@ import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPa
 
 import 'EntregaInterPage.dart';
 
-
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
-  InterSedeInterface intersedeInterface =new InterSedeImpl(new InterSedeProvider());
+  InterSedeInterface intersedeInterface =
+      new InterSedeImpl(new InterSedeProvider());
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       EnvioInterSedeModel interSedeModel, String codigo) async {
-    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
+    List<EnvioModel> recorridos =
+        await intersedeInterface.listarEnviosByCodigo(codigo);
 
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
@@ -29,11 +30,10 @@ class EntregaregularController {
     return recorridos;
   }
 
-
-    Future<List<EnvioModel>> listarEnviosEntrega(BuildContext context,
-      String codigo) async {
-       ///////////////
-    List<EnvioModel> recorridos= await intersedeInterface.listarEnviosByCodigo(codigo);
+  Future<List<EnvioModel>> listarEnviosEntrega(
+      BuildContext context, String codigo) async {
+    List<EnvioModel> recorridos =
+        await intersedeInterface.listarEnviosByCodigo(codigo);
 
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
@@ -57,7 +57,7 @@ class EntregaregularController {
 
   Future<EnvioModel> validarCodigo(
       String codigo, int id, BuildContext context) async {
-    EnvioModel envio = await intersedeInterface.validarCodigo(codigo, id);
+    EnvioModel envio; /*= await intersedeInterface.validarCodigo(codigo, id);*/
     if (envio == null) {
       mostrarAlerta(
           context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
@@ -66,9 +66,10 @@ class EntregaregularController {
     return envio;
   }
 
-    Future<EnvioModel> validarCodigoEntrega(
-      String codigo, BuildContext context) async {
-    EnvioModel envio; /*= await intersedeInterface.validarCodigo(codigo, id);*/
+  Future<EnvioModel> validarCodigoEntrega(
+      String codigobandeja, String codigo, BuildContext context) async {
+    EnvioModel envio =
+        await intersedeInterface.validarCodigo(codigo, codigobandeja);
     if (envio == null) {
       mostrarAlerta(
           context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
@@ -87,22 +88,20 @@ class EntregaregularController {
     recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
 
-    confirmarAlerta(context, "Se ha registrado correctamente la valija", "Registro");
+    confirmarAlerta(
+        context, "Se ha registrado correctamente la valija", "Registro");
   }
 
-
-  void confirmacionDocumentosValidadosEntrega(
-     
-      List<EnvioModel> enviosvalidados,
-      BuildContext context,
-
-      String codigo) async {
+  void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
+      BuildContext context, String codigo) async {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
 
-    confirmarAlerta(context, "Se ha registrado correctamente la valija", "Registro");
+    confirmarAlerta(
+        context, "Se ha registrado correctamente la valija", "Registro");
   }
+
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
     showDialog(
         context: context,
@@ -112,9 +111,10 @@ class EntregaregularController {
             content: Text(mensaje),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(context).pushNamed('/entrega-intersede'),
-                  )
+                child: Text('Ok'),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/entrega-intersede'),
+              )
             ],
           );
         });

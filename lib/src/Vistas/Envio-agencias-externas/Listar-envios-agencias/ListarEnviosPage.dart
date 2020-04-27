@@ -22,6 +22,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
   String textdestinatario = "";
   var colorletra = const Color(0xFFACADAD);
   var colorseleccion = const Color(0xFF6DA1BB);
+  List<EnvioInterSedeModel> enviosvalidados = new List();
 
   var prueba;
   var inicio = false;
@@ -128,9 +129,9 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             
                    validados["$codigoUtd"] == null ||
                           validados["$codigoUtd"] == false
-                      ? IconButton(
+                      ? IconButton( 
                           icon: FaIcon(
-                            FontAwesomeIcons.locationArrow,
+                            FontAwesomeIcons.chevronRight,
                             color: Colors.black,
                             size: 20,
                           ),
@@ -154,7 +155,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
     Widget _crearListado() {
       return FutureBuilder(
-          future: principalcontroller.listarentregasInterSedeController(),
+          future: principalcontroller.listarAgenciasExternasController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {
@@ -184,13 +185,17 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     );
 
 
+
+
     final sendButton2 = Container(
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          //Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+          List<String> listid = new List();
+          validados.forEach((k,v)=> v==true?listid.add(k):print("no pertenece") );
+           principalcontroller.listar(context, listid); 
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
