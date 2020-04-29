@@ -42,7 +42,7 @@ class RecepcionController {
               if(!respuesta){
                 mostrarAlerta(context,"No se pudo registrar el documento", "registro incorrecto");
               }
-              List<EnvioModel> envios = await recepcionInterface.listarEnviosCore();
+              List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
             }else{
               if(!respuesta){
@@ -50,7 +50,7 @@ class RecepcionController {
               }else{
                 mostrarAlerta(context,"Registro correcto", "Mensaje");
               }
-              List<EnvioModel> envios = await recepcionInterface.listarEnviosCore();
+              List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
             }
         }
@@ -133,5 +133,10 @@ Widget contenidoPopUp(Color color,String destino, int cantidad){
 
 
 }
-  
+    Future<bool> guardarLista(
+      BuildContext context, List<String> lista) async {
+            bool respuesta = await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
+      return respuesta;
+  }
+
 }

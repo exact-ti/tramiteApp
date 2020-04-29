@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
+import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
+import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
+import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 EnvioController envioController = new EnvioController();
-
-
-
 
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
@@ -27,42 +29,37 @@ void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
       });
 }
 
-Future<bool> confirmarRespuesta(BuildContext context, String title, String description) async {
-   
-  
-
+Future<bool> confirmarRespuesta(
+    BuildContext context, String title, String description) async {
   bool respuesta = await showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(description),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.pop(context,true);
-              // Navigator.of(context).pop();
-            }, 
-            child: Text('Aceptar'),
-          ),
-          FlatButton(
-            onPressed: () {
-              Navigator.pop(context,false);
-              // Navigator.of(context).pop();
-              return false;
-            },
-            child: Text('Cancelar'),
-          )
-        ],
-      );
-    }
-  );
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(description),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+                // Navigator.of(context).pop();
+              },
+              child: Text('Aceptar'),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+                // Navigator.of(context).pop();
+                return false;
+              },
+              child: Text('Cancelar'),
+            )
+          ],
+        );
+      });
 
   return respuesta;
 }
-
-
 
 Drawer crearMenu(BuildContext context) {
   return Drawer(
@@ -129,86 +126,256 @@ List<Widget> milistview(BuildContext context) {
   List<Widget> list = new List<Widget>();
 
   final _prefs = new PreferenciasUsuario();
-  if(_prefs.token!=""){
-  Menu menuu = new Menu();
-  List<dynamic> menus = json.decode(_prefs.menus);
-  List<Menu> listmenu = menuu.fromPreferencs(menus);
-  list.add(DrawerHeader(
-    child: Container(),
-    decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/original.jpg'), fit: BoxFit.cover)),
-  ));
-  for (Menu men in listmenu) {
-    list.add(ListTile(
-        leading: Icon(Icons.pages, color: Colors.blue),
-        title: Text(men.nombre),
-        onTap: () => Navigator.pushReplacementNamed(context, men.link)));
-  }
+  if (_prefs.token != "") {
+    Menu menuu = new Menu();
+    List<dynamic> menus = json.decode(_prefs.menus);
+    List<Menu> listmenu = menuu.fromPreferencs(menus);
+    list.add(DrawerHeader(
+      child: Container(),
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/original.jpg'), fit: BoxFit.cover)),
+    ));
+    for (Menu men in listmenu) {
+      list.add(ListTile(
+          leading: Icon(Icons.pages, color: Colors.blue),
+          title: Text(men.nombre),
+          onTap: () => Navigator.pushReplacementNamed(context, men.link)));
+    }
   }
   return list;
 }
 
-
-final _icons= <String, IconData>{
-  'add_alert'     : Icons.add_alert,
-  'accessibility' : Icons.accessibility,
-  'folder_open'   : Icons.folder_open,
+final _icons = <String, IconData>{
+  'add_alert': Icons.add_alert,
+  'accessibility': Icons.accessibility,
+  'folder_open': Icons.folder_open,
 };
 
-
-Icon getICon ( String nombreIcono){
-  return Icon(_icons[nombreIcono],color: Colors.blue);
+Icon getICon(String nombreIcono) {
+  return Icon(_icons[nombreIcono], color: Colors.blue);
 }
 
-
-void redirection(BuildContext context, String ruta){
-Navigator.pushReplacementNamed(context,ruta);
+void redirection(BuildContext context, String ruta) {
+  Navigator.pushReplacementNamed(context, ruta);
 }
 
 ////////////
 
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-  }
-
-
-Widget crearTitulo(String titulo){
-  return AppBar(
-    backgroundColor: primaryColor,
-    title: Text(titulo,
-      style: TextStyle(
-        fontSize: 18,
-        decorationStyle: TextDecorationStyle.wavy,
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.normal
-      )
-    )
-  );
+Size screenSize(BuildContext context) {
+  return MediaQuery.of(context).size;
 }
 
-final  primaryColor = Color(0xFF2C6983);
-final  colorletra = Color(0xFFACADAD);
+double screenHeight(BuildContext context,
+    {double dividedBy = 1, double reducedBy = 0.0}) {
+  return (screenSize(context).height - reducedBy) / dividedBy;
+}
+
+double screenHeightExcludingToolbar(BuildContext context,
+    {double dividedBy = 1}) {
+  return screenHeight(context, dividedBy: dividedBy, reducedBy: kToolbarHeight);
+}
+
+Widget crearTitulo(String titulo) {
+  return AppBar(
+      backgroundColor: primaryColor,
+      title: Text(titulo,
+          style: TextStyle(
+              fontSize: 18,
+              decorationStyle: TextDecorationStyle.wavy,
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.normal)));
+}
+
+final primaryColor = Color(0xFF2C6983);
+final colorletra = Color(0xFFACADAD);
 final colorplomo = Color(0xFFEAEFF2);
 final colorblanco = Color(0xFFFFFFFF);
 
 Future<String> getDataFromCamera() async {
-  String qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+  String qrbarra =
+      await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
   return qrbarra;
 }
-  BoxDecoration myBoxDecoration(Color colorletra) {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
+
+BoxDecoration myBoxDecoration(Color colorletra) {
+  return BoxDecoration(
+    border: Border.all(color: colorletra),
+  );
+}
+
+void trackingPopUp(BuildContext context, String codigo) async {
+  TrackingInterface trackingCore = new TrackingImpl(new TrackingProvider());
+  double heightCel = 0.6*(MediaQuery.of(context).size.height);
+
+  TrackingModel trackingModel = await trackingCore.mostrarTracking(codigo);
+
+  List<Widget> listadecodigos = new List();
+
+  for (TrackingDetalleModel detalle in trackingModel.detalles) {
+    listadecodigos.add(Container(
+      decoration: myBoxDecoration(colorletra),
+      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.only(top: 5,right: 5,bottom: 5,left: 5),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+      children: <Widget>[
+        Container(child: Text(detalle.fecha,style:  TextStyle(color: colorletra, fontSize: 12),),alignment: Alignment.centerLeft,),
+        Container(child: Text("Creado por " + detalle.remitente,style:  TextStyle(color: colorletra, fontSize: 12)),alignment: Alignment.centerLeft,),
+        Container(child: Text(detalle.area + " - " + detalle.sede,style:  TextStyle(color: Colors.black, fontSize: 12)),alignment: Alignment.centerLeft,),        
+      ],
+    )));
   }
+
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            content: Container(
+              height: heightCel,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+            children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Código',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(trackingModel.codigo,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('De',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(trackingModel.remitente,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Origen',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(trackingModel.origen,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Para',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(trackingModel.destinatario,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Destino',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(
+                            trackingModel.area + " - " + trackingModel.destino,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10,bottom: 30),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Observación',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Text(trackingModel.observacion,
+                            style: TextStyle(color: colorletra)),
+                        flex: 3,
+                      ),
+                    ],
+                  )),
+              Expanded(child:SingleChildScrollView(child:    
+              Column(children: listadecodigos))),
+              /*Container(
+             height: 20,   
+            child:ListView(
+              children:listadecodigos,
+            )
+              )*/
+            ],
+          ),
+            )
+            );
+      });
+}
+

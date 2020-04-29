@@ -83,7 +83,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     Widget crearItem(EnvioInterSedeModel entrega) {
-      int codigoUtd = entrega.utdId;
+      String codigoUtd = entrega.codigo;
       return GestureDetector(
           onLongPress: () {
             setState(() {
@@ -125,36 +125,38 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
               Expanded(
                 child: Container(
                   height: 70,
-                  child:Center(
-                    child: 
-            
-                   validados["$codigoUtd"] == null ||
-                          validados["$codigoUtd"] == false
-                      ? IconButton( 
-                          icon: FaIcon(
-                            FontAwesomeIcons.chevronRight,
+                  child: Center(
+                    child: validados["$codigoUtd"] == null ||
+                            validados["$codigoUtd"] == false
+                        ? IconButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.chevronRight,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (!validados.containsValue(true)) {
+                                principalcontroller.onSearchButtonPressed(
+                                    context, entrega);
+                                setState(() {
+                                  textdestinatario = textdestinatario;
+                                });
+                              }
+                            })
+                        : FaIcon(
+                            FontAwesomeIcons.locationArrow,
                             color: Colors.black,
                             size: 20,
                           ),
-                          onPressed: () {
-                            if (!validados.containsValue(true)) {
-                              principalcontroller.onSearchButtonPressed(
-                                  context, entrega);
-                            }
-                          })
-                      : FaIcon(
-                          FontAwesomeIcons.locationArrow,
-                          color: Colors.black,
-                          size: 20,
-                        ),
-                ), ),
+                  ),
+                ),
                 flex: 1,
               ),
             ]),
           ));
     }
 
-    Widget _crearListado() {
+    Widget _crearListado(String codigo) {
       return FutureBuilder(
           future: principalcontroller.listarAgenciasExternasController(),
           builder: (BuildContext context,
@@ -177,20 +179,17 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NuevoEntregaExternaPage(),
-                ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NuevoEntregaExternaPage(),
+              ));
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Nuevo', style: TextStyle(color: Colors.white)),
       ),
     );
-
-
-
 
     final sendButton2 = Container(
       child: RaisedButton(
@@ -199,15 +198,19 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         ),
         onPressed: () {
           List<String> listid = new List();
-          validados.forEach((k,v)=> v==true?listid.add(k):print("no pertenece") );
-           principalcontroller.listar(context, listid); 
+          validados.forEach(
+              (k, v) => v == true ? listid.add(k) : print("no pertenece"));
+          principalcontroller.listar(context, listid);
+          setState(() {
+            validados.clear();
+            textdestinatario = textdestinatario;
+          });
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Enviar', style: TextStyle(color: Colors.white)),
       ),
     );
-
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -248,19 +251,21 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
               ),
               Expanded(
                 child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
+                    alignment: Alignment.bottomCenter,
+                    child: _crearListado(textdestinatario)),
               ),
-
-              validados.containsValue(true) ?
-          Align(
-                alignment: Alignment.center,
-                child: Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                    width: double.infinity,
-                    child: sendButton2),
-              ): Container(),
+              validados.containsValue(true)
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                          margin: const EdgeInsets.only(bottom: 20),
+                          alignment: Alignment.center,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 8),
+                          width: double.infinity,
+                          child: sendButton2),
+                    )
+                  : Container(),
             ],
           ),
         ));

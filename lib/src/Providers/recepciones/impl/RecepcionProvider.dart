@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
@@ -19,7 +22,7 @@ class RecepcionProvider implements IRecepcionProvider {
   RecorridoModel recorridoModel = new RecorridoModel();
   UtdModel utdModel = new UtdModel();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
-
+  BuzonModel buzonModel = new BuzonModel();
   @override
   Future<List<EnvioModel>> recepcionJumboProvider(String codigo) async {
     Response resp = await req.get(
@@ -96,8 +99,11 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<List<EnvioModel>> listarenviosPrincipal() async{
+    Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
+    int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio-tramite/recorridos/areas//envios/paraentrega');
+        '/servicio/tramite/buzones/$id/envios/confirmacion');
     if (resp.data == "") {
       return null;
     }
@@ -118,10 +124,10 @@ class RecepcionProvider implements IRecepcionProvider {
     EnvioModel envio2 = new EnvioModel();
     envio1.observacion="San Isidro";
     envio1.usuario="Ronald Santos";
-    envio1.codigoPaquete="541534";
-    envio2.observacion="San Isidro";
-    envio2.usuario="Ronald Santos";
-    envio2.codigoPaquete="541534";
+    envio1.codigoPaquete="123456";
+    envio2.observacion="La Molina";
+    envio2.usuario="Crhistian campos";
+    envio2.codigoPaquete="123457";
     listarenvios.add(envio1);
     listarenvios.add(envio2);
 
@@ -133,14 +139,36 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<bool> registrarEnvioPrincipalProvider(String codigopaquete) async {
-    Response resp = await req.post(
+   /* Response resp = await req.post(
         '/servicio-tramite/recorridos/areas/paquetes/$codigopaquete/entrega',
         null,
         null);
     if (resp.data) {
       return true;
     }
+    return false;*/
     return false;
+  }
+
+  @override
+  Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes) async {
+      /* List<String> ids = new List();
+    for (String envio in codigospaquetes) {
+      ids.add(envio);
+    }
+    var listaIds = json.encode(ids);
+    Response resp = await req.post(
+        '/servicio-tramite/recorridos/areas/paquetes/entrega',
+        listaIds,
+        null);
+    if (resp.data) {
+      return true;
+    }
+    return false;*/
+  
+  
+  return false;
+  
   }
 
 }

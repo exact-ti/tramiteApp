@@ -59,5 +59,11 @@ class RecepcionImpl implements RecepcionInterface {
     return respuesta;
   }
 
+  @override
+  Future<bool> registrarListaEnvioPrincipalCore(List<String> codigosPaquete) async {
+     bool respuesta= await recepcion.registrarListaEnvioPrincipalProvider(codigosPaquete);
+    return respuesta;
+  }
+
 
 }

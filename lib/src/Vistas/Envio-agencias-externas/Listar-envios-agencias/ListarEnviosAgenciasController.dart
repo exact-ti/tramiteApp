@@ -10,8 +10,7 @@ class ListarEnviosAgenciasController {
       new AgenciasExternasImpl(new AgenciaExternaProvider());
 
   Future<List<EnvioInterSedeModel>> listarAgenciasExternasController() async {
-    List<EnvioInterSedeModel> entregas =
-        await agenciacore.listarEnviosAgenciasUsuario();
+    List<EnvioInterSedeModel> entregas = await agenciacore.listarEnviosAgenciasUsuario();
     return entregas;
   }
 
@@ -19,7 +18,8 @@ class ListarEnviosAgenciasController {
       BuildContext context, EnvioInterSedeModel enviomodel) async {
     bool respuesta = await agenciacore.iniciarEntregaAgencia(enviomodel);
     if (respuesta) {
-      Navigator.of(context).pushNamed('/envios-agencia');
+     mostrarAlerta(
+          context, "Se inicio la entrega correctamente", "Inicio correcto");
     } else {
       mostrarAlerta(
           context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
@@ -29,7 +29,15 @@ class ListarEnviosAgenciasController {
 
   void listar(
       BuildContext context, List<String> lista) async {
-        print("llego");
+        bool respuesta = await agenciacore.iniciarEntregaListaAgencia(lista);
+            if (respuesta) {
+     mostrarAlerta(
+          context, "Se inicio la entrega correctamente", "Inicio correcto");
+    } else {
+      mostrarAlerta(
+          context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+    }
+
   }
 
 

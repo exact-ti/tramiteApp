@@ -18,13 +18,38 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
 
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciaByUsuario() async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    /*Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
     List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonValidar(envios);
+    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonEntregaExterna(envios);
+    return listEnvio;*/
+
+  List<EnvioInterSedeModel> listEnvio = await listarfake();
     return listEnvio;
+
+  }
+
+
+    Future<List<EnvioInterSedeModel>> listarfake() async{
+    List<EnvioInterSedeModel> listarenvios = new List();
+    EnvioInterSedeModel envio1 = new EnvioInterSedeModel();
+    EnvioInterSedeModel envio2 = new EnvioInterSedeModel();
+    envio1.destino="San Isidro";
+    envio1.numdocumentos=20;
+    envio1.numvalijas=30;
+    envio1.codigo="123456";
+    envio2.destino="La Molina";
+    envio2.numdocumentos=20;
+    envio2.numvalijas=4;
+    envio2.codigo="123457";
+    listarenvios.add(envio1);
+    listarenvios.add(envio2);
+    return Future.delayed(new Duration(seconds: 1), () {
+      return listarenvios;
+    });
+
   }
 
   @override
@@ -74,7 +99,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
 
   @override
   Future<bool> iniciarEntregaExternaIntersede(EnvioInterSedeModel envio) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
+   /* Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.post(
@@ -84,9 +109,39 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     if (resp.data) {
       return true;
     }
+    return false;*/
     return false;
   }
 
+  @override
+  Future<bool> iniciarListaEntregaExternaIntersede(List<String> codigospaquetes) async {
+  /* List<String> ids = new List();
+    for (String envio in codigospaquetes) {
+      ids.add(envio);
+    }
+    var listaIds = json.encode(ids);
+    Response resp = await req.post(
+        '/servicio-tramite/recorridos/areas/paquetes/entrega',
+        listaIds,
+        null);
+    if (resp.data) {
+      return true;
+    }
+    return false;*/
 
+    return true;
+  }
+
+
+
+
+
+
+
+
+
+
+
+    
 
 }

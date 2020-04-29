@@ -46,5 +46,11 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
     return i;
   }
 
+  @override
+  Future<bool> iniciarEntregaListaAgencia(List<String> listaCodigos) async {
+    bool i = await agenciaExterna.iniciarListaEntregaExternaIntersede(listaCodigos);
+    return i;
+  }
+
 
 }

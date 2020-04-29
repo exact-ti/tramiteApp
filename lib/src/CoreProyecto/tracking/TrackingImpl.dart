@@ -13,7 +13,7 @@ class TrackingImpl implements TrackingInterface {
 
   @override
   Future<TrackingModel> mostrarTracking(String codigo) async{
-     TrackingModel tracking = await trackingProvider.mostrarTracking(codigo);
+     TrackingModel tracking = await trackingProvider.mostrarTracking2(codigo);
         return tracking;
   }
 

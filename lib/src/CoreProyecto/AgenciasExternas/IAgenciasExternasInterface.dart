@@ -14,4 +14,6 @@ class IAgenciasExternasInterface {
 
   Future<bool> iniciarEntregaAgencia(EnvioInterSedeModel envio) {}
 
+  Future<bool> iniciarEntregaListaAgencia(List<String> listaCodigos) {}
+
 }

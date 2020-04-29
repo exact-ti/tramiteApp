@@ -49,7 +49,17 @@ class EnvioInterSedeModel {
           return envios;
     }     
 
-
+    List<EnvioInterSedeModel> fromJsonEntregaExterna(List< dynamic> jsons){
+       List<EnvioInterSedeModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioInterSedeModel  envio = new EnvioInterSedeModel();
+            envio.numdocumentos  = json["cantidadItems"];
+            envio.codigo = json["paqueteId"];
+            envio.destino = json["origen"];
+            envios.add(envio);
+        }
+          return envios;
+    }  
   EnvioInterSedeModel fromOneJson(dynamic json){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
             envio.utdId  = json["id"];
