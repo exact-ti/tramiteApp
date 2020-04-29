@@ -1,6 +1,10 @@
 
 
+import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
+
 abstract class IEntregaLoteProvider {
+
+  Future<List<EntregaLoteModel>> listarLotesActivos();  
 
   
 }

@@ -1,15 +1,19 @@
 
 
-import 'package:tramiteapp/src/CoreProyecto/EntregaLote/EntregaLoteImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/EntregaLote/EntregaLoteInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
-import 'package:tramiteapp/src/Providers/lotes/impl/EntregaLoteProvider.dart';
+import 'package:tramiteapp/src/Providers/lotes/IEntregaLoteProvider.dart';
 
-class ListaEntregaLoteController {
+class EntregaLoteImpl implements EntregaLoteInterface{
 
+  
+  IEntregaLoteProvider entregaLote;
 
-  EntregaLoteInterface entregaLote = new EntregaLoteImpl(new EntregaLoteProvider());
-
+  EntregaLoteImpl(IEntregaLoteProvider entregaLote){
+    this.entregaLote = entregaLote;
+  }
+  
+  @override
   Future<List<EntregaLoteModel>> listarLotesActivos() async {
     List<EntregaLoteModel> entregas = await entregaLote.listarLotesActivos();
     return entregas;
