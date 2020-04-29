@@ -16,5 +16,7 @@ abstract class IAgenciaExternaProvider{
     Future<bool> iniciarEntregaExternaIntersede(EnvioInterSedeModel envio);  
 
 
+    Future<bool> iniciarListaEntregaExternaIntersede(List<String> codigospaquetes);  
+
 
 }

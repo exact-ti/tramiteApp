@@ -17,6 +17,7 @@ import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionJumboPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionValijaPage.dart';
 
@@ -45,6 +46,6 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
     '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
-    '/recepcion-inter' :  (BuildContext context) => RecepcionInterPage(),
+    '/recepcion-inter' :  (BuildContext context) => RecepcionEnvioPage(),
   };
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPaqueteEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
@@ -71,7 +72,7 @@ class InterSedeProvider implements IInterSedeProvider {
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp =
-        await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
+        await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaId/paquetes/$codigo/envios');
     if (resp.data == "") {
       return null;
     }
