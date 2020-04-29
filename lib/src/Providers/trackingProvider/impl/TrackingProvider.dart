@@ -98,7 +98,62 @@ class TrackingProvider implements ITrackingProvider {
     });
     }
 
+    if(codigo=="123458"){
+    TrackingModel envio1 = new TrackingModel();
+    TrackingDetalleModel detalle1 = new TrackingDetalleModel();
+    TrackingDetalleModel detalle2 = new TrackingDetalleModel();
+    List<TrackingDetalleModel> detalles = new List();
+    envio1.codigo="123458";
+    envio1.remitente="Lorena Taipe";
+    envio1.origen="diamantes";
+    envio1.destinatario="Orlando Heredia";
+    envio1.destino="Aqui pe";
+    envio1.area="Contabilidad";
+    envio1.observacion="Es una observación simple";
+    detalle1.fecha="Martes jueves";
+    detalle1.remitente="Oscar leon";
+    detalle1.sede="La victoria";
+    detalle1.area="Administración";
+    detalle2.fecha="Miercoles";
+    detalle2.remitente="jorge benavides";
+    detalle2.sede="San miguel";
+    detalle2.area="TI";
+    detalles.add(detalle1);
+    detalles.add(detalle2);
+    envio1.detalles=detalles;
+    return Future.delayed(new Duration(seconds: 1), () {
+      return envio1;
+    });
+    }
 
+
+        if(codigo=="123459"){
+    TrackingModel envio1 = new TrackingModel();
+    TrackingDetalleModel detalle1 = new TrackingDetalleModel();
+    TrackingDetalleModel detalle2 = new TrackingDetalleModel();
+    List<TrackingDetalleModel> detalles = new List();
+    envio1.codigo="123458";
+    envio1.remitente="Romina guardia";
+    envio1.origen="diamantes";
+    envio1.destinatario="Orlando Heredia";
+    envio1.destino="Aqui pe";
+    envio1.area="Contabilidad";
+    envio1.observacion="Es una observación simple";
+    detalle1.fecha="Martes jueves";
+    detalle1.remitente="Oscar leon";
+    detalle1.sede="La victoria";
+    detalle1.area="Administración";
+    detalle2.fecha="Miercoles";
+    detalle2.remitente="jorge benavides";
+    detalle2.sede="San miguel";
+    detalle2.area="TI";
+    detalles.add(detalle1);
+    detalles.add(detalle2);
+    envio1.detalles=detalles;
+    return Future.delayed(new Duration(seconds: 1), () {
+      return envio1;
+    });
+    }
   return null;
   }
 

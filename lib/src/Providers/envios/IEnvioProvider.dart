@@ -11,5 +11,15 @@ abstract class IEnvioProvider{
   //agencias
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario();  
 
+  Future<List<EnvioModel>> listarEnviosActivosByUsuario();  
+
+
+  Future<List<EnvioModel>> listarRecepcionesActivas();  
+
+  Future<List<EnvioModel>> listarEnviosActivosByUsuario2();  
+
+
+  Future<List<EnvioModel>> listarRecepcionesActivas2();  
+
 
 }

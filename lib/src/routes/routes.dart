@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/Entrega
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Listar-turnos/ListarTurnosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-adicionales/recorridoAdicionalPage.dart';
@@ -29,7 +30,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/principal-admin': (BuildContext context) => HomePage(),
     '/generar-envio': (BuildContext context) => PrincipalPage(),
     '/crear-envio': (BuildContext context) => EnvioPage(),
-    '/recorridos': (BuildContext context) => ListarTurnosPage(),
+    //'/recorridos': (BuildContext context) => ListarTurnosPage(),
+    '/recorridos': (BuildContext context) => ListarEnviosActivosPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
     //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),

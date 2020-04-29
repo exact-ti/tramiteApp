@@ -23,6 +23,7 @@ class EnvioImpl implements EnvioInterface {
   }
 
 
+
   @override
   void crearEnvio(EnvioModel envioModel) {
     envio.crearEnvioProvider(envioModel);
@@ -43,6 +44,17 @@ class EnvioImpl implements EnvioInterface {
   @override
   Future<List<EnvioInterSedeModel>> listarAgenciasUsuario()async {
      List<EnvioInterSedeModel> envios = await envio.listarEnvioAgenciasByUsuario();
+      return envios;
+  }
+
+  @override
+  Future<List<EnvioModel>> listarActivos(int switched) async{
+    List<EnvioModel> envios;
+      if(switched==0){
+      envios = await envio.listarEnviosActivosByUsuario2();
+      }else{
+       envios = await envio.listarRecepcionesActivas2();       
+      }
       return envios;
   }
 
