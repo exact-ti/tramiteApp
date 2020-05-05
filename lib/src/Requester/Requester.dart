@@ -31,7 +31,7 @@ class Requester {
         "Accept": "application/json",
       };
       
-      return await _dio.post(
+      return await Dio().post(
         properties['API'] + path,
         data: data,
         options: Options(

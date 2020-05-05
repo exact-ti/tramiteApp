@@ -49,17 +49,6 @@ class _HomePageState extends State<HomePage> {
                 Center(
                     child: Text("Expertos en Gestion Documental",
                         style: TextStyle(fontSize: 20, color: Colors.grey))),
-                FlatButton(
-                  child: Text("Log Out", style: TextStyle(color: Colors.black)),
-                  onPressed: () {
-                    sharedPreferences.clear();
-                    sharedPreferences.commit();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage()),
-                        (Route<dynamic> route) => false);
-                  },
-                )
               ],
             ),
           ),

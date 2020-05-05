@@ -9,8 +9,9 @@ class EnvioInterface {
 
     Future<bool> validarBandejaCodigo(String texto){}
 
-
     Future<List<EnvioInterSedeModel>> listarAgenciasUsuario(){}
+
+    Future<List<EnvioModel>> listarActivos(int switched){}
 
     }
 

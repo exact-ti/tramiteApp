@@ -4,8 +4,10 @@ import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntr
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Listar-turnos/ListarTurnosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-adicionales/recorridoAdicionalPage.dart';
@@ -30,6 +32,7 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/generar-envio': (BuildContext context) => PrincipalPage(),
     '/crear-envio': (BuildContext context) => EnvioPage(),
     '/recorridos': (BuildContext context) => ListarTurnosPage(),
+    //'/recorridos': (BuildContext context) => ListarEnviosActivosPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
     //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
@@ -38,7 +41,9 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
+
     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
+    //'/clasificar-envio' :  (BuildContext context) => NuevoEntregaLotePage(),
     '/entrega-lotes' :  (BuildContext context) => ListaEntregaLotePage(),
     
     '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),

@@ -4,11 +4,13 @@ import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
+import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import '../IEntregaProvider.dart';
 
@@ -21,6 +23,7 @@ class EntregaProvider implements IEntregaProvider {
   RecorridoModel recorridoModel = new RecorridoModel();
   UtdModel utdModel = new UtdModel();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
+  TurnoModel turnoModel = new TurnoModel();
 
   @override
   Future<List<EntregaModel>> listarEntregaporUsuario() async {
@@ -91,6 +94,69 @@ class EntregaProvider implements IEntregaProvider {
     }catch(e){
               return null;
     }
+
+  }
+
+  @override
+  Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo) async{
+    Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos');
+    List<dynamic> envios = resp.data;
+    List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
+    return listEnvio;
+  }
+
+  @override
+  Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
+    try{
+    Response resp = await req.get('/servicio-tramite/turnos/envios/paraagregaralrecorrido?paqueteId=$codigo');
+    if(resp.data==""){
+        return null;
+    }
+        dynamic envio = resp.data;
+    EnvioModel envioMode = envioModel.fromOneJson(envio);
+    return envioMode;
+    }catch(e){
+              return null;
+    }
+  }
+
+  @override
+  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID) async{
+    List<int> ids = new List();
+    for (EnvioModel envio in envios) {
+      ids.add(envio.id);
+    }
+    var listaIds = json.encode(ids);
+    Response resp = await req.post('/servicio-tramite/turnos/recorridos', listaIds, null);
+   if(resp.data){
+     return true;
+   }else{
+     return false;
+   }
+  }
+
+  @override
+  Future<List<TurnoModel>> listarTurnosByCodigoLote2(String codigo) async{
+   List<TurnoModel> turnos = await listarfake(); 
+    return turnos;
+  }
+
+
+    Future<List<TurnoModel>> listarfake() async{
+    List<TurnoModel> listarenvios = new List();
+    TurnoModel envio1 = new TurnoModel();
+    TurnoModel envio2 = new TurnoModel();
+    envio1.id=1;
+    envio1.horaInicio=new DateFormat("HH:mm:ss").parse("09:30:30");
+    envio1.horaFin=new DateFormat("HH:mm:ss").parse("13:30:30");
+    envio2.id=2;
+    envio2.horaInicio=new DateFormat("HH:mm:ss").parse("08:30:30");
+    envio2.horaFin=new DateFormat("HH:mm:ss").parse("14:30:30");
+    listarenvios.add(envio1);
+    listarenvios.add(envio2);
+    return Future.delayed(new Duration(seconds: 1), () {
+      return listarenvios;
+    });
 
   }
 }

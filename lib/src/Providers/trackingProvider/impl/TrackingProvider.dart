@@ -1,17 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-import 'dart:convert';
 
 import '../ITrackingProvider.dart';
 
@@ -98,7 +94,62 @@ class TrackingProvider implements ITrackingProvider {
     });
     }
 
+    if(codigo=="123458"){
+    TrackingModel envio1 = new TrackingModel();
+    TrackingDetalleModel detalle1 = new TrackingDetalleModel();
+    TrackingDetalleModel detalle2 = new TrackingDetalleModel();
+    List<TrackingDetalleModel> detalles = new List();
+    envio1.codigo="123458";
+    envio1.remitente="Lorena Taipe";
+    envio1.origen="diamantes";
+    envio1.destinatario="Orlando Heredia";
+    envio1.destino="Aqui pe";
+    envio1.area="Contabilidad";
+    envio1.observacion="Es una observación simple";
+    detalle1.fecha="Martes jueves";
+    detalle1.remitente="Oscar leon";
+    detalle1.sede="La victoria";
+    detalle1.area="Administración";
+    detalle2.fecha="Miercoles";
+    detalle2.remitente="jorge benavides";
+    detalle2.sede="San miguel";
+    detalle2.area="TI";
+    detalles.add(detalle1);
+    detalles.add(detalle2);
+    envio1.detalles=detalles;
+    return Future.delayed(new Duration(seconds: 1), () {
+      return envio1;
+    });
+    }
 
+
+        if(codigo=="123459"){
+    TrackingModel envio1 = new TrackingModel();
+    TrackingDetalleModel detalle1 = new TrackingDetalleModel();
+    TrackingDetalleModel detalle2 = new TrackingDetalleModel();
+    List<TrackingDetalleModel> detalles = new List();
+    envio1.codigo="123458";
+    envio1.remitente="Romina guardia";
+    envio1.origen="diamantes";
+    envio1.destinatario="Orlando Heredia";
+    envio1.destino="Aqui pe";
+    envio1.area="Contabilidad";
+    envio1.observacion="Es una observación simple";
+    detalle1.fecha="Martes jueves";
+    detalle1.remitente="Oscar leon";
+    detalle1.sede="La victoria";
+    detalle1.area="Administración";
+    detalle2.fecha="Miercoles";
+    detalle2.remitente="jorge benavides";
+    detalle2.sede="San miguel";
+    detalle2.area="TI";
+    detalles.add(detalle1);
+    detalles.add(detalle2);
+    envio1.detalles=detalles;
+    return Future.delayed(new Duration(seconds: 1), () {
+      return envio1;
+    });
+    }
   return null;
   }
 
