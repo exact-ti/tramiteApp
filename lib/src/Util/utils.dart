@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
@@ -7,6 +8,7 @@ import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
@@ -142,9 +144,33 @@ List<Widget> milistview(BuildContext context) {
           title: Text(men.nombre),
           onTap: () => Navigator.pushReplacementNamed(context, men.link)));
     }
+
+  if(_prefs.buzon!=""){
+    list.add(cerrarsesion(context));
+  }
   }
   return list;
 }
+
+Widget cerrarsesion(BuildContext context){
+     return ListTile(
+        leading: Icon(Icons.exit_to_app, color: Colors.blue),
+        title: Text("Cerrar Sesión"),
+        onTap: () {
+          eliminarpreferences(context);
+        });
+}
+
+void eliminarpreferences(BuildContext context) async {
+  SharedPreferences sharedPreferences;
+  sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.clear();
+      sharedPreferences.commit();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+}
+
 
 final _icons = <String, IconData>{
   'add_alert': Icons.add_alert,

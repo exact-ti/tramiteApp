@@ -1,17 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-import 'dart:convert';
 
 import '../ITrackingProvider.dart';
 

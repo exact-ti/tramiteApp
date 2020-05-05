@@ -1,6 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
+import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/IEntregaProvider.dart';
 
 import 'EntregaInterface.dart';
@@ -50,6 +51,24 @@ class EntregaImpl implements EntregaInterface {
   Future<EnvioModel> validarCodigo(String codigo,int id) async{
      EnvioModel envio = await entrega.validarCodigoProvider(codigo,id);
     return envio;
+  }
+
+  @override
+  Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo)async {
+    List<TurnoModel> i = await entrega.listarTurnosByCodigoLote2(codigo);
+    return i;
+  }
+
+  @override
+  Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
+    EnvioModel i = await entrega.listarValijaByCodigoLote(codigo);
+    return i;
+  }
+
+  @override
+  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID) async {
+    bool i = await entrega.registrarLoteLote(envios,turnoID);
+    return i;
   }
 
 

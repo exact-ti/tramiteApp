@@ -1,13 +1,10 @@
-import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/recorridos-propios/recorridoPropioController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
+import 'package:tramiteapp/src/Vistas/Generar-entrega/validar-envios/validarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 
 class RecorridosPropiosPage extends StatefulWidget {
   @override
@@ -113,7 +110,15 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: _onSearchButtonPresseds))
+                               onPressed: () {  
+                                 Navigator.push(
+                                    context,
+                                    MaterialPageRoute( 
+                                      builder: (context) => ValidacionEnvioPage(
+                                          recorridopage: entrega),
+                                    ),
+                                  );
+                                }))
                       ])),
             ]),
       );
@@ -229,5 +234,5 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
     );
   }
 
-  void _onSearchButtonPresseds() {}
+
 }
