@@ -243,7 +243,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: PrimaryColor,
-          title: Text('Dejar documento en palomar',
+          title: Text('Clasificar envios',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,

@@ -37,6 +37,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   String codigoBandeja = "";
   String codigoSobre = "";
   String textdestinatario = "";
+  int numeroRecorrido;
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var listadetinatario;
@@ -53,6 +54,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   int indicebandeja = 0;
   @override
   void initState() {
+    numeroRecorrido=recorridoUsuario.id;
     valuess = "";
     super.initState();
   }
@@ -127,7 +129,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       if (value != "") {
         setState(() {
           codigoBandeja = value;
-          _bandejaController.text = "";
+          _bandejaController.text = value;
         });
       }
     }
@@ -422,7 +424,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
 
     final contenerSwitch2 = Container(
       child:
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
         valorswitch,
         Expanded(
           child: Container(
@@ -442,7 +444,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entrega 1025 en sede',
+          title: Text('Entrega $numeroRecorrido en sede',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,

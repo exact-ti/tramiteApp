@@ -42,8 +42,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
 
-    '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
-    //'/clasificar-envio' :  (BuildContext context) => NuevoEntregaLotePage(),
+    //'/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
+    '/clasificar-envio' :  (BuildContext context) => NuevoEntregaLotePage(),
     '/entrega-lotes' :  (BuildContext context) => ListaEntregaLotePage(),
     
     '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),

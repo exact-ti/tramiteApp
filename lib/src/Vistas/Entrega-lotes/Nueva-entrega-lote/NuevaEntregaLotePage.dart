@@ -300,43 +300,57 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             if (snapshot.hasData) {
               final envios = snapshot.data;
               return new Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFFEAEFF2),
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                        width: 3,
-                        color: Color(0xFFEAEFF2),
-                        style: BorderStyle.solid)),
-                child: Theme(
-                    data: new ThemeData(
-                        canvasColor: Colors.white,
-                        primaryColor: Colors.black,
-                        accentColor: Colors.black,
-                        hintColor: Colors.black),
-                        child: DropdownButton<String>(
-                                        isExpanded: true,
-                      iconEnabledColor: Colors.black,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      hint: new Align(
-                          alignment: Alignment.center,
-                          child: Text("Escoge un turno")),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedFc = newValue;
-                   });
-                  },
-                  items: envios.map((fc) => DropdownMenuItem<String>(
-                            child: Text(
-                                DateFormat('HH:mm:ss').format(fc.horaInicio) +
-                                    "-" +
-                                    DateFormat('HH:mm:ss').format(fc.horaFin)),
-                            value: fc.id.toString(),
-                          ))
-                      .toList())));
+                  decoration: BoxDecoration(
+                      color: Color(0xFFEAEFF2),
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                          width: 3,
+                          color: Color(0xFFEAEFF2),
+                          style: BorderStyle.solid)),
+                  child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                          underline: Container(
+                            height: 2,
+                            color: Color(0xFFEAEFF2),
+                          ),
+                          isExpanded: true,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          hint: new Align(
+                              alignment: Alignment.center,
+                              child: Text("Escoge un turno")),
+                          onChanged: (newValue) {
+                            setState(() {
+                              FocusScope.of(context).requestFocus(new FocusNode());
+                              selectedFc = newValue;
+                            });
+                          },
+                          value: selectedFc,
+                          items: envios
+                              .map((fc) => DropdownMenuItem<String>(
+                                    child: Center(
+                                      child: fc.id.toString() == selectedFc
+                                          ? Container(
+                                              /* decoration: BoxDecoration(
+                                            color: Color(0xFFEAEFF2),
+                                          ),*/
+                                              child: Text(DateFormat('HH:mm:ss')
+                                                      .format(fc.horaInicio) +
+                                                  "-" +
+                                                  DateFormat('HH:mm:ss')
+                                                      .format(fc.horaFin)))
+                                          : Text(DateFormat('HH:mm:ss')
+                                                  .format(fc.horaInicio) +
+                                              "-" +
+                                              DateFormat('HH:mm:ss')
+                                                  .format(fc.horaFin)),
+                                    ),
+                                    value: fc.id.toString(),
+                                  ))
+                              .toList())));
             } else {
               return Row(children: <Widget>[
-                Expanded(
-                  child: new Container(
+                 Container(
                       decoration: BoxDecoration(
                           color: Color(0xFFEAEFF2),
                           borderRadius: BorderRadius.circular(10.0),
@@ -364,16 +378,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                               });
                             },
                           ))),
-                  flex: 5,
-                ),
-                Expanded(
-                  child: Opacity(
-                      opacity: 0.0,
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 15),
-                        child: Icon(Icons.camera_alt),
-                      )),
-                ),
+                 
               ]);
             }
           });
@@ -563,7 +568,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                     : Container(),
               ),*/
               Expanded(
-                  child: codigoSobre==""
+                  child: codigoSobre == ""
                       ? Container()
                       : Container(child: _crearListadoAgregar(codigoSobre))),
               Align(

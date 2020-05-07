@@ -1,12 +1,13 @@
+import 'EntregaEstadoModel.dart';
+
 class EntregaModel {
   int id;
-  String estado;
+  EntregaEstadoModel estado;
   String usuario;
   String nombreTurno;
 
     EntregaModel({
         this.id,
-        this.estado = '',
         this.usuario = '',
         this.nombreTurno = '',
     });
@@ -15,10 +16,14 @@ class EntregaModel {
        List<EntregaModel> entregas= new List();
         for(Map<String, dynamic> json in jsons){
            EntregaModel men = new EntregaModel();
+           EntregaEstadoModel estadoModel = new EntregaEstadoModel();
             men.id  = json["id"];
-            men.estado = json["estado"];
+            Map<String, dynamic> estadoMap = json["estado"];
+            estadoModel.id = estadoMap["id"];
+            estadoModel.nombreEstado =  estadoMap["nombre"];
             men.usuario = json["usuario"];
             men.nombreTurno = json["nombreTurno"];
+            men.estado=estadoModel;
             entregas.add(men);
         }
           return entregas;
