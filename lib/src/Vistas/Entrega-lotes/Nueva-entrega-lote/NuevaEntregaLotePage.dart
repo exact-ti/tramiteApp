@@ -17,6 +17,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
+  List<EnvioModel> listaEnviosVacios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
   NuevoEntregaLotePageController principalcontroller =
@@ -34,6 +35,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   var colorletra = const Color(0xFFACADAD);
   void initState() {
     super.initState();
+    listaEnviosVacios = [];
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
@@ -99,11 +101,13 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             _sobreController.text = "";
             codigoSobre = value;
             listaCodigosValidados.add(value);
+            codigoBandeja = _bandejaController.text;
           });
         } else {
           setState(() {
             _sobreController.text = "";
             codigoSobre = value;
+            codigoBandeja = _bandejaController.text;
           });
         }
       }
@@ -177,7 +181,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (codigoBandeja == "") {
+      if (_bandejaController.text == "") {
         _sobreController.text = "";
         mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
             "Ingreso incorrecto");
@@ -187,8 +191,9 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+              FocusScope.of(context).unfocus();
+        new TextEditingController().clear();
       _validarBandejaText(qrbarra);
     }
 
@@ -267,143 +272,52 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       ),
     );
 
+
+  bool validarContiene(List<EnvioModel> lista,EnvioModel envio ){
+    bool boleano = false;
+    for(EnvioModel en in lista){
+      if(en.id==envio.id){
+        boleano= true;
+      }
+    }
+    return boleano;
+  }
+
     Widget _crearListadoAgregar(String codigoporValidar) {
+      var envio;
       return FutureBuilder(
-          future: principalcontroller.validarCodigo(codigoporValidar, context),
+          future: principalcontroller.validarCodigo(
+              codigoporValidar, context, listaEnvios),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
-              final envio = snapshot.data;
-              if (!listaEnvios.contains(envio)) {
+              envio = snapshot.data;
+            }
+            if (envio != null) {
+              if (!validarContiene(listaEnvios,envio)) {
                 listaEnvios.add(envio);
               }
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) => crearItem(listaEnvios[i], 1));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) => crearItem(listaEnvios[i], 1));
-              } else {
-                return Container();
-              }
             }
+            if(listaEnvios.length==0){
+                return Container();
+            }
+            return ListView.builder(
+                itemCount: listaEnvios.length,
+                itemBuilder: (context, i) => crearItem(listaEnvios[i], 1));
           });
     }
 
-    Widget _crearCombo(String codigo) {
+    Widget _crearCombo(String codigo, List<EnvioModel> lista) {
+      var envios = [];
       return FutureBuilder(
-          future: principalcontroller.listarturnos(context, codigoBandeja),
+          future: principalcontroller.listarturnos(context, codigo),
           builder:
               (BuildContext context, AsyncSnapshot<List<TurnoModel>> snapshot) {
+                codigoBandeja="";
             if (snapshot.hasData) {
-              final envios = snapshot.data;
-              return new Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xFFEAEFF2),
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                          width: 3,
-                          color: Color(0xFFEAEFF2),
-                          style: BorderStyle.solid)),
-                  child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton<String>(
-                          underline: Container(
-                            height: 2,
-                            color: Color(0xFFEAEFF2),
-                          ),
-                          isExpanded: true,
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                          hint: new Align(
-                              alignment: Alignment.center,
-                              child: Text("Escoge un turno")),
-                          onChanged: (newValue) {
-                            setState(() {
-                              FocusScope.of(context).requestFocus(new FocusNode());
-                              selectedFc = newValue;
-                            });
-                          },
-                          value: selectedFc,
-                          items: envios
-                              .map((fc) => DropdownMenuItem<String>(
-                                    child: Center(
-                                      child: fc.id.toString() == selectedFc
-                                          ? Container(
-                                              /* decoration: BoxDecoration(
-                                            color: Color(0xFFEAEFF2),
-                                          ),*/
-                                              child: Text(DateFormat('HH:mm:ss')
-                                                      .format(fc.horaInicio) +
-                                                  "-" +
-                                                  DateFormat('HH:mm:ss')
-                                                      .format(fc.horaFin)))
-                                          : Text(DateFormat('HH:mm:ss')
-                                                  .format(fc.horaInicio) +
-                                              "-" +
-                                              DateFormat('HH:mm:ss')
-                                                  .format(fc.horaFin)),
-                                    ),
-                                    value: fc.id.toString(),
-                                  ))
-                              .toList())));
-            } else {
-              return Row(children: <Widget>[
-                 Container(
-                      decoration: BoxDecoration(
-                          color: Color(0xFFEAEFF2),
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(
-                              width: 3,
-                              color: Color(0xFFEAEFF2),
-                              style: BorderStyle.solid)),
-                      child: Theme(
-                          data: new ThemeData(
-                              canvasColor: Colors.red,
-                              primaryColor: Colors.black,
-                              accentColor: Colors.black,
-                              hintColor: Colors.black),
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            iconEnabledColor: Colors.black,
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                            hint: new Align(
-                                alignment: Alignment.center,
-                                child: Text("Escoge un turno")),
-                            value: selectedFc,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedFc = newValue;
-                              });
-                            },
-                          ))),
-                 
-              ]);
+              envios = snapshot.data;
             }
-          });
-    }
-
-    Widget comboList(String codigo) {
-      if (codigo != "") {
-        return Row(children: <Widget>[
-          Expanded(
-            child: _crearCombo(codigo),
-            flex: 5,
-          ),
-          Expanded(
-            child: Opacity(
-                opacity: 0.0,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 15),
-                  child: Icon(Icons.camera_alt),
-                )),
-          ),
-        ]);
-      } else {
-        return Row(children: <Widget>[
-          Expanded(
-            child: new Container(
+            return new Container(
                 decoration: BoxDecoration(
                     color: Color(0xFFEAEFF2),
                     borderRadius: BorderRadius.circular(10.0),
@@ -411,38 +325,66 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                         width: 3,
                         color: Color(0xFFEAEFF2),
                         style: BorderStyle.solid)),
-                child: Theme(
-                    data: new ThemeData(
-                        canvasColor: Colors.red,
-                        primaryColor: Colors.black,
-                        accentColor: Colors.black,
-                        hintColor: Colors.black),
+                child: ButtonTheme(
+                    alignedDropdown: true,
                     child: DropdownButton<String>(
-                      isExpanded: true,
-                      iconEnabledColor: Colors.black,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      hint: new Align(
-                          alignment: Alignment.center,
-                          child: Text("Escoge un turno")),
-                      value: selectedFc,
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedFc = newValue;
-                        });
-                      },
-                    ))),
-            flex: 5,
-          ),
-          Expanded(
-            child: Opacity(
-                opacity: 0.0,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 15),
-                  child: Icon(Icons.camera_alt),
-                )),
-          ),
-        ]);
-      }
+                        underline: Container(
+                          height: 2,
+                          color: Color(0xFFEAEFF2),
+                        ),
+                        isExpanded: true,
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                        hint: new Align(
+                            alignment: Alignment.center,
+                            child: envios.length!=0 ? Text("Escoge un turno"): Text("- - - - - - - - - - - - -")),
+                        onChanged: (newValue) {
+                          setState(() {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            selectedFc = newValue;
+                          });
+                        },
+                        value: selectedFc,
+                        items: envios
+                            .map((fc) => DropdownMenuItem<String>(
+                                  child: Center(
+                                    child: fc.id.toString() == selectedFc
+                                        ? Container(
+                                            /* decoration: BoxDecoration(
+                                            color: Color(0xFFEAEFF2),
+                                          ),*/
+                                            child: Text(DateFormat('HH:mm:ss')
+                                                    .format(fc.horaInicio) +
+                                                "-" +
+                                                DateFormat('HH:mm:ss')
+                                                    .format(fc.horaFin)))
+                                        : Text(DateFormat('HH:mm:ss')
+                                                .format(fc.horaInicio) +
+                                            "-" +
+                                            DateFormat('HH:mm:ss')
+                                                .format(fc.horaFin)),
+                                  ),
+                                  value: fc.id.toString(),
+                                ))
+                            .toList())));
+          });
+    }
+
+    Widget comboList(String codigo, List<EnvioModel> lista) {
+      return Row(children: <Widget>[
+        Expanded(
+          child: _crearCombo(codigo, lista),
+          flex: 5,
+        ),
+        Expanded(
+          child: Opacity(
+              opacity: 0.0,
+              child: Container(
+                margin: const EdgeInsets.only(left: 15),
+                child: Icon(Icons.camera_alt),
+              )),
+        ),
+      ]);
     }
 
     final campodetextoandIconoSobre = Row(children: <Widget>[
@@ -534,7 +476,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                     height:
                         screenHeightExcludingToolbar(context, dividedBy: 12),
                     width: double.infinity,
-                    child: comboList(codigoBandeja)),
+                    child: comboList(codigoBandeja, listaEnviosVacios)),
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -555,18 +497,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                   margin: const EdgeInsets.only(bottom: 30),
                 ),
               ),
-              /*Align(
-                alignment: Alignment.centerLeft,
-                child: listaEnvios.length != listaCodigosValidados.length
-                    ? Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        height: screenHeightExcludingToolbar(context,
-                            dividedBy: 30),
-                        //width: double.infinity,
-                        child: pendientes(listaEnvios.length))
-                    : Container(),
-              ),*/
               Expanded(
                   child: codigoSobre == ""
                       ? Container()

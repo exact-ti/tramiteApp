@@ -24,6 +24,9 @@ abstract class IEntregaProvider{
 
   Future<EnvioModel> listarValijaByCodigoLote(String codigo){}
 
+  Future<EnvioModel> listarValijaByCodigoLote2(String codigo){}
+
+
   Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID){}
 
 }
