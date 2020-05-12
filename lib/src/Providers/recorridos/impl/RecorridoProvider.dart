@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
@@ -60,16 +62,14 @@ class RecorridoProvider implements IRecorridoProvider {
   }
 
   @override
-  Future<bool> registrarRecojoProvider(
+  Future<dynamic> registrarRecojoProvider(
       String codigo, int recorridoId, String codigopaquete) async {
     Response resp = await req.post(
         '/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/recojo',
         null,
         null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
+        dynamic respuesta = resp.data;
+        return respuesta;
   }
 
   @override

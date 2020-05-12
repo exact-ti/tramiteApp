@@ -42,6 +42,9 @@ class AccesoImpl implements AccesoInterface {
           return null;
         }
 
+        if(!interfaceLogear.containsKey("error")){
+
+
         _prefs.token = interfaceLogear['access_token'];
 
          List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
@@ -76,6 +79,9 @@ class AccesoImpl implements AccesoInterface {
 
         print("LL");
         return interfaceLogear;
+                }else{
+                  return null;
+                }
   
   }
 }

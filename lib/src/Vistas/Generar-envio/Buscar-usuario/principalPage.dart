@@ -111,88 +111,24 @@ class _PrincipalPageState extends State<PrincipalPage> {
     Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
       colorwidget = colorplomo;
+      List<UsuarioFrecuente> usuarios =[];
       return FutureBuilder(
           future: principalcontroller.listarUsuariosporFiltro(texto),
           builder: (BuildContext context,
               AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
             if (snapshot.hasData) {
               booleancolor = true;
-              final usuarios = snapshot.data;
+              usuarios = snapshot.data;
+            }
               return ListView.builder(
                   itemCount: usuarios.length,
                   itemBuilder: (context, i) => crearItem(usuarios[i]));
-            } else {
-              return ListView.builder(
-                  itemCount: 1, itemBuilder: (context, i) => crearItemVacio());
-            }
+
           });
     }
 
     Widget _myListView(String buscador) {
-      List<Widget> list = new List<Widget>();
-      List<Map<String, dynamic>> listadestinataris;
-      if (buscador == "") {
-        //listadestinataris = principalcontroller.listarusuariosfrecuentes();
-        return _crearListado();
-
-        /*setState(() {
-            if(nuevo==2){
-              prueba=null;
-            }else{
-            prueba=Text("Usuarios frecuentes",style: TextStyle(
-            fontSize: 15,color: Color(0xFFACADAD)));
-            }
-            nuevo++;
-          });*/
-      } else {
-        //listadestinataris = principalcontroller.ListarDestinario(buscador);
         return _crearListadoporfiltro(buscador);
-        /*setState(() {
-              prueba=null;
-          });*/
-      }
-
-/*
-      if(listadestinataris==null /*|| buscador.length<2*/){
-          list.add(new  Container(
-            child: new ListTile(
-            title: new Text(""),
-            )));
-
-       return new ListView(children: list
-      );
-      }
-
-      var booleancolor = true;
-      var colorwidget = colorblanco; 
-      for (Map<String,dynamic> destinatario in listadestinataris) {
-        
-        if(booleancolor){
-            colorwidget = colorplomo;
-            booleancolor=false;
-        }else{
-          colorwidget= colorblanco;
-            booleancolor=true;
-        }  
-
-        list.add(new  Container(
-            child: new ListTile(
-            onTap: () {},     
-            title: new Text(destinatario.nombre,style: TextStyle(
-            fontSize: 15)),
-            subtitle:new Text(destinatario.sede + " - "+ destinatario.area,style: TextStyle(
-            fontSize: 12)) ,
-            trailing:Icon(Icons.keyboard_arrow_right,color:Color(0xffC7C7C7) ,)
-            ),     
-            //height: 70,
-            alignment: Alignment.center,
-            decoration: new BoxDecoration(
-            color: colorwidget,
-            border: new Border(top: BorderSide(color:colorborde))
-            )));
-      }
-      return new ListView(children: list
-      );*/
     }
 
     String _text = "";

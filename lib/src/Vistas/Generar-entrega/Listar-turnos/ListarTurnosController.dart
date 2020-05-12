@@ -16,7 +16,7 @@ class ListarTurnosController {
     return entregas;
   }
 
-  onSearchButtonPressed(BuildContext context, EntregaModel entrega) {
+  void onSearchButtonPressed(BuildContext context, EntregaModel entrega) {
     RecorridoModel recorridoModel = new RecorridoModel();
     recorridoModel.id = entrega.id;
     if (entrega.estado.id == 1) {

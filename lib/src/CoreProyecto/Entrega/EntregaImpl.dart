@@ -66,8 +66,8 @@ class EntregaImpl implements EntregaInterface {
   }
 
   @override
-  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID) async {
-    bool i = await entrega.registrarLoteLote(envios,turnoID);
+  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async {
+    bool i = await entrega.registrarLoteLote(envios,turnoID,codigo);
     return i;
   }
 

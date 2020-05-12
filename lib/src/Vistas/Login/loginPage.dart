@@ -16,9 +16,9 @@ class _LoginPageState extends State<LoginPage> {
   SharedPreferences sharedPreferences;
 
   @override
-  void initState() {
+  void initState() { 
     super.initState();  
-    checkLoginStatus();
+   checkLoginStatus();
   }
 
   checkLoginStatus() async {

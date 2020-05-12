@@ -22,7 +22,7 @@ class EntregaInterface {
 
     Future<EnvioModel> listarValijaByCodigoLote(String codigo){}
 
-    Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID){}
+    Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo){}
 
 
 

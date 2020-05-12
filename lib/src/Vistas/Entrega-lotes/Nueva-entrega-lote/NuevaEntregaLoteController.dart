@@ -19,8 +19,7 @@ class NuevoEntregaLotePageController {
     if (codigo == "") {
       return null;
     }
-    List<TurnoModel> turnos =
-        await entregaCore.listarTurnosByCodigoLote(codigo);
+    List<TurnoModel> turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
 
     if (turnos == null) {
       mostrarAlerta(context, "No hay turnos asignados", "Mensaje");
@@ -60,11 +59,12 @@ class NuevoEntregaLotePageController {
 
   void confirmacionDocumentosValidados(List<EnvioModel> enviosvalidados,
       BuildContext context, int id, String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    bool respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id);
+    bool respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id,codigo);
     if (respuesta) {
       confirmarAlerta(
           context, "Se ha registrado correctamente la valija", "Registro");
+      Navigator.of(context).pushNamedAndRemoveUntil(
+                "/clasificar-envio", (Route<dynamic> route) => false);
     } else {
       mostrarAlerta(
           context, "No se completó el registro de la entrega", "Mensaje");

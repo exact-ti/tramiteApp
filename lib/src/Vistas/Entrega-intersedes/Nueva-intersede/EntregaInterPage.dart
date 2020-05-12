@@ -7,11 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
-
-
   @override
-  _NuevoIntersedePageState createState() =>
-      new _NuevoIntersedePageState();
+  _NuevoIntersedePageState createState() => new _NuevoIntersedePageState();
 }
 
 class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
@@ -19,8 +16,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
-  List<EnvioModel> listaEnviosNoValidados = new List();
+  List<EnvioModel> listaEnviosValidados = [];
+  List<EnvioModel> listaEnviosNoValidados = [];
   EntregaregularController principalcontroller = new EntregaregularController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
@@ -64,25 +61,23 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-              if(_bandejaController.text==""){
-                mostrarAlerta(context, "Debe ingresar el codigo de bandeja","Mensaje" );
-              }else{
-              listarNovalidados();
-              codigoSobre="";
-              if (listaEnviosNoValidados.length == 0) { 
-                principalcontroller.confirmacionDocumentosValidadosEntrega(
-                    listaEnviosValidados,
-                    context,
-                    codigoBandeja);
-              codigoBandeja="";                    
+              if (_bandejaController.text == "") {
+                mostrarAlerta(
+                    context, "Debe ingresar el codigo de bandeja", "Mensaje");
               } else {
-                confirmarNovalidados(
-                    context,
-                    "Te faltan asociar estos documentos",
-                    listaEnviosNoValidados);
+                listarNovalidados();
+                codigoSobre = "";
+                if (listaEnviosNoValidados.length == 0) {
+                  principalcontroller.confirmacionDocumentosValidadosEntrega(
+                      listaEnviosValidados, context, codigoBandeja);
+                  codigoBandeja = "";
+                } else {
+                  confirmarNovalidados(
+                      context,
+                      "Te faltan asociar estos documentos",
+                      listaEnviosNoValidados);
+                }
               }
-              }
-
             },
             color: Color(0xFF2C6983),
             child:
@@ -113,15 +108,42 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       }
     }
 
+    void validarLista(String codigo) async {
+      listaEnvios =
+          await principalcontroller.listarEnviosEntrega(context, codigo);
+      if (listaEnvios != null) {
+        setState(() {
+          codigoSobre = "";
+          listaEnvios=listaEnvios;
+          listaCodigosValidados.clear();
+          _sobreController.text = "";
+          codigoBandeja = codigo;
+          _bandejaController.text = codigo;
+        });
+      } else {
+        setState(() {
+          listaCodigosValidados.clear();
+          _sobreController.text = "";
+                    codigoSobre = "";
+          listaEnvios=listaEnvios;
+          codigoBandeja = codigo;
+                    _bandejaController.text = codigo;
+
+        });
+      }
+    }
+
     void _validarBandejaText(String value) {
       if (value != "") {
-        setState(() {
-          codigoSobre="";
+        validarLista(value);
+      } else {
+        mostrarAlerta(context, "La bandeja es obligatoria", "mensaje");
+                setState(() {
           listaEnvios.clear();
           listaCodigosValidados.clear();
-          _sobreController.text="";
-          codigoBandeja = value;
-          _bandejaController.text = value;
+          _sobreController.text = "";
+                    codigoSobre = "";
+
         });
       }
     }
@@ -216,44 +238,15 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       return Text("Quedan $cantidad documentos pendientes");
     }*/
 
-    Widget _crearListado(List<String> validados) {
-      return FutureBuilder(
-          future: principalcontroller.listarEnviosEntrega(
-              context, codigoBandeja),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              final envios = snapshot.data;
-              return Container(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  /*Align(
-                    child: Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        height: screenHeightExcludingToolbar(context,
-                            dividedBy: 30),
-                        //width: double.infinity,
-                        child: pendientes(envios.length)),
-                  ),*/
-                  Expanded(
-                      child: ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(envios[i], validados, 1)))
-                ],
-              ));
-            } else {
-              return Container();
-            }
-          });
-    }
+    Widget _crearListadoinMemoria(List<EnvioModel> envios,List<String> validados) {
+      List<EnvioModel> listaenvios=[];
+      if(envios!=null){
+          listaenvios=envios;
+      }
 
-    Widget _crearListadoinMemoria(List<String> validados) {
       return ListView.builder(
-          itemCount: listaEnvios.length,
-          itemBuilder: (context, i) => crearItem(listaEnvios[i], validados, 0));
+          itemCount: listaenvios.length,
+          itemBuilder: (context, i) => crearItem(listaenvios[i], validados, 0));
     }
 
     var bandeja = TextFormField(
@@ -323,18 +316,18 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(codigoBandeja,
-              codigoporValidar, context),
+          future: principalcontroller.validarCodigoEntrega(
+              codigoBandeja, codigoporValidar, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
               final envio = snapshot.data;
-              if(!listaEnvios.contains(envio)){
-              listaEnvios.add(envio);
-              }  
-              if(!validados.contains(envio.codigoPaquete)){
-              validados.add(envio.codigoPaquete);
-              }                              
+              if (!listaEnvios.contains(envio)) {
+                listaEnvios.add(envio);
+              }
+              if (!validados.contains(envio.codigoPaquete)) {
+                validados.add(envio.codigoPaquete);
+              }
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
@@ -352,12 +345,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           });
     }
 
-    Widget _validarListado(List<String> validados, String codigo) {
+    Widget _validarListado(List<EnvioModel> lista, List<String> validados, String codigo) {
       if (codigo == "") {
-        return _crearListado(validados);
+        return _crearListadoinMemoria(lista,validados);
       } else {
         if (validados.contains(codigo)) {
-          return _crearListadoinMemoria(validados);
+          return _crearListadoinMemoria(lista,validados);
         } else {
           return _crearListadoAgregar(validados, codigo);
         }
@@ -472,7 +465,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   child: codigoBandeja == ""
                       ? Container()
                       : Container(
-                          child: _validarListado(
+                          child: _validarListado(listaEnvios,
                               listaCodigosValidados, codigoSobre))),
               Align(
                 alignment: Alignment.center,
@@ -538,12 +531,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                                                                   codigoValidar = "";
                                                                    codigoBandeja = "";
                                                                    codigoSobre = "";*/
-                     codigoSobre = "";  
-                                                             
+                    codigoSobre = "";
+
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados,
-                        context,
-                        codigoBandeja);
+                        listaEnviosValidados, context, codigoBandeja);
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(
@@ -557,7 +548,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           );
         });
   }
-
 }
 
 //                  Navigator.of(context).pushNamed(men.link);

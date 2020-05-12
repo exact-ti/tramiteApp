@@ -101,118 +101,113 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 100,
+                            height: 100,
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: principalcontroller.onSearchButtonPressed(context, entrega)))
-                                                      ])),
-                                            ]),
-                                      );
-                                    }
-                                
-                                    Widget crearItemVacio() {
-                                      return Container();
-                                    }
-                                
-                                    Widget _crearListado() {
-                                      booleancolor = true;
-                                      colorwidget = colorplomo;
-                                      return FutureBuilder(
-                                          future: principalcontroller.listarentregasController(),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<List<EntregaModel>> snapshot) {
-                                            if (snapshot.hasData) {
-                                              booleancolor = true;
-                                              colorwidget = colorplomo;
-                                              final entregas = snapshot.data;
-                                              return ListView.builder(
-                                                  itemCount: entregas.length,
-                                                  itemBuilder: (context, i) => crearItem(entregas[i]));
-                                            } else {
-                                              return Container();
-                                            }
-                                          });
-                                    }
-                                
-                                    final sendButton = Container(
-                                        //margin: const EdgeInsets.only(top: 10),
-                                        child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                      child: RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pushNamed('/entregas-pisos-propios');
-                                        },
-                                        color: Color(0xFF2C6983),
-                                        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                        child: Text('Nueva entrega', style: TextStyle(color: Colors.white)),
-                                      ),
-                                    ));
-                                
-                                    const PrimaryColor = const Color(0xFF2C6983);
-                                    return Scaffold(
-                                        appBar: AppBar(
-                                          backgroundColor: PrimaryColor,
-                                          actions: [
-                                            IconButton(
-                                              icon: Icon(Icons.notifications),
-                                              onPressed: () {},
-                                            )
-                                          ],
-                                          title: Text('Entregas en sede',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  decorationStyle: TextDecorationStyle.wavy,
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.normal)),
-                                        ),
-                                        drawer: sd.crearMenu(context),
-                                        body: Padding(
-                                          padding: const EdgeInsets.only(left: 20, right: 20),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                            children: <Widget>[
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Container(
-                                                    alignment: Alignment.centerLeft,
-                                                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                                                    width: double.infinity,
-                                                    child: sendButton),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                    alignment: Alignment.bottomCenter, child: _crearListado()),
-                                              )
-                                            ],
-                                          ),
-                                        ));
-                                  }
-                                
-                                  Size screenSize(BuildContext context) {
-                                    return MediaQuery.of(context).size;
-                                  }
-                                
-                                  double screenHeight(BuildContext context,
-                                      {double dividedBy = 1, double reducedBy = 0.0}) {
-                                    return (screenSize(context).height - reducedBy) / dividedBy;
-                                  }
-                                
-                                  double screenHeightExcludingToolbar(BuildContext context,
-                                      {double dividedBy = 1}) {
-                                    return screenHeight(context,
-                                        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-                                  }
-                                
-                                
-                                  BoxDecoration myBoxDecoration() {
-                                    return BoxDecoration(
-                                      border: Border.all(color: colorletra),
-                                    );
-                                  }
-                                
-                                  
+                                onPressed:(){
+                                  principalcontroller.onSearchButtonPressed(context, entrega);
+                                } ))
+                      ])),
+            ]),
+      );
+    }
+
+    Widget _crearListado() {
+      booleancolor = true;
+      colorwidget = colorplomo;
+      return FutureBuilder(
+          future: principalcontroller.listarentregasController(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<EntregaModel>> snapshot) {
+            if (snapshot.hasData) {
+              booleancolor = true;
+              colorwidget = colorplomo;
+              final entregas = snapshot.data;
+              return ListView.builder(
+                  itemCount: entregas.length,
+                  itemBuilder: (context, i) => crearItem(entregas[i]));
+            } else {
+              return Container();
+            }
+          });
+    }
+
+    final sendButton = Container(
+        //margin: const EdgeInsets.only(top: 10),
+        child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed('/entregas-pisos-propios');
+        },
+        color: Color(0xFF2C6983),
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        child: Text('Nueva entrega', style: TextStyle(color: Colors.white)),
+      ),
+    ));
+
+    const PrimaryColor = const Color(0xFF2C6983);
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: PrimaryColor,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.notifications),
+              onPressed: () {},
+            )
+          ],
+          title: Text('Entregas en sede',
+              style: TextStyle(
+                  fontSize: 18,
+                  decorationStyle: TextDecorationStyle.wavy,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.normal)),
+        ),
+        drawer: sd.crearMenu(context),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
+                    width: double.infinity,
+                    child: sendButton),
+              ),
+              Expanded(
+                child: Container(
+                    alignment: Alignment.bottomCenter, child: _crearListado()),
+              )
+            ],
+          ),
+        ));
+  }
+
+  Size screenSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
+  double screenHeight(BuildContext context,
+      {double dividedBy = 1, double reducedBy = 0.0}) {
+    return (screenSize(context).height - reducedBy) / dividedBy;
+  }
+
+  double screenHeightExcludingToolbar(BuildContext context,
+      {double dividedBy = 1}) {
+    return screenHeight(context,
+        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+  }
+
+  BoxDecoration myBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(color: colorletra),
+    );
+  }
 }

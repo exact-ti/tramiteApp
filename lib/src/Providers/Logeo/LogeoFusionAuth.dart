@@ -10,15 +10,12 @@ class LogeoFusionAuth implements LogeoInterface {
         {'username': username, 'password': password, 'grant_type': 'password'});
     Requester req = Requester();
 
-    try{
 
     final resp = await req.login("/servicio-oauth/oauth/token", formData);
     Map<String, dynamic> decodedResp = resp.data;
     return decodedResp;
 
-    }catch(e){
-      return null;
-    }
+
     
     
     

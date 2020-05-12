@@ -150,9 +150,11 @@ return null;
 
 
   @override
-  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID) async{
+  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
     List<int> ids = new List();
-    for (EnvioModel envio in envios) {
+    List<EnvioModel> envios2 = envios;
+    print(codigo+"$turnoID");
+   /* for (EnvioModel envio in envios) {
       ids.add(envio.id);
     }
     var listaIds = json.encode(ids);
@@ -161,7 +163,9 @@ return null;
      return true;
    }else{
      return false;
-   }
+   }*/
+
+   return true;
   }
 
   @override

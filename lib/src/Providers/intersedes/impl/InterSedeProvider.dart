@@ -20,6 +20,7 @@ class InterSedeProvider implements IInterSedeProvider {
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioByUsuario() async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
+    print("sadsa");
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
@@ -71,8 +72,7 @@ class InterSedeProvider implements IInterSedeProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaId/paquetes/$codigo/envios');
+    Response resp =await req.get('/servicio-tramite/utds/1/tipospaquetes/$valijaId/paquetes/$codigo/envios');
     if (resp.data == "") {
       return null;
     }
@@ -110,7 +110,7 @@ class InterSedeProvider implements IInterSedeProvider {
     }
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo', listaIds, null);
+        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$entregaValijaId/entregas', listaIds, null);
     int idresp = resp.data;
     return idresp;
   }
