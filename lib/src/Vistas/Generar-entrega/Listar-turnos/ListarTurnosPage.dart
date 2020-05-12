@@ -1,11 +1,6 @@
-import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -16,7 +11,6 @@ class ListarTurnosPage extends StatefulWidget {
 
 class _ListarTurnosPageState extends State<ListarTurnosPage> {
   ListarTurnosController principalcontroller = new ListarTurnosController();
-  EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
@@ -55,7 +49,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
     Widget informacionEntrega(EntregaModel entrega) {
       String recorrido = entrega.nombreTurno;
-      String estado = entrega.estado;
+      String estado = entrega.estado.nombreEstado;
       String usuario = entrega.usuario;
 
       return Container(
@@ -107,18 +101,16 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 100,
+                            height: 100,
                             child: IconButton(
                                 icon: Icon(Icons.keyboard_arrow_right,
                                     color: Color(0xffC7C7C7), size: 50),
-                                onPressed: _onSearchButtonPressed))
+                                onPressed:(){
+                                  principalcontroller.onSearchButtonPressed(context, entrega);
+                                } ))
                       ])),
             ]),
       );
-    }
-
-    Widget crearItemVacio() {
-      return Container();
     }
 
     Widget _crearListado() {
@@ -212,8 +204,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-
-  void _onSearchButtonPressed() {}
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(

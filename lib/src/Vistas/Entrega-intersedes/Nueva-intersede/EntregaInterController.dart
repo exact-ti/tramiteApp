@@ -32,10 +32,9 @@ class EntregaregularController {
 
   Future<List<EnvioModel>> listarEnviosEntrega(
       BuildContext context, String codigo) async {
-    List<EnvioModel> recorridos =
-        await intersedeInterface.listarEnviosByCodigo(codigo);
+    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
 
-    if (recorridos.isEmpty) {
+    if (recorridos==null) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
     }
     return recorridos;
@@ -43,7 +42,7 @@ class EntregaregularController {
 
   void recogerdocumento(
       int id, String codigo, String paquete, bool opcion) async {
-    recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);
+   /* recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);*/
   }
 
   void redirectMiRuta(RecorridoModel recorrido, BuildContext context) async {

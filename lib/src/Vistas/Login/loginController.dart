@@ -24,7 +24,7 @@ class LoginController {
     print("adsa");
     accesoInterface.login(username, password).then((data) {
       print(data);
-      if (data == null) {
+      if (data==null) {
         mostrarAlerta(context, 'El usuario y contraseña son incorrectos',
             'Información incorrecta');
       } else {

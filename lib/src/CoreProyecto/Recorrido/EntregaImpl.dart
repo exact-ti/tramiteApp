@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/recorridos/IRecorridoProvider.dart';
 import 'RecorridoInterface.dart';
@@ -21,18 +23,20 @@ class RecorridoImpl implements RecorridoInterface {
     return envios;
   }
 
-  @override
-  Future<bool> registrarRecorridoCore(String codigoArea, int recorridoId,
-      String codigoPaquete, bool opcion) async {
-    bool respuesta;
+    @override
+  Future<bool> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion) async {
+    bool respuesta = await recorrido.registrarEntregaProvider(
+          codigoArea, recorridoId, codigoPaquete);
+    return respuesta;      
+  }
 
-    if (opcion) {
-      respuesta = await recorrido.registrarRecojoProvider(
+  @override
+  Future<dynamic> registrarRecorridoRecojoCore(String codigoArea, int recorridoId,
+      String codigoPaquete, bool opcion) async {
+    
+      dynamic respuesta = await recorrido.registrarRecojoProvider(
           codigoArea, recorridoId, codigoPaquete);
-    } else {
-      respuesta = await recorrido.registrarEntregaProvider(
-          codigoArea, recorridoId, codigoPaquete);
-    }
+
     return respuesta;
   }
 
@@ -43,4 +47,6 @@ class RecorridoImpl implements RecorridoInterface {
         dni, recorridoId, codigopaquete);
     return respuesta;
   }
+
+
 }

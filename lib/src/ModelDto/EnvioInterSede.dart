@@ -6,6 +6,7 @@ class EnvioInterSedeModel {
   int utdId;
   int numdocumentos;
   int numvalijas;
+  int entregaID;
   String destino;
   String codigo;
   EstadoEnvio estadoEnvio;
@@ -44,6 +45,7 @@ class EnvioInterSedeModel {
             envio.numdocumentos  = json["cantidadItems"];
             envio.codigo = json["paqueteId"];
             envio.destino = json["origen"];
+            envio.numvalijas =json["cantidadEntregas"];
             envios.add(envio);
         }
           return envios;
@@ -56,6 +58,7 @@ class EnvioInterSedeModel {
             envio.numdocumentos  = json["cantidadItems"];
             envio.codigo = json["paqueteId"];
             envio.destino = json["origen"];
+            envio.entregaID = json["id"];
             envios.add(envio);
         }
           return envios;

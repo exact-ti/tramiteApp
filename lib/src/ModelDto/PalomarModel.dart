@@ -18,6 +18,8 @@ class PalomarModel {
     palomar.codigo = json["codigo"];
     palomar.fila = json["fila"];
     palomar.columna = json["columna"];
+    dynamic tipopalomar = json["tipoPalomar"];
+    palomar.tipo = tipopalomar["nombre"];
     return palomar;
   }
 

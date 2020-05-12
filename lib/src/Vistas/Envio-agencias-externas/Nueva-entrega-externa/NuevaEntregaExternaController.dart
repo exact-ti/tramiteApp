@@ -13,16 +13,17 @@ import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart'
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
-
 class NuevoEntregaExternaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
-  InterSedeInterface intersedeInterface =new InterSedeImpl(new InterSedeProvider());
-  IAgenciasExternasInterface agenciacore = new AgenciasExternasImpl(new AgenciaExternaProvider());
+  InterSedeInterface intersedeInterface =
+      new InterSedeImpl(new InterSedeProvider());
+  IAgenciasExternasInterface agenciacore =
+      new AgenciasExternasImpl(new AgenciaExternaProvider());
 
-    Future<List<EnvioModel>> listarEnviosEntrega(BuildContext context,
-      String codigo) async {
-
-    List<EnvioModel> recorridos= await agenciacore.listarEnviosAgenciasByCodigo(codigo);
+  Future<List<EnvioModel>> listarEnviosEntrega(
+      BuildContext context, String codigo) async {
+    List<EnvioModel> recorridos =
+        await agenciacore.listarEnviosAgenciasByCodigo(codigo);
 
     if (recorridos.isEmpty) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
@@ -30,9 +31,9 @@ class NuevoEntregaExternaController {
     return recorridos;
   }
 
-    Future<EnvioModel> validarCodigoEntrega(
+  Future<EnvioModel> validarCodigoEntrega(
       String codigo, BuildContext context) async {
-    EnvioModel envio= await agenciacore.validarCodigoAgencia(codigo);
+    EnvioModel envio = await agenciacore.validarCodigoAgencia(codigo);
     if (envio == null) {
       mostrarAlerta(
           context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
@@ -41,18 +42,15 @@ class NuevoEntregaExternaController {
     return envio;
   }
 
-
-
-  void confirmacionDocumentosValidadosEntrega(
-     
-      List<EnvioModel> enviosvalidados,
-      BuildContext context,
-
-      String codigo) async {
+  void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
+      BuildContext context, String codigo) async {
     RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await agenciacore.listarEnviosAgenciasValidados(enviosvalidados, codigo);
-    confirmarAlerta(context, "Se ha registrado correctamente el envio", "Registro");
+    recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
+        enviosvalidados, codigo);
+    confirmarAlerta(
+        context, "Se ha registrado correctamente el envio", "Registro");
   }
+
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
     showDialog(
         context: context,
@@ -62,9 +60,10 @@ class NuevoEntregaExternaController {
             content: Text(mensaje),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(context).pushNamed('/envios-agencia'),
-                  )
+                child: Text('Ok'),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/envios-agencia'),
+              )
             ],
           );
         });

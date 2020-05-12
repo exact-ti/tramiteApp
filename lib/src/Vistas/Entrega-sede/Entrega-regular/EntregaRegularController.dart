@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
@@ -13,22 +15,26 @@ class EntregaregularController {
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       int id, String codigo, bool opcion) async {
-    List<EnvioModel> recorridos =
-        await recorridoCore.enviosCore(codigo, id, opcion);
+    List<EnvioModel> recorridos = await recorridoCore.enviosCore(codigo, id, opcion);
         if(recorridos.isEmpty){
             mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
         }
     return recorridos;
   }
 
-  void recogerdocumento(BuildContext context,
+  Future< dynamic> recogerdocumentoRecojo(BuildContext context,
       int id, String codigo, String paquete, bool opcion) async {
-    bool respuesta = await recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);
-    if(respuesta==false){
-      mostrarAlerta(context,"No se pudo completar la operación", "Código incorrecto");
-    }
-
+     dynamic respuesta = await recorridoCore.registrarRecorridoRecojoCore(codigo, id, paquete, opcion);
+      return respuesta;
   }
+
+  Future<bool> recogerdocumentoEntrega(BuildContext context,
+      int id, String codigo, String paquete, bool opcion) async {
+    bool respuesta = await recorridoCore.registrarRecorridoEntregaCore(codigo, id, paquete, opcion);
+      return respuesta;
+  }
+
+
 
   void redirectMiRuta(RecorridoModel recorrido, BuildContext context) async {
     recorrido.indicepagina = 2;

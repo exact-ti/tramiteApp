@@ -32,7 +32,7 @@ class GenerarRutaController {
         ),
       );
       }else{
-              Navigator.of(context).pushNamed('/entregas-pisos');
+              Navigator.of(context).pushNamed('/recorridos');
       }
     }
   }

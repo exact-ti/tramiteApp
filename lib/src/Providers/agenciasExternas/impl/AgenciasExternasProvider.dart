@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPaqueteEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
@@ -18,16 +19,16 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
 
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciaByUsuario() async {
-    /*Map<String, dynamic> utd = json.decode(_prefs.utd);
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
+    Response resp = await req.get('/servicio-tramite/utds/$id/gruposagencias/activos');
     List<dynamic> envios = resp.data;
     List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonEntregaExterna(envios);
-    return listEnvio;*/
-
-  List<EnvioInterSedeModel> listEnvio = await listarfake();
     return listEnvio;
+
+  /*List<EnvioInterSedeModel> listEnvio = await listarfake();
+    return listEnvio;*/
 
   }
 
@@ -58,7 +59,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp =
-        await req.get('/servicio-tramite/utds/$id/paquetes/$codigo/envios');
+        await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
@@ -92,7 +93,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     }
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo', listaIds, null);
+        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$valijaExternaId/entregas', listaIds, null);
     int idresp = resp.data;
     return idresp;
   }

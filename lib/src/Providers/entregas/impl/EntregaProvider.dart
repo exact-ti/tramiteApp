@@ -120,10 +120,41 @@ class EntregaProvider implements IEntregaProvider {
     }
   }
 
+    @override
+  Future<EnvioModel> listarValijaByCodigoLote2(String codigo) async{
+   EnvioModel turnos = await listarfake2(codigo); 
+    return turnos;
+  }
+
+
+  Future<EnvioModel> listarfake2(String codigo) async{
+
+    if(codigo=="2000007"){
+           EnvioModel  envio = new EnvioModel();
+            envio.id  = 1;
+            envio.codigoPaquete = "2000007";
+          return envio;
+    }
+
+    if(codigo=="2000008"){
+           EnvioModel  envio = new EnvioModel();
+            envio.id  = 2;
+            envio.codigoPaquete = "2000008";
+          return envio;
+    }
+return null;
+
+  }
+
+
+
+
   @override
-  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID) async{
+  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
     List<int> ids = new List();
-    for (EnvioModel envio in envios) {
+    List<EnvioModel> envios2 = envios;
+    print(codigo+"$turnoID");
+   /* for (EnvioModel envio in envios) {
       ids.add(envio.id);
     }
     var listaIds = json.encode(ids);
@@ -132,17 +163,21 @@ class EntregaProvider implements IEntregaProvider {
      return true;
    }else{
      return false;
-   }
+   }*/
+
+   return true;
   }
 
   @override
   Future<List<TurnoModel>> listarTurnosByCodigoLote2(String codigo) async{
-   List<TurnoModel> turnos = await listarfake(); 
+   List<TurnoModel> turnos = await listarfake(codigo); 
     return turnos;
   }
 
 
-    Future<List<TurnoModel>> listarfake() async{
+    Future<List<TurnoModel>> listarfake(String codigo) async{
+    
+    if(codigo=="A000001"){
     List<TurnoModel> listarenvios = new List();
     TurnoModel envio1 = new TurnoModel();
     TurnoModel envio2 = new TurnoModel();
@@ -157,6 +192,9 @@ class EntregaProvider implements IEntregaProvider {
     return Future.delayed(new Duration(seconds: 1), () {
       return listarenvios;
     });
+    }
+
+    return null;
 
   }
 }
