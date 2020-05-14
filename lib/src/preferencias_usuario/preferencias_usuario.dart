@@ -7,8 +7,7 @@ import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 /*
   Recordar instalar el paquete de:
     shared_preferences:
-
-  Inicializar en el main
+  Inicializar en el mai
     final prefs = new PreferenciasUsuario();
     prefs.initPrefs();
 */
