@@ -43,15 +43,15 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
 
-   '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
-     //'/clasificar-envio' :  (BuildContext context) => ConsultaEnvioPage(),
+    '/consulta-envio' :  (BuildContext context) => ConsultaEnvioPage(),
+     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
     //'/clasificar-envio' :  (BuildContext context) => NuevoEntregaLotePage(),
     '/entrega-lotes' :  (BuildContext context) => ListaEntregaLotePage(),
     
     '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),
     '/recepcionar-jumbo' :  (BuildContext context) => RecepcionJumboPage(),
     '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
-    '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage(),
+    '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage (),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
     '/recepcion-inter' :  (BuildContext context) => RecepcionEnvioPage(),
   };

@@ -33,7 +33,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   int cantidadInicial = 0;
   String selectedFc;
   List<String> listaCodigosValidados = new List();
-  bool inicio = true;
+  bool activo = true;
+  bool button = false;
   var colorletra = const Color(0xFFACADAD);
   void initState() {
     super.initState();
@@ -60,29 +61,50 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       }
     }
 
+    void listarEnvios(String paquete, String remitente, String destinatario,
+        bool opcion) async {
+      listaEnvios = await principalcontroller.listarEnvios(
+          context, paquete, remitente, destinatario, opcion);
+      if (listaEnvios != null) {
+        setState(() {
+          listaEnvios = listaEnvios;
+        });
+      } else {
+        listaEnvios = [];
+        setState(() {
+          listaEnvios = listaEnvios;
+        });
+      }
+    }
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 10),
-        child:SizedBox(
-            width: double.infinity,
-            height: 60,
-            child:RaisedButton(
+        child: SizedBox(
+          width: double.infinity,
+          height: 60,
+          child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-                    /*principalcontroller.confirmacionDocumentosValidados(
-                        listaEnviosVacios,
-                        context,
-                        int.parse(selectedFc),
-                        codigoPaquete);*/
+              if (_paqueteController.text=="" && _remitenteController.text=="" && _destinatarioController.text=="") {
+                mostrarAlerta(context, "Se debe llenar al menos un campo", "Mensaje");
+                setState(() {
+                  button = false;
+                  listaEnvios=[];
+                });
+              } else {
+                setState(() {
+                  button = true;
+                });         
+           listarEnvios(
+                  codigoPaquete, codigoremitente, codigoDestinatario, activo);       
+              }
             },
             color: Color(0xFF2C6983),
-            child:
-            Text('Buscar', style: TextStyle(color: Colors.white)),
+            child: Text('Buscar', style: TextStyle(color: Colors.white)),
           ),
-          )
-        );
+        ));
 
     /*void _validarSobreText(String value) {
       if (value != "") {
@@ -158,41 +180,73 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     }
 
     Widget crearItem(EnvioModel envio, int i) {
-      String codigopaquete = envio.codigoPaquete;
       return Container(
           decoration: myBoxDecoration(),
           margin: EdgeInsets.only(bottom: 5),
-          child: ListTile(
-            title: Text("$codigopaquete"),
-            leading: FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-            trailing: Icon(
-              Icons.check,
-              color: Color(0xffC7C7C7),
-            ),
+          child: Column(
+            children: <Widget>[
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 20,left: 20),
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Text('De', style: TextStyle(color: Colors.grey,fontSize: 15)),
+                    ),
+                    flex: 1,
+                  ),
+                  Expanded(
+                    child: Text(envio.remitente,
+                        style: TextStyle(color: Colors.black)),
+                    flex: 5,
+                  ),
+                ],
+              )),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 20),
+                       alignment: Alignment.centerLeft,
+                      child:
+                          Text('para', style: TextStyle(color: Colors.grey,fontSize: 15)),
+                    ),
+                    flex: 1,
+                  ),
+                  Expanded(
+                    child: Text(envio.destinatario,
+                        style: TextStyle(color: Colors.black)),
+                    flex: 5,
+                  ),
+                ],
+              )),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 20,bottom: 10),
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Text(envio.codigoPaquete, style: TextStyle(color: Colors.grey,fontSize: 15)),
+                    ),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child:Container( margin: const EdgeInsets.only(bottom: 10),child: Text("En custodia en UTD "+envio.codigoUbicacion,
+                        style: TextStyle(color: Colors.black)),), 
+                    flex: 6,
+                  ),
+                ],
+              )),
+            ],
           ));
-      /*else {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading:
-                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-              trailing: Text(""),
-            ));
-      }*/
-    }
-
-    Future _traerdatosescanerDestinatario() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (_paqueteController.text == "") {
-        _destinatarioController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
-      } else {
-        _validarDestinatarioText(qrbarra);
-      }
     }
 
     Future _traerdatosescanerPaquete() async {
@@ -203,24 +257,6 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       _validarPaqueteText(qrbarra);
     }
 
-    Future _traerdatosescanerRemitente() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      _validarRemitenteText(qrbarra);
-    }
-
-    /*Widget pendientes(int cantidad) {
-      int cantidadp = listaEnvios.length - listaCodigosValidados.length;
-      if(cantidadp==0){
-          cantidadp=cantidad;
-      }
-      if (cantidadp == 1) {
-        return Text("Queda $cantidadp documento pendiente");
-      }
-      return Text("Quedan $cantidad documentos pendientes");
-    }*/
     var paquete = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
@@ -252,7 +288,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     var remitente = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
-      controller: _paqueteController,
+      controller: _remitenteController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
         _validarRemitenteText(value);
@@ -283,15 +319,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       controller: _destinatarioController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if (codigoPaquete == "") {
-          _destinatarioController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
-        } else {
           _validarDestinatarioText(value);
-        }
       },
       decoration: InputDecoration(
         contentPadding:
@@ -314,10 +342,13 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     );
 
     Widget _crearListadoAgregar(List<EnvioModel> lista) {
-      return Container();
-      /*return ListView.builder(
+      if (lista.length == 0) {
+        return Container();
+      }
+
+      return ListView.builder(
           itemCount: lista.length,
-          itemBuilder: (context, i) => crearItem(lista[i], 1));*/
+          itemBuilder: (context, i) => crearItem(lista[i], 1));
     }
 
     final campodetextoandIconoDestinatario = Row(children: <Widget>[
@@ -326,12 +357,12 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
         flex: 5,
       ),
       Expanded(
-        child:   Opacity(
-              opacity: 0.0,
-              child: Container(
-                margin: const EdgeInsets.only(left: 15),
-                child: Icon(Icons.camera_alt),
-              )),
+        child: Opacity(
+            opacity: 0.0,
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              child: Icon(Icons.camera_alt),
+            )),
       ),
     ]);
 
@@ -358,14 +389,43 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       ),
       Expanded(
         child: Opacity(
-              opacity: 0.0,
-              child: Container(
-                margin: const EdgeInsets.only(left: 15),
-                child: Icon(Icons.camera_alt),
-              )),
+            opacity: 0.0,
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              child: Icon(Icons.camera_alt),
+            )),
       ),
     ]);
 
+    Widget mostrarText(bool opcion) {
+      return Container(
+          child: new GestureDetector(
+        onTap: () {
+          if (opcion) {
+            listarEnvios(
+                codigoPaquete, codigoremitente, codigoDestinatario, false);
+            setState(() {
+              activo = false;
+            });
+          } else {
+            listarEnvios(
+                codigoPaquete, codigoremitente, codigoDestinatario, true);
+            setState(() {
+              activo = true;
+            });
+          }
+        },
+        child: opcion == true
+            ? Text(
+                "Mostrar inactivos",
+                style: TextStyle(color: Colors.grey),
+              )
+            : Text(
+                "Mostrar activos",
+                style: TextStyle(color: Colors.blue),
+              ),
+      ));
+    }
 
     final campodetextoandIconoButton = Row(children: <Widget>[
       Expanded(
@@ -374,11 +434,11 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       ),
       Expanded(
         child: Opacity(
-              opacity: 0.0,
-              child: Container(
-                margin: const EdgeInsets.only(left: 15),
-                child: Icon(Icons.camera_alt),
-              )),
+            opacity: 0.0,
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              child: Icon(Icons.camera_alt),
+            )),
       ),
     ]);
 
@@ -469,9 +529,20 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   child: campodetextoandIconoButton,
                 ),
               ),
+              button == true
+                  ? Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: screenHeightExcludingToolbar(context,
+                            dividedBy: 12),
+                        width: double.infinity,
+                        child: mostrarText(activo),
+                      ),
+                    )
+                  : Container(),
               Expanded(
-                  child:Container(
-                          child: _crearListadoAgregar(listaEnviosVacios))),
+                  child: Container(child: _crearListadoAgregar(listaEnvios))),
             ],
           ),
         ));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 
 import 'loginController.dart';
@@ -12,29 +13,28 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
   SharedPreferences sharedPreferences;
-
+  bool pressbutton = true;
   @override
-  void initState() { 
-    super.initState();  
-   checkLoginStatus();
+  void initState() {
+    super.initState();
+    checkLoginStatus();
   }
 
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
-      if (sharedPreferences.getString("token")!=null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-            (Route<dynamic> route) => false);
-      }
+    var buzon = sharedPreferences.getString("buzon");
+    if (sharedPreferences.getString("buzon") != null) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final _usernameController = TextEditingController();
     final _passwordController = TextEditingController();
-
     LoginController logincontroller = new LoginController();
 
     final logo = Hero(
@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = TextFormField(
       controller: _usernameController,
       keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.none,
       autofocus: false,
       textAlign: TextAlign.center,
       decoration: InputDecoration(
@@ -55,23 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         focusedBorder: InputBorder.none,
         filled: true,
         fillColor: Color(0xffF0F3F4),
-        hintText: 'login',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-      ),
-    );
-
-    final password = TextFormField(
-      controller: _passwordController,
-      autofocus: false,
-      obscureText: true,
-      textAlign: TextAlign.center,
-      decoration: InputDecoration(
-        filled: true,
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        fillColor: Color(0xffF0F3F4),
-        hintText: 'password',
+        hintText: 'Usuario',
         contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
         //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
@@ -80,8 +65,33 @@ class _LoginPageState extends State<LoginPage> {
     performLogin(BuildContext context) {
       String username = _usernameController.text;
       String password = _passwordController.text;
-      logincontroller.validarlogin(context, username, password);
+      if (username == "" || password == "") {
+        mostrarAlerta(context, 'Es necesario ingresar el usuario y contraseña',
+            'Datos incompletos');
+      } else {
+        logincontroller.validarlogin(context, username, password);
+      }
+      setState(() {
+        pressbutton = true;
+      });
     }
+
+    final password = TextFormField(
+      controller: _passwordController,
+      autofocus: false,
+      obscureText: true,
+      textAlign: TextAlign.center,
+      textInputAction: TextInputAction.none,
+      decoration: InputDecoration(
+        filled: true,
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        fillColor: Color(0xffF0F3F4),
+        hintText: 'contraseña',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+      ),
+    );
 
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 70),
@@ -90,7 +100,12 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(10),
         ),
         onPressed: () {
+          FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+          if(pressbutton){
+          pressbutton = false;
           performLogin(context);
+          } 
           //Navigator.of(context).pushNamed("principal");
         },
         padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -100,13 +115,19 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final titulo = Text(
-      'login',
+      'Login',
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 40, color: Colors.blueGrey),
+          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.blueGrey),
     );
-
+    final titulo2 = Text(
+      'de Valijas',
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.blueGrey),
+    );
 /* 
     final letrafooter = Text(
       'Forgot password?',

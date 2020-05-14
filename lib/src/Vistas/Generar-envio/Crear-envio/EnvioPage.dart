@@ -320,13 +320,8 @@ class _EnvioPageState extends State<EnvioPage> {
 
     return Scaffold(
         appBar: AppBar(
-          leading: new IconButton(
-            icon: new Icon(Icons.keyboard_arrow_left,
-                color: Colors.white, size: 25),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
           backgroundColor: PrimaryColor,
-          actions: [
+                    actions: [
             IconButton(
               icon: Icon(Icons.notifications),
               onPressed: () {},
@@ -339,8 +334,9 @@ class _EnvioPageState extends State<EnvioPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
-        backgroundColor: Colors.white,
         drawer: crearMenu(context),
+        
+        backgroundColor: Colors.white,
         body: Form(
             key: _formKey,
             child: SingleChildScrollView(

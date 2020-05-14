@@ -19,6 +19,7 @@ class ListarTurnosController {
   void onSearchButtonPressed(BuildContext context, EntregaModel entrega) {
     RecorridoModel recorridoModel = new RecorridoModel();
     recorridoModel.id = entrega.id;
+    recorridoModel.indicepagina=entrega.estado.id;
     if (entrega.estado.id == 1) {
       Navigator.push(
           context,

@@ -22,7 +22,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   final _sobreController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
-
+List<PalomarModel> listapalomar = [];
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
@@ -43,12 +43,20 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     var booleancolor = true;
     var colorwidget = colorplomo;
 
-    void _validarText(String value) {
-      if (value != "") {
+    void _validarText(String value) async {
+      listapalomar = await principalcontroller.listarpalomarByCodigo(context, value);
+      if (listapalomar != null) {
         setState(() {
           _sobreController.text = value;
           codigoValidar = value;
-     });
+          listapalomar = listapalomar;
+        });
+      } else {
+        setState(() {
+          _sobreController.text = value;
+          codigoValidar = value;
+          listapalomar = [];
+        });
       }
     }
 
@@ -140,31 +148,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
       ));
     }
 
-    Widget _crearcontenido(String codigo) {
 
-      booleancolor = true;
-      colorwidget = colorplomo;
-      if(codigoValidar!=""){
-      codigoValidar="";
-      return FutureBuilder(
-          future:
-              principalcontroller.listarpalomarByCodigo(context, codigo),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<PalomarModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final palomares = snapshot.data;
-              return ListView.builder(
-                  itemCount: palomares.length,
-                  itemBuilder: (context, i) => crearItem(palomares[i]));
-            } else {
-              return Container();
-            }
-          });
-      }
-
-    }
 
     final sendButton = Container(
       //margin: const EdgeInsets.only(top: 10),
@@ -238,7 +222,21 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
               onPressed: _traerdatosescanerbandeja),
         ),
       ),
-    ]);
+    ]); 
+
+
+       Widget _crearcontenido(List<PalomarModel> lista) {
+
+          if(lista.length==0){
+              return Container();
+          }else{
+              return ListView.builder(
+                  itemCount: lista.length,
+                  itemBuilder: (context, i) => crearItem(lista[i]));
+          }
+
+
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -256,23 +254,6 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              /* Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                    alignment: Alignment.centerRight,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    child: sendButton),
-              ),*/
-              /* Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: titulotext),
-              ),*/
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -289,7 +270,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                     : Container(
                         margin: const EdgeInsets.only(top: 20),
                         alignment: Alignment.bottomCenter,
-                        child: _crearcontenido(codigoValidar)),
+                        child: _crearcontenido(listapalomar)),
               )
             ],
           ),
