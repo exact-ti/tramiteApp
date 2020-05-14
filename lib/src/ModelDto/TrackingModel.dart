@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
 
 class TrackingModel {
 
+  int id;
   String codigo;
   String remitente;
   String origen;
@@ -21,22 +22,22 @@ class TrackingModel {
         this.observacion='',
     });
 
-  TrackingModel fromOneJsonTracking(dynamic json){
+  TrackingModel fromOneJsonTracking(dynamic json,List< dynamic> json2){
             TrackingModel  trackingModel = new TrackingModel();  
             List<TrackingDetalleModel> detalleTracking =new List();
+            trackingModel.id  = json["id"];
             trackingModel.remitente  = json["remitente"];
             trackingModel.origen  = json["origen"];
             trackingModel.destinatario  = json["destinatario"];
             trackingModel.destino  = json["destino"];
-            trackingModel.area  = json["area"];
             trackingModel.observacion  = json["observacion"];
-            List<dynamic> detallesHashMap = json["detalles"];
-            for(Map<String, dynamic> json in detallesHashMap){
+            trackingModel.codigo = json["paqueteId"];
+           // List<dynamic> detallesHashMap = json2["detalles"];
+            for(Map<String, dynamic> json in json2 ){
                 TrackingDetalleModel  detalle = new TrackingDetalleModel();
                 detalle.fecha  = json["fecha"];
-                detalle.remitente = json["remitente"];
-                detalle.sede  = json["sede"];
-                detalle.area = json["area"];                
+                detalle.remitente = json["estado"];
+                detalle.sede  = json["ubicacion"];
                 detalleTracking.add(detalle);
             }            
             trackingModel.detalles=detalleTracking;

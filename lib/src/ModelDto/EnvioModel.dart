@@ -7,6 +7,8 @@ class EnvioModel {
   String codigoUbicacion;
   String observacion;
   String usuario;
+  String destinatario;
+  String remitente;
   bool estado;
 
 
@@ -46,8 +48,36 @@ class EnvioModel {
           return envios;
     }  
 
+    List<EnvioModel> fromEnviadosActivos(List< dynamic> jsons){
+       List<EnvioModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioModel  envio = new EnvioModel();
+            envio.remitente = json["remitente"];
+            envio.destinatario = json["destinatario"];
+            envio.codigoPaquete = json["paqueteId"];
+            envio.observacion= json["estado"];
+            envio.id =json["id"];
+            envios.add(envio);
+        }
+          return envios;
+    }  
 
-  EnvioModel fromOneJson(dynamic json){
+
+    List<EnvioModel> fromJsonConsultaEnvio(List< dynamic> jsons){
+       List<EnvioModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioModel  envio = new EnvioModel();
+            envio.codigoPaquete = json["paqueteId"];
+            envio.destinatario = json["destinatario"];
+            envio.remitente = json["remitente"];
+            envio.codigoUbicacion = json["ubicacion"];
+            envios.add(envio);
+        }
+          return envios;
+    }  
+
+
+  EnvioModel  fromOneJson(dynamic json){
            EnvioModel  envio = new EnvioModel();
             envio.id  = json["id"];
             envio.codigoPaquete = json["paqueteId"];

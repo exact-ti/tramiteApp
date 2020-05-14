@@ -2,15 +2,12 @@ import 'dart:collection';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
-import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
-import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 
 /*
   Recordar instalar el paquete de:
     shared_preferences:
-
-  Inicializar en el main
+  Inicializar en el mai
     final prefs = new PreferenciasUsuario();
     prefs.initPrefs();
 */

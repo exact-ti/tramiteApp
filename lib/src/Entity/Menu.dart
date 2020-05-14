@@ -12,6 +12,7 @@ class Menu {
   String link;
   int orden;
   bool home;
+  String icono;
 
     Menu({
         this.id,
@@ -31,6 +32,7 @@ class Menu {
             men.link  = json["link"];
             men.orden = json["orden"];
             men.home = json["home"];
+            men.icono = json["icono"];
             menus.add(men);
         }
           return menus;
@@ -42,10 +44,11 @@ class Menu {
         for(Map<String, dynamic> json in jsons){
            Menu men = new Menu();
             men.id  = json["id"];
-            men.nombre     = json["nombre"];
-            men.link      = json["link"];
+            men.nombre= json["nombre"];
+            men.link = json["link"];
             men.orden = json["orden"];
             men.home = json["home"];
+            men.icono = json["icono"];
             menus.add(men);
         }
           return menus;
@@ -59,7 +62,8 @@ class Menu {
         "nombre"     : nombre,
         "link"      : link,
         "orden"       : orden,
-        "home"       : home,        
+        "home"       : home, 
+        "icono"       : icono,               
     };
 
 }

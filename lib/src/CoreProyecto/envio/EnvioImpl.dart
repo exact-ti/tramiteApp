@@ -51,9 +51,9 @@ class EnvioImpl implements EnvioInterface {
   Future<List<EnvioModel>> listarActivos(int switched) async{
     List<EnvioModel> envios;
       if(switched==0){
-      envios = await envio.listarEnviosActivosByUsuario2();
+      envios = await envio.listarEnviosActivosByUsuario();
       }else{
-       envios = await envio.listarRecepcionesActivas2();       
+       envios = await envio.listarRecepcionesActivas();       
       }
       return envios;
   }

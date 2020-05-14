@@ -112,7 +112,7 @@ class EntregaregularController {
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () =>
-                    Navigator.of(context).pushNamed('/entrega-intersede'),
+                    Navigator.of(context).pushNamed('/envio-intersede'),
               )
             ],
           );

@@ -54,6 +54,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       String codigopaquete = entrega.codigoPaquete;
       String destinatario = entrega.usuario;
       String observacion = entrega.observacion;
+      int id  = entrega.id;
       agregaralista(entrega);
       return GestureDetector(
           onLongPress: () {
@@ -98,7 +99,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                                     style: TextStyle(color: Colors.blue)),
                                 onTap: () {
                                   if (!validados.containsValue(true)) {
-                                    trackingPopUp(context, codigopaquete);
+                                    trackingPopUp(context, id);
                                   }
                                 },
                               ))

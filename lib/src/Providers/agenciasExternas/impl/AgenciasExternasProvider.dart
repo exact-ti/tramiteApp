@@ -24,7 +24,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     int id = umodel.id;
     Response resp = await req.get('/servicio-tramite/utds/$id/gruposagencias/activos');
     List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonEntregaExterna(envios);
+    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonlistarEntregas(envios);
     return listEnvio;
 
   /*List<EnvioInterSedeModel> listEnvio = await listarfake();
@@ -100,25 +100,25 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
 
   @override
   Future<bool> iniciarEntregaExternaIntersede(EnvioInterSedeModel envio) async {
-   /* Map<String, dynamic> utd = json.decode(_prefs.utd);
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
+    int agenciaid = envio.utdId;
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/utdsdestinos/$envio/iniciar',
+        '/servicio-tramite/utds/$id/gruposagencias/$agenciaid/inicio',
         null,
         null);
     if (resp.data) {
       return true;
     }
-    return false;*/
     return false;
   }
 
   @override
   Future<bool> iniciarListaEntregaExternaIntersede(List<String> codigospaquetes) async {
-  /* List<String> ids = new List();
+   List<int> ids = new List();
     for (String envio in codigospaquetes) {
-      ids.add(envio);
+      ids.add(int.parse(envio));
     }
     var listaIds = json.encode(ids);
     Response resp = await req.post(
@@ -128,9 +128,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     if (resp.data) {
       return true;
     }
-    return false;*/
-
-    return true;
+    return false;
   }
 
 
