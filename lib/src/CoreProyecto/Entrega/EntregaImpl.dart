@@ -55,7 +55,7 @@ class EntregaImpl implements EntregaInterface {
 
   @override
   Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo)async {
-    List<TurnoModel> i = await entrega.listarTurnosByCodigoLote2(codigo);
+    List<TurnoModel> i = await entrega.listarTurnosByCodigoLote(codigo);
     return i;
   }
 

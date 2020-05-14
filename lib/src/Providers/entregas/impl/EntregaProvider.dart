@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
@@ -108,7 +109,7 @@ class EntregaProvider implements IEntregaProvider {
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
     try{
-    Response resp = await req.get('/servicio-tramite/turnos/envios/paraagregaralrecorrido?paqueteId=$codigo');
+    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo?estado=$creado');
     if(resp.data==""){
         return null;
     }
@@ -152,20 +153,19 @@ return null;
   @override
   Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
     List<int> ids = new List();
-    List<EnvioModel> envios2 = envios;
-    print(codigo+"$turnoID");
-   /* for (EnvioModel envio in envios) {
+for (EnvioModel envio in envios) {
       ids.add(envio.id);
     }
+        Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
     var listaIds = json.encode(ids);
-    Response resp = await req.post('/servicio-tramite/turnos/recorridos', listaIds, null);
+    Response resp = await req.post('/servicio-tramite/utds/$id/turnosinterconexiones/$turnoID/lotes?paqueteId=$codigo', listaIds, null);
    if(resp.data){
      return true;
    }else{
      return false;
-   }*/
-
-   return true;
+   }
   }
 
   @override

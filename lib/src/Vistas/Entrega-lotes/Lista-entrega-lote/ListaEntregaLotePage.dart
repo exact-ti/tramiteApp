@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 // import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart'
 
@@ -194,7 +195,12 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NuevoEntregaLotePage(),
+                ),
+              );
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),

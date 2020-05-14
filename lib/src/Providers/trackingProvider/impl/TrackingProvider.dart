@@ -24,10 +24,12 @@ class TrackingProvider implements ITrackingProvider {
   
 
   @override
-  Future<TrackingModel> mostrarTracking(String codigo) async {
-    Response resp = await req.get('/servicio-tramite/recorridos/$codigo/areas');
+  Future<TrackingModel> mostrarTracking(int codigo) async {
+    Response resp = await req.get('/servicio-tramite/envios/$codigo/detalle');
+    Response resp2 = await req.get('/servicio-tramite/envios/$codigo/seguimientos');
     dynamic respuesta = resp.data;
-    TrackingModel trackingRespuesta = trackingModel.fromOneJsonTracking(respuesta);
+    List<dynamic> respuesta2 = resp2.data;
+    TrackingModel trackingRespuesta = trackingModel.fromOneJsonTracking(respuesta,respuesta2);
     return trackingRespuesta;
   }
 

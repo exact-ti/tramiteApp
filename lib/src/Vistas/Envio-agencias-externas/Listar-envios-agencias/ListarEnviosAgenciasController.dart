@@ -14,29 +14,19 @@ class ListarEnviosAgenciasController {
     return entregas;
   }
 
-  void onSearchButtonPressed(
+  Future<bool> onSearchButtonPressed(
       BuildContext context, EnvioInterSedeModel enviomodel) async {
     bool respuesta = await agenciacore.iniciarEntregaAgencia(enviomodel);
-    if (respuesta) {
-     mostrarAlerta(
-          context, "Se inicio la entrega correctamente", "Inicio correcto");
-    } else {
-      mostrarAlerta(
-          context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    }
+    return respuesta;
   }
 
 
-  void listar(
+  Future<bool>  registrarlista(
       BuildContext context, List<String> lista) async {
         bool respuesta = await agenciacore.iniciarEntregaListaAgencia(lista);
-            if (respuesta) {
-     mostrarAlerta(
-          context, "Se inicio la entrega correctamente", "Inicio correcto");
-    } else {
-      mostrarAlerta(
-          context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    }
+
+        return respuesta;
+
 
   }
 

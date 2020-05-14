@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -82,6 +83,23 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           ]));
     }
 
+    void iniciarItem(EnvioInterSedeModel entrega) async {
+      List<String> listids = new List();
+      int idutd = entrega.utdId;
+      listids.add("$idutd");
+      bool respuesta = await principalcontroller.registrarlista(context, listids);
+      if (respuesta) {
+        mostrarAlerta(
+            context, "Se inicio la entrega correctamente", "Inicio correcto");
+        setState(() {
+          textdestinatario = textdestinatario;
+        });
+      } else {
+        mostrarAlerta(
+            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+      }
+    }
+
     Widget crearItem(EnvioInterSedeModel entrega) {
       String codigoUtd = entrega.codigo;
       return GestureDetector(
@@ -136,11 +154,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                             ),
                             onPressed: () {
                               if (!validados.containsValue(true)) {
-                                principalcontroller.onSearchButtonPressed(
-                                    context, entrega);
-                                setState(() {
-                                  textdestinatario = textdestinatario;
-                                });
+                                iniciarItem(entrega);
                               }
                             })
                         : FaIcon(
@@ -191,20 +205,32 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       ),
     );
 
+    void registrarlista() async {
+      List<String> listid = new List();
+      validados
+          .forEach((k, v) => v == true ? listid.add(k) : print("no pertenece"));
+      bool respuesta = await principalcontroller.registrarlista(context, listid);
+
+      if (respuesta) {
+        mostrarAlerta(
+            context, "Se inicio la entrega correctamente", "Inicio correcto");
+        setState(() {
+          validados.clear();
+          textdestinatario = textdestinatario;
+        });
+      } else {
+        mostrarAlerta(
+            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+      }
+    }
+
     final sendButton2 = Container(
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          List<String> listid = new List();
-          validados.forEach(
-              (k, v) => v == true ? listid.add(k) : print("no pertenece"));
-          principalcontroller.listar(context, listid);
-          setState(() {
-            validados.clear();
-            textdestinatario = textdestinatario;
-          });
+          registrarlista();
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),

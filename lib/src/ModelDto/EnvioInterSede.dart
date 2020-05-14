@@ -63,6 +63,23 @@ class EnvioInterSedeModel {
         }
           return envios;
     }  
+
+
+    List<EnvioInterSedeModel> fromJsonlistarEntregas(List< dynamic> jsons){
+       List<EnvioInterSedeModel> envios= new List();
+        for(Map<String, dynamic> json in jsons){
+           EnvioInterSedeModel  envio = new EnvioInterSedeModel();
+            envio.numdocumentos  = json["cantidadDestinos"];
+            envio.numvalijas = json["cantidadEntregas"];
+            envio.destino = json["nombre"];
+            envio.utdId = json["id"];
+            envios.add(envio);
+        }
+          return envios;
+    }  
+
+
+
   EnvioInterSedeModel fromOneJson(dynamic json){
            EnvioInterSedeModel  envio = new EnvioInterSedeModel();
             envio.utdId  = json["id"];

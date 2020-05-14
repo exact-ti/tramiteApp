@@ -28,12 +28,28 @@ import 'package:tramiteapp/src/Vistas/recepcion/RecepcionValijaPage.dart';
 
 Map<String, WidgetBuilder> getAplicationRoutes() {
   return <String, WidgetBuilder>{
+
+    //==================Login====================================
+
     '/login': (BuildContext context) => LoginPage(),
+
+    //==================Menu principal====================================
     '/principal-admin': (BuildContext context) => HomePage(),
     '/generar-envio': (BuildContext context) => PrincipalPage(),
-    '/crear-envio': (BuildContext context) => EnvioPage(),
     '/recorridos': (BuildContext context) => ListarTurnosPage(),
-    //'/recorridos': (BuildContext context) => ListarEnviosActivosPage(),
+    '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
+    '/envio-intersede' :  (BuildContext context) => ListarEnviosPage(),
+    '/envio-lote' :  (BuildContext context) => ListaEntregaLotePage(),
+    '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage (),
+    '/recepcion' :  (BuildContext context) => RecepcionEnvioPage(),
+    '/consulta-envio' :  (BuildContext context) => ConsultaEnvioPage(),
+    '/envios-activos' :  (BuildContext context) => ListarEnviosActivosPage(),
+
+
+
+    //==================Menu secundario====================================
+
+    '/crear-envio': (BuildContext context) => EnvioPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
     //'/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
@@ -42,17 +58,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
-
-    '/consulta-envio' :  (BuildContext context) => ConsultaEnvioPage(),
-     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
-    //'/clasificar-envio' :  (BuildContext context) => NuevoEntregaLotePage(),
-    '/entrega-lotes' :  (BuildContext context) => ListaEntregaLotePage(),
-    
-    '/entrega-intersede' :  (BuildContext context) => ListarEnviosPage(),
     '/recepcionar-jumbo' :  (BuildContext context) => RecepcionJumboPage(),
     '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
-    '/envios-agencia' :  (BuildContext context) => ListarEnviosAgenciasPage (),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
-    '/recepcion-inter' :  (BuildContext context) => RecepcionEnvioPage(),
   };
 }

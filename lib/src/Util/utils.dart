@@ -132,6 +132,8 @@ List<Widget> milistview(BuildContext context) {
     Menu menuu = new Menu();
     List<dynamic> menus = json.decode(_prefs.menus);
     List<Menu> listmenu = menuu.fromPreferencs(menus);
+    listmenu.sort((a, b) => a.orden.compareTo(b.orden));
+    listmenu.reversed;
     list.add(DrawerHeader(
       child: Container(),
       decoration: BoxDecoration(
@@ -140,42 +142,51 @@ List<Widget> milistview(BuildContext context) {
     ));
     for (Menu men in listmenu) {
       list.add(ListTile(
-          leading: Icon(Icons.pages, color: Colors.blue),
+          leading:  getICon(men.icono),
           title: Text(men.nombre),
           onTap: () => Navigator.pushReplacementNamed(context, men.link)));
     }
 
-  if(_prefs.buzon!=""){
-    list.add(cerrarsesion(context));
-  }
+    if (_prefs.buzon != "") {
+      list.add(cerrarsesion(context));
+    }
   }
   return list;
 }
 
-Widget cerrarsesion(BuildContext context){
-     return ListTile(
-        leading: Icon(Icons.exit_to_app, color: Colors.blue),
-        title: Text("Cerrar Sesión"),
-        onTap: () {
-          eliminarpreferences(context);
-        });
+Widget cerrarsesion(BuildContext context) {
+  return ListTile(
+      leading: Icon(Icons.exit_to_app, color: Colors.blue),
+      title: Text("Cerrar Sesión"),
+      onTap: () {
+        eliminarpreferences(context);
+      });
 }
 
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
-        sharedPreferences.clear();
-      sharedPreferences.commit();
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
+  sharedPreferences.clear();
+  sharedPreferences.commit();
+  Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+      (Route<dynamic> route) => false);
 }
 
-
 final _icons = <String, IconData>{
-  'add_alert': Icons.add_alert,
-  'accessibility': Icons.accessibility,
-  'folder_open': Icons.folder_open,
+  'home': Icons.home,
+  'envio': Icons.send,
+  'recorrido': Icons.directions_run,
+  'importar': Icons.file_upload,
+  'custodiar': Icons.check_box,
+  'clasificar': Icons.sort,
+  'intersede': Icons.transfer_within_a_station,
+  'revalija': Icons.markunread,
+  'lote': Icons.check_box_outline_blank,
+  'relote': Icons.filter_none,
+  'agencia': Icons.airline_seat_recline_normal,
+  'recepcion': Icons.receipt,
+  'consulta': Icons.record_voice_over,
 };
 
 Icon getICon(String nombreIcono) {
@@ -230,9 +241,9 @@ BoxDecoration myBoxDecoration(Color colorletra) {
   );
 }
 
-void trackingPopUp(BuildContext context, String codigo) async {
+void trackingPopUp(BuildContext context, int codigo) async {
   TrackingInterface trackingCore = new TrackingImpl(new TrackingProvider());
-  double heightCel = 0.6*(MediaQuery.of(context).size.height);
+  double heightCel = 0.6 * (MediaQuery.of(context).size.height);
 
   TrackingModel trackingModel = await trackingCore.mostrarTracking(codigo);
 
@@ -240,18 +251,32 @@ void trackingPopUp(BuildContext context, String codigo) async {
 
   for (TrackingDetalleModel detalle in trackingModel.detalles) {
     listadecodigos.add(Container(
-      decoration: myBoxDecoration(colorletra),
-      alignment: Alignment.centerLeft,
-      margin: const EdgeInsets.only(top: 5),
-      padding: const EdgeInsets.only(top: 5,right: 5,bottom: 5,left: 5),
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-      children: <Widget>[
-        Container(child: Text(detalle.fecha,style:  TextStyle(color: colorletra, fontSize: 12),),alignment: Alignment.centerLeft,),
-        Container(child: Text("Creado por " + detalle.remitente,style:  TextStyle(color: colorletra, fontSize: 12)),alignment: Alignment.centerLeft,),
-        Container(child: Text(detalle.area + " - " + detalle.sede,style:  TextStyle(color: Colors.black, fontSize: 12)),alignment: Alignment.centerLeft,),        
-      ],
-    )));
+        decoration: myBoxDecoration(colorletra),
+        alignment: Alignment.centerLeft,
+        margin: const EdgeInsets.only(top: 5),
+        padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: <Widget>[
+            Container(
+              child: Text(
+                detalle.fecha,
+                style: TextStyle(color: colorletra, fontSize: 12),
+              ),
+              alignment: Alignment.centerLeft,
+            ),
+            Container(
+              child: Text(detalle.remitente,
+                  style: TextStyle(color: colorletra, fontSize: 12)),
+              alignment: Alignment.centerLeft,
+            ),
+            Container(
+              child: Text(detalle.sede,
+                  style: TextStyle(color: Colors.black, fontSize: 12)),
+              alignment: Alignment.centerLeft,
+            ),
+          ],
+        )));
   }
 
   showDialog(
@@ -259,9 +284,9 @@ void trackingPopUp(BuildContext context, String codigo) async {
       builder: (context) {
         return AlertDialog(
             content: Container(
-              height: heightCel,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
+          height: heightCel,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
             children: <Widget>[
               Container(
                   margin: const EdgeInsets.only(top: 10),
@@ -363,14 +388,14 @@ void trackingPopUp(BuildContext context, String codigo) async {
                       ),
                       Expanded(
                         child: Text(
-                            trackingModel.area + " - " + trackingModel.destino,
+                            trackingModel.destino,
                             style: TextStyle(color: colorletra)),
                         flex: 3,
                       ),
                     ],
                   )),
               Container(
-                  margin: const EdgeInsets.only(top: 10,bottom: 30),
+                  margin: const EdgeInsets.only(top: 10, bottom: 30),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -390,8 +415,9 @@ void trackingPopUp(BuildContext context, String codigo) async {
                       ),
                     ],
                   )),
-              Expanded(child:SingleChildScrollView(child:    
-              Column(children: listadecodigos))),
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(children: listadecodigos))),
               /*Container(
              height: 20,   
             child:ListView(
@@ -400,8 +426,6 @@ void trackingPopUp(BuildContext context, String codigo) async {
               )*/
             ],
           ),
-            )
-            );
+        ));
       });
 }
-

@@ -95,7 +95,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
     Widget crearItem(EnvioModel entrega, int switched) {
       String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.usuario;
+      String destinatario = entrega.destinatario;
       String observacion = entrega.observacion;
       return  Container(
               height: 70,
@@ -119,13 +119,13 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                                 child: Text("$codigopaquete",
                                     style: TextStyle(color: Colors.blue)),
                                 onTap: () {
-                                      trackingPopUp(context, codigopaquete);
+                                      trackingPopUp(context, entrega.id);
                                 },
                               )),
                       Expanded(
                           child: Container(
                               alignment: Alignment.centerRight,
-                              child: Text("En custodia en UTD $observacion")))
+                              child: Text("$observacion")))
                     ],
                   )))
                 ],

@@ -53,12 +53,12 @@ class EnvioProvider implements IEnvioProvider {
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio/tramite/buzones/$id/envios/confirmacion');
+        '/servicio-tramite/buzones/$id/envios/activos/salida');
     if (resp.data == "") {
       return null;
     }
     List<dynamic> envio = resp.data;
-    List<EnvioModel> enviosMode = envioModel.fromJsonValidarRecepcion(envio);
+    List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
     return enviosMode;
   }
 
@@ -70,12 +70,12 @@ class EnvioProvider implements IEnvioProvider {
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio/tramite/buzones/$id/envios/confirmacion');
+        '/servicio-tramite/buzones/$id/envios/activos/entrada');
     if (resp.data == "") {
       return null;
     }
     List<dynamic> envio = resp.data;
-    List<EnvioModel> enviosMode = envioModel.fromJsonValidarRecepcion(envio);
+    List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
     return enviosMode;
   }
 
