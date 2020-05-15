@@ -20,11 +20,8 @@ class ConsultaProvider implements IConsultaProvider {
 
   @override
   Future<List<EnvioModel>> listarByPaqueteAndDestinatarioAndRemitente(String paquete, String destinatario, String remitente,bool opcion) async {
-   Map<String,dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
-    int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio/tramite/buzones/$id/envios/confirmacion');
+        '/servicio-tramite/envios?paqueteId=$paquete&remitente=$remitente&destinatario=$destinatario&incluirInactivos=$opcion');
     if (resp.data == "") {
       return null;
     }

@@ -117,12 +117,15 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   @override
   Future<bool> iniciarListaEntregaExternaIntersede(List<String> codigospaquetes) async {
    List<int> ids = new List();
+       Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
     for (String envio in codigospaquetes) {
       ids.add(int.parse(envio));
     }
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/recorridos/areas/paquetes/entrega',
+        '/servicio-tramite/utds/$id/inicio?gruposAgenciasIds=$listaIds',
         listaIds,
         null);
     if (resp.data) {

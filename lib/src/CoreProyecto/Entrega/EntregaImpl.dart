@@ -61,7 +61,7 @@ class EntregaImpl implements EntregaInterface {
 
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
-    EnvioModel i = await entrega.listarValijaByCodigoLote2(codigo);
+    EnvioModel i = await entrega.listarValijaByCodigoLote(codigo);
     return i;
   }
 

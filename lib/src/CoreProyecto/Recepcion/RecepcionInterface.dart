@@ -4,13 +4,13 @@ class RecepcionInterface {
 
     
 
-    Future<List<EnvioModel>> enviosCore(String codigo, bool opcion){}
+    Future<List<EnvioModel>> enviosCore(String codigo){}
 
     Future<List<EnvioModel>> listarEnviosCore(){}
 
     Future<List<EnvioModel>> listarEnviosPrincipalCore(){}
 
-    Future<bool> registrarRecorridoCore(String codigoArea, String codigoPaquete, bool opcion){}
+    Future<bool> registrarRecorridoCore(String codigoArea, String codigoPaquete){}
 
 
     Future<bool> registrarEnvioCore(String codigoPaquete){}

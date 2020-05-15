@@ -64,7 +64,7 @@ class NuevoEntregaLotePageController {
       confirmarAlerta(
           context, "Se ha registrado correctamente la valija", "Registro");
       Navigator.of(context).pushNamedAndRemoveUntil(
-                "/clasificar-envio", (Route<dynamic> route) => false);
+                "/envio-lote", (Route<dynamic> route) => false);
     } else {
       mostrarAlerta(
           context, "No se completó el registro de la entrega", "Mensaje");

@@ -33,7 +33,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   int cantidadInicial = 0;
   String selectedFc;
   List<String> listaCodigosValidados = new List();
-  bool activo = true;
+  bool activo = false;
   bool button = false;
   var colorletra = const Color(0xFFACADAD);
   void initState() {
@@ -87,18 +87,23 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-              if (_paqueteController.text=="" && _remitenteController.text=="" && _destinatarioController.text=="") {
-                mostrarAlerta(context, "Se debe llenar al menos un campo", "Mensaje");
+              FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+              if (_paqueteController.text == "" &&
+                  _remitenteController.text == "" &&
+                  _destinatarioController.text == "") {
+                mostrarAlerta(
+                    context, "Se debe llenar al menos un campo", "Mensaje");
                 setState(() {
                   button = false;
-                  listaEnvios=[];
+                  listaEnvios = [];
                 });
               } else {
                 setState(() {
                   button = true;
-                });         
-           listarEnvios(
-                  codigoPaquete, codigoremitente, codigoDestinatario, activo);       
+                });
+                listarEnvios(
+                    codigoPaquete, codigoremitente, codigoDestinatario, activo);
               }
             },
             color: Color(0xFF2C6983),
@@ -185,66 +190,77 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
-          Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 20,left: 20),
-                      alignment: Alignment.centerLeft,
-                      child:
-                          Text('De', style: TextStyle(color: Colors.grey,fontSize: 15)),
-                    ),
-                    flex: 1,
-                  ),
-                  Expanded(
-                    child: Text(envio.remitente,
-                        style: TextStyle(color: Colors.black)),
-                    flex: 5,
-                  ),
-                ],
-              )),
-          Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 20),
-                       alignment: Alignment.centerLeft,
-                      child:
-                          Text('para', style: TextStyle(color: Colors.grey,fontSize: 15)),
-                    ),
-                    flex: 1,
-                  ),
-                  Expanded(
-                    child: Text(envio.destinatario,
-                        style: TextStyle(color: Colors.black)),
-                    flex: 5,
-                  ),
-                ],
-              )),
-          Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 20,bottom: 10),
-                      alignment: Alignment.centerLeft,
-                      child:
-                          Text(envio.codigoPaquete, style: TextStyle(color: Colors.grey,fontSize: 15)),
-                    ),
-                    flex: 3,
-                  ),
-                  Expanded(
-                    child:Container( margin: const EdgeInsets.only(bottom: 10),child: Text("En custodia en UTD "+envio.codigoUbicacion,
-                        style: TextStyle(color: Colors.black)),), 
-                    flex: 6,
-                  ),
-                ],
-              )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20, left: 20),
+                          alignment: Alignment.centerLeft,
+                          child: Text('De',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        child: Text(envio.remitente,
+                            style: TextStyle(color: Colors.black)),
+                        flex: 5,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          alignment: Alignment.centerLeft,
+                          child: Text('para',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        child: Text(envio.destinatario,
+                            style: TextStyle(color: Colors.black)),
+                        flex: 5,
+                      ),
+                    ],
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.only(left: 20, bottom: 10),
+                            alignment: Alignment.centerLeft,
+                            child: new GestureDetector(
+                              onTap: () {
+                                trackingPopUp(context, envio.id);
+                              },
+                              child: Text(envio.codigoPaquete,
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 15)),
+                            )),
+                        flex: 3,
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                              "En custodia en UTD " + envio.codigoUbicacion,
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                        flex: 6,
+                      ),
+                    ],
+                  )),
             ],
           ));
     }
@@ -264,6 +280,9 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
         _validarPaqueteText(value);
+      },
+      onChanged: (text) {
+        codigoPaquete = text;
       },
       decoration: InputDecoration(
         contentPadding:
@@ -293,6 +312,9 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       onFieldSubmitted: (value) {
         _validarRemitenteText(value);
       },
+      onChanged: (text) {
+        codigoremitente = text;
+      },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -319,7 +341,10 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       controller: _destinatarioController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-          _validarDestinatarioText(value);
+        _validarDestinatarioText(value);
+      },
+      onChanged: (text) {
+        codigoDestinatario = text;
       },
       decoration: InputDecoration(
         contentPadding:
@@ -415,7 +440,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
             });
           }
         },
-        child: opcion == true
+        child: opcion == false
             ? Text(
                 "Mostrar inactivos",
                 style: TextStyle(color: Colors.grey),
@@ -459,93 +484,103 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textPaquete),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoPaquete),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textRemitente),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoRemitente),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textDestinatario),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoDestinatario,
-                  margin: const EdgeInsets.only(bottom: 20),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoButton,
-                ),
-              ),
-              button == true
-                  ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
                         alignment: Alignment.centerLeft,
-                        height: screenHeightExcludingToolbar(context,
-                            dividedBy: 12),
-                        width: double.infinity,
-                        child: mostrarText(activo),
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 30),
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textPaquete),
                       ),
-                    )
-                  : Container(),
-              Expanded(
-                  child: Container(child: _crearListadoAgregar(listaEnvios))),
-            ],
-          ),
-        ));
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoPaquete),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textRemitente),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoRemitente),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: textDestinatario),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoDestinatario,
+                          margin: const EdgeInsets.only(bottom: 20),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoButton,
+                        ),
+                      ),
+                      button == true
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                height: screenHeightExcludingToolbar(context,
+                                    dividedBy: 12),
+                                width: double.infinity,
+                                child: mostrarText(activo),
+                              ),
+                            )
+                          : Container(),
+                      Expanded(
+                          child: Container(
+                              child: _crearListadoAgregar(listaEnvios))),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
