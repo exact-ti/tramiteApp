@@ -9,7 +9,7 @@ import 'package:tramiteapp/src/Providers/recepciones/impl/RecepcionProvider.dart
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
 
-class RecepcionController {
+class RecepcionControllerLote {
 
   RecepcionInterface recepcionInterface = new RecepcionImpl(new RecepcionProvider());
 
@@ -21,7 +21,10 @@ class RecepcionController {
   }
 
   Future<List<EnvioModel>> listarEnviosLotes(
-      BuildContext context,  String codigo, bool opcion) async {
+      BuildContext context,  String codigo) async {
+        if(codigo==""){
+            return null;
+        }
     List<EnvioModel> recorridos =
         await recepcionInterface.enviosCore(codigo);
     if (recorridos.isEmpty) {
@@ -67,7 +70,7 @@ class RecepcionController {
   }
 
   void recogerdocumentoLote(BuildContext context, String codigo,
-      String paquete, bool opcion) async {
+      String paquete) async {
     bool respuesta =
         await recepcionInterface.registrarRecorridoCore(codigo, paquete);
     if (respuesta == false) {

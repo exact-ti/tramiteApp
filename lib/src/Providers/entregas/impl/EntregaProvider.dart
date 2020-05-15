@@ -109,7 +109,7 @@ class EntregaProvider implements IEntregaProvider {
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
     try{
-    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo?estado=$creado');
+    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo?estadoId=$creado');
     if(resp.data==""){
         return null;
     }
@@ -161,7 +161,7 @@ for (EnvioModel envio in envios) {
     int id = umodel.id;
     var listaIds = json.encode(ids);
     Response resp = await req.post('/servicio-tramite/utds/$id/turnosinterconexiones/$turnoID/lotes?paqueteId=$codigo', listaIds, null);
-   if(resp.data){
+   if(resp.data!=null){
      return true;
    }else{
      return false;

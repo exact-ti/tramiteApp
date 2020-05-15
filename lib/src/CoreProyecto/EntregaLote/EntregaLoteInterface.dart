@@ -5,4 +5,7 @@ class EntregaLoteInterface {
   Future<List<EntregaLoteModel>> listarLotesActivos(){}
   
   Future<List<EntregaLoteModel>> listarLotesPorRecibir(){}
+
+  Future<bool> iniciarEntregaLote(int utdDestino) {}
+
 }

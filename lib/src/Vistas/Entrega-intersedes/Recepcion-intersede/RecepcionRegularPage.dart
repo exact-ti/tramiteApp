@@ -53,8 +53,10 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   @override
   void initState() {
     valuess = "";
+    if(recorridoUsuario!=null){
     _bandejaController.text = recorridoUsuario.codigo;
     codigoBandeja = recorridoUsuario.codigo;
+    }
     super.initState();
   }
 

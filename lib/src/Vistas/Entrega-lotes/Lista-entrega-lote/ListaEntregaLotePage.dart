@@ -8,14 +8,14 @@ import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntr
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 // import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart'
 
-class ListaEntregaLotePage extends StatefulWidget{
+class ListaEntregaLotePage extends StatefulWidget {
   @override
   _ListaEntregaLotePageState createState() => new _ListaEntregaLotePageState();
 }
 
 class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
-
-  ListaEntregaLoteController listarLoteController = new ListaEntregaLoteController();
+  ListaEntregaLoteController listarLoteController =
+      new ListaEntregaLoteController();
 
   final titulo = 'Entregas de Lotes';
   String textdestinatario = "";
@@ -35,17 +35,16 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget informacionEntrega(EntregaLoteModel entrega, int switched) {
       String destino = entrega.udtNombre;
       int numvalijas = entrega.cantLotes;
-      // int numdocumentos = entrega.numdocumentos;
-
-      // if (switched == 0) {
-        
-      // } else {
-      //   codigo = entrega.codigo;
-      // }
+      int numenvios = 0;
+      String codigo = "";
+      if (switched == 0) {
+        numenvios = entrega.cantLotes;
+      } else {
+        codigo = entrega.paqueteId;
+      }
 
       return Container(
           height: 70,
@@ -63,9 +62,8 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                     Container(
                       padding: const EdgeInsets.only(left: 30),
                       child: switched == 0
-                          ? Text("",
-                              style: TextStyle(fontSize: 12))
-                          : Text("$numvalijas valijas",
+                          ? Container()
+                          : Text("$codigo",
                               style: TextStyle(fontSize: 12)),
                     ),
                   ]),
@@ -73,11 +71,11 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
             Container(
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 height: 35,
-                child: Text("",
+                child: Text("$numvalijas valijas",
                     style: TextStyle(fontSize: 12))),
           ]));
     }
-    
+
     // void iniciarEnvio(EnvioInterSedeModel entrega) async {
     //   bool respuesta =
     //       await principalcontroller.onSearchButtonPressed(context, entrega);
@@ -97,22 +95,34 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
       return Container(
           height: 70,
           child: IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.locationArrow,
-              color: Color(0xffC7C7C7),
-              size: 25,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        RecepcionEntregaLotePage(entregaLotepage: entregaLote),
-                  )
-              );
-            }
-          )
-      );
+              icon: FaIcon(
+                FontAwesomeIcons.locationArrow,
+                color: Color(0xffC7C7C7),
+                size: 25,
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecepcionEntregaLotePage(
+                          entregaLotepage: entregaLote),
+                    ));
+              }));
+    }
+
+    void iniciarEnvioLote(EntregaLoteModel entrega) async {
+      bool respuesta =
+          await listarLoteController.onSearchButtonPressed(context, entrega);
+      if (respuesta) {
+        listarLoteController.confirmarAlerta(context,
+            "Se ha iniciado el envío correctamente", "Inicio Correcto");
+        setState(() {
+          indexSwitch = indexSwitch;
+        });
+      } else {
+        listarLoteController.confirmarAlerta(
+            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+      }
     }
 
     Widget iconoEnvio(EntregaLoteModel entrega) {
@@ -126,7 +136,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                     size: 25,
                   ),
                   onPressed: () {
-                    // iniciarEnvio(entrega);
+                    iniciarEnvioLote(entrega);
                   })
               : Opacity(
                   opacity: 0.0,
@@ -136,7 +146,6 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                     size: 25,
                   )));
     }
-
 
     Widget crearItem(EntregaLoteModel entrega, int switched) {
       return Container(
@@ -171,12 +180,12 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
     }
 
     Widget _crearListado(int switched) {
-
       entregas.clear();
 
       return FutureBuilder(
           future: listarEntregas(switched),
-          builder: (BuildContext context, AsyncSnapshot<List<EntregaLoteModel>> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<List<EntregaLoteModel>> snapshot) {
             if (snapshot.hasData) {
               entregas = snapshot.data;
               return ListView.builder(
@@ -195,12 +204,12 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NuevoEntregaLotePage(),
-                ),
-              );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NuevoEntregaLotePage(),
+            ),
+          );
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
@@ -247,57 +256,45 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
       body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
                   alignment: Alignment.centerLeft,
-                  height: sd.screenHeightExcludingToolbar(context, dividedBy: 8),
+                  height:
+                      sd.screenHeightExcludingToolbar(context, dividedBy: 8),
                   width: double.infinity,
-                  child: sendButton
-                ),
-              ),
-              Container(
+                  child: sendButton),
+            ),
+            Container(
                 height: sd.screenHeightExcludingToolbar(context, dividedBy: 20),
-                child: tabs
-              ),
-              Expanded(
-                child: Container(
-                    decoration: sd.myBoxDecoration(sd.colorletra),
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 5, bottom: 5),
-                    alignment: Alignment.bottomCenter,
-                    child: _crearListado(indexSwitch)),
-              )
-            ],
-          ),
+                child: tabs),
+            Expanded(
+              child: Container(
+                  decoration: sd.myBoxDecoration(sd.colorletra),
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 5, top: 5, bottom: 5),
+                  alignment: Alignment.bottomCenter,
+                  child: _crearListado(indexSwitch)),
+            )
+          ],
         ),
+      ),
     );
-
   }
 
   Future<List<EntregaLoteModel>> listarEntregas(int op) async {
-
     List<EntregaLoteModel> elm = new List();
 
-    if (op == 1 ){
+    if (op == 0) {
       elm = await listarLoteController.listarLotesActivos();
-    }
-    else {
+    } else {
       elm = await listarLoteController.listarLotesPorRecibir();
     }
 
     return elm;
   }
-
-
-
-
-
-
-
-
 }

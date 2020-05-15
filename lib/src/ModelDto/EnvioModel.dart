@@ -67,10 +67,11 @@ class EnvioModel {
        List<EnvioModel> envios= new List();
         for(Map<String, dynamic> json in jsons){
            EnvioModel  envio = new EnvioModel();
+           envio.id = json["id"];
             envio.codigoPaquete = json["paqueteId"];
             envio.destinatario = json["destinatario"];
             envio.remitente = json["remitente"];
-            envio.codigoUbicacion = json["ubicacion"];
+            envio.codigoUbicacion = json["estado"];
             envios.add(envio);
         }
           return envios;

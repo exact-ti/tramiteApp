@@ -25,6 +25,21 @@ class EntregaLoteProvider implements IEntregaLoteProvider{
     return listEntrega;
   }
 
+    @override
+  Future<bool> iniciarEntregaLote(int utdDestino) async {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.post(
+        '/servicio-tramite/utds/$id/utdsdestinos/$utdDestino/lotes/inicio',
+        null,
+        null);
+    if (resp.data) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Future<List<EntregaLoteModel>> listarLotesPorRecibir() async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);

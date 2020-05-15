@@ -22,5 +22,11 @@ class EntregaLoteImpl implements EntregaLoteInterface{
     List<EntregaLoteModel> entregas = await entregaLote.listarLotesPorRecibir();
     return entregas;
   }
+
+    @override
+  Future<bool> iniciarEntregaLote(int utdDestino) async{
+    bool i = await entregaLote.iniciarEntregaLote(utdDestino);
+    return i;
+  }
   
 }

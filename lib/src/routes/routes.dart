@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnv
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
@@ -44,7 +45,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/recepcion' :  (BuildContext context) => RecepcionEnvioPage(),
     '/consulta-envio' :  (BuildContext context) => ConsultaEnvioPage(),
     '/envios-activos' :  (BuildContext context) => ListarEnviosActivosPage(),
-
+    '/recepcionar-valija' :  (BuildContext context) => RecepcionInterPage(recorridopage: null),
+    '/recepcionar-lote' :  (BuildContext context) => RecepcionEntregaLotePage(entregaLotepage:null),
 
 
     //==================Menu secundario====================================
@@ -58,8 +60,6 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
-    '/recepcionar-jumbo' :  (BuildContext context) => RecepcionJumboPage(),
-    '/recepcionar-valija' :  (BuildContext context) => RecepcionValijaPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
   };
 }
