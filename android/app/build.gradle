@@ -59,6 +59,38 @@ flutter {
     source '../..'
 }
 
+
+afterEvaluate {
+
+    mergeReleaseJniLibFolders.doLast {
+
+        def archTypes = ["arm-release", "arm64-release"]
+
+        archTypes.forEach { item ->
+
+            copy {
+
+                from zipTree("$flutterRoot/bin/cache/artifacts/engine/android-$item/flutter.jar")
+
+                include 'lib/*/libflutter.so'
+
+                into "$buildDir/intermediates/jniLibs/release/"
+
+                eachFile {
+
+                    it.path = it.path.replaceFirst("lib/", "")
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
