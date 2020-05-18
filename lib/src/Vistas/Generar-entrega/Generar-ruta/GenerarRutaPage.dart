@@ -183,8 +183,12 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          print("LLEgo");
+          if(recorridoUsuario.indicepagina!=1){
+          principalcontroller.confirmarPendientes(
+       context, "Confirmar","Tienes pendientes ¿Desea Continuar?", recorridoUsuario);
+          }else{
           principalcontroller.opcionRecorrido(recorridoUsuario,context);
+          }
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
