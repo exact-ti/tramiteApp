@@ -23,7 +23,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
-
+  int cantidad =0;
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
@@ -148,9 +148,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
       );
     }
 
-    Widget crearItemVacio() {
-      return Container();
-    }
 
     Widget _crearListado() {
       booleancolor = true;
@@ -163,11 +160,13 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               booleancolor = true;
               colorwidget = colorplomo;
               final rutas = snapshot.data;
+              cantidad=rutas.length;
               return ListView.builder(
                   itemCount: rutas.length,
                   itemBuilder: (context, i) => crearItem(rutas[i]));
             } else {
-              return Container();
+              return Container(child: Center(child:  Text("No hay pendientes",
+                        style: TextStyle(fontSize: 20, color: Colors.grey)),));
             }
           });
     }
@@ -184,8 +183,12 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         ),
         onPressed: () {
           if(recorridoUsuario.indicepagina!=1){
+            if(cantidad==0){
           principalcontroller.confirmarPendientes(
        context, "Confirmar","Tienes pendientes ¿Desea Continuar?", recorridoUsuario);
+            }else{
+              principalcontroller.opcionRecorrido(recorridoUsuario,context);
+            }
           }else{
           principalcontroller.opcionRecorrido(recorridoUsuario,context);
           }

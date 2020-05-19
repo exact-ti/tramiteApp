@@ -27,6 +27,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   //final _sobreController = TextEditingController();
+  List<EnvioModel> listaenvios2 = new List();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
@@ -106,21 +107,24 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
 
     void registrarDocumento(String documento) async {
       bool pertenecia = false;
-      for (EnvioModel envio in listaEnvios) {
+      for (EnvioModel envio in listaenvios2) {
         if (envio.codigoPaquete == documento) {
           pertenecia = true;
         }
       }
       if (pertenecia == true) {
         if (isSwitched) {
-          dynamic respuestaMap =
-              await envioController.recogerdocumentoRecojo(context,
-                  recorridoUsuario.id, codigoBandeja, documento, isSwitched);
+          dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
+              context,
+              recorridoUsuario.id,
+              codigoBandeja,
+              documento,
+              isSwitched);
 
           if (respuestaMap.containsValue("success")) {
-            dynamic respuestaMap2  =respuestaMap["data"];
+            dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
-            listaEnvios
+            listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
           } else {
             mensaje = respuestaMap["message"];
@@ -133,7 +137,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               documento,
               isSwitched);
           if (respuestaMap) {
-            listaEnvios
+            listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
           } else {
             mostrarAlerta(
@@ -142,19 +146,22 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         }
         setState(() {
           mensaje = mensaje;
-          listaEnvios = listaEnvios;
+          listaenvios2 = listaenvios2;
         });
       } else {
         if (isSwitched) {
-          HashMap<String, dynamic> respuestaMap =
+          dynamic respuestaMap =
               await envioController.recogerdocumentoRecojo(context,
                   recorridoUsuario.id, codigoBandeja, documento, isSwitched);
           if (respuestaMap.containsValue("success")) {
-            dynamic respuestaMap2  =respuestaMap["data"];
+            dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["data"];
-                      } else {
+          } else {
             mensaje = respuestaMap["message"];
           }
+                  setState(() {
+          mensaje = mensaje;
+        });
         } else {
           bool respuestaMap = await envioController.recogerdocumentoEntrega(
               context,
@@ -165,10 +172,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (!respuestaMap) {
             mostrarAlerta(
                 context, "no se pudo completar la operación", "mensaje");
-          }else{
-            mostrarAlerta(
-                context, "Se registro la entrega", "mensaje");            
-          } 
+          } else {
+            mostrarAlerta(context, "Se registro la entrega", "mensaje");
+          }
         }
       }
     }
@@ -193,17 +199,25 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             //codigoSobre = value;
           });
         }
-         registrarDocumento(value);
-
+        registrarDocumento(value);
       }
     }
 
-    void _validarBandejaText(String value) {
+    void _validarBandejaText(String value) async {
       if (value != "") {
-        setState(() {
-          codigoBandeja = value;
-          _bandejaController.text = value;
-        });
+        listaenvios2 = await principalcontroller.listarEnvios(
+            context, recorridoUsuario.id, value, isSwitched);
+        if (listaenvios2 == null) {
+          mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+          setState(() {
+            listaenvios2 = [];
+          });
+        } else {
+          setState(() {
+            codigoBandeja = value;
+            _bandejaController.text = value;
+          });
+        }
       }
     }
 
@@ -255,7 +269,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             textdestinatario = "";
             listaCodigosValidados.clear();
             isSwitched = value;
-            mensaje="";
+            mensaje = "";
           });
         },
         activeTrackColor: SecondColor,
@@ -294,7 +308,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Widget crearItem(EnvioModel envio) {
       String codigopaquete = envio.codigoPaquete;
       agregaralista(envio);
-
       return Container(
           decoration: myBoxDecoration(),
           margin: EdgeInsets.only(bottom: 5),
@@ -403,8 +416,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     );
 
-
-
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
@@ -441,12 +452,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     );
 
-    Widget _validarListado(String codigo, List<EnvioModel> lista) {
-      if (codigo == "") {
-        return _crearListado();
-      } else {
+    Widget _validarListado(List<EnvioModel> lista) {
         return _crearListadoinMemoria(lista);
-      }
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -560,14 +567,23 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   height: screenHeightExcludingToolbar(context, dividedBy: 12),
                   width: double.infinity,
                   child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 40),
+                  margin: const EdgeInsets.only(bottom: 10),
                 ),
               ),
-              mensaje.length==0 ? Container():Text("$mensaje"), 
+              mensaje.length == 0 ? Container() : Align(
+                alignment: Alignment.center,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  child: Text("$mensaje"),
+                  margin: const EdgeInsets.only(bottom: 10),
+                ),
+              ),
               Expanded(
                   child: codigoBandeja == ""
                       ? Container()
-                      : Container(child: _validarListado(codigoSobre,listaEnvios))),
+                      : Container(
+                          child: _validarListado(listaenvios2))),
               /*Align(
                 alignment: Alignment.center,
                 child: Container(
