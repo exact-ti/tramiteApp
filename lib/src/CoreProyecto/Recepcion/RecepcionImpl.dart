@@ -56,5 +56,19 @@ class RecepcionImpl implements RecepcionInterface {
     return respuesta;
   }
 
+  @override
+  Future<bool> registrarLote(String codigoArea, String codigoPaquete) async {
+    bool respuesta;
+      respuesta = await recepcion.registrarJumboProvider(codigoArea, codigoPaquete);
+    return respuesta;
+  }
+
+  @override
+  Future<bool> recibirLote(String codigoLote, String codigoPaquete) async{
+    bool respuesta;
+      respuesta = await recepcion.recibirJumboProvider(codigoLote, codigoPaquete);
+    return respuesta;
+  }
+
 
 }

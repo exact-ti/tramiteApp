@@ -60,11 +60,11 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                         style: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold)),
                     Container(
-                      padding: const EdgeInsets.only(left: 30),
+                      padding: const EdgeInsets.only(left: 20),
                       child: switched == 0
                           ? Container()
                           : Text("$codigo",
-                              style: TextStyle(fontSize: 12)),
+                              style: TextStyle(fontSize: 10)),
                     ),
                   ]),
             ),

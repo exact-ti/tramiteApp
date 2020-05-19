@@ -160,16 +160,22 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
         if (listaEnviosVacios.length == 0) {
           listaEnviosVacios.add(envioModel);
           setState(() {
+            _sobreController.text = "";
             listaEnviosVacios = listaEnviosVacios;
           });
         } else {
           if (!validarContiene(listaEnviosVacios, envioModel)) {
             listaEnviosVacios.add(envioModel);
             setState(() {
+              _sobreController.text = "";
               listaEnviosVacios = listaEnviosVacios;
             });
+          }else{
+            mostrarAlerta(context, "Este codigo ya se ha agregado", "Mensaje");
           }
         }
+      }else{
+        mostrarAlerta(context, "Codigo incorrecto", "Mensaje");
       }
 
       /*if (listaTurnos != null) {

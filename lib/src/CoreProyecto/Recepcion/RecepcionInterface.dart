@@ -12,6 +12,9 @@ class RecepcionInterface {
 
     Future<bool> registrarRecorridoCore(String codigoArea, String codigoPaquete){}
 
+    Future<bool> registrarLote(String codigoArea, String codigoPaquete){}
+
+    Future<bool> recibirLote(String codigoArea, String codigoPaquete){}
 
     Future<bool> registrarEnvioCore(String codigoPaquete){}
 

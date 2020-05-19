@@ -9,7 +9,6 @@ import 'dart:convert';
 
 import '../IAgenciasExternasProvider.dart';
 
-
 class AgenciaExternaProvider implements IAgenciaExternaProvider {
   Requester req = Requester();
   final _prefs = new PreferenciasUsuario();
@@ -22,35 +21,34 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/gruposagencias/activos');
+    Response resp =
+        await req.get('/servicio-tramite/utds/$id/gruposagencias/activos');
     List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonlistarEntregas(envios);
+    List<EnvioInterSedeModel> listEnvio =
+        sedeModel.fromJsonlistarEntregas(envios);
     return listEnvio;
 
-  /*List<EnvioInterSedeModel> listEnvio = await listarfake();
+    /*List<EnvioInterSedeModel> listEnvio = await listarfake();
     return listEnvio;*/
-
   }
 
-
-    Future<List<EnvioInterSedeModel>> listarfake() async{
+  Future<List<EnvioInterSedeModel>> listarfake() async {
     List<EnvioInterSedeModel> listarenvios = new List();
     EnvioInterSedeModel envio1 = new EnvioInterSedeModel();
     EnvioInterSedeModel envio2 = new EnvioInterSedeModel();
-    envio1.destino="San Isidro";
-    envio1.numdocumentos=20;
-    envio1.numvalijas=30;
-    envio1.codigo="123456";
-    envio2.destino="La Molina";
-    envio2.numdocumentos=20;
-    envio2.numvalijas=4;
-    envio2.codigo="123457";
+    envio1.destino = "San Isidro";
+    envio1.numdocumentos = 20;
+    envio1.numvalijas = 30;
+    envio1.codigo = "123456";
+    envio2.destino = "La Molina";
+    envio2.numdocumentos = 20;
+    envio2.numvalijas = 4;
+    envio2.codigo = "123457";
     listarenvios.add(envio1);
     listarenvios.add(envio2);
     return Future.delayed(new Duration(seconds: 1), () {
       return listarenvios;
     });
-
   }
 
   @override
@@ -58,8 +56,8 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
+    Response resp = await req.get(
+        '/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
@@ -93,7 +91,9 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     }
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$valijaExternaId/entregas', listaIds, null);
+        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$valijaExternaId/entregas',
+        listaIds,
+        null);
     int idresp = resp.data;
     return idresp;
   }
@@ -115,37 +115,24 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   }
 
   @override
-  Future<bool> iniciarListaEntregaExternaIntersede(List<String> codigospaquetes) async {
-   List<int> ids = new List();
-       Map<String, dynamic> utd = json.decode(_prefs.utd);
+  Future<bool> iniciarListaEntregaExternaIntersede(
+      List<String> codigospaquetes) async {
+    List<String> ids = new List();
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     for (String envio in codigospaquetes) {
-      ids.add(int.parse(envio));
+      ids.add(envio);
     }
-    //var listaIds = json.encode(ids);
-    //final newValue = listaIds.replaceAll("[", "").replaceAll("]", "");
-      print(ids);
-    Response resp = await req.post(
-        '/servicio-tramite/utds/$id/inicio?gruposAgenciasIds=$ids',
-        null,
-        null);
+    final gruposIds = ids.reduce((value, element) => value + ',' + element);
+    final Map<String, dynamic> parametros = {
+      "gruposAgenciasIds": gruposIds,
+    };
+    Response resp = await req.post('/servicio-tramite/utds/$id/inicio', null, parametros);
     if (resp.data) {
       return true;
     }
     return false;
   }
-
-
-
-
-
-
-
-
-
-
-
-    
-
 }
+                     

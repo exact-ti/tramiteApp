@@ -47,7 +47,7 @@ class EntregaLoteProvider implements IEntregaLoteProvider{
     int id = umodel.id;
     Response resp = await req.get('/servicio-tramite/utds/$id/lotes/recepcion');
     List<dynamic> entregas = resp.data;
-    List<EntregaLoteModel> listEntrega = entregaLoteModel.fromJsonValidar(entregas);
+    List<EntregaLoteModel> listEntrega = entregaLoteModel.fromJsonRecepcion(entregas);
     return listEntrega;
   }
 
