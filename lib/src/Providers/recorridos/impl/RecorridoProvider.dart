@@ -39,6 +39,7 @@ class RecorridoProvider implements IRecorridoProvider {
   @override
   Future<List<EnvioModel>> enviosRecojoProvider(
       String codigo, int recorridoId) async {
+      try{
     Response resp = await req.get('/servicio-tramite/areas/$codigo/envios');
     if (resp.data == "") {
       return null;
@@ -46,6 +47,10 @@ class RecorridoProvider implements IRecorridoProvider {
     List<dynamic> envio = resp.data;
     List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);
     return enviosMode;
+      } catch(e){
+          return null;
+      } 
+
   }
 
   @override

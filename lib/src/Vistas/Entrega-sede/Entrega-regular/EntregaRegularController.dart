@@ -16,9 +16,11 @@ class EntregaregularController {
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       int id, String codigo, bool opcion) async {
     List<EnvioModel> recorridos = await recorridoCore.enviosCore(codigo, id, opcion);
-        if(recorridos.isEmpty){
-            mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
-        }
+    if(recorridos!=null){
+      if(recorridos.length==0){
+        return null;
+      }
+    }
     return recorridos;
   }
 

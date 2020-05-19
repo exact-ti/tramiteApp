@@ -123,11 +123,11 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     for (String envio in codigospaquetes) {
       ids.add(int.parse(envio));
     }
-    var listaIds = json.encode(ids);
-    final newValue = listaIds.replaceAll("[", "").replaceAll("]", "");
-      print(newValue);
+    //var listaIds = json.encode(ids);
+    //final newValue = listaIds.replaceAll("[", "").replaceAll("]", "");
+      print(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/inicio?gruposAgenciasIds=$listaIds',
+        '/servicio-tramite/utds/$id/inicio?gruposAgenciasIds=$ids',
         null,
         null);
     if (resp.data) {

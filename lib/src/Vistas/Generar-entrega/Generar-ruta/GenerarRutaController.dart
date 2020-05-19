@@ -52,7 +52,7 @@ class GenerarRutaController {
             ),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Seguir sin estos documentos'),
+                  child: Text('Continuar'),
                   onPressed: () {
           opcionRecorrido( recorridoModel,  context);
                   }),

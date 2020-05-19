@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
@@ -43,10 +44,18 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
   bool confirmaciondeenvio = false;
   int indice = 0;
   int indicebandeja = 0;
+  List<String> listacodigos = new List();
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   @override
   void initState() {
     valuess = "";
     super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _dniController.clear();
+    });
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
@@ -55,15 +64,24 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     const PrimaryColor = const Color(0xFF2C6983);
 
 
-    void _validarSobreText(String value) {
+    void _validarSobreText(String value) async {
       if (value != "") {
-        personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
-          setState(() {
+       bool  respuesta = await personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
+          if(respuesta){
+                      FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+          listacodigos.add(_sobreController.text);
+          setState(() { 
             _sobreController.text = "";
-            _dniController.text="";
             codigoSobre = "";
-            codigoDNI="";
+            listacodigos=listacodigos;
           });
+          }else{
+            mostrarAlerta(context, "Codigo de Sobre incorrecto", "Mensaje");
+            f1.unfocus();
+            FocusScope.of(context).requestFocus(f2);
+          }
+
         }
     }
 
@@ -126,7 +144,18 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     var campoDNI = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f1,
       controller: _dniController,
+      onFieldSubmitted: (value) {
+            if(value.length==0){
+               mostrarAlerta(context, "El DNI es obligatorio", "Mensaje"); 
+                             f2.unfocus();
+            FocusScope.of(context).requestFocus(f1);
+            }else{
+            f1.unfocus();
+            FocusScope.of(context).requestFocus(f2);
+            }
+          },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -150,9 +179,16 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f2,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
+        if(value.length==0){
+            mostrarAlerta(context, 
+            "El codigo de sobre es obligatorio", "Mensaje");
+              f1.unfocus();
+            FocusScope.of(context).requestFocus(f2);
+        }else{
         if (_dniController.text == "") {
           _sobreController.text = "";
           mostrarAlerta(
@@ -162,6 +198,8 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
         } else {
           _validarSobreText(value);
         }
+        }
+
       },
       decoration: InputDecoration(
         contentPadding:
@@ -214,6 +252,27 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
         ),
       ),
     ]);
+
+   Widget crearItem(String codigopaquete) {
+        return Container(
+            decoration: myBoxDecoration(),
+            margin: EdgeInsets.only(bottom: 5),
+            child: ListTile(
+              title: Text("$codigopaquete"),
+              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
+              trailing: Icon(
+                Icons.check,
+                color: Color(0xffC7C7C7),
+              ),
+            ));
+    
+    }
+
+    Widget _crearListadoinMemoria(List<String> validados) {
+      return ListView.builder(
+          itemCount: validados.length,
+          itemBuilder: (context, i) => crearItem(validados[i]));
+    }
 
 
     return Scaffold(
@@ -274,8 +333,10 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
                     margin: const EdgeInsets.only(bottom: 40),),
               ),
               Expanded(
-                  child: Container()
-                  ),
+                child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child:_crearListadoinMemoria(listacodigos)),
+              ),
               Align(
                 alignment: Alignment.center,
                 child: Container(

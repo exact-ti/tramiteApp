@@ -146,7 +146,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Nueva entrega', style: TextStyle(color: Colors.white)),
+        child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white)),
       ),
     ));
 
