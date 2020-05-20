@@ -25,6 +25,6 @@ abstract class IRecepcionProvider{
 
   Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes);  
 
-
+  Future<bool> recibirJumboProvider(String codigoLote,String codigoPaquete);  
 
 }

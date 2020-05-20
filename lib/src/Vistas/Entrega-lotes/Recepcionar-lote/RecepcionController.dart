@@ -69,24 +69,17 @@ class RecepcionControllerLote {
     return recorridos;
   }
 
-  void recogerdocumentoLote(BuildContext context, String codigo,
+  Future<bool> recogerdocumentoLote(BuildContext context, String codigo,
       String paquete) async {
     bool respuesta =
-        await recepcionInterface.registrarRecorridoCore(codigo, paquete);
-    if (respuesta == false) {
-      mostrarAlerta(
-          context, "No se pudo completar la operación", "Código incorrecto");
-    }
+        await recepcionInterface.recibirLote(codigo, paquete);
+    return respuesta;
   }
 
 
-    void recogerdocumento(BuildContext context, String codigo) async {
-    bool respuesta =
-        await recepcionInterface.registrarEnvioCore(codigo);
-    if (respuesta == false) {
-      mostrarAlerta(
-          context, "No se pudo completar la operación", "Código incorrecto");
-    }
+    Future<bool> recogerdocumento(BuildContext context, String codigo) async {
+    bool respuesta = await recepcionInterface.registrarEnvioCore(codigo);
+      return respuesta;
   }
 
   void redirectMiRuta(RecorridoModel recorrido, BuildContext context) async {

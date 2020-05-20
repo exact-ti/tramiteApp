@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       String username = _usernameController.text;
       String password = _passwordController.text;
       if (username == "" || password == "") {
-        mostrarAlerta(context, 'Es necesario ingresar el usuario y contraseña',
+        mostrarAlerta(context, 'Ingrese todos los datos solicitados',
             'Datos incompletos');
       } else {
         logincontroller.validarlogin(context, username, password);

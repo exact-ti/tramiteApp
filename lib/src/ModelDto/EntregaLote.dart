@@ -41,7 +41,7 @@ class EntregaLoteModel {
       for(Map<String, dynamic> json in jsons){
           EntregaLoteModel  entrega = new EntregaLoteModel();
           entrega.udtNombre  = json["origen"];
-          entrega.cantLotes = json["cantidadElementos"];
+          entrega.cantLotes = json["cantidadItems"];
           entrega.paqueteId =  json["paqueteId"];
           entregas.add(entrega);
       }

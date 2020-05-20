@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -12,7 +11,8 @@ import 'RecepcionController.dart';
 class RecepcionEntregaLotePage extends StatefulWidget {
   final EntregaLoteModel entregaLotepage;
 
-  const RecepcionEntregaLotePage({Key key, this.entregaLotepage}) : super(key: key);
+  const RecepcionEntregaLotePage({Key key, this.entregaLotepage})
+      : super(key: key);
 
   @override
   _RecepcionEntregaLotePageState createState() =>
@@ -20,15 +20,13 @@ class RecepcionEntregaLotePage extends StatefulWidget {
 }
 
 class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
-
   EntregaLoteModel entregaLote;
   _RecepcionEntregaLotePageState(this.entregaLote);
-  RecepcionControllerLote principalcontroller =
-      new RecepcionControllerLote();
+  RecepcionControllerLote principalcontroller = new RecepcionControllerLote();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
-  String qrsobre, qrbarra= "";
+  String qrsobre, qrbarra = "";
   String codigoBandeja = "";
   String codigoSobre = "";
   var listadetinatario;
@@ -36,36 +34,88 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
 
   @override
   void initState() {
-   if(entregaLote!=null){
-    _bandejaController.text = entregaLote.paqueteId;
-    codigoBandeja = entregaLote.paqueteId;
+    if (entregaLote != null) {
+      _bandejaController.text = entregaLote.paqueteId;
+      codigoBandeja = entregaLote.paqueteId;
+      iniciarlistaEnvios();
+    }else{
+      listaEnvios = [];
     }
     super.initState();
+  }
+
+  void iniciarlistaEnvios() async{
+      listaEnvios = await principalcontroller.listarEnviosLotes(context, codigoBandeja);
+      setState(() {
+        listaEnvios = listaEnvios;
+      });
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
+    contieneCodigo(codigo) async {
+      bool pertenecia = false;
+      for (EnvioModel envio in listaEnvios) {
+        if (envio.codigoPaquete == codigo) {
+          pertenecia = true;
+        }
+      }
+      if (pertenecia == true) {
+       bool respuesta = await principalcontroller.recogerdocumentoLote(context, codigoBandeja,codigo);
+            if(respuesta){
+              listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
+              if(listaEnvios.length==0){
+                  confirmarRecepcion(context,"Mensaje","Se ha completado la recepción");
+              setState(() {
+                listaEnvios=listaEnvios;
+              });
+              }else{
+              setState(() {
+                listaEnvios=listaEnvios;
+              });
+              }
+            }else{
+              mostrarAlerta(context, "No se pudo completar la operación", "Mensaje");
+            }
+      } else {
+        principalcontroller.recogerdocumentoLote(
+            context, codigoBandeja, codigo);
+      }
+    }
 
     void _validarSobreText(String value) {
       if (value != "") {
-          setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-          });
+          contieneCodigo(value);
+      }else{
+        mostrarAlerta(context, "El código es obligatorio", "Mensaje");
       }
     }
 
-    void _validarBandejaText(String value) {
+    void _validarBandejaText(String value) async {
       if (value != "") {
+      listaEnvios = await principalcontroller.listarEnviosLotes(context, codigoBandeja);
+        if(listaEnvios!=null){
         setState(() {
           codigoBandeja = value;
           _bandejaController.text = value;
+          listaEnvios=listaEnvios;
         });
+        }else{
+         setState(() {
+            listaEnvios=[];
+        });
+          mostrarAlerta(context, "No contiene envíos", "Mensaje");
+        }
+      }else{
+         setState(() {
+            listaEnvios=[];
+        });
+        mostrarAlerta(context, "El campo de la bandeja no puede estar vacío", "Mensaje");
       }
-    }
 
+    }
 
     void agregaralista(EnvioModel envio) {
       bool pertenece = false;
@@ -117,23 +167,6 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       _validarBandejaText(qrbarra);
     }
 
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarEnviosLotes(
-              context, codigoBandeja),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              final envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i]));
-            } else {
-              return Container();
-            }
-          });
-    }
-
     Widget sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
         child: Padding(
@@ -143,30 +176,19 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-              if (listaEnvios.length == 0) {
-                  listaEnvios.clear();
-                  _bandejaController.text="";
-                  codigoBandeja="";
-                  _sobreController.text="";
-                  codigoSobre="";
-              } else {
-                confirmarNovalidados(
-                    context,
-                    "Te faltan asociar estos documentos",
-                    listaEnvios);
-              }
+                confirmarPendientes(
+                    context, "Te faltan asociar estos documentos", listaEnvios);
             },
             color: Color(0xFF2C6983),
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Recibir', style: TextStyle(color: Colors.white)),
+            child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
-
-    Widget _crearListadoinMemoria() {
+    Widget _crearListadoinMemoria(List<EnvioModel> envios) {
       return ListView.builder(
-          itemCount: listaEnvios.length,
-          itemBuilder: (context, i) => crearItem(listaEnvios[i]));
+          itemCount: envios.length,
+          itemBuilder: (context, i) => crearItem(envios[i]));
     }
 
     var bandeja = TextFormField(
@@ -233,30 +255,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       ),
     );
 
-    contieneCodigo(codigo) {
-      bool pertenecia = false;
-      for (EnvioModel envio in listaEnvios) {
-        if (envio.codigoPaquete == codigo) {
-          pertenecia = true;
-        }
-      }
-      if (pertenecia == true) {
-        principalcontroller.recogerdocumentoLote(
-            context, codigoBandeja, contieneCodigo(codigo));
-        listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
-      } else {
-        principalcontroller.recogerdocumentoLote(
-            context, codigoBandeja, codigo);
-      }
-    }
 
-    Widget _validarListado(String codigo) {
-      if (codigo == "") {
-        return _crearListado();
-      } else {
-        contieneCodigo(codigo);
-        return _crearListadoinMemoria();
-      }
+
+    Widget _validarListado(List<EnvioModel> envios ) {
+        return _crearListadoinMemoria(envios);
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -351,18 +353,15 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                   margin: const EdgeInsets.only(bottom: 40),
                 ),
               ),
-              Expanded(
-                  child: codigoBandeja == ""
-                      ? Container()
-                      : Container(child: _validarListado(codigoSobre))),
-              Align(
+              Expanded(child: _validarListado(listaEnvios)),
+              listaEnvios.length != 0?Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
                     height: screenHeightExcludingToolbar(context, dividedBy: 5),
                     width: double.infinity,
                     child: sendButton),
-              ),
+              ):Container(),
             ],
           ),
         ));
@@ -374,10 +373,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     );
   }
 
-    void confirmarNovalidados(
+  void confirmarNovalidados(
       BuildContext context, String titulo, List<EnvioModel> novalidados) {
-
-    Widget informacion = principalcontroller.contenidoPopUp(colorletra, "La molina", novalidados.length);    
+    Widget informacion = principalcontroller.contenidoPopUp(
+        colorletra, "La molina", novalidados.length);
 
     showDialog(
         context: context,
@@ -391,20 +390,79 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               FlatButton(
                   child: Text('Descartar pendientes'),
                   onPressed: () {
-                  listaEnvios.clear();
-                  _bandejaController.text="";
-                  codigoBandeja="";
-                  _sobreController.text="";
-                  codigoSobre="";
-                  Navigator.of(context).pop();
+                    listaEnvios.clear();
+                    _bandejaController.text = "";
+                    codigoBandeja = "";
+                    _sobreController.text = "";
+                    codigoSobre = "";
+                    Navigator.of(context).pop();
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(
-                child: Text('Volver a leer'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                } 
-              )
+                  child: Text('Volver a leer'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
+  }
+
+
+  void confirmarRecepcion(
+      BuildContext context, String titulo,String mensaje ) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('$titulo'),
+            content: SingleChildScrollView(
+              child: Text('$mensaje'),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
+  }
+
+
+  void confirmarPendientes(
+      BuildContext context, String titulo, List<EnvioModel> novalidados) {
+    Widget informacion = principalcontroller.contenidoPopUp(
+        colorletra, "Faltan", novalidados.length);
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('$titulo'),
+            content: SingleChildScrollView(
+              child: informacion,
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Descartar pendientes'),
+                  onPressed: () {
+                                        Navigator.of(context).pushNamed('/envio-lote');
+                    /*
+                    listaEnvios.clear();
+                    _bandejaController.text = "";
+                    codigoBandeja = "";
+                    _sobreController.text = "";
+                    codigoSobre = "";
+                    Navigator.of(context).pop();*/
+                  }),
+              SizedBox(height: 1.0, width: 5.0),
+              FlatButton(
+                  child: Text('Volver a leer'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
             ],
           );
         });

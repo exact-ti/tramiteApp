@@ -40,7 +40,7 @@ class RecepcionImpl implements RecepcionInterface {
 
   @override
   Future<List<EnvioModel>> listarEnviosPrincipalCore() async{
-    List<EnvioModel> envios = await recepcion.listarenviosPrincipal2();
+    List<EnvioModel> envios = await recepcion.listarenviosPrincipal();
     return envios;
   }
 
@@ -53,6 +53,20 @@ class RecepcionImpl implements RecepcionInterface {
   @override
   Future<bool> registrarListaEnvioPrincipalCore(List<String> codigosPaquete) async {
      bool respuesta= await recepcion.registrarListaEnvioPrincipalProvider(codigosPaquete);
+    return respuesta;
+  }
+
+  @override
+  Future<bool> registrarLote(String codigoArea, String codigoPaquete) async {
+    bool respuesta;
+      respuesta = await recepcion.registrarJumboProvider(codigoArea, codigoPaquete);
+    return respuesta;
+  }
+
+  @override
+  Future<bool> recibirLote(String codigoLote, String codigoPaquete) async{
+    bool respuesta;
+      respuesta = await recepcion.recibirJumboProvider(codigoLote, codigoPaquete);
     return respuesta;
   }
 

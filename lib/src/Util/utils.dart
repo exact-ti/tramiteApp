@@ -244,12 +244,13 @@ BoxDecoration myBoxDecoration(Color colorletra) {
 void trackingPopUp(BuildContext context, int codigo) async {
   TrackingInterface trackingCore = new TrackingImpl(new TrackingProvider());
   double heightCel = 0.6 * (MediaQuery.of(context).size.height);
-
+String observacion ="";
   TrackingModel trackingModel = await trackingCore.mostrarTracking(codigo);
 
   List<Widget> listadecodigos = new List();
 
   for (TrackingDetalleModel detalle in trackingModel.detalles) {
+    
     listadecodigos.add(Container(
         decoration: myBoxDecoration(colorletra),
         alignment: Alignment.centerLeft,
@@ -277,6 +278,10 @@ void trackingPopUp(BuildContext context, int codigo) async {
             ),
           ],
         )));
+  }
+
+  if(trackingModel.observacion!=null){
+      observacion=trackingModel.observacion;
   }
 
   showDialog(
@@ -409,7 +414,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                         flex: 2,
                       ),
                       Expanded(
-                        child: Text(trackingModel.observacion,
+                        child: Text(observacion,
                             style: TextStyle(color: colorletra)),
                         flex: 3,
                       ),

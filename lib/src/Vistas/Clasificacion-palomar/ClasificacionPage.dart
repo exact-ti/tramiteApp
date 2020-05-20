@@ -64,7 +64,7 @@ List<PalomarModel> listapalomar = [];
       String codigopalomar = palomar.codigo;
       String tipo = palomar.tipo;
       int fila = palomar.fila;
-      int columna = palomar.columna;
+      String ubicacion = palomar.ubicacion;
       return Container(
           child: new Column(
         children: <Widget>[
@@ -138,7 +138,7 @@ List<PalomarModel> listapalomar = [];
                     flex: 3,
                   ),
                   Expanded(
-                    child: Text('Columna $columna Fila $fila',
+                    child: Text('$ubicacion',
                         style: TextStyle(color: Colors.blue)),
                     flex: 3,
                   ),

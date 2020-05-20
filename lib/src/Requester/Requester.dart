@@ -42,7 +42,7 @@ class Requester {
   Future<Response> post(
       String url, dynamic data, Map<String, dynamic> params) async {
     return await addInterceptors(_dio)
-        .post(properties['API'] + url, data: data);
+        .post(properties['API'] + url, data: data,queryParameters: params);
   }
 
   dynamic requestInterceptor(RequestOptions options) async {

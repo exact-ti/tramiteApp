@@ -51,6 +51,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
   @override
   void initState() {
     valuess = "";
+    listacodigos=[];
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
@@ -66,11 +67,12 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
 
     void _validarSobreText(String value) async {
       if (value != "") {
+        if(!listacodigos.contains(value)){
        bool  respuesta = await personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
           if(respuesta){
-                      FocusScope.of(context).unfocus();
+              FocusScope.of(context).unfocus();
               new TextEditingController().clear();
-          listacodigos.add(_sobreController.text);
+          listacodigos.add(value);
           setState(() { 
             _sobreController.text = "";
             codigoSobre = "";
@@ -81,7 +83,9 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
             f1.unfocus();
             FocusScope.of(context).requestFocus(f2);
           }
-
+        }else{
+              mostrarAlerta(context, "Codigo ya se encuentra validado", "Mensaje");
+        }
         }
     }
 

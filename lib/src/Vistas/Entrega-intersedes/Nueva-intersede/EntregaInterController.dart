@@ -23,10 +23,12 @@ class EntregaregularController {
       EnvioInterSedeModel interSedeModel, String codigo) async {
     List<EnvioModel> recorridos =
         await intersedeInterface.listarEnviosByCodigo(codigo);
-
-    if (recorridos.isEmpty) {
+  if(recorridos!=null){
+    if (recorridos.length==0) {
       mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
     }
+  }
+
     return recorridos;
   }
 

@@ -25,8 +25,11 @@ class RecepcionProvider implements IRecepcionProvider {
   BuzonModel buzonModel = new BuzonModel();
   @override
   Future<List<EnvioModel>> recepcionJumboProvider(String codigo) async {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
     Response resp = await req.get(
-        '/servicio-tramite/recorridos/areas/$codigo/envios/paraentrega');
+        '/servicio-tramite/utds/$id/lotes/$codigo/recepcion');
     if (resp.data == "") {
       return null;
     }
@@ -55,6 +58,20 @@ class RecepcionProvider implements IRecepcionProvider {
         null,
         null);
     if (resp.data) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> recibirJumboProvider(
+     String codigoLote,String codigopaquete) async {
+           Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.get('/servicio-tramite/utds/$id/entregas/$codigopaquete/recepcion');
+    List<dynamic> envio = resp.data;
+    if (envio.length!=0) {
       return true;
     }
     return false;
@@ -103,7 +120,7 @@ class RecepcionProvider implements IRecepcionProvider {
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio/tramite/buzones/$id/envios/confirmacion');
+        '/servicio-tramite/buzones/$id/envios/confirmacion');
     if (resp.data == "") {
       return null;
     }
@@ -152,22 +169,20 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes) async {
-      /* List<String> ids = new List();
+        Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+        print("Entro a provider");
+    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
+    int id = bznmodel.id;
+       List<String> ids = new List();
     for (String envio in codigospaquetes) {
       ids.add(envio);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post(
-        '/servicio-tramite/recorridos/areas/paquetes/entrega',
-        listaIds,
-        null);
+    Response resp = await req.post('/servicio-tramite/buzones/$id/envios/confirmacion',listaIds,null);
     if (resp.data) {
       return true;
     }
-    return false;*/
-  
-  
-  return false;
+    return false;
   
   }
 

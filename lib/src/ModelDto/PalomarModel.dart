@@ -3,6 +3,7 @@ class PalomarModel {
   String codigo;
   int fila;
   int columna;
+  String ubicacion;
   String tipo;
 
   PalomarModel({
@@ -17,7 +18,7 @@ class PalomarModel {
     palomar.id = json["id"];
     palomar.codigo = json["codigo"];
     palomar.fila = json["fila"];
-    palomar.columna = json["columna"];
+    palomar.ubicacion = json["ubicacion"];
     dynamic tipopalomar = json["tipoPalomar"];
     palomar.tipo = tipopalomar["nombre"];
     return palomar;
