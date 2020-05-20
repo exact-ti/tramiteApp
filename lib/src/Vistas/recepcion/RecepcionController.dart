@@ -37,7 +37,9 @@ class RecepcionController {
               List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
         }else{
-              bool respuesta = await recepcionInterface.registrarEnvioPrincipalCore(codigo);
+          List<String> lista = new List();
+          lista.add(codigo);
+              bool respuesta = await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
             if(codigos.contains(codigo)){
               if(!respuesta){
                 mostrarAlerta(context,"No se pudo registrar el documento", "registro incorrecto");

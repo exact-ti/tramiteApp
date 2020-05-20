@@ -22,8 +22,7 @@ import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
-import 'package:tramiteapp/src/Vistas/recepcion/RecepcionJumboPage.dart';
-import 'package:tramiteapp/src/Vistas/recepcion/RecepcionValijaPage.dart';
+
 
 
 

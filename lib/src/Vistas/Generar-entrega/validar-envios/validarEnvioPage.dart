@@ -393,6 +393,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                     listaEnviosNoValidados.clear();
                     principalcontroller.confirmacionDocumentosValidados(
                         listaEnviosValidados, context, recorridoUsuario.id);
+                    listaEnviosValidados.clear();
+                    listaEnvios.clear();
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(

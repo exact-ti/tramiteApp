@@ -25,7 +25,7 @@ class LoginController {
     accesoInterface.login(username, password).then((data) {
       print(data);
       if (data==null) {
-        mostrarAlerta(context, 'El usuario y contraseña son incorrectos',
+        mostrarAlerta(context, 'Usuario y/o contraseña incorrecta',
             'Información incorrecta');
       } else {
         Menu menuu = new Menu();

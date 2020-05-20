@@ -161,12 +161,15 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               colorwidget = colorplomo;
               final rutas = snapshot.data;
               cantidad=rutas.length;
+              if(cantidad==0){
+              return Container(child: Center(child:  Text("No hay pendientes",
+                        style: TextStyle(fontSize: 20, color: Colors.grey)),));                
+              }
               return ListView.builder(
                   itemCount: rutas.length,
                   itemBuilder: (context, i) => crearItem(rutas[i]));
             } else {
-              return Container(child: Center(child:  Text("No hay pendientes",
-                        style: TextStyle(fontSize: 20, color: Colors.grey)),));
+              return Container();
             }
           });
     }
@@ -183,7 +186,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         ),
         onPressed: () {
           if(recorridoUsuario.indicepagina!=1){
-            if(cantidad==0){
+            if(cantidad!=0){
           principalcontroller.confirmarPendientes(
        context, "Confirmar","Tienes pendientes ¿Desea Continuar?", recorridoUsuario);
             }else{

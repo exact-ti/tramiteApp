@@ -120,7 +120,7 @@ class RecepcionProvider implements IRecepcionProvider {
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
     Response resp = await req.get(
-        '/servicio/tramite/buzones/$id/envios/confirmacion');
+        '/servicio-tramite/buzones/$id/envios/confirmacion');
     if (resp.data == "") {
       return null;
     }
@@ -169,22 +169,20 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes) async {
-      /* List<String> ids = new List();
+        Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+        print("Entro a provider");
+    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
+    int id = bznmodel.id;
+       List<String> ids = new List();
     for (String envio in codigospaquetes) {
       ids.add(envio);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post(
-        '/servicio-tramite/recorridos/areas/paquetes/entrega',
-        listaIds,
-        null);
+    Response resp = await req.post('/servicio-tramite/buzones/$id/envios/confirmacion',listaIds,null);
     if (resp.data) {
       return true;
     }
-    return false;*/
-  
-  
-  return false;
+    return false;
   
   }
 

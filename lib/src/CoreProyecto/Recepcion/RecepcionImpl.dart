@@ -40,7 +40,7 @@ class RecepcionImpl implements RecepcionInterface {
 
   @override
   Future<List<EnvioModel>> listarEnviosPrincipalCore() async{
-    List<EnvioModel> envios = await recepcion.listarenviosPrincipal2();
+    List<EnvioModel> envios = await recepcion.listarenviosPrincipal();
     return envios;
   }
 

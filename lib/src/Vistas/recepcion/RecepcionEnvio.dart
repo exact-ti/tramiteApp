@@ -85,7 +85,19 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                   Container(
                       alignment: Alignment.centerLeft,
                       height: 35,
-                      child: Text("Para $destinatario")),
+                      child: RichText(
+              text: TextSpan(
+                /*defining default style is optional */
+                children: <TextSpan>[
+                  TextSpan(
+                      text: 'De',
+                      style: TextStyle(color: Colors.black,fontSize: 17)),
+                  TextSpan(
+                      text: ' $destinatario',
+                      style: TextStyle(color: Colors.blueGrey,fontSize: 17)),
+                ],
+              ),
+            ),),
                   Expanded(
                       child: Container(
                           child: Row(
@@ -111,7 +123,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                       Expanded(
                           child: Container(
                               alignment: Alignment.centerRight,
-                              child: Text("En custodia en UTD $observacion")))
+                              child: Text("$observacion")))
                     ],
                   )))
                 ],
@@ -169,7 +181,10 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       bool respuestaLista =
           await principalcontroller.guardarLista(context, listid);
       if (respuestaLista) {
+        mostrarAlerta(context, "Se recepcionó los envíos",
+            "Recepcion correcta");
         setState(() {
+          validados.clear();
           codigoBandeja = codigoBandeja;
         });
       } else {
@@ -195,7 +210,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
-        child: Text('Enviar', style: TextStyle(color: Colors.white)),
+        child: Text('Recepcionar', style: TextStyle(color: Colors.white)),
       ),
     );
 
@@ -207,6 +222,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             if (snapshot.hasData) {
               final envios = snapshot.data;
+              codigoBandeja ="";
               listaEnvios.clear();
               return ListView.builder(
                   itemCount: envios.length,

@@ -1,5 +1,6 @@
 
 import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
+import 'package:intl/intl.dart';
 
 class TrackingModel {
 
@@ -35,12 +36,13 @@ class TrackingModel {
            // List<dynamic> detallesHashMap = json2["detalles"];
             for(Map<String, dynamic> json in json2 ){
                 TrackingDetalleModel  detalle = new TrackingDetalleModel();
-                detalle.fecha  = json["fecha"];
-                detalle.remitente = json["estado"];
-                detalle.sede  = json["ubicacion"];
+                detalle = detalle.fromJson(json);
                 detalleTracking.add(detalle);
             }            
             trackingModel.detalles=detalleTracking;
           return trackingModel;
     }   
+}
+
+class DateFormat {
 }

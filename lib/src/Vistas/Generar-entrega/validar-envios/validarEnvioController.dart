@@ -21,11 +21,15 @@ class ValidacionController {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id= await entregaInterface.listarEnviosValidados(enviosvalidados,id);
     recorrido.indicepagina=1;
-    Navigator.push(
+
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+          builder: (context) => GenerarRutaPage(recorridopage: recorrido),
+        ), ModalRoute.withName('/recorridos')); // pushNamedAndRemoveUntil('/screen4', ModalRoute.withName('/screen1'));
+    /*Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => GenerarRutaPage(recorridopage: recorrido),
-        ));
+        ));*/
   }
 
   Future<EnvioModel> validarCodigo(String codigo,int id,BuildContext context) async {
