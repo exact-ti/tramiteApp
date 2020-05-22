@@ -63,29 +63,10 @@ List<PalomarModel> listapalomar = [];
     Widget crearItem(PalomarModel palomar) {
       String codigopalomar = palomar.codigo;
       String tipo = palomar.tipo;
-      int fila = palomar.fila;
       String ubicacion = palomar.ubicacion;
       return Container(
           child: new Column(
         children: <Widget>[
-          //Text("Este documento va para el palomar $codigopalomar"),
-          /*Center(
-            child: RichText(
-              text: TextSpan(
-                /*defining default style is optional */
-                children: <TextSpan>[
-                  TextSpan(
-                      text: 'Este documento va para el palomar',
-                      style: TextStyle(color: Colors.black,fontSize: 17)),
-                  TextSpan(
-                      text: ' $codigopalomar',
-                      style: TextStyle(color: Colors.blue,fontSize: 17)),
-                ],
-              ),
-            ),
-          ),*/
-          //Text("Este documento va para el palomar Fila $fila - Columna $columna"),
-
           Container(
               margin: const EdgeInsets.only(top: 10),
               child: Row(
@@ -249,7 +230,13 @@ List<PalomarModel> listapalomar = [];
                   fontWeight: FontWeight.normal)),
         ),
         drawer: sd.crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -274,7 +261,7 @@ List<PalomarModel> listapalomar = [];
               )
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

@@ -74,10 +74,6 @@ class AccesoImpl implements AccesoInterface {
         List<ConfiguracionModel> configuraciones = await configuracionProvider.listarConfiguraciones();
         _prefs.configuraciones = configuraciones;
 
-        //List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuarioFrecuenteDelUsuarioAutenticado();
-
-
-        print("LL");
         return interfaceLogear;
                 }else{
                   return null;

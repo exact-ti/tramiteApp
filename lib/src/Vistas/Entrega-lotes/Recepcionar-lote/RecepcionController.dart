@@ -7,7 +7,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/recepciones/impl/RecepcionProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class RecepcionControllerLote {
 
@@ -49,7 +49,7 @@ class RecepcionControllerLote {
               return envios;
             }else{
               if(!respuesta){
-                mostrarAlerta(context,"El documento no pertenece a este envío", "registro incorrecto");
+                mostrarAlerta(context,"No es posible procesar el código", "registro incorrecto");
               }else{
                 mostrarAlerta(context,"Registro correcto", "Mensaje");
               }

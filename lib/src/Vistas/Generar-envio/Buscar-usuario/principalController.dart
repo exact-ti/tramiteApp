@@ -20,10 +20,9 @@ class PrincipalController {
 
   Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String text) async {
     List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
-    List<ConfiguracionModel> configuration =
-        configuracionModel.fromPreferencs(configuraciones);
+    List<ConfiguracionModel> configuration =configuracionModel.fromPreferencs(configuraciones);
     int cantidad = 0;
-    List<UsuarioFrecuente> usuarios=null;
+    List<UsuarioFrecuente> usuarios;
     for (ConfiguracionModel confi in configuration) {
       if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
         cantidad = int.parse(confi.valor);
@@ -35,8 +34,10 @@ class PrincipalController {
     } else {
       if (text.length >= cantidad) {
         usuarios = await usuarioInterface.listarUsuariosporFiltro(text);
+      }else{
+        usuarios=null;
       }
-    }
+    }    
     return usuarios;
   }
 }

@@ -10,9 +10,7 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
-
-import 'EntregaInterPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -25,7 +23,7 @@ class EntregaregularController {
         await intersedeInterface.listarEnviosByCodigo(codigo);
   if(recorridos!=null){
     if (recorridos.length==0) {
-      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
   }
 
@@ -37,7 +35,7 @@ class EntregaregularController {
     List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
 
     if (recorridos==null) {
-      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
     return recorridos;
   }
@@ -73,8 +71,12 @@ class EntregaregularController {
         await intersedeInterface.validarCodigo(codigo, codigobandeja);
     if (envio == null) {
       mostrarAlerta(
-          context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
+          context, "No es posible procesar el código", "Codigo Incorrecto");
+    }else{
+      mostrarAlerta(
+          context, "Envío agregado a la entrega", "Codigo correcto");      
     }
+
 
     return envio;
   }

@@ -119,6 +119,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
             if (snapshot.hasData) {
               booleancolor = true;
               usuarios = snapshot.data;
+            }else{
+              usuarios=[];
             }
               return ListView.builder(
                   itemCount: usuarios.length,
@@ -220,7 +222,13 @@ class _PrincipalPageState extends State<PrincipalPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: sd.crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -257,7 +265,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
               )
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

@@ -220,7 +220,13 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -247,7 +253,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

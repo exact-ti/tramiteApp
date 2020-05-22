@@ -105,6 +105,12 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           ),
         ));
 
+        bool contiene(List<EnvioModel> envios,String documento){  
+
+        }
+
+
+
     void registrarDocumento(String documento) async {
       bool pertenecia = false;
       for (EnvioModel envio in listaenvios2) {
@@ -124,8 +130,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
-            listaenvios2
-                .removeWhere((value) => value.codigoPaquete == documento);
+            listaenvios2.removeWhere((value) => value.codigoPaquete == documento);
           } else {
             mensaje = respuestaMap["message"];
           }
@@ -155,7 +160,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   recorridoUsuario.id, codigoBandeja, documento, isSwitched);
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
-            mensaje = respuestaMap2["data"];
+            mensaje = respuestaMap2["destino"];
           } else {
             mensaje = respuestaMap["message"];
           }
@@ -208,7 +213,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         listaenvios2 = await principalcontroller.listarEnvios(
             context, recorridoUsuario.id, value, isSwitched);
         if (listaenvios2 == null) {
-          mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+          mostrarAlerta(context, "El código no pertenece a tu ruta", "Mensaje");
           setState(() {
             listaenvios2 = [];
           });
@@ -321,6 +326,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+                    FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
       if (codigoBandeja == "") {
         _sobreController.text = "";
         mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
@@ -333,6 +340,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Future _traerdatosescanerBandeja() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+                    FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
       _validarBandejaText(qrbarra);
     }
 
@@ -518,7 +527,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body:SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -603,7 +618,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

@@ -137,6 +137,9 @@ class InterSedeProvider implements IInterSedeProvider {
     int id = umodel.id;
     Response resp =
         await req.get('/servicio-tramite/utds/$id/entregas/$codigo/recepcion');
+        if(resp.data==""){
+          return [];
+        }
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;

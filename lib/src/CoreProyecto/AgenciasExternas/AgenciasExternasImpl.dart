@@ -29,8 +29,8 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
 
 
   @override
-  Future<EnvioModel> validarCodigoAgencia(String codigo) async{
-     EnvioModel envio = await agenciaExterna.validarCodigoAgenciaProvider(codigo);
+  Future<EnvioModel> validarCodigoAgencia(String bandeja,String codigo) async{
+     EnvioModel envio = await agenciaExterna.validarCodigoAgenciaProvider(bandeja,codigo);
     return envio;
   }
 
