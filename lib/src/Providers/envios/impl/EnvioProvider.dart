@@ -21,7 +21,7 @@ class EnvioProvider implements IEnvioProvider {
   BuzonModel buzonModel = new BuzonModel();
 
   @override
-  void crearEnvioProvider(EnvioModel envio) async {
+  Future<bool> crearEnvioProvider(EnvioModel envio) async {
     final formData = json.encode({
       "remitenteId": envio.remitenteId,
       "destinatarioId": envio.destinatarioId,
@@ -30,10 +30,18 @@ class EnvioProvider implements IEnvioProvider {
       "observacion": envio.observacion
     });
 
-    Response resp = await req.post('/servicio-tramite/envios', formData, null);
-    final respuesta = resp.data;
+    try {
+      Response resp =
+          await req.post('/servicio-tramite/envios', formData, null);
+      if (resp.data != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
-
 
   //agencias
   @override
@@ -49,11 +57,11 @@ class EnvioProvider implements IEnvioProvider {
 
   @override
   Future<List<EnvioModel>> listarEnviosActivosByUsuario() async {
-    Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp = await req.get(
-        '/servicio-tramite/buzones/$id/envios/activos/salida');
+    Response resp =
+        await req.get('/servicio-tramite/buzones/$id/envios/activos/salida');
     if (resp.data == "") {
       return null;
     }
@@ -62,15 +70,13 @@ class EnvioProvider implements IEnvioProvider {
     return enviosMode;
   }
 
-
-
-    @override
-  Future<List<EnvioModel>> listarRecepcionesActivas()async {
-    Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+  @override
+  Future<List<EnvioModel>> listarRecepcionesActivas() async {
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp = await req.get(
-        '/servicio-tramite/buzones/$id/envios/activos/entrada');
+    Response resp =
+        await req.get('/servicio-tramite/buzones/$id/envios/activos/entrada');
     if (resp.data == "") {
       return null;
     }
@@ -78,56 +84,50 @@ class EnvioProvider implements IEnvioProvider {
     List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
     return enviosMode;
   }
-
 
   @override
   Future<List<EnvioModel>> listarEnviosActivosByUsuario2() async {
-    List<EnvioModel> enviosMode =  await listarfake1();
+    List<EnvioModel> enviosMode = await listarfake1();
     return enviosMode;
   }
 
-
-
-    @override
-  Future<List<EnvioModel>> listarRecepcionesActivas2()async {
+  @override
+  Future<List<EnvioModel>> listarRecepcionesActivas2() async {
     List<EnvioModel> enviosMode = await listarfake2();
     return enviosMode;
   }
 
-
-    Future<List<EnvioModel>> listarfake1() async{
+  Future<List<EnvioModel>> listarfake1() async {
     List<EnvioModel> listarenvios = new List();
     EnvioModel envio1 = new EnvioModel();
     EnvioModel envio2 = new EnvioModel();
-    envio1.observacion="San Ica";
-    envio1.usuario="Ronald Vega";
-    envio1.codigoPaquete="123456";
-    envio2.observacion="La PEru";
-    envio2.usuario="Crhistian Maman";
-    envio2.codigoPaquete="123457";
+    envio1.observacion = "San Ica";
+    envio1.usuario = "Ronald Vega";
+    envio1.codigoPaquete = "123456";
+    envio2.observacion = "La PEru";
+    envio2.usuario = "Crhistian Maman";
+    envio2.codigoPaquete = "123457";
     listarenvios.add(envio1);
     listarenvios.add(envio2);
     return Future.delayed(new Duration(seconds: 1), () {
       return listarenvios;
     });
-
   }
 
-    Future<List<EnvioModel>> listarfake2() async{
+  Future<List<EnvioModel>> listarfake2() async {
     List<EnvioModel> listarenvios = new List();
     EnvioModel envio1 = new EnvioModel();
     EnvioModel envio2 = new EnvioModel();
-    envio1.observacion="San Isidro";
-    envio1.usuario="Ronald Santos";
-    envio1.codigoPaquete="123458";
-    envio2.observacion="La Molina";
-    envio2.usuario="Crhistian campos";
-    envio2.codigoPaquete="123459";
+    envio1.observacion = "San Isidro";
+    envio1.usuario = "Ronald Santos";
+    envio1.codigoPaquete = "123458";
+    envio2.observacion = "La Molina";
+    envio2.usuario = "Crhistian campos";
+    envio2.codigoPaquete = "123459";
     listarenvios.add(envio1);
     listarenvios.add(envio2);
     return Future.delayed(new Duration(seconds: 1), () {
       return listarenvios;
     });
-
   }
 }

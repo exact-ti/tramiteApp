@@ -50,7 +50,13 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
       appBar: sd.crearTitulo('Custodiar envíos'),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
-      body: Padding(
+      body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Container(
           child: Column(
@@ -71,7 +77,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
 
 
 
-    );
+    )));
   }
 
   

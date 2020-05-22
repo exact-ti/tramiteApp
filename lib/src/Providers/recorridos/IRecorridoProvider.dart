@@ -10,7 +10,7 @@ abstract class IRecorridoProvider{
 
   Future<List<EnvioModel>> enviosRecojoProvider(String codigo,int recorridoId);  
 
-  Future<bool> registrarEntregaProvider(String codigo,int recorridoId, String codigopaquete);  
+  Future<dynamic> registrarEntregaProvider(String codigo,int recorridoId, String codigopaquete);  
 
   Future<dynamic> registrarRecojoProvider(String codigo,int recorridoId, String codigopaquete);  
 

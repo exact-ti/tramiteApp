@@ -53,10 +53,11 @@ class NuevoEntregaExternaController {
     recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
         enviosvalidados, codigo);
     if(recorrido.id!=null){
-        mostrarAlerta(context, "No se  pudo registrar el envío", "Mensaje");
-    } else{
-    confirmarAlerta(
+
+            confirmarAlerta(
         context, "Se ha registrado correctamente el envio", "Registro");
+    } else{
+        mostrarAlerta(context, "No se  pudo registrar el envío", "Mensaje");
     }   
 
   }

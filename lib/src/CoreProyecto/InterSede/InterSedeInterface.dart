@@ -18,6 +18,6 @@ class InterSedeInterface {
   Future<bool> iniciarEntregaIntersede(int utdDestino) {}
 
 
-  Future<bool> registrarRecojoIntersedeProvider(
+  Future<dynamic> registrarRecojoIntersedeProvider(
       String codigo, String codigopaquete){} 
 }

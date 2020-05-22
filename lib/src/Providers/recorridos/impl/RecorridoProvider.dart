@@ -54,16 +54,13 @@ class RecorridoProvider implements IRecorridoProvider {
   }
 
   @override
-  Future<bool> registrarEntregaProvider(
+  Future<dynamic> registrarEntregaProvider(
       String codigo, int recorridoId, String codigopaquete) async {
     Response resp = await req.post(
         '/servicio-tramite/recorridos/$recorridoId/areas/$codigo/paquetes/$codigopaquete/entrega',
         null,
         null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
+    return resp.data;
   }
 
   @override

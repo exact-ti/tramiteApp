@@ -27,9 +27,9 @@ class EntregaregularController {
       return respuesta;
   }
 
-  Future<bool> recogerdocumentoEntrega(BuildContext context,
+  Future<dynamic> recogerdocumentoEntrega(BuildContext context,
       int id, String codigo, String paquete, bool opcion) async {
-    bool respuesta = await recorridoCore.registrarRecorridoEntregaCore(codigo, id, paquete, opcion);
+    dynamic respuesta = await recorridoCore.registrarRecorridoEntregaCore(codigo, id, paquete, opcion);
       return respuesta;
   }
 

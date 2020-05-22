@@ -146,7 +146,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<bool> registrarRecojoIntersedeProvider(
+  Future<dynamic> registrarRecojoIntersedeProvider(
       String codigo, String codigopaquete) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
@@ -155,9 +155,5 @@ class InterSedeProvider implements IInterSedeProvider {
         '/servicio-tramite/utds/$id/paquetes/$codigopaquete/custodia',
         null,
         null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
-  }
+    return resp.data;}
 }

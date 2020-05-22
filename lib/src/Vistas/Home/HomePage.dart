@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
-import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';

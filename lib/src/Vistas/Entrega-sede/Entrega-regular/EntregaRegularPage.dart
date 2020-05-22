@@ -135,18 +135,18 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             mensaje = respuestaMap["message"];
           }
         } else {
-          bool respuestaMap = await envioController.recogerdocumentoEntrega(
+          dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
               context,
               recorridoUsuario.id,
               codigoBandeja,
               documento,
               isSwitched);
-          if (respuestaMap) {
+          if (respuestaMap["status"] == "success") {
             listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
+                          mensaje = "Se registró la entrega";
           } else {
-            mostrarAlerta(
-                context, "no se pudo completar la operación", "mensaje");
+            mensaje = respuestaMap["message"];
           }
         }
         setState(() {
@@ -168,17 +168,21 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           mensaje = mensaje;
         });
         } else {
-          bool respuestaMap = await envioController.recogerdocumentoEntrega(
+          dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
               context,
               recorridoUsuario.id,
               codigoBandeja,
               documento,
               isSwitched);
-          if (!respuestaMap) {
-            mostrarAlerta(
-                context, "no se pudo completar la operación", "mensaje");
-          } else {
-            mostrarAlerta(context, "Se registro la entrega", "mensaje");
+          if (respuestaMap["status"] == "success") {
+            setState(() {
+                          mensaje = "Se registró la entrega";
+            });          } else {
+            setState(() {
+                          mensaje = respuestaMap["message"];
+            });
+            /*mostrarAlerta(
+                context, respuestaMap["message"], "mensaje");*/
           }
         }
       }

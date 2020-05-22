@@ -19,8 +19,8 @@ class RecepcionInterController {
     return recorridos;
   }
 
-  Future<bool>  recogerdocumento(BuildContext context, String codigo, String paquete,bool opcion) async {
-    bool respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
+  Future<dynamic>  recogerdocumento(BuildContext context, String codigo, String paquete,bool opcion) async {
+    dynamic respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
     return respuesta;
   }
 

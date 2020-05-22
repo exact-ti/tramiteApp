@@ -17,15 +17,15 @@ class PalomarProvider implements IPalomarProvider {
   PalomarModel palomarModel = new PalomarModel();
 
   @override
-  Future<PalomarModel> listarPalomarByCodigo(String codigo) async {
+  Future<dynamic> listarPalomarByCodigo(String codigo) async {
     try{
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.post('/servicio-tramite/utds/$id/paquetes/$codigo/clasificacion',null,null);
     dynamic palomardata = resp.data;
-    PalomarModel palomar = palomarModel.fromOneJson(palomardata);
-    return palomar;
+    //PalomarModel palomar = palomarModel.fromOneJson(palomardata);
+    return palomardata;
     }catch(e){
       return null;
     }
