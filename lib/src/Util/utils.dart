@@ -144,7 +144,8 @@ List<Widget> milistview(BuildContext context) {
       list.add(ListTile(
           leading:  getICon(men.icono),
           title: Text(men.nombre),
-          onTap: () => Navigator.pushReplacementNamed(context, men.link)));
+          onTap: () =>  Navigator.of(context).pushNamedAndRemoveUntil(
+                men.link, (Route<dynamic> route) => false)));
     }
 
     if (_prefs.buzon != "") {

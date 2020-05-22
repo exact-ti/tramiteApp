@@ -25,18 +25,23 @@ class NuevoEntregaExternaController {
     List<EnvioModel> recorridos =
         await agenciacore.listarEnviosAgenciasByCodigo(codigo);
 
-    if (recorridos.isEmpty) {
-      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+  if(recorridos!=null){
+    if (recorridos.length==0) {
+      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
+  }
     return recorridos;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
-      String codigo, BuildContext context) async {
-    EnvioModel envio = await agenciacore.validarCodigoAgencia(codigo);
+      String bandeja,String codigo, BuildContext context) async {
+    EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja,codigo);
     if (envio == null) {
       mostrarAlerta(
-          context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
+          context, "No es posible procesar el código", "Codigo Incorrecto");
+    }else{
+      mostrarAlerta(
+          context, "Envío agregado a la entrega", "Mensaje");      
     }
 
     return envio;
@@ -47,8 +52,13 @@ class NuevoEntregaExternaController {
     RecorridoModel recorrido = new RecorridoModel();
     recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
         enviosvalidados, codigo);
+    if(recorrido.id!=null){
+        mostrarAlerta(context, "No se  pudo registrar el envío", "Mensaje");
+    } else{
     confirmarAlerta(
         context, "Se ha registrado correctamente el envio", "Registro");
+    }   
+
   }
 
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {

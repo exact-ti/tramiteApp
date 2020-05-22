@@ -58,16 +58,19 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     int id = umodel.id;
     Response resp = await req.get(
         '/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
+     if(resp.data==""){
+       return [];
+     }   
     List<dynamic> envios = resp.data;
     List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return listEnvio;
   }
 
   @override
-  Future<EnvioModel> validarCodigoAgenciaProvider(String codigo) async {
+  Future<EnvioModel> validarCodigoAgenciaProvider(String bandeja,String codigo) async {
     try {
       Response resp = await req.get(
-          '/servicio-tramite/turnos/envios/paraagregaralrecorrido?paqueteId=$codigo');
+          '/servicio-tramite/tipospaquetes/valijas-agencia/$bandeja/paquetes/$codigo');
       if (resp.data == "") {
         return null;
       }
@@ -90,8 +93,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
       ids.add(envio.id);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$valijaExternaId/entregas',
+    Response resp = await req.post('/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$valijaExternaId/entregas',
         listaIds,
         null);
     int idresp = resp.data;

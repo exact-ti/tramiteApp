@@ -15,7 +15,7 @@ class ClasificacionController {
         List<PalomarModel> palomares = new List();
        PalomarModel palomar=  await usuarioInterface.listarPalomarByCodigo(codigo);
        if(palomar == null){
-            mostrarAlerta(context,"El codigo del paquete es incorrecto", "Codigo incorrecto");
+            mostrarAlerta(context,"El sobre no existe en la base de datos", "Codigo incorrecto");
             return null;
        }
         palomares.add(palomar);    

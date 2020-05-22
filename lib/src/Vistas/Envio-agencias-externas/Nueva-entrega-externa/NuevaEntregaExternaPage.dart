@@ -16,8 +16,8 @@ class NuevoEntregaExternaPage extends StatefulWidget {
 class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  List<EnvioModel> listaEnvios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
+  List<EnvioModel> listaEnvios = [];
+  List<EnvioModel> listaEnviosValidados = [];
   List<EnvioModel> listaEnviosNoValidados = new List();
   NuevoEntregaExternaController principalcontroller = new NuevoEntregaExternaController();
   String qrsobre, qrbarra, valuess = "";
@@ -81,7 +81,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           ),
         ));
 
-    void _validarSobreText(String value) {
+    void _validarSobreText(String value) async{
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -96,23 +96,60 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             listaCodigosValidados.add(value);
           });
         } else {
-          setState(() {
+            EnvioModel enviocontroller =  await principalcontroller.validarCodigoEntrega(_bandejaController.text,
+              value,context);
+            if(enviocontroller!=null){
+                setState(() {
+                  listaEnvios.add(enviocontroller);
+                  listaCodigosValidados.add(value);
+                });
+            }
+          /*setState(() {
             _sobreController.text = "";
             codigoSobre = value;
-          });
+          });*/
         }
+      }else{
+        mostrarAlerta(context, "El campo del sobre no puede ser vacío", "Mensaje");
+      }
+    }
+
+        void validarLista(String codigo) async {
+      listaEnvios =
+          await principalcontroller.listarEnviosEntrega(context, codigo);
+      if (listaEnvios != null) {
+        setState(() {
+          codigoSobre = "";
+          listaEnvios=listaEnvios;
+          listaCodigosValidados.clear();
+          _sobreController.text = "";
+          codigoBandeja = codigo;
+          _bandejaController.text = codigo;
+        });
+      } else {
+        setState(() {
+          listaCodigosValidados.clear();
+          _sobreController.text = "";
+                    codigoSobre = "";
+          listaEnvios=[];
+          codigoBandeja = codigo;
+                    _bandejaController.text = codigo;
+
+        });
       }
     }
 
     void _validarBandejaText(String value) {
       if (value != "") {
-        setState(() {
-          codigoSobre="";
+        validarLista(value);
+      } else {
+        mostrarAlerta(context, "La bandeja es obligatoria", "mensaje");
+                setState(() {
           listaEnvios.clear();
           listaCodigosValidados.clear();
-          _sobreController.text="";
-          codigoBandeja = value;
-          _bandejaController.text = value;
+          _sobreController.text = "";
+                    codigoSobre = "";
+
         });
       }
     }
@@ -241,10 +278,10 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           });
     }
 
-    Widget _crearListadoinMemoria(List<String> validados) {
+    Widget _crearListadoinMemoria(List<String> validados, List<EnvioModel> envios) {
       return ListView.builder(
-          itemCount: listaEnvios.length,
-          itemBuilder: (context, i) => crearItem(listaEnvios[i], validados, 0));
+          itemCount: envios.length,
+          itemBuilder: (context, i) => crearItem(envios[i], validados, 0));
     }
 
     var bandeja = TextFormField(
@@ -314,7 +351,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(
+          future: principalcontroller.validarCodigoEntrega(_bandejaController.text,
               codigoporValidar, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
@@ -339,16 +376,9 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           });
     }
 
-    Widget _validarListado(List<String> validados, String codigo) {
-      if (codigo == "") {
-        return _crearListado(validados);
-      } else {
-        if (validados.contains(codigo)) {
-          return _crearListadoinMemoria(validados);
-        } else {
-          return _crearListadoAgregar(validados, codigo);
-        }
-      }
+    Widget _validarListado(List<String> validados, List<EnvioModel> envios) {
+          return _crearListadoinMemoria(validados,envios);
+
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -400,7 +430,13 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -448,7 +484,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                       ? Container()
                       : Container(
                           child: _validarListado(
-                              listaCodigosValidados, codigoSobre))),
+                              listaCodigosValidados, listaEnvios))),
               Align(
                 alignment: Alignment.center,
                 child: Container(
@@ -459,7 +495,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {
