@@ -128,8 +128,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
         }
         if (perteneceLista) {
-        bool respuesta = await principalcontroller.recogerdocumento( context,  _bandejaController.text, value,true);
-        if(respuesta){
+        dynamic respuestaValidar = await principalcontroller.recogerdocumento( context,  _bandejaController.text, value,true);
+        if(respuestaValidar["status"] == "success"){
           listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
           if(listaEnvios.length==0){
                     entregaController.confirmarAlerta(
@@ -144,11 +144,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
         }
         } else {
-             bool respuestaValidar = await principalcontroller.recogerdocumento( context, _bandejaController.text,value,true);
-              if(respuestaValidar){
-                  mostrarAlerta(context, "Envío no está en la lista, pero ha sido custodiado", "Mensaje");
-              }else{
+             dynamic respuestaValidar = await principalcontroller.recogerdocumento( context, _bandejaController.text,value,true);
+              if(respuestaValidar["status"] != "success"){
                   mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+              }else{
+                  mostrarAlerta(context, "Se ha registrado el envío", "Mensaje");
               }
         }
       }

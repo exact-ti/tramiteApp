@@ -71,8 +71,7 @@ class RecepcionControllerLote {
 
   Future<bool> recogerdocumentoLote(BuildContext context, String codigo,
       String paquete) async {
-    bool respuesta =
-        await recepcionInterface.recibirLote(codigo, paquete);
+    bool respuesta =await recepcionInterface.recibirLote(codigo, paquete);
     return respuesta;
   }
 

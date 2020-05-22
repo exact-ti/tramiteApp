@@ -193,7 +193,11 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               principalcontroller.opcionRecorrido(recorridoUsuario,context);
             }
           }else{
-          principalcontroller.opcionRecorrido(recorridoUsuario,context);
+              if(cantidad==0){
+                  mostrarAlerta(context, "No hay pendientes en tu ruta", "Mensaje");
+            }else{
+              principalcontroller.opcionRecorrido(recorridoUsuario,context);
+            }
           }
         },
         color: Color(0xFF2C6983),

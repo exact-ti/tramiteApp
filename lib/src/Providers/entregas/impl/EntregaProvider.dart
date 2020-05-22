@@ -101,6 +101,9 @@ class EntregaProvider implements IEntregaProvider {
   @override
   Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo) async{
     Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos');
+    if(resp.data==null){
+        return null;
+    }
     List<dynamic> envios = resp.data;
     List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
     return listEnvio;

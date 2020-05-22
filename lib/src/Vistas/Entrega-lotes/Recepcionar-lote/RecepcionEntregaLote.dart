@@ -80,8 +80,13 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               mostrarAlerta(context, "No se pudo completar la operación", "Mensaje");
             }
       } else {
-        principalcontroller.recogerdocumentoLote(
+      bool respuesta = await  principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo);
+            if(respuesta){
+                  mostrarAlerta(context, "Se registro el código", "Mensaje");
+            }else{
+                  mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+            }
       }
     }
 
@@ -310,7 +315,13 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -364,7 +375,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               ):Container(),
             ],
           ),
-        ));
+        ))));
   }
 
   BoxDecoration myBoxDecoration() {
@@ -423,8 +434,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               FlatButton(
                   child: Text('Ok'),
                   onPressed: () {
-                    Navigator.of(context).pop();
-                  })
+Navigator.of(context).pushNamed('/envio-lote');                  })
             ],
           );
         });

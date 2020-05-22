@@ -13,13 +13,19 @@ class ClasificacionController {
 
     Future<List<PalomarModel> >  listarpalomarByCodigo(BuildContext context, String codigo) async {
         List<PalomarModel> palomares = new List();
-       PalomarModel palomar=  await usuarioInterface.listarPalomarByCodigo(codigo);
-       if(palomar == null){
-            mostrarAlerta(context,"El sobre no existe en la base de datos", "Codigo incorrecto");
-            return null;
+        PalomarModel palomarModel = new PalomarModel();
+       dynamic palomar=  await usuarioInterface.listarPalomarByCodigo(codigo);
+       if(palomar["status"] == "success"){
+         dynamic datapalomar = palomar["data"];
+         PalomarModel palomar2 = palomarModel.fromOneJson(datapalomar);
+            palomares.add(palomar2);    
+            return palomares;
+       }else{
+          mostrarAlerta(context, "El sobre no existe en la base de datos", "Mensaje");
        }
-        palomares.add(palomar);    
+        palomares = [];    
         return palomares;
     }
+    //PalomarModel palomar = palomarModel.fromOneJson(palomardata);
 
 }
