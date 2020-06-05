@@ -202,7 +202,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: recorridoUsuario.indicepagina==1 ? Text('Empezar', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
+        child: recorridoUsuario.indicepagina==1 ? Text('Empezar recorrido', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
       ),
     ));
 

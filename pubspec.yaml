@@ -30,6 +30,7 @@ dependencies:
   spreadsheet_decoder: ^1.1.0
   file_picker: ^1.4.2
   font_awesome_flutter: ^8.8.1
+  timezone: ^0.5.7
 
 dev_dependencies:
   flutter_driver:
