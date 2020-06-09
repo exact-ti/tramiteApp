@@ -176,9 +176,11 @@ void eliminarpreferences(BuildContext context) async {
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
   sharedPreferences.commit();
+  if(context!=null){
   Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
       (Route<dynamic> route) => false);
+  }
 }
 
 final _icons = <String, IconData>{

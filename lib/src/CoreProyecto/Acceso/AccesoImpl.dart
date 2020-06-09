@@ -46,6 +46,7 @@ class AccesoImpl implements AccesoInterface {
 
 
         _prefs.token = interfaceLogear['access_token'];
+        _prefs.refreshToken = interfaceLogear['refresh_token'];
 
          List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
          for (BuzonModel buzon in buzones) {
