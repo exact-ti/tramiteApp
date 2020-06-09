@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
-import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
-import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 

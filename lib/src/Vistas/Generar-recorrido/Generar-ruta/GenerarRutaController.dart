@@ -24,15 +24,11 @@ class GenerarRutaController {
     bool recorrido = await rutaInterface.opcionRecorrido(recorridoModel);
     if (recorrido) {
       if(recorridoModel.indicepagina==1){
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              EntregaRegularPage(recorridopage: recorridoModel),
-        ),
-      );
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+          builder: (context) => EntregaRegularPage(recorridopage: recorridoModel),
+        ), ModalRoute.withName('/recorridos'));
       }else{
-              Navigator.of(context).pushNamed('/recorridos');
+           Navigator.of(context).pushNamed('/recorridos');
       }
     }
   }

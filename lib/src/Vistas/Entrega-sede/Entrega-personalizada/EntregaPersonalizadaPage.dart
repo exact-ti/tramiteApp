@@ -296,7 +296,13 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body:SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -341,7 +347,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
                     alignment: Alignment.bottomCenter,
                     child:_crearListadoinMemoria(listacodigos)),
               ),
-              Align(
+              /*Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
@@ -349,10 +355,10 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
                         screenHeightExcludingToolbar(context, dividedBy: 12),
                     width: double.infinity,
                     child: botonesinferiores),
-              ),
+              ),*/
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

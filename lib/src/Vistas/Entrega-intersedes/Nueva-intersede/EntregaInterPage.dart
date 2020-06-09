@@ -15,7 +15,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   EntregaregularController envioController = new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  List<EnvioModel> listaEnvios = new List();
+  List<EnvioModel> listaEnvios = [];
   List<EnvioModel> listaEnviosValidados = [];
   List<EnvioModel> listaEnviosNoValidados = [];
   EntregaregularController principalcontroller = new EntregaregularController();
@@ -40,9 +40,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     const SecondColor = const Color(0xFF6698AE);
 
     listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
           listaEnviosValidados.add(envio);
@@ -65,6 +62,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                 mostrarAlerta(
                     context, "Debe ingresar el codigo de bandeja", "Mensaje");
               } else {
+                if(listaEnvios.length!=0){
                 listarNovalidados();
                 codigoSobre = "";
                 if (listaEnviosNoValidados.length == 0) {
@@ -74,8 +72,11 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                 } else {
                   confirmarNovalidados(
                       context,
-                      "Te faltan asociar estos documentos",
+                      "Faltan los siguientes elementos a validar:",
                       listaEnviosNoValidados);
+                }
+                }else{
+                  mostrarAlerta(context, "No hay envíos para registrar", "Mensaje");
                 }
               }
             },
@@ -85,7 +86,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           ),
         ));
 
-    void _validarSobreText(String value) {
+    void _validarSobreText(String value) async {
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -100,11 +101,21 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             listaCodigosValidados.add(value);
           });
         } else {
-          setState(() {
+            EnvioModel enviocontroller =  await principalcontroller.validarCodigoEntrega(
+       _bandejaController.text, value,  context);
+            if(enviocontroller!=null){
+                setState(() {
+                  listaEnvios.add(enviocontroller);
+                  listaCodigosValidados.add(value);
+                });
+            }
+          /*setState(() {
             _sobreController.text = "";
             codigoSobre = value;
-          });
+          });*/
         }
+      }else{
+        mostrarAlerta(context, "El campo del sobre no puede ser vacío", "Mensaje");
       }
     }
 
@@ -125,7 +136,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           listaCodigosValidados.clear();
           _sobreController.text = "";
                     codigoSobre = "";
-          listaEnvios=listaEnvios;
+          listaEnvios=[];
           codigoBandeja = codigo;
                     _bandejaController.text = codigo;
 
@@ -243,7 +254,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       if(envios!=null){
           listaenvios=envios;
       }
-
       return ListView.builder(
           itemCount: listaenvios.length,
           itemBuilder: (context, i) => crearItem(listaenvios[i], validados, 0));
@@ -345,8 +355,9 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           });
     }
 
-    Widget _validarListado(List<EnvioModel> lista, List<String> validados, String codigo) {
-      if (codigo == "") {
+    Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
+              return _crearListadoinMemoria(lista,validados);
+      /*if (codigo == "") {
         return _crearListadoinMemoria(lista,validados);
       } else {
         if (validados.contains(codigo)) {
@@ -354,7 +365,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         } else {
           return _crearListadoAgregar(validados, codigo);
         }
-      }
+      }*/
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -406,7 +417,13 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body:SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:  Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -466,18 +483,18 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                       ? Container()
                       : Container(
                           child: _validarListado(listaEnvios,
-                              listaCodigosValidados, codigoSobre))),
+                              listaCodigosValidados))),
               Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
+                    height: screenHeightExcludingToolbar(context, dividedBy:6),
                     width: double.infinity,
                     child: sendButton),
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -520,7 +537,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             ),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Seguir sin estos documentos'),
+                  child: Text('Registrar de todos modos'),
                   onPressed: () {
                     /*listaEnviosNoValidados.clear();
                                                                   listaEnvios.clear();
@@ -538,7 +555,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(
-                  child: Text('Volver a leer'),
+                  child: Text('Volver y seguirvalidando'),
                   onPressed: () {
                     listaEnviosNoValidados.clear();
                     listaEnviosValidados.clear();

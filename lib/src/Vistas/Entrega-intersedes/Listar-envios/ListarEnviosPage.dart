@@ -273,7 +273,13 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: sd.crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -299,7 +305,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
               )
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

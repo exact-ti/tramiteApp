@@ -174,10 +174,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             mostrarAlerta(context, "Este codigo ya se ha agregado", "Mensaje");
           }
         }
-      }else{
-        mostrarAlerta(context, "Codigo incorrecto", "Mensaje");
       }
-
       /*if (listaTurnos != null) {
               setState(() {
                    listaTurnos =listaTurnos;
@@ -463,7 +460,13 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -541,7 +544,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

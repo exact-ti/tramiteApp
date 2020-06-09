@@ -25,8 +25,8 @@ class EnvioImpl implements EnvioInterface {
 
 
   @override
-  void crearEnvio(EnvioModel envioModel) {
-    envio.crearEnvioProvider(envioModel);
+  Future<bool> crearEnvio(EnvioModel envioModel) {
+    return envio.crearEnvioProvider(envioModel);
   }
 
   @override

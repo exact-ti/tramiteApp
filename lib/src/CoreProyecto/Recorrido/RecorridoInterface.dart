@@ -12,7 +12,7 @@ class RecorridoInterface {
 
     Future<dynamic> registrarRecorridoRecojoCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion){}
 
-    Future<bool> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion){}
+    Future<dynamic> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion){}
 
     Future<bool> registrarEntregaPersonalizadaProvider(String dni,int recorridoId, String codigopaquete){}  
 

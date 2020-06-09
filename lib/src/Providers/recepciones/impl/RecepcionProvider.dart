@@ -70,6 +70,9 @@ class RecepcionProvider implements IRecepcionProvider {
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.get('/servicio-tramite/utds/$id/entregas/$codigopaquete/recepcion');
+    if( resp.data==""){
+      return false;
+    }
     List<dynamic> envio = resp.data;
     if (envio.length!=0) {
       return true;

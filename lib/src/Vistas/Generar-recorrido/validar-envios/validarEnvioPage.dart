@@ -4,8 +4,8 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -315,7 +315,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body:SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -343,7 +349,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

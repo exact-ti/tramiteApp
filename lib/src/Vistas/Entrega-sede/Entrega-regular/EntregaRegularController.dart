@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
@@ -7,8 +5,7 @@ import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -30,9 +27,9 @@ class EntregaregularController {
       return respuesta;
   }
 
-  Future<bool> recogerdocumentoEntrega(BuildContext context,
+  Future<dynamic> recogerdocumentoEntrega(BuildContext context,
       int id, String codigo, String paquete, bool opcion) async {
-    bool respuesta = await recorridoCore.registrarRecorridoEntregaCore(codigo, id, paquete, opcion);
+    dynamic respuesta = await recorridoCore.registrarRecorridoEntregaCore(codigo, id, paquete, opcion);
       return respuesta;
   }
 

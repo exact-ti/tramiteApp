@@ -7,7 +7,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/recepciones/impl/RecepcionProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class RecepcionController {
 
@@ -42,13 +42,14 @@ class RecepcionController {
               bool respuesta = await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
             if(codigos.contains(codigo)){
               if(!respuesta){
-                mostrarAlerta(context,"No se pudo registrar el documento", "registro incorrecto");
+                mostrarAlerta(context,"No se pudo registrar el documento", "Registro incorrecto");
               }
+              mostrarAlerta(context,"Registro correcto", "Mensaje");
               List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
             }else{
               if(!respuesta){
-                mostrarAlerta(context,"El documento no pertenece a este envío", "registro incorrecto");
+                mostrarAlerta(context,"No es posible procesar el código", "Registro incorrecto");
               }else{
                 mostrarAlerta(context,"Registro correcto", "Mensaje");
               }

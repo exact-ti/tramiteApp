@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaInterface.dart';
-import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-entrega/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class ValidacionController {
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());

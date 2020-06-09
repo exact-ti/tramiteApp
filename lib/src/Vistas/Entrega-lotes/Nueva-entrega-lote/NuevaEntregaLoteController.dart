@@ -45,7 +45,7 @@ class NuevoEntregaLotePageController {
 
     if (envio == null) {
       mostrarAlerta(
-          context, "EL codigo no pertenece a la entrega", "Codigo Incorrecto");
+          context, "No es posible procesar el código", "Codigo Incorrecto");
     } else {
       if (validarContiene(lista,envio)) {
         mostrarAlerta(

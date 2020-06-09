@@ -59,8 +59,8 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<bool> registrarRecojoIntersedeProvider(String codigo, String codigopaquete)async {
-    bool i = await intersede.registrarRecojoIntersedeProvider(codigo, codigopaquete);
+  Future<dynamic> registrarRecojoIntersedeProvider(String codigo, String codigopaquete)async {
+    dynamic i = await intersede.registrarRecojoIntersedeProvider(codigo, codigopaquete);
     return i;
   }
 

@@ -4,7 +4,6 @@ import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
@@ -17,21 +16,11 @@ class RecepcionInterController {
   Future<List<EnvioModel>> listarEnvios(BuildContext context,
       String codigo) async {
     List<EnvioModel> recorridos =  await intersedeInterface.listarRecepcionesByCodigo(codigo);
-        if(recorridos.isEmpty){
-            mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
-        }
     return recorridos;
   }
 
-  Future<bool>  recogerdocumento(BuildContext context, String codigo, String paquete,bool opcion) async {
-    bool respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
-    if(!opcion){
-    if(respuesta==false){
-      mostrarAlerta(context,"No se pudo completar la operación", "Código incorrecto");
-    }else{
-      mostrarAlerta(context,"Se ha recepcionado correctamente", "Recepción correcta");
-    }
-    }
+  Future<dynamic>  recogerdocumento(BuildContext context, String codigo, String paquete,bool opcion) async {
+    dynamic respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
     return respuesta;
   }
 

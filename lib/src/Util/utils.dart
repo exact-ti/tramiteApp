@@ -130,8 +130,14 @@ List<Widget> milistview(BuildContext context) {
   final _prefs = new PreferenciasUsuario();
   if (_prefs.token != "") {
     Menu menuu = new Menu();
+    String menuinicio ="";
     List<dynamic> menus = json.decode(_prefs.menus);
     List<Menu> listmenu = menuu.fromPreferencs(menus);
+    for (Menu men in listmenu) {
+          if (men.home) {
+            menuinicio=  men.link;
+          }
+        }
     listmenu.sort((a, b) => a.orden.compareTo(b.orden));
     listmenu.reversed;
     list.add(DrawerHeader(
@@ -144,7 +150,9 @@ List<Widget> milistview(BuildContext context) {
       list.add(ListTile(
           leading:  getICon(men.icono),
           title: Text(men.nombre),
-          onTap: () => Navigator.pushReplacementNamed(context, men.link)));
+          onTap: () =>Navigator.of(context).pushNamed(men.link))); /* Navigator.of(context).pushNamedAndRemoveUntil(
+                men.link, ModalRoute.withName('/principal-admin'))));*/
+                
     }
 
     if (_prefs.buzon != "") {
@@ -168,9 +176,11 @@ void eliminarpreferences(BuildContext context) async {
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
   sharedPreferences.commit();
+  if(context!=null){
   Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
       (Route<dynamic> route) => false);
+  }
 }
 
 final _icons = <String, IconData>{

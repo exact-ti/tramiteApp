@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'EnvioController.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
@@ -29,8 +33,19 @@ class _EnvioPageState extends State<EnvioPage> {
   String _label = '';
   int indice = 0;
   int indicebandeja = 0;
+  int minvalor=0;
+    final _prefs = new PreferenciasUsuario();
+  ConfiguracionModel configuracionModel = new ConfiguracionModel();
   @override
   void initState() {
+    List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
+    List<ConfiguracionModel> configuration =configuracionModel.fromPreferencs(configuraciones);
+    for (ConfiguracionModel confi in configuration) {
+      if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
+        minvalor = int.parse(confi.valor);
+      }
+    }
+    
     valuess = "";
     super.initState();
   }
@@ -45,7 +60,6 @@ class _EnvioPageState extends State<EnvioPage> {
   }
 
     Widget errorsobre(String rest, int numero, bool vali) {
-    int minvalor = 5;
 
     if(vali){
       return Container();
@@ -89,9 +103,13 @@ class _EnvioPageState extends State<EnvioPage> {
   }
 
   Widget errorbandeja(String rest, int numero, bool valie) {
-    int minvalor = 5;
+    
 
     if(valie){
+      return Container();
+    }
+
+    if(rest.length==0){
       return Container();
     }
 
@@ -191,12 +209,15 @@ class _EnvioPageState extends State<EnvioPage> {
                 setState(() {
                     confirmaciondeenvio=true;
                 });
-                print("SI puede enviar");
-                envioController.crearEnvio(context,1, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
+              FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+                envioController.crearEnvio(context, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
                 setState(() {
                   _sobreController.text="";
                   _bandejaController.text="";
                   _observacionController.text="";
+                  confirmaciondeenvio=false;
+                  indice=0;
                 });
               } else {
                 print("No se puede enviar");
@@ -337,7 +358,13 @@ class _EnvioPageState extends State<EnvioPage> {
         drawer: crearMenu(context),
         
         backgroundColor: Colors.white,
-        body: Form(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child: Form(
             key: _formKey,
             child: SingleChildScrollView(
                 padding: const EdgeInsets.only(
@@ -422,7 +449,7 @@ class _EnvioPageState extends State<EnvioPage> {
                       ),
                       observacion,
                       sendButton
-                    ]))));
+                    ]))))));
   }
 
 

@@ -193,12 +193,16 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               principalcontroller.opcionRecorrido(recorridoUsuario,context);
             }
           }else{
-          principalcontroller.opcionRecorrido(recorridoUsuario,context);
+              if(cantidad==0){
+                  mostrarAlerta(context, "No hay pendientes en tu ruta", "Mensaje");
+            }else{
+              principalcontroller.opcionRecorrido(recorridoUsuario,context);
+            }
           }
         },
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: recorridoUsuario.indicepagina==1 ? Text('Empezar', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
+        child: recorridoUsuario.indicepagina==1 ? Text('Empezar recorrido', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
       ),
     ));
 
@@ -220,7 +224,13 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        MediaQuery.of(context).padding.top),
+                child:Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -247,7 +257,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               ),
             ],
           ),
-        ));
+        ))));
   }
 
   Size screenSize(BuildContext context) {

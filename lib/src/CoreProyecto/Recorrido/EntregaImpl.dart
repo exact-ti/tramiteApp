@@ -24,8 +24,8 @@ class RecorridoImpl implements RecorridoInterface {
   }
 
     @override
-  Future<bool> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion) async {
-    bool respuesta = await recorrido.registrarEntregaProvider(
+  Future<dynamic> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion) async {
+    dynamic respuesta = await recorrido.registrarEntregaProvider(
           codigoArea, recorridoId, codigoPaquete);
     return respuesta;      
   }
