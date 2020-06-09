@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -11,6 +12,7 @@ class Requester {
   static final Requester _instancia = new Requester._internal();
   final NavigationService _navigationService = locator<NavigationService>();
   int tipoPeticion = 0;
+
   factory Requester() {
     return _instancia;
   }
@@ -58,18 +60,19 @@ class Requester {
   }
 
   Future<Response> get(String url) async {
-    this.tipoPeticion=1;
-    return await addInterceptors(_dio,url,null,null,this.tipoPeticion).get(properties['API'] + url);
+    this.tipoPeticion = 1;
+    return await addInterceptors(_dio)
+        .get(properties['API'] + url);
   }
 
   Future<Response> post(
       String url, dynamic data, Map<String, dynamic> params) async {
-    this.tipoPeticion=2;
+    this.tipoPeticion = 2;
     if (params == null) {
-      return await addInterceptors(_dio,url,data,params,this.tipoPeticion)
+      return await addInterceptors(_dio)
           .post(properties['API'] + url, data: data);
     } else {
-      return await addInterceptors(_dio,url,data,params,this.tipoPeticion)
+      return await addInterceptors(_dio)
           .post(properties['API'] + url, data: data, queryParameters: params);
     }
   }
@@ -84,40 +87,48 @@ class Requester {
     return response;
   }
 
-  dynamic errorInterceptor(dioError,String url, dynamic data, Map<String, dynamic> params,int tipo) async {
+  dynamic errorInterceptor(DioError dioError) async {
     if (dioError.response?.statusCode == 401) {
-      Response  response;
+      Response response;
       FormData formData = FormData.fromMap({
         'refresh_token': _prefs.refreshToken,
         'grant_type': 'refresh_token'
       });
       final resp = await refreshToken("/servicio-oauth/oauth/token", formData);
-        if (resp.statusCode == 200) {
-           Map<String, dynamic> refreshdata = resp.data;
-          _prefs.token = refreshdata['access_token'];
-          _prefs.refreshToken = refreshdata['refresh_token'];
-          if(tipo==1){
-          response = await this.get(url);
-          }else{
-          response = await this.post(url,data,params);
-          }
+      if (resp.statusCode == 200) {
+        Map<String, dynamic> refreshdata = resp.data;
+        _prefs.token = refreshdata['access_token'];
+        _prefs.refreshToken = refreshdata['refresh_token'];
+        RequestOptions request = dioError.request;
+        switch (request.method) {
+          case "GET":
+            response = await this.get(request.path.substring(properties['API'].length));
+            break;
+          case "POST":
+            response = await this
+                .post(request.path.substring(properties['API'].length), request.data, request.queryParameters);
+            break;
+          default:
+            return dioError;
+        }
         return response;
       } else {
         eliminarpreferences(null);
         _navigationService.navigationTo('/login');
+        return dioError;
       }
-      
     }
     return dioError;
   }
 
   /* Configuraciones */
 
-  Dio addInterceptors(Dio dio,String url, dynamic data, Map<String, dynamic> params,int tipo) {
+  Dio addInterceptors(Dio dio) {
     return dio
       ..interceptors.add(InterceptorsWrapper(
           onRequest: (RequestOptions options) => requestInterceptor(options),
           onResponse: (Response response) => responseInterceptor(response),
-          onError: (DioError dioError) => errorInterceptor(dioError,url,data,params,tipo)));
+          onError: (DioError dioError) =>
+              errorInterceptor(dioError)));
   }
 }
