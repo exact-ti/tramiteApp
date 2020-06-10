@@ -384,7 +384,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
       listadecodigos.add(Text('$codigoPa'));
     }
 
-    showDialog(
+    showDialog(barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

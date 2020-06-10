@@ -390,6 +390,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
         colorletra, "La molina", novalidados.length);
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -423,6 +424,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   void confirmarRecepcion(
       BuildContext context, String titulo,String mensaje ) {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -447,6 +449,7 @@ Navigator.of(context).pushNamed('/envio-lote');                  })
         colorletra, "Faltan", novalidados.length);
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

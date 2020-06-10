@@ -16,6 +16,7 @@ EnvioController envioController = new EnvioController();
 
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -35,7 +36,7 @@ Future<bool> confirmarRespuesta(
     BuildContext context, String title, String description) async {
   bool respuesta = await showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -295,6 +296,7 @@ String observacion ="";
   }
 
   showDialog(
+    barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(

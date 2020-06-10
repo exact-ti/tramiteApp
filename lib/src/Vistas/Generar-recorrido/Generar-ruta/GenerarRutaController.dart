@@ -39,6 +39,7 @@ class GenerarRutaController {
       BuildContext context, String titulo,String mensaje,RecorridoModel recorridoModel) {
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

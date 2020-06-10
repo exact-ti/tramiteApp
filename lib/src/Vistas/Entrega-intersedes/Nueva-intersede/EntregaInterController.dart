@@ -107,6 +107,7 @@ class EntregaregularController {
 
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

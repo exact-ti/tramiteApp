@@ -529,6 +529,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -12,7 +11,7 @@ class Requester {
   static final Requester _instancia = new Requester._internal();
   final NavigationService _navigationService = locator<NavigationService>();
   int tipoPeticion = 0;
-
+  bool respuesta = false;
   factory Requester() {
     return _instancia;
   }
@@ -113,8 +112,10 @@ class Requester {
         }
         return response;
       } else {
-        eliminarpreferences(null);
-        _navigationService.navigationTo('/login');
+        if(!respuesta){
+        this.respuesta=true;
+        _navigationService.modelInformativo("Sesión terminada","La sesión terminó, debe volver a logearse");
+        }
         return dioError;
       }
     }

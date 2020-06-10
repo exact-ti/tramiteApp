@@ -528,6 +528,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

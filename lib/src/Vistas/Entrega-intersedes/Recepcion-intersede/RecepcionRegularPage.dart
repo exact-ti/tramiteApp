@@ -505,6 +505,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
