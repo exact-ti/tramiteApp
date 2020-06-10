@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
