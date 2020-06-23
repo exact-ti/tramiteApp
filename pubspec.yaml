@@ -33,7 +33,7 @@ dependencies:
   timezone: ^0.5.7
   get_it:
   rxdart: ^0.24.1
-
+  flutter_signature_pad: ^2.0.2
 
 dev_dependencies:
   flutter_driver:
@@ -60,6 +60,7 @@ flutter:
     - assets/verbales.xlsx
     - assets/campañas.xlsx
     - data/chequeras.xlsx
+    - assets/logoExact.PNG
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -20,6 +20,8 @@ import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/prueba/firma.dart';
+import 'package:tramiteapp/src/Vistas/prueba/showfirma.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
 
@@ -34,8 +36,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/login': (BuildContext context) => LoginPage(),
 
     //==================Menu principal====================================
-    '/principal-admin': (BuildContext context) => HomePage(),
-    '/generar-envio': (BuildContext context) => PrincipalPage(),
+    '/principal-admin': (BuildContext context) => MyHomePage(),
+    '/generar-envio': (BuildContext context) => ShowFirmaPage(),
     '/recorridos': (BuildContext context) => ListarTurnosPage(),
     '/clasificar-envio' :  (BuildContext context) => ClasificacionPage(),
     '/envio-intersede' :  (BuildContext context) => ListarEnviosPage(),

@@ -217,15 +217,27 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         listaenvios2 = await principalcontroller.listarEnvios(
             context, recorridoUsuario.id, value, isSwitched);
         if (listaenvios2 == null) {
-          mostrarAlerta(context, "El código no pertenece a tu ruta", "Mensaje");
+          mostrarAlerta(context, "El código no existe en la base de datos", "Mensaje");
           setState(() {
             listaenvios2 = [];
           });
         } else {
+          if(listaenvios2.length==0){
+            if(isSwitched){
+          mostrarAlerta(context, "No tiene envíos por recoger en el área", "Mensaje");
+            }else{
+          mostrarAlerta(context, "No tiene envíos por entregar en el área", "Mensaje");
+            }
+          setState(() {
+            listaenvios2 = [];
+          });
+          }else{
           setState(() {
             codigoBandeja = value;
             _bandejaController.text = value;
           });
+          }
+
         }
       }
     }

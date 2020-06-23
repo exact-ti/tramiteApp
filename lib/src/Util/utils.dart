@@ -296,7 +296,6 @@ String observacion ="";
   }
 
   showDialog(
-    barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(

@@ -60,7 +60,13 @@ class Requester {
   Future<Response> get(String url) async {
     this.tipoPeticion = 1;
     return await addInterceptors(_dio)
-        .get(properties['API'] + url);
+        .get(properties['API'] + url,onReceiveProgress: (int sent, int total) {
+
+  if (total != -1) {
+    print("PORCENTAJE");
+   print((sent / total * 100).toStringAsFixed(0) + "%");
+  }
+  }, );
   }
 
   Future<Response> post(
@@ -68,10 +74,16 @@ class Requester {
     this.tipoPeticion = 2;
     if (params == null) {
       return await addInterceptors(_dio)
-          .post(properties['API'] + url, data: data);
+          .post(properties['API'] + url, data: data,onSendProgress: (int sent, int total) {
+            print("utilizando el post");
+    print("$sent $total");
+  },);
     } else {
       return await addInterceptors(_dio)
-          .post(properties['API'] + url, data: data, queryParameters: params);
+          .post(properties['API'] + url, data: data, queryParameters: params,onSendProgress: (int sent, int total) {
+            print("utilizando el post");
+    print("$sent $total");
+  },);
     }
   }
 

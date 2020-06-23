@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -18,7 +19,10 @@ void main() async {
   tz.initializeTimeZones();
   print(timezone.parse('2020-06-10 13:56'));
   setupLocator();
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp,DeviceOrientation.portraitDown])
+      .then((_) => runApp(MyApp()),
+  );
   }
 
 class MyApp extends StatelessWidget {
