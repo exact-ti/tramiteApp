@@ -34,7 +34,7 @@ dependencies:
   get_it:
   rxdart: ^0.24.1
   flutter_signature_pad: ^2.0.2
-
+  http_parser: ^3.1.4
 dev_dependencies:
   flutter_driver:
     sdk: flutter

@@ -69,8 +69,7 @@ class Requester {
   }, );
   }
 
-  Future<Response> post(
-      String url, dynamic data, Map<String, dynamic> params) async {
+  Future<Response> post(String url, dynamic data, dynamic params) async {
     this.tipoPeticion = 2;
     if (params == null) {
       return await addInterceptors(_dio)

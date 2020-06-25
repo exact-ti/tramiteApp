@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/prueba/ImagenLoader.dart';
 
 class MyHomePage extends StatefulWidget {
 
@@ -87,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.normal)),
           ),
-                    drawer: sd.crearMenu(context),
+          drawer: sd.crearMenu(context),
           backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[

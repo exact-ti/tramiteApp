@@ -6,7 +6,7 @@ import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnv
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
@@ -57,7 +57,7 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/paquete-externo-custodia': (BuildContext context) => CustodiaExternoPage(),
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
-    '/entrega-personalizada': (BuildContext context) => EntregapersonalizadoPage(),
+    '/entrega-personalizada': (BuildContext context) => ListarTipoPersonalizadaPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
   };
 }
