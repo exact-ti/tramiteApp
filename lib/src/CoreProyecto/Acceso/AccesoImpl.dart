@@ -1,9 +1,10 @@
 
 
 import 'dart:collection';
-
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoBuzonEnum.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
@@ -47,8 +48,11 @@ class AccesoImpl implements AccesoInterface {
 
         _prefs.token = interfaceLogear['access_token'];
         _prefs.refreshToken = interfaceLogear['refresh_token'];
-
+        _prefs.perfil = interfaceLogear['perfilId'].toString();
+       
+        if(tipoPerfil(interfaceLogear['perfilId'].toString())==cliente){
          List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+        _prefs.buzones = buzones;
          for (BuzonModel buzon in buzones) {
            if(buzon.tipoBuzon.id==personal){
              HashMap<String,dynamic> buzonhash = new HashMap();
@@ -57,8 +61,9 @@ class AccesoImpl implements AccesoInterface {
             _prefs.buzon = buzonhash;
            }
          }
-
+        }else{
          List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
+          _prefs.utds = utds;
          for (UtdModel utd in utds) {
            if(utd.principal){
              HashMap<String,dynamic> utdhash = new HashMap();
@@ -68,7 +73,7 @@ class AccesoImpl implements AccesoInterface {
             _prefs.utd = utdhash;
            }
          }
-
+        }
         List<Menu> menus = await menuProvider.listarMenusDelUsuarioAutenticado();
         _prefs.menus = menus;
 

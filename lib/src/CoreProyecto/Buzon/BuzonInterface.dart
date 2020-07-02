@@ -4,4 +4,6 @@ class BuzonInterface {
   
   Future<List<BuzonModel>> listarBuzonesPorIds(List<int> ids){}
 
+  Future<List<BuzonModel>> listarBuzones(){}
+
 }

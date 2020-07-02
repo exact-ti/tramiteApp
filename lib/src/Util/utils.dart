@@ -1,11 +1,15 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
+import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
@@ -13,8 +17,6 @@ import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 EnvioController envioController = new EnvioController();
-
-
 
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
@@ -133,14 +135,14 @@ List<Widget> milistview(BuildContext context) {
   final _prefs = new PreferenciasUsuario();
   if (_prefs.token != "") {
     Menu menuu = new Menu();
-    String menuinicio ="";
+    String menuinicio = "";
     List<dynamic> menus = json.decode(_prefs.menus);
     List<Menu> listmenu = menuu.fromPreferencs(menus);
     for (Menu men in listmenu) {
-          if (men.home) {
-            menuinicio=  men.link;
-          }
-        }
+      if (men.home) {
+        menuinicio = men.link;
+      }
+    }
     listmenu.sort((a, b) => a.orden.compareTo(b.orden));
     listmenu.reversed;
     list.add(DrawerHeader(
@@ -151,18 +153,142 @@ List<Widget> milistview(BuildContext context) {
     ));
     for (Menu men in listmenu) {
       list.add(ListTile(
-          leading:  getICon(men.icono),
+          leading: getICon(men.icono),
           title: Text(men.nombre),
-          onTap: () =>Navigator.of(context).pushNamed(men.link))); /* Navigator.of(context).pushNamedAndRemoveUntil(
+          onTap: () => Navigator.of(context).pushNamed(men.link)));
+      /* Navigator.of(context).pushNamedAndRemoveUntil(
                 men.link, ModalRoute.withName('/principal-admin'))));*/
-                
+
     }
 
     if (_prefs.buzon != "") {
+      list.add(menuOpcion(context));
       list.add(cerrarsesion(context));
     }
   }
   return list;
+}
+
+Widget menuOpcion(BuildContext context) {
+  final _prefs = new PreferenciasUsuario();
+  if (tipoPerfil(_prefs.perfil) == cliente) {
+    dynamic buzon = json.decode(_prefs.buzon);
+    return ListTile(
+        leading: Icon(Icons.assignment_ind, color: Colors.blue),
+        title: Text(buzon["nombre"]),
+        onTap: () {
+          modificarUtdOrBuzon(context, cliente);
+        });
+  } else {
+    dynamic utd = json.decode(_prefs.utd);
+    return ListTile(
+        leading: Icon(Icons.business, color: Colors.blue),
+        title: Text(utd["nombre"]),
+        onTap: () {
+          modificarUtdOrBuzon(context, exact);
+        });
+  }
+}
+
+modificarUtdOrBuzon(BuildContext context, int tipo) async {
+  double heightCel = 0.6 * (MediaQuery.of(context).size.height);
+  List<dynamic> opciones = new List();
+  final _prefs = new PreferenciasUsuario();
+  if (tipo == cliente) {
+    BuzonModel buzonmodel = new BuzonModel();
+    List<dynamic> buzonCore = json.decode(_prefs.buzones);
+    opciones = buzonmodel.listfromPreferencs(buzonCore);
+  } else {
+    UtdModel utdModel = new UtdModel();
+    List<dynamic> utdCore = json.decode(_prefs.utds);
+    opciones = utdModel.listfromPreferencs(utdCore);
+  }
+
+  List<Widget> listadecodigos = new List();
+
+  for (dynamic opcion in opciones) {
+    listadecodigos.add(Container(
+        decoration: myBoxDecoration(colorletra),
+        alignment: Alignment.centerLeft,
+        margin: const EdgeInsets.only(top: 5),
+        padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: <Widget>[
+            InkWell(
+              child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: Text(
+                      opcion.nombre,
+                      style: TextStyle(color: colorletra, fontSize: 12),
+                    ),
+                  )),
+              onTap: () async {
+                bool respuesta = await confirmarRespuesta(
+                    context, "Mensaje", "¿Seguro que desea continua?");
+                if (respuesta) {
+                  if (tipo == cliente) {
+                    HashMap<String, dynamic> buzonhash = new HashMap();
+                    buzonhash['id'] = opcion.id;
+                    buzonhash['nombre'] = opcion.nombre;
+                    _prefs.buzon = buzonhash;
+                  } else {
+                    HashMap<String, dynamic> utdhash = new HashMap();
+                    utdhash['id'] = opcion.id;
+                    utdhash['nombre'] = opcion.nombre;
+                    _prefs.utd = utdhash;
+                  }
+                  Navigator.of(context).pushNamed('/principal-admin');
+                }
+              },
+            )
+          ],
+        )));
+  }
+
+  showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(tipo == cliente
+              ? "Seleccione un nuevo buzon"
+              : "Seleccione un nuevo UTD"),
+          content: Container(
+              height: heightCel,
+              width: MediaQuery.of(context).size.width,
+              child: Column(children: <Widget>[
+                Expanded(
+                    child: SingleChildScrollView(
+                        child: Column(children: listadecodigos)))
+              ])),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        );
+      });
+}
+
+int tipoPerfil(String perfilId) {
+  switch (perfilId) {
+    case "1":
+      return exact;
+      break;
+    case "2":
+      return exact;
+    case "3":
+      return exact;
+      break;
+    case "4":
+      return cliente;
+    default:
+      return exact;
+  }
 }
 
 Widget cerrarsesion(BuildContext context) {
@@ -179,10 +305,10 @@ void eliminarpreferences(BuildContext context) async {
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
   sharedPreferences.commit();
-  if(context!=null){
-  Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-      (Route<dynamic> route) => false);
+  if (context != null) {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        (Route<dynamic> route) => false);
   }
 }
 
@@ -257,13 +383,12 @@ BoxDecoration myBoxDecoration(Color colorletra) {
 void trackingPopUp(BuildContext context, int codigo) async {
   TrackingInterface trackingCore = new TrackingImpl(new TrackingProvider());
   double heightCel = 0.6 * (MediaQuery.of(context).size.height);
-String observacion ="";
+  String observacion = "";
   TrackingModel trackingModel = await trackingCore.mostrarTracking(codigo);
 
   List<Widget> listadecodigos = new List();
 
   for (TrackingDetalleModel detalle in trackingModel.detalles) {
-    
     listadecodigos.add(Container(
         decoration: myBoxDecoration(colorletra),
         alignment: Alignment.centerLeft,
@@ -293,8 +418,8 @@ String observacion ="";
         )));
   }
 
-  if(trackingModel.observacion!=null){
-      observacion=trackingModel.observacion;
+  if (trackingModel.observacion != null) {
+    observacion = trackingModel.observacion;
   }
 
   showDialog(
@@ -405,8 +530,7 @@ String observacion ="";
                         flex: 2,
                       ),
                       Expanded(
-                        child: Text(
-                            trackingModel.destino,
+                        child: Text(trackingModel.destino,
                             style: TextStyle(color: colorletra)),
                         flex: 3,
                       ),
