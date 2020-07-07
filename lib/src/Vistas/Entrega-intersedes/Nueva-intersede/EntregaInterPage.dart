@@ -82,7 +82,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             },
             color: Color(0xFF2C6983),
             child:
-                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
+                Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 

@@ -90,7 +90,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       bool respuesta = await principalcontroller.registrarlista(context, listids);
       if (respuesta) {
         mostrarAlerta(
-            context, "Se inicio la entrega correctamente", "Inicio correcto");
+            context, "Se inició la entrega correctamente", "Inicio correcto");
         setState(() {
           textdestinatario = textdestinatario;
         });
@@ -213,7 +213,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
       if (respuesta) {
         mostrarAlerta(
-            context, "Se inicio la entrega correctamente", "Inicio correcto");
+            context, "Se inició la entrega correctamente", "Inicio correcto");
         setState(() {
           validados.clear();
           textdestinatario = textdestinatario;

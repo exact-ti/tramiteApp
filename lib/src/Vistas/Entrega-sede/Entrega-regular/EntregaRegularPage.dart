@@ -105,11 +105,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           ),
         ));
 
-        bool contiene(List<EnvioModel> envios,String documento){  
-
-        }
-
-
+    bool contiene(List<EnvioModel> envios, String documento) {}
 
     void registrarDocumento(String documento) async {
       bool pertenecia = false;
@@ -130,7 +126,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
-            listaenvios2.removeWhere((value) => value.codigoPaquete == documento);
+            listaenvios2
+                .removeWhere((value) => value.codigoPaquete == documento);
           } else {
             mensaje = respuestaMap["message"];
           }
@@ -144,7 +141,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (respuestaMap["status"] == "success") {
             listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
-                          mensaje = "Se registró la entrega";
+            mensaje = "Se registró la entrega";
           } else {
             mensaje = respuestaMap["message"];
           }
@@ -155,18 +152,21 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         });
       } else {
         if (isSwitched) {
-          dynamic respuestaMap =
-              await envioController.recogerdocumentoRecojo(context,
-                  recorridoUsuario.id, codigoBandeja, documento, isSwitched);
+          dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
+              context,
+              recorridoUsuario.id,
+              codigoBandeja,
+              documento,
+              isSwitched);
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
           } else {
             mensaje = respuestaMap["message"];
           }
-                  setState(() {
-          mensaje = mensaje;
-        });
+          setState(() {
+            mensaje = mensaje;
+          });
         } else {
           dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
               context,
@@ -176,10 +176,11 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               isSwitched);
           if (respuestaMap["status"] == "success") {
             setState(() {
-                          mensaje = "Se registró la entrega";
-            });          } else {
+              mensaje = "Se registró la entrega";
+            });
+          } else {
             setState(() {
-                          mensaje = respuestaMap["message"];
+              mensaje = respuestaMap["message"];
             });
             /*mostrarAlerta(
                 context, respuestaMap["message"], "mensaje");*/
@@ -217,27 +218,29 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         listaenvios2 = await principalcontroller.listarEnvios(
             context, recorridoUsuario.id, value, isSwitched);
         if (listaenvios2 == null) {
-          mostrarAlerta(context, "El código no existe en la base de datos", "Mensaje");
+          mostrarAlerta(
+              context, "El código no existe en la base de datos", "Mensaje");
           setState(() {
             listaenvios2 = [];
           });
         } else {
-          if(listaenvios2.length==0){
-            if(isSwitched){
-          mostrarAlerta(context, "No tiene envíos por recoger en el área", "Mensaje");
-            }else{
-          mostrarAlerta(context, "No tiene envíos por entregar en el área", "Mensaje");
+          if (listaenvios2.length == 0) {
+            if (isSwitched) {
+              mostrarAlerta(
+                  context, "No tiene envíos por recoger en el área", "Mensaje");
+            } else {
+              mostrarAlerta(context, "No tiene envíos por entregar en el área",
+                  "Mensaje");
             }
-          setState(() {
-            listaenvios2 = [];
-          });
-          }else{
-          setState(() {
-            codigoBandeja = value;
-            _bandejaController.text = value;
-          });
+            setState(() {
+              listaenvios2 = [];
+            });
+          } else {
+            setState(() {
+              codigoBandeja = value;
+              _bandejaController.text = value;
+            });
           }
-
         }
       }
     }
@@ -249,8 +252,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    ListarTipoPersonalizadaPage(),
+                builder: (context) => ListarTipoPersonalizadaPage(),
               ),
             );
           },
@@ -342,8 +344,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-                    FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
       if (codigoBandeja == "") {
         _sobreController.text = "";
         mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
@@ -356,8 +358,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Future _traerdatosescanerBandeja() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-                    FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
       _validarBandejaText(qrbarra);
     }
 
@@ -478,7 +480,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     );
 
     Widget _validarListado(List<EnvioModel> lista) {
-        return _crearListadoinMemoria(lista);
+      return _crearListadoinMemoria(lista);
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -543,79 +545,83 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: contenerSwitch2,
-                  margin: const EdgeInsets.only(bottom: 20),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 10),
-                ),
-              ),
-              mensaje.length == 0 ? Container() : Align(
-                alignment: Alignment.center,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  child: Text("$mensaje"),
-                  margin: const EdgeInsets.only(bottom: 10),
-                ),
-              ),
-              Expanded(
-                  child: codigoBandeja == ""
-                      ? Container()
-                      : Container(
-                          child: _validarListado(listaenvios2))),
-              /*Align(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: contenerSwitch2,
+                          margin: const EdgeInsets.only(bottom: 20),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 10),
+                        ),
+                      ),
+                      mensaje.length == 0
+                          ? Container()
+                          : Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                child: Text("$mensaje"),
+                                margin: const EdgeInsets.only(bottom: 10),
+                              ),
+                            ),
+                      Expanded(
+                          child: codigoBandeja == ""
+                              ? Container()
+                              : Container(
+                                  child: _validarListado(listaenvios2))),
+                      /*Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
@@ -623,18 +629,18 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                     width: double.infinity,
                     child: sendButton),
               ),*/
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: botonesinferiores),
-              ),
-            ],
-          ),
-        ))));
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: botonesinferiores),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

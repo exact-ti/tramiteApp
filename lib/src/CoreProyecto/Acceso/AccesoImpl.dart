@@ -50,8 +50,8 @@ class AccesoImpl implements AccesoInterface {
         _prefs.refreshToken = interfaceLogear['refresh_token'];
         _prefs.perfil = interfaceLogear['perfilId'].toString();
        
-        if(tipoPerfil(interfaceLogear['perfilId'].toString())==cliente){
-         List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+/*         if(tipoPerfil(interfaceLogear['perfilId'].toString())==cliente){
+ */         List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
         _prefs.buzones = buzones;
          for (BuzonModel buzon in buzones) {
            if(buzon.tipoBuzon.id==personal){
@@ -61,8 +61,8 @@ class AccesoImpl implements AccesoInterface {
             _prefs.buzon = buzonhash;
            }
          }
-        }else{
-         List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
+/*         }else{
+ */         List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
           _prefs.utds = utds;
          for (UtdModel utd in utds) {
            if(utd.principal){
@@ -73,8 +73,8 @@ class AccesoImpl implements AccesoInterface {
             _prefs.utd = utdhash;
            }
          }
-        }
-        List<Menu> menus = await menuProvider.listarMenusDelUsuarioAutenticado();
+/*         }
+ */        List<Menu> menus = await menuProvider.listarMenusDelUsuarioAutenticado();
         _prefs.menus = menus;
 
         List<ConfiguracionModel> configuraciones = await configuracionProvider.listarConfiguraciones();

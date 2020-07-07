@@ -33,27 +33,10 @@ class PalomarProvider implements IPalomarProvider {
 
   @override
   Future<PalomarModel> listarPalomarByCodigo2(String codigo)async {
-      PalomarModel palomar = await palomarbycodigo(codigo);
-    return palomar;
+      return null;
   }
 
-  Future<PalomarModel> palomarbycodigo(String codigo) async {
-    PalomarModel palomar = new PalomarModel();
-    if(codigo=="abc"){
-    palomar.id = 1; 
-    palomar.codigo = "abc";
-    palomar.fila = 1;
-    palomar.columna = 2;
-    palomar.tipo="area";
-    }else{
-      palomar=null;
-    }
-    return Future.delayed(new Duration(seconds: 1), () {
-      return palomar;
-    });
-    
 
-  }
 
 
 

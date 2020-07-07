@@ -91,7 +91,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             },
             color: Color(0xFF2C6983),
             child:
-                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
+                Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -132,8 +132,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       } else {
         setState(() {
           listaTurnos = [];
-          codigoBandeja = value;
-          _bandejaController.text = value;
+          codigoBandeja = "";
+          _bandejaController.text = "";
         });
       }
     }

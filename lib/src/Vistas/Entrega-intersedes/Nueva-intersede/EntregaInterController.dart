@@ -34,7 +34,7 @@ class EntregaregularController {
       BuildContext context, String codigo) async {
     List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
 
-    if (recorridos==null) {
+    if (recorridos==null || recorridos.length==0) {
       mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
     return recorridos;
@@ -67,14 +67,13 @@ class EntregaregularController {
 
   Future<EnvioModel> validarCodigoEntrega(
       String codigobandeja, String codigo, BuildContext context) async {
-    EnvioModel envio =
-        await intersedeInterface.validarCodigo(codigo, codigobandeja);
+    EnvioModel envio =await intersedeInterface.validarCodigo(codigo, codigobandeja);
     if (envio == null) {
       mostrarAlerta(
-          context, "No es posible procesar el código", "Codigo Incorrecto");
+          context, "No es posible procesar el código", "Código Incorrecto");
     }else{
       mostrarAlerta(
-          context, "Envío agregado a la entrega", "Codigo correcto");      
+          context, "Envío agregado a la entrega", "Código correcto");      
     }
 
 

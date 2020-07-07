@@ -22,7 +22,7 @@ class NuevoEntregaLotePageController {
     List<TurnoModel> turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
 
     if (turnos == null) {
-      mostrarAlerta(context, "No hay turnos asignados", "Mensaje");
+      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
     return turnos;
   }
