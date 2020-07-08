@@ -201,7 +201,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
-        child: Text('Nuevo', style: TextStyle(color: Colors.white)),
+        child: Text('Nueva', style: TextStyle(color: Colors.white)),
       ),
     );
 

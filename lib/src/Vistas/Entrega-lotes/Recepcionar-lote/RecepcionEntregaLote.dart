@@ -174,8 +174,9 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
 
     Widget sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
@@ -185,7 +186,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                     context, "Te faltan asociar estos documentos", listaEnvios);
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));

@@ -63,8 +63,6 @@ class NuevoEntregaLotePageController {
     if (respuesta) {
       confirmarAlerta(
           context, "Se ha registrado correctamente la valija", "Registro");
-      Navigator.of(context).pushNamedAndRemoveUntil(
-                "/envio-lote", (Route<dynamic> route) => false);
     } else {
       mostrarAlerta(
           context, "No se completó el registro de la entrega", "Mensaje");
@@ -83,7 +81,8 @@ class NuevoEntregaLotePageController {
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () =>
-                    Navigator.of(context).pushNamed('/entrega-intersede'),
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                "/envio-lote", (Route<dynamic> route) => false)
               )
             ],
           );
