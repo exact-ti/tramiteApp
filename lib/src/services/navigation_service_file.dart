@@ -9,9 +9,6 @@ class NavigationService {
   Future <dynamic> navigationTo(String routeName) { 
     return navigatorKey.currentState.pushNamedAndRemoveUntil(routeName, (Route<dynamic> route) => false); 
   }
-  bool goBack() { 
-    return navigatorKey.currentState.pop(); 
-  } 
 
   modelInformativo(String titulo,String mensaje) { 
   showDialog(
