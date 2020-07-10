@@ -5,7 +5,7 @@ abstract class IPaqueteExternoProvider{
 
   Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno);
 
-  Future<bool> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete);
+  Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete);
 
   Future<List<PaqueteExterno>> listarPaquetesExternosCreados();
 

@@ -99,20 +99,21 @@ class EntregaProvider implements IEntregaProvider {
   }
 
   @override
-  Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo) async{
-    Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos');
-    if(resp.data==null || resp.data==""){
-        return null;
-    }
-    List<dynamic> envios = resp.data;
-    List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
-    return listEnvio;
+  Future<dynamic> listarTurnosByCodigoLote(String codigo) async{
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos?utdId=$id');
+    dynamic envios = resp.data;
+    //List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
+    return envios;
   }
 
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
+    print("casadds");
     try{
-    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo?estadoId=$creado');
+    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo/libre');
     if(resp.data==""){
         return null;
     }

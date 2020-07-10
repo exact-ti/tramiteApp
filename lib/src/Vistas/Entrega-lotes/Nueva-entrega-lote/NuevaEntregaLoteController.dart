@@ -13,18 +13,21 @@ import 'package:tramiteapp/src/Util/utils.dart';
 
 class NuevoEntregaLotePageController {
   EntregaInterface entregaCore = new EntregaImpl(new EntregaProvider());
-
+TurnoModel turnoModel =  new TurnoModel();
   Future<List<TurnoModel>> listarturnos(
       BuildContext context, String codigo) async {
+      List<TurnoModel> listEnvio = new List();
     if (codigo == "") {
       return null;
     }
-    List<TurnoModel> turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
+    dynamic turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
 
-    if (turnos == null) {
-      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+    if (turnos["status"] == "success") {
+       listEnvio = turnoModel.fromJson(turnos["data"]);
+    }else{
+      mostrarAlerta(context, turnos["message"], "Mensaje");
     }
-    return turnos;
+    return listEnvio;
   }
 
   bool validarContiene(List<EnvioModel> lista,EnvioModel envio ){

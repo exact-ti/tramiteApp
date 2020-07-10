@@ -17,7 +17,7 @@ abstract class IEntregaProvider{
 
   Future<EnvioModel> validarCodigoProvider(String codigo,int id);
 
-  Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo){}
+  Future<dynamic> listarTurnosByCodigoLote(String codigo){}
 
     Future<List<TurnoModel>> listarTurnosByCodigoLote2(String codigo){}
 

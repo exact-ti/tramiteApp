@@ -101,7 +101,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     Widget crearItem(EnvioInterSedeModel entrega) {
-      String codigoUtd = entrega.codigo;
+      String codigoUtd = entrega.utdId.toString();
       return GestureDetector(
           onLongPress: () {
             setState(() {
