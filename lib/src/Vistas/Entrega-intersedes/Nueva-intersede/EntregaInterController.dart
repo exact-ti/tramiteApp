@@ -86,22 +86,27 @@ class EntregaregularController {
       BuildContext context,
       int id,
       String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+    dynamic respuesta = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
-
-    confirmarAlerta(
+       if(respuesta["status"] == "success"){
+             confirmarAlerta(
         context, "Se ha registrado correctamente la valija", "Registro");
+       }else{
+            mostrarAlerta(context, respuesta["message"], "Mensaje");
+       }
+
   }
 
   void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
       BuildContext context, String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+    dynamic respuesta = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
-
-    confirmarAlerta(
+       if(respuesta["status"] == "success"){
+             confirmarAlerta(
         context, "Se ha registrado correctamente la valija", "Registro");
+       }else{
+            mostrarAlerta(context, respuesta["message"], "Mensaje");
+       }
   }
 
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {

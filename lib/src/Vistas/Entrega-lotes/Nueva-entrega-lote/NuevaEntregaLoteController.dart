@@ -62,13 +62,13 @@ TurnoModel turnoModel =  new TurnoModel();
 
   void confirmacionDocumentosValidados(List<EnvioModel> enviosvalidados,
       BuildContext context, int id, String codigo) async {
-    bool respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id,codigo);
-    if (respuesta) {
+    dynamic respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id,codigo);
+       if(respuesta["status"] == "success"){
       confirmarAlerta(
           context, "Se ha registrado correctamente la valija", "Registro");
     } else {
       mostrarAlerta(
-          context, "No se completó el registro de la entrega", "Mensaje");
+          context, respuesta["message"], "Mensaje");
     }
   }
 

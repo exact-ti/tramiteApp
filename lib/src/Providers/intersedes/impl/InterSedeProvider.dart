@@ -99,7 +99,7 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<int> listarEnviosValidadosInterSede(
+  Future<dynamic> listarEnviosValidadosInterSede(
       List<EnvioModel> enviosvalidados, String codigo) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
@@ -111,7 +111,7 @@ class InterSedeProvider implements IInterSedeProvider {
     var listaIds = json.encode(ids);
     Response resp = await req.post(
         '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$entregaValijaId/entregas', listaIds, null);
-    int idresp = resp.data;
+    dynamic idresp = resp.data;
     return idresp;
   }
 

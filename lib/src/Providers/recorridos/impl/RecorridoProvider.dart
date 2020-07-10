@@ -30,15 +30,15 @@ class RecorridoProvider implements IRecorridoProvider {
   TipoEntregaPersonalizadaModel tipopersonalizada =
       new TipoEntregaPersonalizadaModel();
   @override
-  Future<List<EnvioModel>> enviosEntregaProvider(String codigo, int id) async {
+  Future<dynamic> enviosEntregaProvider(String codigo, int id) async {
     Response resp = await req.get(
         '/servicio-tramite/recorridos/$id/areas/$codigo/envios/paraentrega');
     if (resp.data == "") {
       return null;
     }
-    List<dynamic> envio = resp.data;
-    List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);
-    return enviosMode;
+    dynamic envio = resp.data;
+   /* List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);*/
+    return envio;
   }
 
   @override
@@ -65,7 +65,7 @@ class RecorridoProvider implements IRecorridoProvider {
         null,
         null);
     return resp.data;
-  }
+  } 
 
   @override
   Future<dynamic> registrarRecojoProvider(

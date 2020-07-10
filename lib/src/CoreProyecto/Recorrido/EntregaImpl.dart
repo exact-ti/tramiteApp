@@ -13,16 +13,20 @@ class RecorridoImpl implements RecorridoInterface {
   }
 
   @override
-  Future<List<EnvioModel>> enviosCore(
-      String codigo, int recorridoId, bool opcion) async {
+  Future<List<EnvioModel>> enviosCoreRecojo(
+      String codigo, int recorridoId) async {
     List<EnvioModel> envios = new List();
-    if (opcion) {
       envios = await recorrido.enviosRecojoProvider(codigo, recorridoId);
-    } else {
-      envios = await recorrido.enviosEntregaProvider(codigo, recorridoId);
-    }
     return envios;
   }
+
+  @override
+  Future<dynamic> enviosCoreEntrega(
+      String codigo, int recorridoId) async {
+      dynamic envios = await recorrido.enviosEntregaProvider(codigo, recorridoId);
+    return envios;
+  }
+
 
     @override
   Future<dynamic> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion) async {

@@ -155,7 +155,7 @@ return null;
 
 
   @override
-  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
+  Future<dynamic> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
     List<int> ids = new List();
 for (EnvioModel envio in envios) {
       ids.add(envio.id);
@@ -165,11 +165,8 @@ for (EnvioModel envio in envios) {
     int id = umodel.id;
     var listaIds = json.encode(ids);
     Response resp = await req.post('/servicio-tramite/utds/$id/turnosinterconexiones/$turnoID/lotes?paqueteId=$codigo', listaIds, null);
-   if(resp.data!=null){
-     return true;
-   }else{
-     return false;
-   }
+    dynamic respuesta = resp.data;
+    return respuesta; 
   }
 
   @override

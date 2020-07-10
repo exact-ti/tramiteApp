@@ -7,7 +7,7 @@ import 'package:tramiteapp/src/ModelDto/TipoEntregaPersonalizadaModel.dart';
 abstract class IRecorridoProvider{
 
 
-  Future<List<EnvioModel>> enviosEntregaProvider(String codigo,int recorridoId);  
+  Future<dynamic> enviosEntregaProvider(String codigo,int recorridoId);  
 
   Future<List<EnvioModel>> enviosRecojoProvider(String codigo,int recorridoId);  
 

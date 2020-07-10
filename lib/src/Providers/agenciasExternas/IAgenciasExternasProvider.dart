@@ -7,7 +7,7 @@ abstract class IAgenciaExternaProvider{
     Future<List<EnvioInterSedeModel>> listarEnvioAgenciaByUsuario();  
 
 
-    Future<List<EnvioModel>> listarEnviosAgenciaByCodigo(String codigo);  
+    Future<dynamic> listarEnviosAgenciaByCodigo(String codigo);  
 
     Future<EnvioModel> validarCodigoAgenciaProvider(String bandeja,String codigo);
 

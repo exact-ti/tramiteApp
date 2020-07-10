@@ -10,7 +10,9 @@ class RecorridoInterface {
 
     
 
-    Future<List<EnvioModel>> enviosCore(String codigo, int recorridoId, bool opcion){}
+    Future<List<EnvioModel>> enviosCoreRecojo(String codigo, int recorridoId){}
+
+    Future<dynamic> enviosCoreEntrega(String codigo, int recorridoId){}
 
     Future<dynamic> registrarRecorridoRecojoCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion){}
 

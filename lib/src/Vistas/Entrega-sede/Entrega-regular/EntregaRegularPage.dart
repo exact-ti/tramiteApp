@@ -27,6 +27,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   //final _sobreController = TextEditingController();
+  EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaenvios2 = new List();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
@@ -215,31 +216,51 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
 
     void _validarBandejaText(String value) async {
       if (value != "") {
-        listaenvios2 = await principalcontroller.listarEnvios(
-            context, recorridoUsuario.id, value, isSwitched);
-        if (listaenvios2 == null) {
-          mostrarAlerta(
-              context, "El código no existe en la base de datos", "Mensaje");
-          setState(() {
-            listaenvios2 = [];
-          });
-        } else {
-          if (listaenvios2.length == 0) {
-            if (isSwitched) {
-              mostrarAlerta(
-                  context, "No tiene envíos por recoger en el área", "Mensaje");
-            } else {
-              mostrarAlerta(context, "No tiene envíos por entregar en el área",
-                  "Mensaje");
-            }
+        if (isSwitched) {
+          listaenvios2 = await principalcontroller.listarEnviosRecojo(
+              context, recorridoUsuario.id, value);
+          if (listaenvios2 == null) {
+            mostrarAlerta(
+                context, "El código no existe en la base de datos", "Mensaje");
             setState(() {
               listaenvios2 = [];
             });
           } else {
+            if (listaenvios2.length == 0) {
+              if (isSwitched) {
+                mostrarAlerta(context, "No tiene envíos por recoger en el área",
+                    "Mensaje");
+              } else {
+                mostrarAlerta(context,
+                    "No tiene envíos por entregar en el área", "Mensaje");
+              }
+              setState(() {
+                listaenvios2 = [];
+              });
+            } else {
+              setState(() {
+                codigoBandeja = value;
+                _bandejaController.text = value;
+              });
+            }
+          }
+        } else {
+          dynamic respuesta = await principalcontroller.listarEnviosEntrega(
+              context, recorridoUsuario.id, value);
+          if (respuesta["status"] == "success") {
+            listaenvios2 = envioModel.fromJsonValidar(respuesta["data"]);
             setState(() {
+              listaenvios2 = listaenvios2;
               codigoBandeja = value;
               _bandejaController.text = value;
             });
+          } else {
+            setState(() {
+              listaenvios2 = [];
+                codigoBandeja = "";
+              _bandejaController.text = "";
+            });
+            mostrarAlerta(context, respuesta["message"], "Mensaje");
           }
         }
       }
@@ -363,6 +384,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       _validarBandejaText(qrbarra);
     }
 
+/* 
     Widget _crearListado() {
       return FutureBuilder(
           future: principalcontroller.listarEnvios(
@@ -379,7 +401,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             }
           });
     }
-
+ */
     Widget _crearListadoinMemoria(List<EnvioModel> lista) {
       return ListView.builder(
           itemCount: lista.length,

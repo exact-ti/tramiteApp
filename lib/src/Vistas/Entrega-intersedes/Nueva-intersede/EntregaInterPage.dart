@@ -540,17 +540,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               FlatButton(
                   child: Text('Registrar de todos modos'),
                   onPressed: () {
-                    /*listaEnviosNoValidados.clear();
-                                                                  listaEnvios.clear();
-                                                                  listaEnviosValidados.clear();
-                                                                  listaCodigosValidados.clear();
-                                                                  _sobreController.text = "";
-                                                                  _bandejaController.text = "";
-                                                                  codigoValidar = "";
-                                                                   codigoBandeja = "";
-                                                                   codigoSobre = "";*/
                     codigoSobre = "";
-
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
                         listaEnviosValidados, context, codigoBandeja);
                   }),
