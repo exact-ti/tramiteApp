@@ -63,16 +63,24 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                       padding: const EdgeInsets.only(left: 20),
                       child: switched == 0
                           ? Container()
-                          : Text("$codigo",
-                              style: TextStyle(fontSize: 10)),
+                          : Text("$codigo", style: TextStyle(fontSize: 10)),
                     ),
                   ]),
             ),
             Container(
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 height: 35,
-                child: Text("$numvalijas valijas",
-                    style: TextStyle(fontSize: 12))),
+                child: switched == 0
+                    ? Text(
+                        numvalijas == 1
+                            ? "$numvalijas Lote"
+                            : "$numvalijas Lotes",
+                        style: TextStyle(fontSize: 12))
+                    : Text(
+                        numvalijas == 1
+                            ? "$numvalijas valija"
+                            : "$numvalijas valijas",
+                        style: TextStyle(fontSize: 12))),
           ]));
     }
 
