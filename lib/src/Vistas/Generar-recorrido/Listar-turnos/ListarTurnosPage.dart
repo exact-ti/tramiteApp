@@ -54,7 +54,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
       return Container(
           height: 100,
-          child: ListView(shrinkWrap: true, children: <Widget>[
+          child: ListView(shrinkWrap: false,physics: const NeverScrollableScrollPhysics(), children: <Widget>[
             Container(
               height: 20,
               child: ListTile(title: Text("$recorrido")),

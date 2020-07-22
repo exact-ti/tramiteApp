@@ -34,6 +34,19 @@ class UtdModel {
             buzones.principal = json["principal"];
           return buzones;
     }
+
+      List<UtdModel> listfromPreferencs(List< dynamic> jsons){
+       List<UtdModel> utds= new List();
+        for(Map<String, dynamic> json in jsons){
+           UtdModel men = new UtdModel();
+            men.id  = json["id"];
+            men.nombre= json["nombre"];
+            men.principal = json["principal"];
+            utds.add(men);
+        }
+          return utds;
+    }
+    
          
 
     Map<String, dynamic> toJson() => {

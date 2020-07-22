@@ -1,32 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'EntregaPersonalizadaController.dart';
 
 
-class EntregapersonalizadoPage extends StatefulWidget {
-  final RecorridoModel recorridopage;
-
-  const EntregapersonalizadoPage({Key key, this.recorridopage}) : super(key: key);
-
+class EntregapersonalizadoPageDNI extends StatefulWidget {
   @override
-  _EntregaPersonalizadaPageState createState() =>
-      new _EntregaPersonalizadaPageState(recorridopage);
+  _EntregapersonalizadoPageDNIState createState() =>
+      new _EntregapersonalizadoPageDNIState();
 }
 
-class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
-  RecorridoModel recorridoUsuario;
-  _EntregaPersonalizadaPageState(this.recorridoUsuario);
+class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDNI> {
   final _sobreController = TextEditingController();
   final _dniController = TextEditingController();
   //final _sobreController = TextEditingController();
   EntregaPersonalizadaController personalizadacontroller = new EntregaPersonalizadaController();
   //EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String codigoDNI = "";
@@ -68,7 +61,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     void _validarSobreText(String value) async {
       if (value != "") {
         if(!listacodigos.contains(value)){
-       bool  respuesta = await personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
+       bool  respuesta = await personalizadacontroller.guardarEntrega(context,_dniController.text,value);
           if(respuesta){
               FocusScope.of(context).unfocus();
               new TextEditingController().clear();
@@ -98,23 +91,6 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       }
     }
 
-    final botonesinferiores = Row(children: [
-      Expanded(
-        child: Container(),
-        flex: 5,
-      ),
-      Expanded(
-        child: InkWell(
-          onTap: () {
-            personalizadacontroller.redirectMiRuta(recorridoUsuario,context);
-          },
-          child: Text(
-            'volver',
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-      ),
-    ]);
 
     final textDNI = Container(
       child: Text("DNI"),

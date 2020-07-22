@@ -1,8 +1,11 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Entity/Buzon.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
+import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 
 /*
   Recordar instalar el paquete de:
@@ -44,6 +47,14 @@ class PreferenciasUsuario {
   set refreshToken(String value) {
     _prefs.setString('refresh_token', value);
   }
+
+  get perfil {
+    return _prefs.getString('perfil') ?? '';
+  }
+
+  set perfil( String value ) {
+    _prefs.setString('perfil', value);
+  }
   
   get buzon {
     return _prefs.getString("buzon");
@@ -59,6 +70,22 @@ class PreferenciasUsuario {
 
   set utd (HashMap<String,dynamic> utd) {
     _prefs.setString("utd", json.encode(utd));
+  }
+
+  get buzones {
+    return _prefs.getString("buzones");
+  }
+
+  set buzones(List<BuzonModel> buzones) {
+    _prefs.setString("buzones", json.encode(buzones));
+  }
+
+  get utds {
+    return _prefs.getString("utds");
+  }
+
+  set utds(List<UtdModel> utds) {
+    _prefs.setString("utds", json.encode(utds));
   }
 
   get menus {

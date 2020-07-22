@@ -82,7 +82,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             },
             color: Color(0xFF2C6983),
             child:
-                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
+                Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -528,6 +528,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -539,17 +540,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               FlatButton(
                   child: Text('Registrar de todos modos'),
                   onPressed: () {
-                    /*listaEnviosNoValidados.clear();
-                                                                  listaEnvios.clear();
-                                                                  listaEnviosValidados.clear();
-                                                                  listaCodigosValidados.clear();
-                                                                  _sobreController.text = "";
-                                                                  _bandejaController.text = "";
-                                                                  codigoValidar = "";
-                                                                   codigoBandeja = "";
-                                                                   codigoSobre = "";*/
                     codigoSobre = "";
-
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
                         listaEnviosValidados, context, codigoBandeja);
                   }),

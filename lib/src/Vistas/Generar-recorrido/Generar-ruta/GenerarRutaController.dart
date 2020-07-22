@@ -7,7 +7,6 @@ import 'package:tramiteapp/src/CoreProyecto/Ruta/RutaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
-import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
 import 'package:tramiteapp/src/Providers/rutas/impl/RutaProvider.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 
@@ -39,6 +38,7 @@ class GenerarRutaController {
       BuildContext context, String titulo,String mensaje,RecorridoModel recorridoModel) {
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

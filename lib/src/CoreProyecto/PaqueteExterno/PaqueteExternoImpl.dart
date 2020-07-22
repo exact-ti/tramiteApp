@@ -20,8 +20,8 @@ class PaqueteExternoImpl implements PaqueteExternoInterface {
   }
 
   @override
-  Future<bool> importarPaquetesExternos(List<PaqueteExterno> paqueteExternoList, TipoPaqueteModel tipoPaquete) async {
-    bool resp = await paqueteExterno.importarPaquetesExternos(paqueteExternoList, tipoPaquete);
+  Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExternoList, TipoPaqueteModel tipoPaquete) async {
+    dynamic resp = await paqueteExterno.importarPaquetesExternos(paqueteExternoList, tipoPaquete);
     return resp;
   }
 

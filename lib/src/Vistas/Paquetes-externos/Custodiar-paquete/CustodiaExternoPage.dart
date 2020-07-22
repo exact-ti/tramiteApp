@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
-import 'package:tramiteapp/src/Providers/paquetes/impl/PaqueteProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoController.dart';
-import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
 
 class CustodiaExternoPage extends StatefulWidget {
 
@@ -217,15 +215,10 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
     return Container(
       
       height: 50,
-      child: ListView(shrinkWrap: true, 
-        children: <Widget>[
-          Container(
+      child: Container(
               height: 20,
               child: ListTile(title: Text(p.paqueteId)),
             ),
-          
-        ]
-      )
     );
   }
 

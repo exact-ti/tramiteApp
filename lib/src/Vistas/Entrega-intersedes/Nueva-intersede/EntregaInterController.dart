@@ -34,7 +34,7 @@ class EntregaregularController {
       BuildContext context, String codigo) async {
     List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
 
-    if (recorridos==null) {
+    if (recorridos==null || recorridos.length==0) {
       mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
     }
     return recorridos;
@@ -67,14 +67,13 @@ class EntregaregularController {
 
   Future<EnvioModel> validarCodigoEntrega(
       String codigobandeja, String codigo, BuildContext context) async {
-    EnvioModel envio =
-        await intersedeInterface.validarCodigo(codigo, codigobandeja);
+    EnvioModel envio =await intersedeInterface.validarCodigo(codigo, codigobandeja);
     if (envio == null) {
       mostrarAlerta(
-          context, "No es posible procesar el código", "Codigo Incorrecto");
+          context, "No es posible procesar el código", "Código Incorrecto");
     }else{
       mostrarAlerta(
-          context, "Envío agregado a la entrega", "Codigo correcto");      
+          context, "Envío agregado a la entrega", "Código correcto");      
     }
 
 
@@ -87,26 +86,32 @@ class EntregaregularController {
       BuildContext context,
       int id,
       String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+    dynamic respuesta = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
-
-    confirmarAlerta(
+       if(respuesta["status"] == "success"){
+             confirmarAlerta(
         context, "Se ha registrado correctamente la valija", "Registro");
+       }else{
+            mostrarAlerta(context, respuesta["message"], "Mensaje");
+       }
+
   }
 
   void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
       BuildContext context, String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+    dynamic respuesta = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
-
-    confirmarAlerta(
+       if(respuesta["status"] == "success"){
+             confirmarAlerta(
         context, "Se ha registrado correctamente la valija", "Registro");
+       }else{
+            mostrarAlerta(context, respuesta["message"], "Mensaje");
+       }
   }
 
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

@@ -10,16 +10,19 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRuta
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
 
-  Future<List<EnvioModel>> listarEnvios(BuildContext context,
-      int id, String codigo, bool opcion) async {
-    List<EnvioModel> recorridos = await recorridoCore.enviosCore(codigo, id, opcion);
-    if(recorridos!=null){
-      if(recorridos.length==0){
-        return null;
-      }
-    }
+  Future<List<EnvioModel>> listarEnviosRecojo(BuildContext context,
+      int id, String codigo) async {
+    List<EnvioModel> recorridos = await recorridoCore.enviosCoreRecojo(codigo, id);
     return recorridos;
   }
+
+
+  Future<dynamic> listarEnviosEntrega(BuildContext context,
+      int id, String codigo) async {
+    dynamic recorridos = await recorridoCore.enviosCoreEntrega(codigo, id);
+    return recorridos;
+  }
+
 
   Future< dynamic> recogerdocumentoRecojo(BuildContext context,
       int id, String codigo, String paquete, bool opcion) async {

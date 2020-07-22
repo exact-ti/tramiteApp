@@ -22,8 +22,11 @@ class EnvioProvider implements IEnvioProvider {
 
   @override
   Future<bool> crearEnvioProvider(EnvioModel envio) async {
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
+    int id = bznmodel.id;
     final formData = json.encode({
-      "remitenteId": envio.remitenteId,
+      "remitenteId": id,
       "destinatarioId": envio.destinatarioId,
       "codigoPaquete": envio.codigoPaquete,
       "codigoUbicacion": envio.codigoUbicacion,
@@ -31,9 +34,8 @@ class EnvioProvider implements IEnvioProvider {
     });
 
     try {
-      Response resp =
-          await req.post('/servicio-tramite/envios', formData, null);
-      if (resp.data != null) {
+      Response resp = await req.post('/servicio-tramite/envios', formData, null);
+      if (resp.data != null  || resp.data !="") {
         return true;
       } else {
         return false;

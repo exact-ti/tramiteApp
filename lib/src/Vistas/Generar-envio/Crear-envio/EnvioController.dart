@@ -26,9 +26,8 @@ class EnvioController {
     }
 
 
-    void crearEnvio(BuildContext context, int remitenteId, int destinatarioid,String codigopaquete, String codigoUbicacion, String observacion) async {
+    void crearEnvio(BuildContext context, int destinatarioid,String codigopaquete, String codigoUbicacion, String observacion) async {
         EnvioModel envioModel = new EnvioModel();
-        envioModel.remitenteId = remitenteId;
         envioModel.destinatarioId = destinatarioid;
         envioModel.codigoPaquete = codigopaquete;
         envioModel.codigoUbicacion = codigoUbicacion;
@@ -64,6 +63,7 @@ void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
           }
         }
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

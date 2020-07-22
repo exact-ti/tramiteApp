@@ -61,7 +61,7 @@ List<PalomarModel> listapalomar = [];
     }
 
     Widget crearItem(PalomarModel palomar) {
-      String codigopalomar = palomar.codigo;
+      String codigopalomar = palomar.id;
       String tipo = palomar.tipo;
       String ubicacion = palomar.ubicacion;
       return Container(

@@ -96,8 +96,9 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
@@ -114,7 +115,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               }
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
@@ -146,8 +147,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         } else {
              dynamic respuestaValidar = await principalcontroller.recogerdocumento( context, _bandejaController.text,value,true);
               if(respuestaValidar["status"] != "success"){
-                  mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-              }else{
+               }else{
                   mostrarAlerta(context, "Se ha registrado el envío", "Mensaje");
               }
         }
@@ -160,6 +160,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         if (listaEnvios != null) {
           if (listaEnvios.length != 0) {
             setState(() {
+              _bandejaController.text=value;
               listaEnvios = listaEnvios;
             });
           } else {
@@ -179,7 +180,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     final textBandeja = Container(
-      child: Text("Código de bandeja"),
+      child: Text("Código de valija"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -224,7 +225,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
+        mostrarAlerta(context, "Primero debe ingresar el codigo de la valija",
             "Ingreso incorrecto");
       } else {
         _validarSobreText(qrbarra);
@@ -505,6 +506,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

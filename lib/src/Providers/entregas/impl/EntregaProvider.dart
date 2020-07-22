@@ -99,20 +99,21 @@ class EntregaProvider implements IEntregaProvider {
   }
 
   @override
-  Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo) async{
-    Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos');
-    if(resp.data==null){
-        return null;
-    }
-    List<dynamic> envios = resp.data;
-    List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
-    return listEnvio;
+  Future<dynamic> listarTurnosByCodigoLote(String codigo) async{
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    Response resp = await req.get('/servicio-tramite/tipospaquetes/lotes/$codigo/turnos?utdId=$id');
+    dynamic envios = resp.data;
+    //List<TurnoModel> listEnvio = turnoModel.fromJson(envios);
+    return envios;
   }
 
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
+    print("casadds");
     try{
-    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo?estadoId=$creado');
+    Response resp = await req.get('/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo/libre');
     if(resp.data==""){
         return null;
     }
@@ -154,7 +155,7 @@ return null;
 
 
   @override
-  Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
+  Future<dynamic> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async{
     List<int> ids = new List();
 for (EnvioModel envio in envios) {
       ids.add(envio.id);
@@ -164,11 +165,8 @@ for (EnvioModel envio in envios) {
     int id = umodel.id;
     var listaIds = json.encode(ids);
     Response resp = await req.post('/servicio-tramite/utds/$id/turnosinterconexiones/$turnoID/lotes?paqueteId=$codigo', listaIds, null);
-   if(resp.data!=null){
-     return true;
-   }else{
-     return false;
-   }
+    dynamic respuesta = resp.data;
+    return respuesta; 
   }
 
   @override

@@ -1,7 +1,7 @@
 class PalomarModel {
-  int id;
+  String id;
   String codigo;
-  int fila;
+  String fila;
   int columna;
   String ubicacion;
   String tipo;
@@ -16,11 +16,9 @@ class PalomarModel {
   PalomarModel fromOneJson(dynamic json) {
     PalomarModel palomar = new PalomarModel();
     palomar.id = json["id"];
-    palomar.codigo = json["codigo"];
-    palomar.fila = json["fila"];
+    palomar.fila = json["destino"];
     palomar.ubicacion = json["ubicacion"];
-    dynamic tipopalomar = json["tipoPalomar"];
-    palomar.tipo = tipopalomar["nombre"];
+    palomar.tipo = json["tipoPalomar"];
     return palomar;
   }
 

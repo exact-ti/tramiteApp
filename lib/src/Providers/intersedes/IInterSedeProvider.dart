@@ -17,7 +17,7 @@ abstract class IInterSedeProvider{
 
     Future<EnvioModel> validarCodigoProvider(String codigo,String codigobandeja);
 
-    Future<int> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,String codigo);
+    Future<dynamic> listarEnviosValidadosInterSede(List<EnvioModel> enviosvalidados,String codigo);
 
     Future<bool> iniciarEntregaIntersede(int utdDestino);  
 

@@ -13,18 +13,21 @@ import 'package:tramiteapp/src/Util/utils.dart';
 
 class NuevoEntregaLotePageController {
   EntregaInterface entregaCore = new EntregaImpl(new EntregaProvider());
-
+TurnoModel turnoModel =  new TurnoModel();
   Future<List<TurnoModel>> listarturnos(
       BuildContext context, String codigo) async {
+      List<TurnoModel> listEnvio = new List();
     if (codigo == "") {
       return null;
     }
-    List<TurnoModel> turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
+    dynamic turnos =await entregaCore.listarTurnosByCodigoLote(codigo);
 
-    if (turnos == null) {
-      mostrarAlerta(context, "No hay turnos asignados", "Mensaje");
+    if (turnos["status"] == "success") {
+       listEnvio = turnoModel.fromJson(turnos["data"]);
+    }else{
+      mostrarAlerta(context, turnos["message"], "Mensaje");
     }
-    return turnos;
+    return listEnvio;
   }
 
   bool validarContiene(List<EnvioModel> lista,EnvioModel envio ){
@@ -59,20 +62,19 @@ class NuevoEntregaLotePageController {
 
   void confirmacionDocumentosValidados(List<EnvioModel> enviosvalidados,
       BuildContext context, int id, String codigo) async {
-    bool respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id,codigo);
-    if (respuesta) {
+    dynamic respuesta = await entregaCore.registrarLoteLote(enviosvalidados, id,codigo);
+       if(respuesta["status"] == "success"){
       confirmarAlerta(
           context, "Se ha registrado correctamente la valija", "Registro");
-      Navigator.of(context).pushNamedAndRemoveUntil(
-                "/envio-lote", (Route<dynamic> route) => false);
     } else {
       mostrarAlerta(
-          context, "No se completó el registro de la entrega", "Mensaje");
+          context, respuesta["message"], "Mensaje");
     }
   }
 
   void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -82,7 +84,8 @@ class NuevoEntregaLotePageController {
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () =>
-                    Navigator.of(context).pushNamed('/entrega-intersede'),
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                "/envio-lote", (Route<dynamic> route) => false)
               )
             ],
           );

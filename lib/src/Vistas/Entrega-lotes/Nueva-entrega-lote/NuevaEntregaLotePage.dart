@@ -70,7 +70,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             onPressed: () {
               if (_bandejaController.text == "") {
                 mostrarAlerta(
-                    context, "Debe ingresar el codigo de bandeja", "Mensaje");
+                    context, "Debe ingresar el codigo de lote", "Mensaje");
               } else {
                 if (selectedFc == null) {
                   mostrarAlerta(
@@ -91,7 +91,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             },
             color: Color(0xFF2C6983),
             child:
-                Text('Agregar Valija', style: TextStyle(color: Colors.white)),
+                Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -132,8 +132,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       } else {
         setState(() {
           listaTurnos = [];
-          codigoBandeja = value;
-          _bandejaController.text = value;
+          codigoBandeja = "";
+          _bandejaController.text = "";
         });
       }
     }
@@ -244,7 +244,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (_bandejaController.text == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
+        mostrarAlerta(context, "Primero debe ingresar el codigo de la lote",
             "Ingreso incorrecto");
       } else {
         _validarSobreText(qrbarra);
@@ -308,7 +308,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
           _sobreController.text = "";
           mostrarAlerta(
               context,
-              "Primero debe ingresar el codigo de la bandeja",
+              "Primero debe ingresar el codigo del lote",
               "Ingreso incorrecto");
         } else {
           _validarSobreText(value);

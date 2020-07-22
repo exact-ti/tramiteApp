@@ -22,8 +22,8 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosAgenciasByCodigo(String codigo) async{
-     List<EnvioModel> envios = await agenciaExterna.listarEnviosAgenciaByCodigo(codigo);
+  Future<dynamic> listarEnviosAgenciasByCodigo(String codigo) async{
+     dynamic envios = await agenciaExterna.listarEnviosAgenciaByCodigo(codigo);
       return envios; 
   }
 

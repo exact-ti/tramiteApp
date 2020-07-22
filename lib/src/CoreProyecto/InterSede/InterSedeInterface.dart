@@ -12,7 +12,7 @@ class InterSedeInterface {
 
   Future<EnvioModel> validarCodigo(String codigo, String codigovalija) {}
 
-  Future<int> listarEnviosValidadosInterSede(
+  Future<dynamic> listarEnviosValidadosInterSede(
       List<EnvioModel> envios, String codigo) {}
 
   Future<bool> iniciarEntregaIntersede(int utdDestino) {}

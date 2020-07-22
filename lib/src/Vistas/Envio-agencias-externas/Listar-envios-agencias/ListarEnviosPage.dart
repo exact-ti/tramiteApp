@@ -90,7 +90,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       bool respuesta = await principalcontroller.registrarlista(context, listids);
       if (respuesta) {
         mostrarAlerta(
-            context, "Se inicio la entrega correctamente", "Inicio correcto");
+            context, "Se inició la entrega correctamente", "Inicio correcto");
         setState(() {
           textdestinatario = textdestinatario;
         });
@@ -101,7 +101,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     Widget crearItem(EnvioInterSedeModel entrega) {
-      String codigoUtd = entrega.codigo;
+      String codigoUtd = entrega.utdId.toString();
       return GestureDetector(
           onLongPress: () {
             setState(() {
@@ -201,7 +201,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
-        child: Text('Nuevo', style: TextStyle(color: Colors.white)),
+        child: Text('Nueva', style: TextStyle(color: Colors.white)),
       ),
     );
 
@@ -213,7 +213,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
       if (respuesta) {
         mostrarAlerta(
-            context, "Se inicio la entrega correctamente", "Inicio correcto");
+            context, "Se inició la entrega correctamente", "Inicio correcto");
         setState(() {
           validados.clear();
           textdestinatario = textdestinatario;

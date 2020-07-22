@@ -211,11 +211,13 @@ class _EnvioPageState extends State<EnvioPage> {
                 });
               FocusScope.of(context).unfocus();
               new TextEditingController().clear();
-                envioController.crearEnvio(context,1, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
+                envioController.crearEnvio(context, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
                 setState(() {
                   _sobreController.text="";
                   _bandejaController.text="";
                   _observacionController.text="";
+                  confirmaciondeenvio=false;
+                  indice=0;
                 });
               } else {
                 print("No se puede enviar");
