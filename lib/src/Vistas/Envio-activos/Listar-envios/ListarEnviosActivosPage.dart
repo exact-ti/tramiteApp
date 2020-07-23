@@ -1,12 +1,8 @@
-import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'ListarEnviosActivosController.dart';
 
 
@@ -45,12 +41,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   @override
   Widget build(BuildContext context) {
     const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    const othercolor = const Color(0xFF6F7375);
 
-    var booleancolor = true;
-    var colorwidget = colorplomo;
 
     Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
       String destino = entrega.destino;

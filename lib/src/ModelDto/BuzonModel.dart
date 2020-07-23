@@ -63,7 +63,7 @@ class BuzonModel {
       for(Map<String, dynamic> json in jsons){
           BuzonModel men = new BuzonModel();          
           men.id  = json["id"];
-          men.nombre  = json["nombre"];
+          men.nombre  = json["descripcion"];
           buzones.add(men);
       }
       return buzones;
