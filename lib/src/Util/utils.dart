@@ -12,11 +12,14 @@ import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 EnvioController envioController = new EnvioController();
+/* var eventNotifier = ValueNotifier(0);
+final Widget widgetReceive = Container(); */
 
 void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
@@ -229,6 +232,7 @@ modificarUtdOrBuzon(BuildContext context, int tipo) async {
                 bool respuesta = await confirmarRespuesta(
                     context, "Mensaje", "¿Seguro que desea continua?");
                 if (respuesta) {
+                  /*       eventNotifier.value += 1; */
                   if (tipo == cliente) {
                     HashMap<String, dynamic> buzonhash = new HashMap();
                     buzonhash['id'] = opcion.id;
