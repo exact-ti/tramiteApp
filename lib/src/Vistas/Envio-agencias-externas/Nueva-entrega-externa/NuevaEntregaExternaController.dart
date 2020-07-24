@@ -66,32 +66,16 @@ class NuevoEntregaExternaController {
         recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
             enviosvalidados, codigo);
         if (recorrido.id != null) {
-          confirmarAlerta(
-              context, "Se ha registrado correctamente el envio", "Registro");
+          bool respuestatrue = await notificacion(context, "success", "EXACT",
+              "Se ha registrado correctamente el envio");
+          if (respuestatrue) {
+            Navigator.of(context).pushNamed('/envios-agencia');
+          }
         } else {
           notificacion(
               context, "error", "EXACT", "No se  pudo registrar el envío");
         }
       }
     }
-  }
-
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/envios-agencia'),
-              )
-            ],
-          );
-        });
   }
 }

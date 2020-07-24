@@ -70,8 +70,11 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
         if (respuesta) {
           listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
           if (listaEnvios.length == 0) {
-            confirmarRecepcion(
-                context, "Mensaje", "Se ha completado la recepción");
+            bool respuestatrue = await notificacion(
+                context, "success", "EXACT", "Se ha completado la recepción");
+            if (respuestatrue) {
+              Navigator.of(context).pushNamed('/envio-lote');
+            }
             setState(() {
               listaEnvios = listaEnvios;
             });
@@ -422,27 +425,6 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                   child: Text('Volver a leer'),
                   onPressed: () {
                     Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
-
-  void confirmarRecepcion(BuildContext context, String titulo, String mensaje) {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: Text('$mensaje'),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/envio-lote');
                   })
             ],
           );

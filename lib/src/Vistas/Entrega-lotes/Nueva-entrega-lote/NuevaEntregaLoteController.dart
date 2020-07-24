@@ -64,29 +64,14 @@ class NuevoEntregaLotePageController {
     dynamic respuesta =
         await entregaCore.registrarLoteLote(enviosvalidados, id, codigo);
     if (respuesta["status"] == "success") {
-      confirmarAlerta(
-          context, "Se ha registrado correctamente la valija", "Registro");
+      bool respuestatrue = await notificacion(context, "success", "EXACT",
+          "Se ha registrado correctamente la valija");
+      if (respuestatrue) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            "/envio-lote", (Route<dynamic> route) => false);
+      }
     } else {
       notificacion(context, "error", "EXACT", respuesta["message"]);
     }
-  }
-
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamedAndRemoveUntil(
-                          "/envio-lote", (Route<dynamic> route) => false))
-            ],
-          );
-        });
   }
 }

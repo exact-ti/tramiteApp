@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:path/path.dart';
@@ -222,9 +223,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         if (this.codigo_paquete_incorrecto > 0) {
-          bool respuesta =
-              await sd.confirmarRespuesta(context, tituloVentana, description);
-
+          bool respuesta = await confirmacion(context, "success", "EXACT", description);
           if (!respuesta) {
             return;
           }
@@ -261,9 +260,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           }
         }
         if (this.codigo_paquete_incorrecto > 0) {
-          bool respuesta =
-              await sd.confirmarRespuesta(context, tituloVentana, descrip);
-
+          bool respuesta = await confirmacion(context, "success", "EXACT", descrip);
           if (!respuesta) {
             return;
           }

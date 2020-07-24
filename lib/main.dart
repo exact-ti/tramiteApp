@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       routes: getAplicationRoutes(),
       onGenerateRoute: (settings){
         return MaterialPageRoute(
-          builder: ( BuildContext context ) =>LoginPage()
+          builder: ( BuildContext context ) =>HomePage()
         );
       },
       navigatorKey: locator<NavigationService>().navigatorKey

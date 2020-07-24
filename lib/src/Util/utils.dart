@@ -16,60 +16,9 @@ import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
+import 'modals/confirmation.dart';
+
 EnvioController envioController = new EnvioController();
-/* var eventNotifier = ValueNotifier(0);
-final Widget widgetReceive = Container(); */
-
-/* void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
-  showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('$titulo'),
-          content: Text(mensaje),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        );
-      });
-} */
-
-Future<bool> confirmarRespuesta(
-    BuildContext context, String title, String description) async {
-  bool respuesta = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(description),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-                // Navigator.of(context).pop();
-              },
-              child: Text('Aceptar'),
-            ),
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context, false);
-                // Navigator.of(context).pop();
-                return false;
-              },
-              child: Text('Cancelar'),
-            )
-          ],
-        );
-      });
-
-  return respuesta;
-}
-
 
 Drawer crearMenu(BuildContext context) {
   return Drawer(
@@ -229,8 +178,7 @@ modificarUtdOrBuzon(BuildContext context, int tipo) async {
                     ),
                   )),
               onTap: () async {
-                bool respuesta = await confirmarRespuesta(
-                    context, "Mensaje", "¿Seguro que desea continua?");
+                bool respuesta = await confirmacion(context, "success", "EXACT", "¿Seguro que desea continua?");
                 if (respuesta) {
                   /*       eventNotifier.value += 1; */
                   if (tipo == cliente) {
@@ -323,13 +271,18 @@ final _icons = <String, IconData>{
   'importar': Icons.file_upload,
   'custodiar': Icons.check_box,
   'clasificar': Icons.sort,
-  'intersede': Icons.transfer_within_a_station,
+  'interutd': Icons.transfer_within_a_station,
   'revalija': Icons.markunread,
   'lote': Icons.check_box_outline_blank,
   'relote': Icons.filter_none,
   'agencia': Icons.airline_seat_recline_normal,
   'recepcion': Icons.receipt,
   'consulta': Icons.record_voice_over,
+  'dashboard':Icons.dashboard,
+  'activos':Icons.accessibility,
+  'confirmar':Icons.confirmation_number,
+  'historico':Icons.history
+
 };
 
 Icon getICon(String nombreIcono) {

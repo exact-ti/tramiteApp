@@ -99,16 +99,17 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: () async {
               if (listaEnvios.length > 0) {
                 confirmarNovalidados(
                     context, "Faltan los siguientes elementos a validar");
               } else {
                 codigoBandeja = "";
-                entregaController.confirmarAlerta(
-                    context,
-                    "Se ha completado con la recepción de documentos",
-                    "Recepción completa");
+                bool respuestatrue = await notificacion(context, "success", "EXACT",
+                    "Se ha completado con la recepción de documentos");
+                if (respuestatrue) {
+                  Navigator.of(context).pushNamed('/envio-intersede');
+                }
               }
             },
             color: Color(0xFF2C6983),
@@ -131,10 +132,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           if (respuestaValidar["status"] == "success") {
             listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
             if (listaEnvios.length == 0) {
-              entregaController.confirmarAlerta(
-                  context,
-                  "Se ha recepcionado los documentos con éxito",
-                  "Recepción de documentos");
+              bool respuestatrue = await notificacion(context, "success", "EXACT",
+                  "Se ha recepcionado los documentos con éxito");
+              if (respuestatrue) {
+                Navigator.of(context).pushNamed('/envio-intersede');
+              }
             }
             setState(() {
               listaEnvios = listaEnvios;
@@ -516,12 +518,13 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             actions: <Widget>[
               FlatButton(
                   child: Text('Registrar de todos modos'),
-                  onPressed: () {
+                  onPressed: () async {
                     codigoBandeja = "";
-                    entregaController.confirmarAlerta(
-                        context,
-                        "Se ha recepcionado los documentos con éxito",
-                        "Recepción de documentos");
+                    bool respuestatrue = await notificacion(context, "success",
+                        "EXACT", "Se ha recepcionado los documentos con éxito");
+                    if (respuestatrue) {
+                      Navigator.of(context).pushNamed('/envio-intersede');
+                    }
                   }),
               SizedBox(height: 1.0, width: 5.0),
               FlatButton(

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void notificacion(
-    BuildContext context, String tipo, String titulo, String mensaje) {
-  showDialog(
+Future<bool> notificacion(
+    BuildContext context, String tipo, String titulo, String mensaje) async {
+  bool respuesta = await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) {
@@ -36,7 +36,7 @@ void notificacion(
                   right: 20, left: 20, bottom: 20, top: 20),
             ),
             InkWell(
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () => Navigator.pop(context, true),
               child: Center(
                   child: Container(
                       height: 50.00,
@@ -56,4 +56,7 @@ void notificacion(
           contentPadding: EdgeInsets.all(0),
         );
       });
+
+        return respuesta;
+
 }

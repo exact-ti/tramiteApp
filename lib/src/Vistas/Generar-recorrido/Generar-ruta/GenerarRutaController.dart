@@ -32,35 +32,4 @@ class GenerarRutaController {
     }
   }
 
-
-
-    void confirmarPendientes(
-      BuildContext context, String titulo,String mensaje,RecorridoModel recorridoModel) {
-
-    showDialog(
-      barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child:Text('$mensaje'),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Continuar'),
-                  onPressed: () {
-          opcionRecorrido( recorridoModel,  context);
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                child: Text('Cancelar'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                } 
-              )
-            ],
-          );
-        });
-  }
 }

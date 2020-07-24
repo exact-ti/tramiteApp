@@ -24,23 +24,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
     const LetraColor = const Color(0xFF68A1C8);
-
-    final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 70),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        onPressed: () {
-          confirmacion(context,"error ","EXACT","probando diseño de esta notificación probando diseño de esta");
-        },
-        padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-        color: Colors.lightBlueAccent,
-        child: Text('LOG IN', style: TextStyle(color: Colors.white)),
-      ),
-    );
-
-
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: PrimaryColor,
@@ -65,8 +49,7 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold))),
             Center(
                 child: Text("Expertos en Gestion Documental",
-                    style: TextStyle(fontSize: 20, color: Colors.grey))),
-            loginButton
+                    style: TextStyle(fontSize: 20, color: Colors.grey)))
           ],
         ),
       ),

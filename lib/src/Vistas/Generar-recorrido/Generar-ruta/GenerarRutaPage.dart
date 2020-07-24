@@ -1,6 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 
@@ -184,11 +185,15 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        onPressed: () {
+        onPressed: () async {
           if(recorridoUsuario.indicepagina!=1){
             if(cantidad!=0){
-          principalcontroller.confirmarPendientes(
-       context, "Confirmar","Tienes pendientes ¿Desea Continuar?", recorridoUsuario);
+            bool respuesta = await  confirmacion(context, "success", "EXACT","Tienes pendientes ¿Desea Continuar?");
+            if(respuesta){
+              principalcontroller.opcionRecorrido( recorridoUsuario,  context);
+            }else{
+              Navigator.of(context).pop();
+            }
             }else{
               principalcontroller.opcionRecorrido(recorridoUsuario,context);
             }

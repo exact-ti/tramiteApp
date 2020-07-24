@@ -1,5 +1,6 @@
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
@@ -78,8 +79,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                       child: switched == 0
                           ? Text("$numvalijas valijas",
                               style: TextStyle(fontSize: 12))
-                          : Text("$codigo",
-                              style: TextStyle(fontSize: 12)),
+                          : Text("$codigo", style: TextStyle(fontSize: 12)),
                     ),
                   ]),
             ),
@@ -95,14 +95,14 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       bool respuesta =
           await principalcontroller.onSearchButtonPressed(context, entrega);
       if (respuesta) {
-        principalcontroller.confirmarAlerta(context,
-            "Se ha iniciado el envío correctamente", "Inicio Correcto");
+        notificacion(context, "success", "EXACT",
+            "Se ha iniciado el envío correctamente");
         setState(() {
           indexSwitch = indexSwitch;
         });
       } else {
-        principalcontroller.confirmarAlerta(
-            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+        notificacion(
+            context, "error", "EXACT", "No se pudo iniciar la entrega");
       }
     }
 
@@ -110,7 +110,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       return Container(
           height: 70,
           child: /*entrega.estadoEnvio == 1
-              ? */IconButton(
+              ? */
+              IconButton(
                   icon: FaIcon(
                     FontAwesomeIcons.locationArrow,
                     color: Color(0xffC7C7C7),
@@ -124,13 +125,14 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                               RecepcionInterPage(recorridopage: entrega),
                         ));
                   })
-             /* : Opacity(
+          /* : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
                     FontAwesomeIcons.locationArrow,
                     color: Color(0xffC7C7C7),
                     size: 25,
-                  ))*/);
+                  ))*/
+          );
     }
 
     Widget iconoEnvio(EnvioInterSedeModel entrega) {
@@ -188,19 +190,18 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     }
 
     Widget _crearListado(int switched) {
-
       envios.clear();
 
       return FutureBuilder(
-          future: principalcontroller.listarentregasInterSedeController(switched),
+          future:
+              principalcontroller.listarentregasInterSedeController(switched),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
             if (snapshot.hasData) {
               envios = snapshot.data;
               return ListView.builder(
                   itemCount: envios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(envios[i], switched));
+                  itemBuilder: (context, i) => crearItem(envios[i], switched));
             } else {
               return Container();
             }
@@ -280,32 +281,35 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-              Container(
-                  height: screenHeightExcludingToolbar(context, dividedBy: 20),
-                  child: tabs),
-              Expanded(
-                child: Container(
-                    decoration: myBoxDecoration(),
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 5, bottom: 5),
-                    alignment: Alignment.bottomCenter,
-                    child: _crearListado(indexSwitch)),
-              )
-            ],
-          ),
-        ))));
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 8),
+                            width: double.infinity,
+                            child: sendButton),
+                      ),
+                      Container(
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 20),
+                          child: tabs),
+                      Expanded(
+                        child: Container(
+                            decoration: myBoxDecoration(),
+                            padding: const EdgeInsets.only(
+                                left: 5, right: 5, top: 5, bottom: 5),
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListado(indexSwitch)),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

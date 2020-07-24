@@ -33,7 +33,21 @@ class EnvioController {
     envioModel.observacion = observacion;
     bool respuesta = await envioInterface.crearEnvio(envioModel);
     if (respuesta) {
-      confirmarAlerta(context, 'El envío se creó', 'Confirmación');
+      bool respuesta =
+          await notificacion(context, "success", "EXACT", 'El envío se creó');
+      if (respuesta) {
+        Menu menuu = new Menu();
+        List<dynamic> menus = json.decode(_prefs.menus);
+        List<Menu> listmenu = menuu.fromPreferencs(menus);
+        String inicial = "";
+        for (Menu men in listmenu) {
+          if (men.home) {
+            inicial = men.link;
+          }
+        }
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(inicial, (Route<dynamic> route) => false);
+      }
     } else {
       notificacion(context, "error", "EXACT", 'No se pudo realizar el envío');
     }
@@ -47,33 +61,5 @@ class EnvioController {
   Future<bool> validarexistenciabandeja(String texto) async {
     bool respuestaBandeja = await envioInterface.validarBandejaCodigo(texto);
     return respuestaBandeja;
-  }
-
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    Menu menuu = new Menu();
-    List<dynamic> menus = json.decode(_prefs.menus);
-    List<Menu> listmenu = menuu.fromPreferencs(menus);
-    String inicial = "";
-    for (Menu men in listmenu) {
-      if (men.home) {
-        inicial = men.link;
-      }
-    }
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                    inicial, (Route<dynamic> route) => false),
-              )
-            ],
-          );
-        });
   }
 }

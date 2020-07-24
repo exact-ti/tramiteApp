@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
@@ -122,14 +123,14 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
       bool respuesta =
           await listarLoteController.onSearchButtonPressed(context, entrega);
       if (respuesta) {
-        listarLoteController.confirmarAlerta(context,
-            "Se ha iniciado el envío correctamente", "Inicio Correcto");
+        notificacion(
+     context, "success", "EXACT", "Se ha iniciado el envío correctamente"); 
         setState(() {
           indexSwitch = indexSwitch;
         });
       } else {
-        listarLoteController.confirmarAlerta(
-            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+         notificacion(
+     context, "error", "EXACT", "No se pudo iniciar la entrega"); 
       }
     }
 
