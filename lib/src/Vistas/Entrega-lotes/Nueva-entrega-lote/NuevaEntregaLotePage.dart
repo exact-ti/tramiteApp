@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -69,16 +70,16 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             ),
             onPressed: () {
               if (_bandejaController.text == "") {
-                mostrarAlerta(
-                    context, "Debe ingresar el codigo de lote", "Mensaje");
+                notificacion(context, "error", "EXACT",
+                    "Debe ingresar el codigo de lote");
               } else {
                 if (selectedFc == null) {
-                  mostrarAlerta(
-                      context, "Debe seleccionar un turno", "Mensaje");
+                  notificacion(
+                      context, "error", "EXACT", "Debe seleccionar un turno");
                 } else {
                   if (listaEnviosVacios.length == 0) {
-                    mostrarAlerta(
-                        context, "No hay envíos para registrar", "Mensaje");
+                    notificacion(context, "error", "EXACT",
+                        "No hay envíos para registrar");
                   } else {
                     principalcontroller.confirmacionDocumentosValidados(
                         listaEnviosVacios,
@@ -90,8 +91,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
               }
             },
             color: Color(0xFF2C6983),
-            child:
-                Text('Registrar', style: TextStyle(color: Colors.white)),
+            child: Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -170,8 +170,9 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
               _sobreController.text = "";
               listaEnviosVacios = listaEnviosVacios;
             });
-          }else{
-            mostrarAlerta(context, "Este codigo ya se ha agregado", "Mensaje");
+          } else {
+            notificacion(
+                context, "error", "EXACT", "Este codigo ya se ha agregado");
           }
         }
       }
@@ -244,8 +245,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (_bandejaController.text == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la lote",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la lote");
       } else {
         _validarSobreText(qrbarra);
       }
@@ -306,10 +307,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo del lote",
-              "Ingreso incorrecto");
+          notificacion(context, "error", "EXACT",
+              "Primero debe ingresar el codigo del lote");
         } else {
           _validarSobreText(value);
         }
@@ -467,84 +466,87 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textTurno),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: comboList(codigoBandeja, listaTurnos)),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 30),
-                ),
-              ),
-              Expanded(
-                  child:
-                      /*codigoSobre == ""
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textTurno),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: comboList(codigoBandeja, listaTurnos)),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 30),
+                        ),
+                      ),
+                      Expanded(
+                          child:
+                              /*codigoSobre == ""
                       ? Container()
                       :*/
-                      Container(
-                          child: _crearListadoAgregar(listaEnviosVacios))),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-            ],
-          ),
-        ))));
+                              Container(
+                                  child:
+                                      _crearListadoAgregar(listaEnviosVacios))),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 5),
+                            width: double.infinity,
+                            child: sendButton),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 
@@ -66,8 +67,8 @@ class _LoginPageState extends State<LoginPage> {
       String username = _usernameController.text;
       String password = _passwordController.text;
       if (username == "" || password == "") {
-        mostrarAlerta(context, 'Ingrese todos los datos solicitados',
-            'Datos incompletos');
+        notificacion(
+     context, "error", "EXACT", "Ingrese todos los datos solicitados"); 
       } else {
         logincontroller.validarlogin(context, username, password);
       }

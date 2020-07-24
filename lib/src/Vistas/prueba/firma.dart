@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 
@@ -126,7 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         setState(() {
                           _img = data;
                         });
-                        mostrarAlerta(context,"Se registró el cambio"," Guardado");
+                          notificacion(
+     context, "success", "EXACT", "Se registró el cambio"); 
                         debugPrint("onPressed " + encoded);
                       },
                       child: Text("Guardar")),

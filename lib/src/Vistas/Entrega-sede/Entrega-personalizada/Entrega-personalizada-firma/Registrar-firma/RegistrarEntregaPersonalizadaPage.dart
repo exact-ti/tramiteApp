@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-
 import 'RegistrarEntregaPersonalizadaController.dart';
-
 class RegistrarEntregapersonalizadoPage extends StatefulWidget {
   final dynamic firma;
 
@@ -45,7 +43,7 @@ class _RegistrarEntregapersonalizadoPageState
   bool confirmaciondeenvio = false;
   int indice = 0;
   int indicebandeja = 0;
-  bool colorRespuesta =true;
+  bool colorRespuesta = true;
   List<String> listacodigos = new List();
   FocusNode _focusNode;
   FocusNode f1 = FocusNode();
@@ -63,7 +61,6 @@ class _RegistrarEntregapersonalizadoPageState
 
   var colorplomos = const Color(0xFFEAEFF2);
 
-  
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
@@ -72,29 +69,31 @@ class _RegistrarEntregapersonalizadoPageState
     void _validarSobreText(String value) async {
       if (value != "") {
 /*         if (!listacodigos.contains(value)) {
- */          dynamic respuesta = await personalizadacontroller.guardarEntrega(
-              context, imagenFirma, value);
-          if (respuesta.containsValue("success")) {
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
-            listacodigos.add(value);
-            setState(() {
-              respuestaBack = "El envío $value fue entregado correctamente";
-              _sobreController.text = "";
-              codigoSobre = "";
-              listacodigos = listacodigos;
-              colorRespuesta = true;
-            });
-          } else {
-            setState(() {
-              respuestaBack = respuesta["message"];
-              _sobreController.text = "";
-              colorRespuesta = false;
-              codigoSobre = "";
-              listacodigos = listacodigos;
-            });
-            f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);          }
+ */
+        dynamic respuesta = await personalizadacontroller.guardarEntrega(
+            context, imagenFirma, value);
+        if (respuesta.containsValue("success")) {
+          FocusScope.of(context).unfocus();
+          new TextEditingController().clear();
+          listacodigos.add(value);
+          setState(() {
+            respuestaBack = "El envío $value fue entregado correctamente";
+            _sobreController.text = "";
+            codigoSobre = "";
+            listacodigos = listacodigos;
+            colorRespuesta = true;
+          });
+        } else {
+          setState(() {
+            respuestaBack = respuesta["message"];
+            _sobreController.text = "";
+            colorRespuesta = false;
+            codigoSobre = "";
+            listacodigos = listacodigos;
+          });
+          f1.unfocus();
+          FocusScope.of(context).requestFocus(f2);
+        }
 /*         } else {
           mostrarAlerta(context, "Codigo ya se encuentra validado", "Mensaje");
         } */
@@ -123,7 +122,7 @@ class _RegistrarEntregapersonalizadoPageState
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-        _validarSobreText(qrbarra);
+      _validarSobreText(qrbarra);
     }
 
     Future _traerdatosescanerFIRMA() async {
@@ -131,7 +130,6 @@ class _RegistrarEntregapersonalizadoPageState
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       _validarFIRMAText(qrbarra);
     }
-
 
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
@@ -141,15 +139,15 @@ class _RegistrarEntregapersonalizadoPageState
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
         if (value.length == 0) {
-          mostrarAlerta(
-              context, "El codigo de sobre es obligatorio", "Mensaje");
+          notificacion(
+              context, "error", "EXACT", "El codigo de sobre es obligatorio");
           f1.unfocus();
           FocusScope.of(context).requestFocus(f2);
         } else {
           if (_firmaController.text == "") {
             _sobreController.text = "";
-            mostrarAlerta(context, "La firma es necesario para la entrega",
-                "Ingreso incorrecto");
+            notificacion(context, "error", "EXACT",
+                "La firma es necesario para la entrega");
           } else {
             _validarSobreText(value);
           }
@@ -181,11 +179,11 @@ class _RegistrarEntregapersonalizadoPageState
           : LimitedBox(
               maxHeight: screenHeightExcludingToolbar(context, dividedBy: 5),
               child: Container(
-                
                   child: RotationTransition(
                       turns: new AlwaysStoppedAnimation(90 / 360),
-                      child:Container(
-                        child:  Image.memory(Base64Decoder().convert(imagenFirma)))))),
+                      child: Container(
+                          child: Image.memory(
+                              Base64Decoder().convert(imagenFirma)))))),
     );
 
     final campodetextoandIconoSobre = Row(children: <Widget>[
@@ -295,8 +293,13 @@ class _RegistrarEntregapersonalizadoPageState
                             ? Container()
                             : Container(
                                 alignment: Alignment.center,
-                                color: colorRespuesta ? SecondColor : Colors.grey,
-                                child: Center(child: Text("$respuestaBack",style:TextStyle(color: Colors.white, fontSize: 20)))),
+                                color:
+                                    colorRespuesta ? SecondColor : Colors.grey,
+                                child: Center(
+                                    child: Text("$respuestaBack",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20)))),
                       ),
                     ],
                   ),

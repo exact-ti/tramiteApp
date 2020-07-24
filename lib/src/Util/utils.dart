@@ -20,7 +20,7 @@ EnvioController envioController = new EnvioController();
 /* var eventNotifier = ValueNotifier(0);
 final Widget widgetReceive = Container(); */
 
-void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
+/* void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -36,7 +36,7 @@ void mostrarAlerta(BuildContext context, String mensaje, String titulo) {
           ],
         );
       });
-}
+} */
 
 Future<bool> confirmarRespuesta(
     BuildContext context, String title, String description) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoController.dart';
 
@@ -238,12 +239,14 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
     var codigo = this.codigoPaquete;
 
     if (codigo == "") {
-      sd.mostrarAlerta(context, 'Ingrese el código de paquete para custodiar el envío', this.tituloMensaje);
+      notificacion(
+     context, "error", "EXACT", 'Ingrese el código de paquete para custodiar el envío'); 
       return;
     }    
 
     if (this.creados.length == 0) {
-      sd.mostrarAlerta(context, 'No existen envíos para custodiar', tituloMensaje);
+      notificacion(
+     context, "error", "EXACT", 'No existen envíos para custodiar'); 
       return;
     }
 
@@ -252,7 +255,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
     bool existeEnvio = _validarCodigo(codigo);    
 
     if (existeEnvio == false) {
-      sd.mostrarAlerta(context, 'El código ingresado no se encuentra en la lista de envíos por custodiar', tituloMensaje);
+      notificacion(
+     context, "error", "EXACT", 'El código ingresado no se encuentra en la lista de envíos por custodiar'); 
       return;
     }
 
@@ -273,7 +277,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
       
     }
     else{
-      sd.mostrarAlerta(context, 'No se pudo custodiar el paquete con código $codigo', this.tituloMensaje);
+      notificacion(
+     context, "error", "EXACT", 'No se pudo custodiar el paquete con código $codigo'); 
     }
 
     this.codigoPaquete = "";
@@ -306,7 +311,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
     bool existeEnvio = _validarCodigo(codigo);    
 
     if (existeEnvio == false) {
-      sd.mostrarAlerta(context, 'El código no se encuentra en la lista para custodiar', tituloMensaje);
+          notificacion(
+     context, "error", "EXACT", 'El código no se encuentra en la lista para custodiar'); 
       return;
     }
 
@@ -324,7 +330,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage>{
       _crearListado();
     }
     else{
-      sd.mostrarAlerta(context, 'No se pudo custodiar el paquete con código $codigo', this.tituloMensaje);
+        notificacion(
+     context, "error", "EXACT", 'No se pudo custodiar el paquete con código $codigo'); 
     }
 
     

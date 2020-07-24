@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/CoreProyecto/Recepcion/RecepcionInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/recepciones/impl/RecepcionProvider.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
@@ -25,7 +26,8 @@ class RecepcionController {
     List<EnvioModel> recorridos =
         await recepcionInterface.enviosCore(codigo);
     if (recorridos.isEmpty) {
-      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+      notificacion(
+     context, "error", "EXACT", "No hay envíos para recoger"); 
     }
     return recorridos;
   }
@@ -42,16 +44,20 @@ class RecepcionController {
               bool respuesta = await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
             if(codigos.contains(codigo)){
               if(!respuesta){
-                mostrarAlerta(context,"No se pudo registrar el documento", "Registro incorrecto");
+                notificacion(
+     context, "error", "EXACT", "No se pudo registrar el documento"); 
               }
-              mostrarAlerta(context,"Registro correcto", "Mensaje");
+               notificacion(
+     context, "success", "EXACT", "Registro correcto"); 
               List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
             }else{
               if(!respuesta){
-                mostrarAlerta(context,"No es posible procesar el código", "Registro incorrecto");
+                notificacion(
+     context, "error", "EXACT", "No es posible procesar el código"); 
               }else{
-                mostrarAlerta(context,"Registro correcto", "Mensaje");
+                notificacion(
+     context, "success", "EXACT", "Registro correcto"); 
               }
               List<EnvioModel> envios = await recepcionInterface.listarEnviosPrincipalCore();
               return envios;
@@ -64,7 +70,8 @@ class RecepcionController {
     List<EnvioModel> recorridos =
         await recepcionInterface.listarEnviosCore();
     if (recorridos.isEmpty) {
-      mostrarAlerta(context, "No hay envíos para recoger", "Mensaje");
+      notificacion(
+     context, "error", "EXACT", "No hay envíos para recoger"); 
     }
     return recorridos;
   }
@@ -74,8 +81,8 @@ class RecepcionController {
     bool respuesta =
         await recepcionInterface.registrarRecorridoCore(codigo, paquete);
     if (respuesta == false) {
-      mostrarAlerta(
-          context, "No se pudo completar la operación", "Código incorrecto");
+      notificacion(
+     context, "error", "EXACT", "No se pudo completar la operación"); 
     }
   }
 
@@ -84,8 +91,8 @@ class RecepcionController {
     bool respuesta =
         await recepcionInterface.registrarEnvioCore(codigo);
     if (respuesta == false) {
-      mostrarAlerta(
-          context, "No se pudo completar la operación", "Código incorrecto");
+      notificacion(
+     context, "error", "EXACT", "No se pudo completar la operación"); 
     }
   }
 

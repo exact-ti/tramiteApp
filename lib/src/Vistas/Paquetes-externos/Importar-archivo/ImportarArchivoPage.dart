@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:path/path.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
@@ -145,7 +146,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   }
 
   Widget _generarBotonImportar(BuildContext context) {
-    this.codigo_paquete_incorrecto=0;
+    this.codigo_paquete_incorrecto = 0;
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 0),
       child: Align(
@@ -233,7 +234,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          sd.mostrarAlerta(context, 'Correcto', tituloVentana);
+          notificacion(context, "success", "EXACT", "Correcto");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
@@ -272,7 +273,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          sd.mostrarAlerta(context, 'Correcto', tituloVentana);
+          notificacion(context, "success", "EXACT", "Correcto");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
@@ -287,8 +288,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
       }
     } else {
-      sd.mostrarAlerta(
-          context, 'No hay registros para exportar', tituloVentana);
+      notificacion(context, "error", "EXACT", 'No hay registros para exportar');
     }
   }
 
@@ -298,7 +298,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           (totalFilas - codigosEncontrados).toString() +
           ' destinos no encontrados';
       TextStyle(color: Colors.red);
-      sd.mostrarAlerta(context, mensaje, 'Importar paquetes');
+      notificacion(context, "error", "EXACT", mensaje);
     }
   }
 
@@ -319,7 +319,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         estilo = new TextStyle(color: Colors.red);
       }
     }
-    sd.mostrarAlerta(context, mensaje, 'Importar archivo');
+    notificacion(context, "error", "EXACT", mensaje);
     // return Text(
     //   mensaje,
     //   style: estilo,
@@ -376,10 +376,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     }
 
     if (!existeHoja) {
-      sd.mostrarAlerta(
-          context,
-          "No existe una hoja con el nombre '$sheetName' en el archivo seleccionado",
-          "Importar archivo Excel");
+      notificacion(context, "error", "EXACT",
+          "No existe una hoja con el nombre '$sheetName' en el archivo seleccionado");
       this.data = paquetesBuzonValidar;
       return paquetesBuzonValidar;
     }

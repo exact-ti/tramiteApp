@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
+
 
 import 'ConsultaEnvioController.dart';
 
@@ -92,8 +92,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
               if (_paqueteController.text == "" &&
                   _remitenteController.text == "" &&
                   _destinatarioController.text == "") {
-                mostrarAlerta(
-                    context, "Se debe llenar al menos un campo", "Mensaje");
+                       notificacion(
+     context, "error", "EXACT",  "Se debe llenar al menos un campo"); 
                 setState(() {
                   button = false;
                   listaEnvios = [];

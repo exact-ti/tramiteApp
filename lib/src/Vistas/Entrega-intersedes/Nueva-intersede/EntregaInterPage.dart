@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -59,30 +60,30 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             ),
             onPressed: () {
               if (_bandejaController.text == "") {
-                mostrarAlerta(
-                    context, "Debe ingresar el codigo de bandeja", "Mensaje");
+                notificacion(context, "error", "EXACT",
+                    "Debe ingresar el codigo de bandeja");
               } else {
-                if(listaEnvios.length!=0){
-                listarNovalidados();
-                codigoSobre = "";
-                if (listaEnviosNoValidados.length == 0) {
-                  principalcontroller.confirmacionDocumentosValidadosEntrega(
-                      listaEnviosValidados, context, codigoBandeja);
-                  codigoBandeja = "";
+                if (listaEnvios.length != 0) {
+                  listarNovalidados();
+                  codigoSobre = "";
+                  if (listaEnviosNoValidados.length == 0) {
+                    principalcontroller.confirmacionDocumentosValidadosEntrega(
+                        listaEnviosValidados, context, codigoBandeja);
+                    codigoBandeja = "";
+                  } else {
+                    confirmarNovalidados(
+                        context,
+                        "Faltan los siguientes elementos a validar:",
+                        listaEnviosNoValidados);
+                  }
                 } else {
-                  confirmarNovalidados(
-                      context,
-                      "Faltan los siguientes elementos a validar:",
-                      listaEnviosNoValidados);
-                }
-                }else{
-                  mostrarAlerta(context, "No hay envíos para registrar", "Mensaje");
+                  notificacion(context, "error", "EXACT",
+                      "No hay envíos para registrar");
                 }
               }
             },
             color: Color(0xFF2C6983),
-            child:
-                Text('Registrar', style: TextStyle(color: Colors.white)),
+            child: Text('Registrar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -101,21 +102,22 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             listaCodigosValidados.add(value);
           });
         } else {
-            EnvioModel enviocontroller =  await principalcontroller.validarCodigoEntrega(
-       _bandejaController.text, value,  context);
-            if(enviocontroller!=null){
-                setState(() {
-                  listaEnvios.add(enviocontroller);
-                  listaCodigosValidados.add(value);
-                });
-            }
+          EnvioModel enviocontroller = await principalcontroller
+              .validarCodigoEntrega(_bandejaController.text, value, context);
+          if (enviocontroller != null) {
+            setState(() {
+              listaEnvios.add(enviocontroller);
+              listaCodigosValidados.add(value);
+            });
+          }
           /*setState(() {
             _sobreController.text = "";
             codigoSobre = value;
           });*/
         }
-      }else{
-        mostrarAlerta(context, "El campo del sobre no puede ser vacío", "Mensaje");
+      } else {
+        notificacion(
+            context, "error", "EXACT", "El campo del sobre no puede ser vacío");
       }
     }
 
@@ -125,7 +127,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       if (listaEnvios != null) {
         setState(() {
           codigoSobre = "";
-          listaEnvios=listaEnvios;
+          listaEnvios = listaEnvios;
           listaCodigosValidados.clear();
           _sobreController.text = "";
           codigoBandeja = codigo;
@@ -135,11 +137,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         setState(() {
           listaCodigosValidados.clear();
           _sobreController.text = "";
-                    codigoSobre = "";
-          listaEnvios=[];
+          codigoSobre = "";
+          listaEnvios = [];
           codigoBandeja = codigo;
-                    _bandejaController.text = codigo;
-
+          _bandejaController.text = codigo;
         });
       }
     }
@@ -148,13 +149,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       if (value != "") {
         validarLista(value);
       } else {
-        mostrarAlerta(context, "La bandeja es obligatoria", "mensaje");
-                setState(() {
+        notificacion(context, "error", "EXACT", "La bandeja es obligatoria");
+        setState(() {
           listaEnvios.clear();
           listaCodigosValidados.clear();
           _sobreController.text = "";
-                    codigoSobre = "";
-
+          codigoSobre = "";
         });
       }
     }
@@ -225,8 +225,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la bandeja");
       } else {
         _validarSobreText(qrbarra);
       }
@@ -249,10 +249,11 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       return Text("Quedan $cantidad documentos pendientes");
     }*/
 
-    Widget _crearListadoinMemoria(List<EnvioModel> envios,List<String> validados) {
-      List<EnvioModel> listaenvios=[];
-      if(envios!=null){
-          listaenvios=envios;
+    Widget _crearListadoinMemoria(
+        List<EnvioModel> envios, List<String> validados) {
+      List<EnvioModel> listaenvios = [];
+      if (envios != null) {
+        listaenvios = envios;
       }
       return ListView.builder(
           itemCount: listaenvios.length,
@@ -295,10 +296,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          notificacion(context, "error", "EXACT",
+              "Primero debe ingresar el codigo de la bandeja");
         } else {
           _validarSobreText(value);
         }
@@ -356,7 +355,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
-              return _crearListadoinMemoria(lista,validados);
+      return _crearListadoinMemoria(lista, validados);
       /*if (codigo == "") {
         return _crearListadoinMemoria(lista,validados);
       } else {
@@ -417,56 +416,57 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:  Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 30),
-                ),
-              ),
-              /*Align(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 30),
+                        ),
+                      ),
+                      /*Align(
                 alignment: Alignment.centerLeft,
                 child: listaEnvios.length != listaCodigosValidados.length
                     ? Container(
@@ -478,23 +478,24 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                         child: pendientes(listaEnvios.length))
                     : Container(),
               ),*/
-              Expanded(
-                  child: codigoBandeja == ""
-                      ? Container()
-                      : Container(
-                          child: _validarListado(listaEnvios,
-                              listaCodigosValidados))),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy:6),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-            ],
-          ),
-        ))));
+                      Expanded(
+                          child: codigoBandeja == ""
+                              ? Container()
+                              : Container(
+                                  child: _validarListado(
+                                      listaEnvios, listaCodigosValidados))),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 6),
+                            width: double.infinity,
+                            child: sendButton),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -528,7 +529,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     showDialog(
-      barrierDismissible: false,
+        barrierDismissible: false,
         context: context,
         builder: (context) {
           return AlertDialog(

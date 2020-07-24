@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'NuevaEntregaExternaController.dart';
@@ -110,7 +111,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           });*/
         }
       }else{
-        mostrarAlerta(context, "El campo del sobre no puede ser vacío", "Mensaje");
+        notificacion(
+     context, "error", "EXACT", "El campo del sobre no puede ser vacío"); 
       }
     }
 
@@ -143,7 +145,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       if (value != "") {
         validarLista(value);
       } else {
-        mostrarAlerta(context, "La bandeja es obligatoria", "mensaje");
+        notificacion(
+     context, "error", "EXACT", "La bandeja es obligatoria"); 
                 setState(() {
           listaEnvios.clear();
           listaCodigosValidados.clear();
@@ -220,8 +223,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(
+     context, "error", "EXACT", "Primero debe ingresar el codigo de la bandeja"); 
       } else {
         _validarSobreText(qrbarra);
       }
@@ -320,10 +323,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          notificacion(
+     context, "error", "EXACT", "Primero debe ingresar el codigo de la bandeja"); 
         } else {
           _validarSobreText(value);
         }

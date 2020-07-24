@@ -4,6 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'RecepcionController.dart';
@@ -80,16 +81,17 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             });
           }
         } else {
-          mostrarAlerta(
-              context, "No se pudo completar la operación", "Mensaje");
+          notificacion(
+              context, "error", "EXACT", "No se pudo completar la operación");
         }
       } else {
         bool respuesta = await principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo);
         if (respuesta) {
-          mostrarAlerta(context, "Se registro el código", "Mensaje");
+          notificacion(context, "success", "EXACT", "Se registro el código");
         } else {
-          mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+          notificacion(
+              context, "error", "EXACT", "No es posible procesar el código");
         }
       }
     }
@@ -98,7 +100,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       if (value != "") {
         contieneCodigo(value);
       } else {
-        mostrarAlerta(context, "El código es obligatorio", "Mensaje");
+        notificacion(context, "error", "EXACT", "El código es obligatorio");
       }
     }
 
@@ -116,14 +118,14 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           setState(() {
             listaEnvios = [];
           });
-          mostrarAlerta(context, "No contiene envíos", "Mensaje");
+          notificacion(context, "error", "EXACT", "No contiene envíos");
         }
       } else {
         setState(() {
           listaEnvios = [];
         });
-        mostrarAlerta(
-            context, "El campo de la bandeja no puede estar vacío", "Mensaje");
+        notificacion(context, "error", "EXACT",
+            "El campo de la bandeja no puede estar vacío");
       }
     }
 
@@ -164,8 +166,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la bandeja");
       } else {
         _validarSobreText(qrbarra);
       }
@@ -238,10 +240,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          notificacion(context, "error", "EXACT",
+              "Primero debe ingresar el codigo de la bandeja");
         } else {
           _validarSobreText(value);
         }

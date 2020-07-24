@@ -1,11 +1,9 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-
 import 'RecepcionController.dart';
 
 class RecepcionEnvioPage extends StatefulWidget {
@@ -181,15 +179,15 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       bool respuestaLista =
           await principalcontroller.guardarLista(context, listid);
       if (respuestaLista) {
-        mostrarAlerta(context, "Se recepcionó los envíos",
-            "Recepcion correcta");
+        notificacion(
+     context, "success", "EXACT", "Se recepcionó los envíos"); 
         setState(() {
           validados.clear();
           codigoBandeja = codigoBandeja;
         });
       } else {
-        mostrarAlerta(context, "No es posible procesar el código",
-            "Recepcion incorrecta");
+      notificacion(
+     context, "error", "EXACT", "No es posible procesar el código"); 
         validados.clear();
         setState(() {
           codigoBandeja = codigoBandeja;

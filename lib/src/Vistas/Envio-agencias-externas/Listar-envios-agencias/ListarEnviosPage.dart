@@ -1,9 +1,9 @@
 import 'dart:collection';
 
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -89,14 +89,14 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       listids.add("$idutd");
       bool respuesta = await principalcontroller.registrarlista(context, listids);
       if (respuesta) {
-        mostrarAlerta(
-            context, "Se inició la entrega correctamente", "Inicio correcto");
+        notificacion(
+     context, "success", "EXACT", "Se inició la entrega correctamente"); 
         setState(() {
           textdestinatario = textdestinatario;
         });
       } else {
-        mostrarAlerta(
-            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+        notificacion(
+     context, "error", "EXACT", "No se pudo iniciar la entrega"); 
       }
     }
 
@@ -212,15 +212,15 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       bool respuesta = await principalcontroller.registrarlista(context, listid);
 
       if (respuesta) {
-        mostrarAlerta(
-            context, "Se inició la entrega correctamente", "Inicio correcto");
+         notificacion(
+     context, "success", "EXACT","Se inició la entrega correctamente"); 
         setState(() {
           validados.clear();
           textdestinatario = textdestinatario;
         });
       } else {
-        mostrarAlerta(
-            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+        notificacion(
+     context, "error", "EXACT", "No se pudo iniciar la entrega"); 
       }
     }
 

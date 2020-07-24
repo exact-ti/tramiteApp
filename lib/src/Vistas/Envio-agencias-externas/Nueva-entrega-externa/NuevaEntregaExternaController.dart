@@ -11,7 +11,7 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/agenciasExternas/impl/AgenciasExternasProvider.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 
 class NuevoEntregaExternaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -22,14 +22,14 @@ class NuevoEntregaExternaController {
   EnvioModel envioModel = new EnvioModel();
   Future<List<EnvioModel>> listarEnviosEntrega(
       BuildContext context, String codigo) async {
-        List<EnvioModel> listEnvio = new List();
+    List<EnvioModel> listEnvio = new List();
     dynamic recorridos = await agenciacore.listarEnviosAgenciasByCodigo(codigo);
     if (recorridos["status"] == "success") {
       dynamic datapalomar = recorridos["data"];
-       listEnvio = envioModel.fromJsonValidar(datapalomar);
+      listEnvio = envioModel.fromJsonValidar(datapalomar);
     } else {
-      mostrarAlerta(context, recorridos["message"], "Mensaje");
-      listEnvio=[];
+      notificacion(context, "error", "EXACT", recorridos["message"]);
+      listEnvio = [];
     }
     /*     if (recorridos != null) {
       if (recorridos.length == 0) {
@@ -43,10 +43,10 @@ class NuevoEntregaExternaController {
       String bandeja, String codigo, BuildContext context) async {
     EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
     if (envio == null) {
-      mostrarAlerta(
-          context, "No es posible procesar el código", "Codigo Incorrecto");
+      notificacion(
+          context, "error", "EXACT", "No es posible procesar el código");
     } else {
-      mostrarAlerta(context, "Envío agregado a la entrega", "Mensaje");
+      notificacion(context, "success", "EXACT", "Envío agregado a la entrega");
     }
 
     return envio;
@@ -55,11 +55,12 @@ class NuevoEntregaExternaController {
   void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
       BuildContext context, String codigo) async {
     if (codigo == "") {
-      mostrarAlerta(
-          context, "El código de la valija es obligatorio", "Mensaje");
+      notificacion(
+          context, "error", "EXACT", "El código de la valija es obligatorio");
     } else {
       if (enviosvalidados.length == 0) {
-        mostrarAlerta(context, "No hay envios para la agencia", "Mensaje");
+        notificacion(
+            context, "error", "EXACT", "No hay envios para la agencia");
       } else {
         RecorridoModel recorrido = new RecorridoModel();
         recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
@@ -68,7 +69,8 @@ class NuevoEntregaExternaController {
           confirmarAlerta(
               context, "Se ha registrado correctamente el envio", "Registro");
         } else {
-          mostrarAlerta(context, "No se  pudo registrar el envío", "Mensaje");
+          notificacion(
+              context, "error", "EXACT", "No se  pudo registrar el envío");
         }
       }
     }

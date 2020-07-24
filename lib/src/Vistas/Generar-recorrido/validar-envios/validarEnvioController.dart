@@ -5,7 +5,7 @@ import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class ValidacionController {
@@ -34,7 +34,8 @@ class ValidacionController {
   Future<EnvioModel> validarCodigo(String codigo,int id,BuildContext context) async {
     EnvioModel envio = await entregaInterface.validarCodigo(codigo,id);
     if(envio == null){
-    mostrarAlerta(context, "EL codigo no pertenece al recorrido","Codigo Incorrecto");
+       notificacion(
+     context, "error", "EXACT", "EL codigo no pertenece al recorrido"); 
     }
 
     return envio;

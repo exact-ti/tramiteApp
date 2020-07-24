@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'EntregaPersonalizadaController.dart';
-
 
 class EntregapersonalizadoPageDNI extends StatefulWidget {
   @override
@@ -12,11 +12,13 @@ class EntregapersonalizadoPageDNI extends StatefulWidget {
       new _EntregapersonalizadoPageDNIState();
 }
 
-class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDNI> {
+class _EntregapersonalizadoPageDNIState
+    extends State<EntregapersonalizadoPageDNI> {
   final _sobreController = TextEditingController();
   final _dniController = TextEditingController();
   //final _sobreController = TextEditingController();
-  EntregaPersonalizadaController personalizadacontroller = new EntregaPersonalizadaController();
+  EntregaPersonalizadaController personalizadacontroller =
+      new EntregaPersonalizadaController();
   //EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
   String qrsobre, qrbarra, valuess = "";
@@ -44,7 +46,7 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
   @override
   void initState() {
     valuess = "";
-    listacodigos=[];
+    listacodigos = [];
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
@@ -57,29 +59,31 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
 
-
     void _validarSobreText(String value) async {
       if (value != "") {
-        if(!listacodigos.contains(value)){
-       bool  respuesta = await personalizadacontroller.guardarEntrega(context,_dniController.text,value);
-          if(respuesta){
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-          listacodigos.add(value);
-          setState(() { 
-            _sobreController.text = "";
-            codigoSobre = "";
-            listacodigos=listacodigos;
-          });
-          }else{
-            mostrarAlerta(context, "Codigo de Sobre incorrecto", "Mensaje");
+        if (!listacodigos.contains(value)) {
+          bool respuesta = await personalizadacontroller.guardarEntrega(
+              context, _dniController.text, value);
+          if (respuesta) {
+            FocusScope.of(context).unfocus();
+            new TextEditingController().clear();
+            listacodigos.add(value);
+            setState(() {
+              _sobreController.text = "";
+              codigoSobre = "";
+              listacodigos = listacodigos;
+            });
+          } else {
+            notificacion(
+                context, "error", "EXACT", "Codigo de Sobre incorrecto");
             f1.unfocus();
             FocusScope.of(context).requestFocus(f2);
           }
-        }else{
-              mostrarAlerta(context, "Codigo ya se encuentra validado", "Mensaje");
+        } else {
+          notificacion(
+              context, "error", "EXACT", "Codigo ya se encuentra validado");
         }
-        }
+      }
     }
 
     void _validarDNIText(String value) {
@@ -91,7 +95,6 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
       }
     }
 
-
     final textDNI = Container(
       child: Text("DNI"),
       margin: const EdgeInsets.only(left: 15),
@@ -102,22 +105,20 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
       margin: const EdgeInsets.only(left: 15),
     );
 
-
-
     Future _traerdatosescanerSobre() async {
       qrbarra =
           await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (_dniController.text== "") {
+      if (_dniController.text == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el DNI",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT", "Primero debe ingresar el DNI");
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerDNI() async {
-      qrbarra =await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra =
+          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
       _validarDNIText(qrbarra);
     }
 
@@ -127,15 +128,15 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
       focusNode: f1,
       controller: _dniController,
       onFieldSubmitted: (value) {
-            if(value.length==0){
-               mostrarAlerta(context, "El DNI es obligatorio", "Mensaje"); 
-                             f2.unfocus();
-            FocusScope.of(context).requestFocus(f1);
-            }else{
-            f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
-            }
-          },
+        if (value.length == 0) {
+          notificacion(context, "error", "EXACT", "El DNI es obligatorio");
+          f2.unfocus();
+          FocusScope.of(context).requestFocus(f1);
+        } else {
+          f1.unfocus();
+          FocusScope.of(context).requestFocus(f2);
+        }
+      },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -163,23 +164,20 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if(value.length==0){
-            mostrarAlerta(context, 
-            "El codigo de sobre es obligatorio", "Mensaje");
-              f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
-        }else{
-        if (_dniController.text == "") {
-          _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "El DNI es necesario para la entrega",
-              "Ingreso incorrecto");
+        if (value.length == 0) {
+          notificacion(
+              context, "error", "EXACT", "El codigo de sobre es obligatorio");
+          f1.unfocus();
+          FocusScope.of(context).requestFocus(f2);
         } else {
-          _validarSobreText(value);
+          if (_dniController.text == "") {
+            _sobreController.text = "";
+            notificacion(context, "error", "EXACT",
+                "El DNI es necesario para la entrega");
+          } else {
+            _validarSobreText(value);
+          }
         }
-        }
-
       },
       decoration: InputDecoration(
         contentPadding:
@@ -233,19 +231,18 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
       ),
     ]);
 
-   Widget crearItem(String codigopaquete) {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
-              trailing: Icon(
-                Icons.check,
-                color: Color(0xffC7C7C7),
-              ),
-            ));
-    
+    Widget crearItem(String codigopaquete) {
+      return Container(
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: ListTile(
+            title: Text("$codigopaquete"),
+            leading: FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
+            trailing: Icon(
+              Icons.check,
+              color: Color(0xffC7C7C7),
+            ),
+          ));
     }
 
     Widget _crearListadoinMemoria(List<String> validados) {
@@ -253,7 +250,6 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
           itemCount: validados.length,
           itemBuilder: (context, i) => crearItem(validados[i]));
     }
-
 
     return Scaffold(
         appBar: AppBar(
@@ -272,58 +268,62 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textDNI,
-                    margin: const EdgeInsets.only(top: 50),
-                    ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoDNI),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 30),
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoSobre,
-                    margin: const EdgeInsets.only(bottom: 40),),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child:_crearListadoinMemoria(listacodigos)),
-              ),
-              /*Align(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          width: double.infinity,
+                          child: textDNI,
+                          margin: const EdgeInsets.only(top: 50),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoDNI),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 40),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListadoinMemoria(listacodigos)),
+                      ),
+                      /*Align(
                 alignment: Alignment.center,
                 child: Container(
                     alignment: Alignment.center,
@@ -332,9 +332,9 @@ class _EntregapersonalizadoPageDNIState extends State<EntregapersonalizadoPageDN
                     width: double.infinity,
                     child: botonesinferiores),
               ),*/
-            ],
-          ),
-        ))));
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

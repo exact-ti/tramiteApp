@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 
@@ -77,111 +78,115 @@ class _MyHomePageState extends State<MyHomePage2> {
   Widget build(BuildContext context) {
     final botonesinferiores = Row(children: [
       Expanded(
-        child:Container(
-          padding: const EdgeInsets.only(left: 1, right: 1),
-          child: ButtonTheme(
-          minWidth: 100.0,
-          height: 50.0,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () async {
-              final sign = _sign.currentState;
-              //retrieve image data, do whatever you want with it (send to server, save locally...)
-              final image = await sign.getData();
-              var data = await image.toByteData(format: ui.ImageByteFormat.png);
-              sign.clear();
-              final encoded = base64.encode(data.buffer.asUint8List());
-              setState(() {
-                _img = data;
-              });
-              mostrarAlerta(context, "Se registró el cambio", " Guardado");
-              debugPrint("onPressed " + encoded);
-            },
-            color: Color(0xFF2C6983),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Guardar', style: TextStyle(color: Colors.white)),
-          ),
-        )),
+        child: Container(
+            padding: const EdgeInsets.only(left: 1, right: 1),
+            child: ButtonTheme(
+              minWidth: 100.0,
+              height: 50.0,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                onPressed: () async {
+                  final sign = _sign.currentState;
+                  //retrieve image data, do whatever you want with it (send to server, save locally...)
+                  final image = await sign.getData();
+                  var data =
+                      await image.toByteData(format: ui.ImageByteFormat.png);
+                  sign.clear();
+                  final encoded = base64.encode(data.buffer.asUint8List());
+                  setState(() {
+                    _img = data;
+                  });
+                  notificacion(
+                      context, "success", "EXACT", "Se registró el cambio");
+                  debugPrint("onPressed " + encoded);
+                },
+                color: Color(0xFF2C6983),
+                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                child: Text('Guardar', style: TextStyle(color: Colors.white)),
+              ),
+            )),
       ),
       Expanded(
         child: Container(
-          padding: const EdgeInsets.only(left: 1, right: 1),
-            child:ButtonTheme(
-          minWidth: 100.0,
-          height: 50.0,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              final sign = _sign.currentState;
-              sign.clear();
-              setState(() {
-                _img = ByteData(0);
-              });
-              debugPrint("cleared");
-            },
-            color: Color(0xFF858585),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Limpiar', style: TextStyle(color: Colors.white)),
-          ),
-        )),
+            padding: const EdgeInsets.only(left: 1, right: 1),
+            child: ButtonTheme(
+              minWidth: 100.0,
+              height: 50.0,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                onPressed: () {
+                  final sign = _sign.currentState;
+                  sign.clear();
+                  setState(() {
+                    _img = ByteData(0);
+                  });
+                  debugPrint("cleared");
+                },
+                color: Color(0xFF858585),
+                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                child: Text('Limpiar', style: TextStyle(color: Colors.white)),
+              ),
+            )),
       ),
     ]);
 
     return Scaffold(
-      appBar: sd.crearTitulo('Entrega personalizada'),
-      drawer: sd.crearMenu(context),
-      backgroundColor: Colors.white,
-      body:SingleChildScrollView(
+        appBar: sd.crearTitulo('Entrega personalizada'),
+        drawer: sd.crearMenu(context),
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.windowClose,
-                  color: Color(0xffC7C7C7),
-                  size: 25,
-                ),
-                onPressed: () {
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: IconButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.windowClose,
+                              color: Color(0xffC7C7C7),
+                              size: 25,
+                            ),
+                            onPressed: () {
 /*                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               RecepcionInterPage(recorridopage: entrega),
                         )); */
-                }),
-          ),
-          Expanded(
-            child: Container(
-              child: Signature(
-                  color: color,
-                  key: _sign,
-                  onSign: () {
-                    final sign = _sign.currentState;
-                    debugPrint('${sign.points.length} points in the signature');
-                  },
-                  strokeWidth: strokeWidth,
-                ),
-              color: Colors.black12,
-            ),
-          ),
-          Container(
-            height:screenHeightExcludingToolbar(context, dividedBy: 8),
-            child: botonesinferiores,
-          )
-        ],
-      ),
-    ))));
+                            }),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Signature(
+                            color: color,
+                            key: _sign,
+                            onSign: () {
+                              final sign = _sign.currentState;
+                              debugPrint(
+                                  '${sign.points.length} points in the signature');
+                            },
+                            strokeWidth: strokeWidth,
+                          ),
+                          color: Colors.black12,
+                        ),
+                      ),
+                      Container(
+                        height:
+                            screenHeightExcludingToolbar(context, dividedBy: 8),
+                        child: botonesinferiores,
+                      )
+                    ],
+                  ),
+                ))));
   }
 }

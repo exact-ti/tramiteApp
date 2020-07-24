@@ -1,9 +1,8 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
@@ -220,19 +219,19 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           listaenvios2 = await principalcontroller.listarEnviosRecojo(
               context, recorridoUsuario.id, value);
           if (listaenvios2 == null) {
-            mostrarAlerta(
-                context, "El código no existe en la base de datos", "Mensaje");
+            notificacion(context, "error", "EXACT",
+                "El código no existe en la base de datos");
             setState(() {
               listaenvios2 = [];
             });
           } else {
             if (listaenvios2.length == 0) {
               if (isSwitched) {
-                mostrarAlerta(context, "No tiene envíos por recoger en el área",
-                    "Mensaje");
+                notificacion(context, "error", "EXACT",
+                    "No tiene envíos por recoger en el área");
               } else {
-                mostrarAlerta(context,
-                    "No tiene envíos por entregar en el área", "Mensaje");
+                notificacion(context, "error", "EXACT",
+                    "No tiene envíos por entregar en el área");
               }
               setState(() {
                 listaenvios2 = [];
@@ -257,10 +256,10 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           } else {
             setState(() {
               listaenvios2 = [];
-                codigoBandeja = "";
+              codigoBandeja = "";
               _bandejaController.text = "";
             });
-            mostrarAlerta(context, respuesta["message"], "Mensaje");
+            notificacion(context, "error", "EXACT", respuesta["message"]);
           }
         }
       }
@@ -369,8 +368,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       new TextEditingController().clear();
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la bandeja");
       } else {
         _validarSobreText(qrbarra);
       }
@@ -473,10 +472,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          notificacion(context, "error", "EXACT",
+              "Primero debe ingresar el codigo de la bandeja");
         } else {
           _validarSobreText(value);
         }
