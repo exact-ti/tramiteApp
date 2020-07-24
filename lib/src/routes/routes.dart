@@ -54,7 +54,7 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),
     '/paquete-externo':(BuildContext context) => PaqueteExternoPage(),
-    '/paquete-externo-custodia': (BuildContext context) => CustodiaExternoPage(),
+    '/custodia': (BuildContext context) => CustodiaExternoPage(),
     '/entregas-pisos-validacion': (BuildContext context) => ValidacionEnvioPage(),
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => ListarTipoPersonalizadaPage(),
