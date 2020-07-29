@@ -95,31 +95,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
           ),
         ));
 
-    /*void _validarSobreText(String value) {
-      if (value != "") {
-        bool perteneceLista = false;
-        for (EnvioModel envio in listaEnvios) {
-          if (envio.codigoPaquete == value) {
-            perteneceLista = true;
-          }
-        }
-        if (perteneceLista) {
-          setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-            listaCodigosValidados.add(value);
-            codigoBandeja = _bandejaController.text;
-          });
-        } else {
-          setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-            codigoBandeja = _bandejaController.text;
-          });
-        }
-      }
-    }*/
-
     void _validarBandejaText(String value) async {
       listaTurnos = await principalcontroller.listarturnos(context, value);
       selectedFc = null;
@@ -176,23 +151,10 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
           }
         }
       }
-      /*if (listaTurnos != null) {
-              setState(() {
-                   listaTurnos =listaTurnos;
-                  codigoBandeja = value;
-                  _bandejaController.text = value;
-              });
-        } else {
-          setState(() {
-            listaTurnos=[];
-             codigoBandeja = value;
-              _bandejaController.text = value;
-          });
-        }*/
     }
 
     final textBandeja = Container(
-      child: Text("Lote"),
+      child: Text("Código de lote"),
     );
 
     final textTurno = Container(
@@ -200,7 +162,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     );
 
     final textSobre = Container(
-      child: Text("Valija"),
+      child: Text("Código de valija"),
     );
 
     void agregaralista(EnvioModel envio) {

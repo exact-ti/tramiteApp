@@ -135,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage2> {
     ]);
 
     return Scaffold(
-        appBar: sd.crearTitulo('Entrega personalizada'),
-        drawer: sd.crearMenu(context),
+        appBar: sd.crearTitulo('Entrega personalizada'),/* 
+        drawer: sd.crearMenu(context), */
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
             child: ConstrainedBox(

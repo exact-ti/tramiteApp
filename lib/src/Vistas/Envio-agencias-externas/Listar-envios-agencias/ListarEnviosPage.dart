@@ -57,7 +57,9 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
       return Container(
           height: 70,
-          child: ListView(shrinkWrap: true, children: <Widget>[
+          child: ListView(shrinkWrap: true, 
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
             Container(
               padding: const EdgeInsets.only(left: 10),
               height: 35,
@@ -124,7 +126,26 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             decoration: myBoxDecoration(validados["$codigoUtd"]),
             /* color:  validados["$codigoUtd"] ==false ? Colors.white : Colors.black,*/
             margin: const EdgeInsets.only(bottom: 5),
-            child: Row(children: <Widget>[
+            child:InkWell(
+              onTap: () {
+            bool contienevalidados = validados.containsValue(true);
+            if(contienevalidados){
+            if (contienevalidados && validados["$codigoUtd"] == false) {
+              setState(() {
+                validados["$codigoUtd"] = true;
+              });
+            } else {
+              setState(() {
+                validados["$codigoUtd"] = false;
+              });
+            }
+            }else{
+               if (!validados.containsValue(true)) {
+                iniciarItem(entrega);
+               }
+            }
+              }, // handle your onTap here
+              child:  Container(child:Row(children: <Widget>[
               Expanded(
                 child: Container(
                     height: 70,
@@ -146,17 +167,11 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                   child: Center(
                     child: validados["$codigoUtd"] == null ||
                             validados["$codigoUtd"] == false
-                        ? IconButton(
-                            icon: FaIcon(
+                        ? FaIcon(
                               FontAwesomeIcons.chevronRight,
                               color: Colors.black,
                               size: 20,
-                            ),
-                            onPressed: () {
-                              if (!validados.containsValue(true)) {
-                                iniciarItem(entrega);
-                              }
-                            })
+                            )
                         : FaIcon(
                             FontAwesomeIcons.locationArrow,
                             color: Colors.black,
@@ -167,7 +182,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                 flex: 1,
               ),
             ]),
-          ));
+          ))));
     }
 
     Widget _crearListado(String codigo) {
@@ -321,3 +336,17 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     );
   }
 }
+
+
+
+/* IconButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.chevronRight,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (!validados.containsValue(true)) {
+                                iniciarItem(entrega);
+                              }
+                            }) */

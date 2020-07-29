@@ -52,8 +52,8 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
     
     return Scaffold(
-      appBar: sd.crearTitulo('Entrega personalizada'),
-      drawer: sd.crearMenu(context),
+      appBar: sd.crearTitulo('Entrega personalizada'),/* 
+      drawer: sd.crearMenu(context), */
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
             child: ConstrainedBox(
@@ -108,7 +108,11 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
     return Container(
       decoration: myBoxDecoration(),
       margin: EdgeInsets.only(bottom: 5),
-      child: Row(
+      child: InkWell(
+              onTap: () {
+                _onSearchButtonPressed(item);
+              }, // handle your onTap here
+              child: Container(child:Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
@@ -116,29 +120,24 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
             flex: 5,
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   height: 80,
-                  child: IconButton(
-                    icon: Icon(
+                  child: Icon(
                       Icons.keyboard_arrow_right,
                       color: Color(0xffC7C7C7), 
                       size: 50
-                    ),
-                    onPressed: (){
-                      _onSearchButtonPressed(item);
-                    }
-                  )
+                    )
                 )
               ]
             )
           )
         ]
       )
-    );
+    )));
     }else{
       return Container();
     }

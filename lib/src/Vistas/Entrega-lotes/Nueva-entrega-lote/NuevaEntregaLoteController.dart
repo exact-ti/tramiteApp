@@ -66,9 +66,11 @@ class NuevoEntregaLotePageController {
     if (respuesta["status"] == "success") {
       bool respuestatrue = await notificacion(context, "success", "EXACT",
           "Se ha registrado correctamente la valija");
-      if (respuestatrue) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            "/envio-lote", (Route<dynamic> route) => false);
+      if (respuestatrue != null) {
+        if (respuestatrue) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              "/envio-lote", (Route<dynamic> route) => false);
+        }
       }
     } else {
       notificacion(context, "error", "EXACT", respuesta["message"]);

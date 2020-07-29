@@ -93,8 +93,10 @@ class EntregaregularController {
     if (respuesta["status"] == "success") {
       bool respuestatrue = await notificacion(context, "success", "EXACT",
           "Se ha registrado correctamente la valija");
-      if (respuestatrue) {
-        Navigator.of(context).pushNamed('/envio-intersede');
+      if (respuestatrue != null) {
+        if (respuestatrue) {
+          Navigator.of(context).pushNamed('/envio-interutd');
+        }
       }
     } else {
       notificacion(context, "error", "EXACT", respuesta["message"]);
@@ -108,8 +110,10 @@ class EntregaregularController {
     if (respuesta["status"] == "success") {
       bool respuestatrue = await notificacion(context, "success", "EXACT",
           "Se ha registrado correctamente la valija");
-      if (respuestatrue) {
-        Navigator.of(context).pushNamed('/envio-intersede');
+      if (respuestatrue != null) {
+        if (respuestatrue) {
+          Navigator.of(context).pushNamed('/envio-interutd');
+        }
       }
     } else {
       notificacion(context, "error", "EXACT", respuesta["message"]);

@@ -70,9 +70,6 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         )
       )
     )));
-
-
-
   }
 
   
@@ -133,7 +130,11 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
     return Container(
       decoration: myBoxDecoration(),
       margin: EdgeInsets.only(bottom: 5),
-      child: Row(
+      child:InkWell(
+              onTap: () {
+                _onSearchButtonPressed(item);
+              }, // handle your onTap here
+              child:  Container(child:Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
@@ -141,29 +142,24 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
             flex: 5,
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 100,
-                  child: IconButton(
-                    icon: Icon(
+                  height: 80,
+                  child: Icon(
                       Icons.keyboard_arrow_right,
                       color: Color(0xffC7C7C7), 
                       size: 50
-                    ),
-                    onPressed: (){
-                      _onSearchButtonPressed(item);
-                    }
-                  )
+                    )
                 )
               ]
             )
           )
         ]
       )
-    );
+    )));
   }
  
   void _onSearchButtonPressed(TipoPaqueteModel item){

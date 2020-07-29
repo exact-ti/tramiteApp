@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'ListarEnviosActivosController.dart';
+import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 
 class ListarEnviosActivosPage extends StatefulWidget {
@@ -185,7 +186,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entregas InterUTD',
+          title: Text('Envíos activos',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,

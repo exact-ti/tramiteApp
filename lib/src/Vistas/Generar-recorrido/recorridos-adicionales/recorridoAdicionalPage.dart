@@ -59,7 +59,9 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
       return Container(
           height: 100,
-          child: ListView(shrinkWrap: true, children: <Widget>[
+          child: ListView(shrinkWrap: true, 
+                    physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
             Container(
               height: 20,
               child: ListTile(title: Text("$recorrido")),
@@ -82,37 +84,38 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
     Widget crearItem(RecorridoModel recorridoModel) {
       return Container(
-        decoration: myBoxDecoration(),
-        margin: EdgeInsets.only(bottom: 5),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: informacionEntrega(recorridoModel),
-                flex: 5,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: Icon(Icons.keyboard_arrow_right,
-                                    color: Color(0xffC7C7C7), size: 50),
-                                onPressed: () {  
-                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ValidacionEnvioPage(
-                                          recorridopage: recorridoModel),
-                                    ),
-                                  );
-                                }))
-                      ])),
-            ]),
-      );
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ValidacionEnvioPage(recorridopage: recorridoModel),
+                  ),
+                );
+              }, // handle your onTap here
+              child: Container(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: informacionEntrega(recorridoModel),
+                        flex: 5,
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: 100,
+                                    child: Icon(Icons.keyboard_arrow_right,
+                                        color: Color(0xffC7C7C7), size: 50))
+                              ])),
+                    ]),
+              )));
     }
 
     Widget crearItemVacio() {
@@ -207,28 +210,28 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 10),
-                    width: double.infinity,
-                    child: destinatario),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: _myListView(textdestinatario)),
-              )
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 10),
+                            width: double.infinity,
+                            child: destinatario),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _myListView(textdestinatario)),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

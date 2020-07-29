@@ -68,8 +68,10 @@ class NuevoEntregaExternaController {
         if (recorrido.id != null) {
           bool respuestatrue = await notificacion(context, "success", "EXACT",
               "Se ha registrado correctamente el envio");
-          if (respuestatrue) {
-            Navigator.of(context).pushNamed('/envios-agencia');
+          if (respuestatrue != null) {
+            if (respuestatrue) {
+              Navigator.of(context).pushNamed('/envios-agencia');
+            }
           }
         } else {
           notificacion(

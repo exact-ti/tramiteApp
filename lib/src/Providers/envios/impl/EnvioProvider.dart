@@ -62,8 +62,7 @@ class EnvioProvider implements IEnvioProvider {
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/buzones/$id/envios/activos/salida');
+    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/salida');
     if (resp.data == "") {
       return null;
     }

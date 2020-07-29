@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'EnvioController.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -33,19 +35,27 @@ class _EnvioPageState extends State<EnvioPage> {
   String _label = '';
   int indice = 0;
   int indicebandeja = 0;
-  int minvalor=0;
-    final _prefs = new PreferenciasUsuario();
+  int minvalor = 0;
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
+  FocusNode f3 = FocusNode();
+  final _prefs = new PreferenciasUsuario();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
   @override
   void initState() {
     List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
-    List<ConfiguracionModel> configuration =configuracionModel.fromPreferencs(configuraciones);
+    List<ConfiguracionModel> configuration =
+        configuracionModel.fromPreferencs(configuraciones);
     for (ConfiguracionModel confi in configuration) {
       if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
         minvalor = int.parse(confi.valor);
       }
     }
-    
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     valuess = "";
     super.initState();
   }
@@ -59,9 +69,8 @@ class _EnvioPageState extends State<EnvioPage> {
     });
   }
 
-    Widget errorsobre(String rest, int numero, bool vali) {
-
-    if(vali){
+  Widget errorsobre(String rest, int numero, bool vali) {
+    if (vali) {
       return Container();
     }
 
@@ -83,11 +92,10 @@ class _EnvioPageState extends State<EnvioPage> {
           if (snapshot.hasData) {
             final validador = snapshot.data;
             if (!validador) {
-                validarSobre = false;
+              validarSobre = false;
               return respuesta("El código no existe");
-
             } else {
-                validarSobre = true;
+              validarSobre = true;
               return Container();
             }
           } else {
@@ -103,13 +111,11 @@ class _EnvioPageState extends State<EnvioPage> {
   }
 
   Widget errorbandeja(String rest, int numero, bool valie) {
-    
-
-    if(valie){
+    if (valie) {
       return Container();
     }
 
-    if(rest.length==0){
+    if (rest.length == 0) {
       return Container();
     }
 
@@ -127,11 +133,10 @@ class _EnvioPageState extends State<EnvioPage> {
           if (snapshot.hasData) {
             final validador = snapshot.data;
             if (!validador) {
-                validarBandeja = false;
+              validarBandeja = false;
               return respuesta("El código no existe");
-
             } else {
-                validarBandeja = true;
+              validarBandeja = true;
               return Container();
             }
           } else {
@@ -177,8 +182,8 @@ class _EnvioPageState extends State<EnvioPage> {
     }
 
     if (!validarSobre || !validarBandeja) {
-      if(_bandejaController.text.length==0){
-            return true;
+      if (_bandejaController.text.length == 0) {
+        return true;
       }
       return false;
     }
@@ -194,7 +199,7 @@ class _EnvioPageState extends State<EnvioPage> {
     const LetraColor = const Color(0xFF68A1C8);
     const Colorplomo = const Color(0xFFEAEFF2);
     final sendButton = Container(
-        margin: const EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 20),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 120),
           child: RaisedButton(
@@ -204,21 +209,25 @@ class _EnvioPageState extends State<EnvioPage> {
             onPressed: () {
               indice = 1;
               indicebandeja = 1;
-
               if (_formKey.currentState.validate() && validarenvio()) {
-                setState(() {
-                    confirmaciondeenvio=true;
-                });
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-                envioController.crearEnvio(context, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
-                setState(() {
-                  _sobreController.text="";
-                  _bandejaController.text="";
-                  _observacionController.text="";
-                  confirmaciondeenvio=false;
-                  indice=0;
-                });
+/*                 setState(() {
+                  confirmaciondeenvio = true;
+                }); */
+                FocusScope.of(context).unfocus();
+                new TextEditingController().clear();
+                envioController.crearEnvio(
+                    context,
+                    recordObject.id,
+                    _sobreController.text,
+                    _bandejaController.text,
+                    _observacionController.text);
+/*                 setState(() {
+                  _sobreController.text = "";
+                  _bandejaController.text = "";
+                  _observacionController.text = "";
+                  confirmaciondeenvio = false;
+                  indice = 0;
+                }); */
               } else {
                 print("No se puede enviar");
               }
@@ -230,9 +239,11 @@ class _EnvioPageState extends State<EnvioPage> {
             child: Text('Enviar', style: TextStyle(color: Colors.white)),
           ),
         ));
-    final observacion = TextField(
+    final observacion = TextFormField(
       maxLines: 6,
       controller: _observacionController,
+      focusNode: f3,
+      textInputAction: TextInputAction.done,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFEAEFF2),
@@ -248,12 +259,52 @@ class _EnvioPageState extends State<EnvioPage> {
           ),
         ),
       ),
+      onFieldSubmitted: (value) async {
+        if (_sobreController.text.length == 0) {
+          bool respuestatrue = await notificacion(
+              context, "error", "EXACT", "El código de sobre es obligatorio");
+          if (respuestatrue == null || respuestatrue) {
+            FocusScope.of(context).unfocus();
+            new TextEditingController().clear();
+            FocusScope.of(context).requestFocus(f1);
+          }
+        } else {
+          indice = 1;
+          indicebandeja = 1;
+          if (_formKey.currentState.validate() && validarenvio()) {
+            setState(() {
+              confirmaciondeenvio = true;
+            });
+            FocusScope.of(context).unfocus();
+            new TextEditingController().clear();
+            envioController.crearEnvio(
+                context,
+                recordObject.id,
+                _sobreController.text,
+                _bandejaController.text,
+                _observacionController.text);
+            setState(() {
+              _sobreController.text = "";
+              _bandejaController.text = "";
+              _observacionController.text = "";
+              confirmaciondeenvio = false;
+              indice = 0;
+            });
+          } else {
+            print("No se puede enviar");
+          }
+        }
+      },
     );
+
+
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f2,
       controller: _bandejaController,
+      textInputAction: TextInputAction.next,
       onChanged: (text) {
         setState(() {
           if (text.length > 0 && text.length < 5) {
@@ -264,19 +315,38 @@ class _EnvioPageState extends State<EnvioPage> {
           }*/
         });
       },
-      validator: (String valuee) {
-        if (valuee.isEmpty) {
-          setState(() {
-            indicebandeja = 1;
-          });
-          //return 'El campo se encuentra vacio';
+      onFieldSubmitted: (value) async {
+        FocusScope.of(context).unfocus();
+        new TextEditingController().clear();
+        if (value.length == 0) {
+            FocusScope.of(context).requestFocus(f3);
+        } else {
+          if (value.length > 0 && value.length < minvalor) {
+            notificacion(context, "error", "EXACT",
+                "La longitud mínima es de $minvalor caracteres");
+            FocusScope.of(context).unfocus();
+            new TextEditingController().clear();
+            FocusScope.of(context).requestFocus(f2);
+          } else {
+            bool respuestac =
+                await envioController.validarexistenciabandeja(value);
+            if (respuestac) {
+              FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+              FocusScope.of(context).requestFocus(f3);
+            } else {
+              notificacion(context, "error", "EXACT",
+                  "No es posible procesar el código");
+              FocusScope.of(context).unfocus();
+              new TextEditingController().clear();
+              FocusScope.of(context).requestFocus(f2);
+            }
+          }
         }
       },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        //labelText: _label,
-        //labelStyle: new TextStyle(color: Color(0xFF000000), fontSize: 16.0),
         filled: true,
         fillColor: Color(0xFFEAEFF2),
         errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
@@ -294,10 +364,68 @@ class _EnvioPageState extends State<EnvioPage> {
       ),
     );
 
+    void validarcodigoSobre(String value) async {
+      FocusScope.of(context).unfocus();
+        if (value.length == 0) {
+          bool respuestatrue = await notificacion(
+              context, "error", "EXACT", "El código de sobre es obligatorio");
+          if (respuestatrue == null || respuestatrue) {
+            FocusScope.of(context).requestFocus(f1);
+          }
+        } else {
+          if (value.length > 0 && value.length < minvalor) {
+            bool respuestatrue = await notificacion(context, "error", "EXACT",
+                "La longitud mínima es de $minvalor caracteres");
+            if (respuestatrue == null || respuestatrue) {
+              FocusScope.of(context).requestFocus(f1);
+            }
+          } else {
+            bool respuestac = await envioController.validarexistencia(value);
+            if (respuestac) {
+              FocusScope.of(context).requestFocus(f2);
+            } else {
+              notificacion(context, "error", "EXACT",
+                  "No es posible procesar el código");
+              FocusScope.of(context).requestFocus(f1);
+            }
+          }
+        }
+    }
+
+
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f1,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) async {
+        FocusScope.of(context).unfocus();
+        if (value.length == 0) {
+          bool respuestatrue = await notificacion(
+              context, "error", "EXACT", "El código de sobre es obligatorio");
+          if (respuestatrue == null || respuestatrue) {
+            FocusScope.of(context).requestFocus(f1);
+          }
+        } else {
+          if (value.length > 0 && value.length < minvalor) {
+            bool respuestatrue = await notificacion(context, "error", "EXACT",
+                "La longitud mínima es de $minvalor caracteres");
+            if (respuestatrue == null || respuestatrue) {
+              FocusScope.of(context).requestFocus(f1);
+            }
+          } else {
+            bool respuestac = await envioController.validarexistencia(value);
+            if (respuestac) {
+              FocusScope.of(context).requestFocus(f2);
+            } else {
+              notificacion(context, "error", "EXACT",
+                  "No es posible procesar el código");
+              FocusScope.of(context).requestFocus(f1);
+            }
+          }
+        }
+      },
       onChanged: (text) {
         setState(() {
           if (text.length > 0 && text.length < 5) {
@@ -308,14 +436,6 @@ class _EnvioPageState extends State<EnvioPage> {
             indice = 3;
           }*/
         });
-      },
-      validator: (String valuee) {
-        if (valuee.isEmpty) {
-          setState(() {
-            indice = 1;
-          });
-          //return 'El campo se encuentra vacio';
-        }
       },
       decoration: InputDecoration(
         contentPadding:
@@ -342,7 +462,7 @@ class _EnvioPageState extends State<EnvioPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: PrimaryColor,
-                    actions: [
+          actions: [
             IconButton(
               icon: Icon(Icons.notifications),
               onPressed: () {},
@@ -356,7 +476,6 @@ class _EnvioPageState extends State<EnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
             child: ConstrainedBox(
@@ -365,93 +484,102 @@ class _EnvioPageState extends State<EnvioPage> {
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        height: 35,
-                        child: ListTile(
-                          leading: Icon(Icons.perm_identity), //account_circle
-                          title:
-                              /* Align(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 10, bottom: 0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Container(
+                                height: 35,
+                                child: ListTile(
+                                  leading: Icon(
+                                      Icons.perm_identity), //account_circle
+                                  title:
+                                      /* Align(
                             child: */
-                              new Text(recordObject.nombre,
-                                  style: TextStyle(fontSize: 15)),
-                          //alignment: Alignment(-1.2, 0),
-                          /*),*/
-                        ),
-                      ), //recordObject.area + " - " + recordObject.sede
-                      ListTile(
-                        leading: Icon(Icons.location_on), //account_circle
-                        title: /*Align(
+                                      new Text(recordObject.nombre,
+                                          style: TextStyle(fontSize: 15)),
+                                  //alignment: Alignment(-1.2, 0),
+                                  /*),*/
+                                ),
+                              ), //recordObject.area + " - " + recordObject.sede
+                              ListTile(
+                                leading:
+                                    Icon(Icons.location_on), //account_circle
+                                title:
+                                    /*Align(
                           child:*/
-                            new Text(
-                                recordObject.area + " - " + recordObject.sede,
-                                style: TextStyle(fontSize: 15)),
-                        //   alignment: Alignment(-1.2, 0),
-                        /*),*/
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 15),
-                        height: 40,
-                        child: ListTile(
-                            title: new Text("Código de sobre",
-                                style: TextStyle(fontSize: 15))),
-                      ),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: sobre,
-                          flex: 5,
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 15),
-                            child: new IconButton(
-                                icon: Icon(Icons.camera_alt),
-                                tooltip: "Increment",
-                                onPressed: _traerdatosescanersobre),
-                          ),
-                        ),
-                      ]),
-                      errorsobre(_sobreController.text, indice, confirmaciondeenvio),
-                      Container(
-                        margin: const EdgeInsets.only(top: 15),
-                        height: 40,
-                        child: ListTile(
-                            title: new Text("Código de bandeja",
-                                style: TextStyle(fontSize: 15))),
-                      ),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: bandeja,
-                          flex: 5,
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 15),
-                            child: new IconButton(
-                                icon: Icon(Icons.camera_alt),
-                                tooltip: "Increment",
-                                onPressed: _traerdatosescanerbandeja),
-                          ),
-                        ),
-                      ]),
-                      errorbandeja(_bandejaController.text, indicebandeja,confirmaciondeenvio),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: ListTile(
-                            title: new Text("Observación",
-                                style: TextStyle(fontSize: 15))),
-                      ),
-                      observacion,
-                      sendButton
-                    ]))))));
+                                    new Text(
+                                        recordObject.area +
+                                            " - " +
+                                            recordObject.sede,
+                                        style: TextStyle(fontSize: 15)),
+                                //   alignment: Alignment(-1.2, 0),
+                                /*),*/
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 15),
+                                height: 40,
+                                child: ListTile(
+                                    title: new Text("Código de sobre",
+                                        style: TextStyle(fontSize: 15))),
+                              ),
+                              Row(children: <Widget>[
+                                Expanded(
+                                  child: sobre,
+                                  flex: 5,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 15),
+                                    child: new IconButton(
+                                        icon: Icon(Icons.camera_alt),
+                                        tooltip: "Increment",
+                                        onPressed: _traerdatosescanersobre),
+                                  ),
+                                ),
+                              ]),
+                              errorsobre(_sobreController.text, indice,
+                                  confirmaciondeenvio),
+                              Container(
+                                margin: const EdgeInsets.only(top: 15),
+                                height: 40,
+                                child: ListTile(
+                                    title: new Text(
+                                        "Código de bandeja (Opcional)",
+                                        style: TextStyle(fontSize: 15))),
+                              ),
+                              Row(children: <Widget>[
+                                Expanded(
+                                  child: bandeja,
+                                  flex: 5,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 15),
+                                    child: new IconButton(
+                                        icon: Icon(Icons.camera_alt),
+                                        tooltip: "Increment",
+                                        onPressed: _traerdatosescanerbandeja),
+                                  ),
+                                ),
+                              ]),
+                              errorbandeja(_bandejaController.text,
+                                  indicebandeja, confirmaciondeenvio),
+                              Container(
+                                margin: const EdgeInsets.only(top: 15),
+                                child: ListTile(
+                                    title: new Text("Observación (Opcional)",
+                                        style: TextStyle(fontSize: 15))),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 0),
+                                child: observacion,
+                              ),
+                              sendButton
+                            ]))))));
   }
-
-
 }
 //                  Navigator.of(context).pushNamed(men.link);

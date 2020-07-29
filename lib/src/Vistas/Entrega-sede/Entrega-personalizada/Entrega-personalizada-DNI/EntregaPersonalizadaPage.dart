@@ -266,8 +266,8 @@ class _EntregapersonalizadoPageDNIState
                   decorationStyle: TextDecorationStyle.wavy,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        ),/* 
+        drawer: crearMenu(context), */
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

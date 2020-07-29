@@ -24,7 +24,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
-  int cantidad =0;
+  int cantidad = 0;
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
@@ -149,7 +149,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
       );
     }
 
-
     Widget _crearListado() {
       booleancolor = true;
       colorwidget = colorplomo;
@@ -161,10 +160,13 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               booleancolor = true;
               colorwidget = colorplomo;
               final rutas = snapshot.data;
-              cantidad=rutas.length;
-              if(cantidad==0){
-              return Container(child: Center(child:  Text("No hay pendientes",
-                        style: TextStyle(fontSize: 20, color: Colors.grey)),));                
+              cantidad = rutas.length;
+              if (cantidad == 0) {
+                return Container(
+                    child: Center(
+                  child: Text("No hay pendientes",
+                      style: TextStyle(fontSize: 20, color: Colors.grey)),
+                ));
               }
               return ListView.builder(
                   itemCount: rutas.length,
@@ -175,41 +177,73 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           });
     }
 
-    final textoRuta = Text("Tu ruta", style: TextStyle(fontSize: 20,color: colorletra));
+    final textoRuta =
+        Text("Tu ruta", style: TextStyle(fontSize: 20, color: colorletra));
+
+    final sendBack = Container(
+        margin: const EdgeInsets.only(top: 40,right: 5),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              color: Colors.grey,
+              child: recorridoUsuario.indicepagina == 1
+                  ? Text('Empezar recorrido',
+                      style: TextStyle(color: Colors.white))
+                  : Text('Retroceder', style: TextStyle(color: Colors.white))),
+        ));
 
     final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () async {
-          if(recorridoUsuario.indicepagina!=1){
-            if(cantidad!=0){
-            bool respuesta = await  confirmacion(context, "success", "EXACT","Tienes pendientes ¿Desea Continuar?");
-            if(respuesta){
-              principalcontroller.opcionRecorrido( recorridoUsuario,  context);
-            }else{
-              Navigator.of(context).pop();
-            }
-            }else{
-              principalcontroller.opcionRecorrido(recorridoUsuario,context);
-            }
-          }else{
-             /* if(cantidad==0){
-                  mostrarAlerta(context, "No hay pendientes en tu ruta", "Mensaje");
-            }else{*/
-              principalcontroller.opcionRecorrido(recorridoUsuario,context);
-           /* }*/
-          }
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: recorridoUsuario.indicepagina==1 ? Text('Empezar recorrido', style: TextStyle(color: Colors.white)) : Text('Terminar', style: TextStyle(color: Colors.white))
+        margin: recorridoUsuario.indicepagina != 1 ? const EdgeInsets.only(top: 40,left: 5): const EdgeInsets.only(top: 40),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () async {
+                if (recorridoUsuario.indicepagina != 1) {
+                  if (cantidad != 0) {
+                    bool respuestabool = await confirmacion(context, "success",
+                        "EXACT", "Tienes pendientes ¿Desea Continuar?");
+                    if (respuestabool) {
+                      principalcontroller.opcionRecorrido(
+                          recorridoUsuario, context);
+                    } 
+                  } else {
+                    principalcontroller.opcionRecorrido(
+                        recorridoUsuario, context);
+                  }
+                } else {
+                  principalcontroller.opcionRecorrido(
+                      recorridoUsuario, context);
+                }
+              },
+              color: Color(0xFF2C6983),
+              child: recorridoUsuario.indicepagina == 1
+                  ? Text('Empezar recorrido',
+                      style: TextStyle(color: Colors.white))
+                  : Text('Terminar', style: TextStyle(color: Colors.white))),
+        ));
+
+    final filaBotones = Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: sendBack,
+            flex: 5,
+          ),
+          Expanded(flex: 5, child: sendButton)
+        ],
       ),
-    ));
+    );
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -235,34 +269,37 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                    width: double.infinity,
-                    child: textoRuta),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 7),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 6),
+                            width: double.infinity,
+                            child: textoRuta),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListado()),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 4),
+                            width: double.infinity,
+                            child:recorridoUsuario.indicepagina != 1 ? filaBotones: sendButton),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -279,8 +316,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-
-  void _onSearchButtonPressed() {}
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(

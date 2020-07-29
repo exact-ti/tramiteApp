@@ -223,9 +223,11 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         if (this.codigo_paquete_incorrecto > 0) {
-          bool respuesta = await confirmacion(context, "success", "EXACT", description);
-          if (!respuesta) {
+          bool respuestabool = await confirmacion(context, "success", "EXACT", description);
+          if(respuestabool!=null){
+          if (!respuestabool) {
             return;
+          }
           }
         }
 
@@ -243,7 +245,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           });
         } else {
           List<dynamic> duplicados = resp["data"];
-          confirmarNovalidados(context, resp["message"], duplicados);
+          confirmarNovalidados(context,"success", "EXACT",  resp["message"], duplicados);
         }
       } else {
         var descrip = "";
@@ -260,9 +262,11 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           }
         }
         if (this.codigo_paquete_incorrecto > 0) {
-          bool respuesta = await confirmacion(context, "success", "EXACT", descrip);
-          if (!respuesta) {
+          bool respuestabool = await confirmacion(context, "success", "EXACT", descrip);
+          if(respuestabool!=null){
+          if (!respuestabool) {
             return;
+          }
           }
         }
 
@@ -281,7 +285,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           });
         } else {
           List<dynamic> duplicados = resp["data"];
-          confirmarNovalidados(context, resp["message"], duplicados);
+          confirmarNovalidados(context,"success", "EXACT",  resp["message"], duplicados);
         }
       }
     } else {
@@ -504,7 +508,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   }
 
   void confirmarNovalidados(
-      BuildContext context, String titulo, List<dynamic> novalidados) {
+      BuildContext context,String tipo, String titulo, String descripcion, List<dynamic> novalidados) {
     List<Widget> listadecodigos = new List();
 
     for (dynamic codigo in novalidados) {
@@ -516,31 +520,59 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: ListBody(children: listadecodigos),
-            ),
-            actions: <Widget>[
-/*               FlatButton(
-                  child: Text('Seguir sin estos documentos'),
-                  onPressed: () {
-                    sd.mostrarAlerta(context, 'Correcto', tituloVentana);
-                    this.data = new List<PaqueteExternoBuzonModel>();
-                    this.totalFilas = 0;
-                    this.codigosEncontrados = 0;
-                    this.codigo_paquete_incorrecto = 0;
-                    contenido = Container();
-                    setState(() {
-                      contenido = Container();
-                    });
-                  }),
-              SizedBox(height: 1.0, width: 5.0), */
-              FlatButton(
-                  child: Text('Volver a adjuntar archivo'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
+          titlePadding: EdgeInsets.all(0),
+          title: Container(
+              alignment: Alignment.centerLeft,
+              height: 60.00,
+              width: double.infinity,
+              child: Container(
+                  child: Text('$titulo',
+                      style: TextStyle(
+                          color: tipo == "success"
+                              ? Colors.blue[200]
+                              : Colors.red[200])),
+                  margin: const EdgeInsets.only(left: 20)),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                      width: 3.0,
+                      color: tipo == "success"
+                          ? Colors.blue[200]
+                          : Colors.red[200]),
+                ),
+              )),
+            content:  SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Container(
+                child: Column(children: <Widget>[
+                  Container(
+                      child: Text(descripcion),
+                      margin: const EdgeInsets.only(bottom: 10)),
+                  ListBody(children: listadecodigos)
+                ]),
+                padding: const EdgeInsets.all(20),
+              ),
+              InkWell(
+                  onTap: () => Navigator.pop(context, true),
+                  child: Center(
+                      child: Container(
+                          height: 50.00,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                    width: 3.0, color: Colors.grey[100]),
+                                right: BorderSide(
+                                    width: 1.5, color: Colors.grey[100])),
+                          ),
+                          child: Container(
+                            child: Text('Volver a adjuntar archivo',
+                                style: TextStyle(color: Colors.black)),
+                          ))),
+                )
+            ]),
+          ),
+          contentPadding: EdgeInsets.all(0),
           );
         });
   }

@@ -4,6 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 
 import 'ConsultaEnvioController.dart';
@@ -162,7 +163,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     }
 
     final textPaquete = Container(
-      child: Text("Paquete"),
+      child: Text("Código de paquete"),
     );
 
     final textRemitente = Container(

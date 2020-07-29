@@ -5,6 +5,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'RecepcionController.dart';
+import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class RecepcionEnvioPage extends StatefulWidget {
   @override

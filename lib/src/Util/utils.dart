@@ -178,21 +178,24 @@ modificarUtdOrBuzon(BuildContext context, int tipo) async {
                     ),
                   )),
               onTap: () async {
-                bool respuesta = await confirmacion(context, "success", "EXACT", "¿Seguro que desea continua?");
-                if (respuesta) {
-                  /*       eventNotifier.value += 1; */
-                  if (tipo == cliente) {
-                    HashMap<String, dynamic> buzonhash = new HashMap();
-                    buzonhash['id'] = opcion.id;
-                    buzonhash['nombre'] = opcion.nombre;
-                    _prefs.buzon = buzonhash;
-                  } else {
-                    HashMap<String, dynamic> utdhash = new HashMap();
-                    utdhash['id'] = opcion.id;
-                    utdhash['nombre'] = opcion.nombre;
-                    _prefs.utd = utdhash;
+                bool respuestabool = await confirmacion(
+                    context, "success", "EXACT", "¿Seguro que desea continua?");
+                if (respuestabool != null) {
+                  if (respuestabool) {
+                    /*       eventNotifier.value += 1; */
+                    if (tipo == cliente) {
+                      HashMap<String, dynamic> buzonhash = new HashMap();
+                      buzonhash['id'] = opcion.id;
+                      buzonhash['nombre'] = opcion.nombre;
+                      _prefs.buzon = buzonhash;
+                    } else {
+                      HashMap<String, dynamic> utdhash = new HashMap();
+                      utdhash['id'] = opcion.id;
+                      utdhash['nombre'] = opcion.nombre;
+                      _prefs.utd = utdhash;
+                    }
+                    Navigator.of(context).pushNamed('/principal-admin');
                   }
-                  Navigator.of(context).pushNamed('/principal-admin');
                 }
               },
             )
@@ -278,11 +281,10 @@ final _icons = <String, IconData>{
   'agencia': Icons.airline_seat_recline_normal,
   'recepcion': Icons.receipt,
   'consulta': Icons.record_voice_over,
-  'dashboard':Icons.dashboard,
-  'activos':Icons.accessibility,
-  'confirmar':Icons.confirmation_number,
-  'historico':Icons.history
-
+  'dashboard': Icons.dashboard,
+  'activos': Icons.accessibility,
+  'confirmar': Icons.confirmation_number,
+  'historico': Icons.history
 };
 
 Icon getICon(String nombreIcono) {
@@ -335,196 +337,4 @@ BoxDecoration myBoxDecoration(Color colorletra) {
   return BoxDecoration(
     border: Border.all(color: colorletra),
   );
-}
-
-void trackingPopUp(BuildContext context, int codigo) async {
-  TrackingInterface trackingCore = new TrackingImpl(new TrackingProvider());
-  double heightCel = 0.6 * (MediaQuery.of(context).size.height);
-  String observacion = "";
-  TrackingModel trackingModel = await trackingCore.mostrarTracking(codigo);
-
-  List<Widget> listadecodigos = new List();
-
-  for (TrackingDetalleModel detalle in trackingModel.detalles) {
-    listadecodigos.add(Container(
-        decoration: myBoxDecoration(colorletra),
-        alignment: Alignment.centerLeft,
-        margin: const EdgeInsets.only(top: 5),
-        padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: <Widget>[
-            Container(
-              child: Text(
-                detalle.fecha,
-                style: TextStyle(color: colorletra, fontSize: 12),
-              ),
-              alignment: Alignment.centerLeft,
-            ),
-            Container(
-              child: Text(detalle.remitente,
-                  style: TextStyle(color: colorletra, fontSize: 12)),
-              alignment: Alignment.centerLeft,
-            ),
-            Container(
-              child: Text(detalle.sede,
-                  style: TextStyle(color: Colors.black, fontSize: 12)),
-              alignment: Alignment.centerLeft,
-            ),
-          ],
-        )));
-  }
-
-  if (trackingModel.observacion != null) {
-    observacion = trackingModel.observacion;
-  }
-
-  showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-            content: Container(
-          height: heightCel,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: <Widget>[
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Código',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(trackingModel.codigo,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('De',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(trackingModel.remitente,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Origen',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(trackingModel.origen,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Para',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(trackingModel.destinatario,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Destino',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(trackingModel.destino,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 30),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Observación',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(observacion,
-                            style: TextStyle(color: colorletra)),
-                        flex: 3,
-                      ),
-                    ],
-                  )),
-              Expanded(
-                  child: SingleChildScrollView(
-                      child: Column(children: listadecodigos))),
-              /*Container(
-             height: 20,   
-            child:ListView(
-              children:listadecodigos,
-            )
-              )*/
-            ],
-          ),
-        ));
-      });
 }

@@ -53,7 +53,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   var validarSobre = false;
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
-  String _name = '';
+  String codigoMostrar = '';
   int indice = 0;
   int indicebandeja = 0;
   @override
@@ -105,8 +105,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           ),
         ));
 
-    bool contiene(List<EnvioModel> envios, String documento) {}
-
     void registrarDocumento(String documento) async {
       bool pertenecia = false;
       for (EnvioModel envio in listaenvios2) {
@@ -128,7 +126,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             mensaje = respuestaMap2["destino"];
             listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
+            codigoMostrar = documento;
           } else {
+            codigoMostrar = "";
             mensaje = respuestaMap["message"];
           }
         } else {
@@ -142,11 +142,14 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
             mensaje = "Se registró la entrega";
+            codigoMostrar=documento;
           } else {
+            codigoMostrar="";
             mensaje = respuestaMap["message"];
           }
         }
         setState(() {
+          codigoMostrar = documento;
           mensaje = mensaje;
           listaenvios2 = listaenvios2;
         });
@@ -161,10 +164,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
+            codigoMostrar=documento;
           } else {
+            codigoMostrar="";
             mensaje = respuestaMap["message"];
           }
           setState(() {
+            codigoMostrar = codigoMostrar;
             mensaje = mensaje;
           });
         } else {
@@ -176,14 +182,14 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               isSwitched);
           if (respuestaMap["status"] == "success") {
             setState(() {
+              codigoMostrar = documento;
               mensaje = "Se registró la entrega";
             });
           } else {
             setState(() {
+              codigoMostrar = "";
               mensaje = respuestaMap["message"];
             });
-            /*mostrarAlerta(
-                context, respuestaMap["message"], "mensaje");*/
           }
         }
       }
@@ -222,6 +228,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             notificacion(context, "error", "EXACT",
                 "El código no existe en la base de datos");
             setState(() {
+              mensaje = "";
               listaenvios2 = [];
             });
           } else {
@@ -234,10 +241,12 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                     "No tiene envíos por entregar en el área");
               }
               setState(() {
+                mensaje = "";
                 listaenvios2 = [];
               });
             } else {
               setState(() {
+                mensaje = "";
                 codigoBandeja = value;
                 _bandejaController.text = value;
               });
@@ -313,6 +322,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             listaCodigosValidados.clear();
             isSwitched = value;
             mensaje = "";
+            codigoMostrar = "";
           });
         },
         activeTrackColor: SecondColor,
@@ -631,7 +641,39 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                               child: Container(
                                 alignment: Alignment.center,
                                 width: double.infinity,
-                                child: Text("$mensaje"),
+                                child: Container(
+                                    child: Row(
+                                  children: <Widget>[
+                                    codigoMostrar.length != 0
+                                        ? Expanded(
+                                            child: Center(child:Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 20),
+                                              alignment: Alignment.center,
+                                              child: Text("$codigoMostrar", 
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            )),
+                                            flex: 3,
+                                          )
+                                        : Container(),
+                                    codigoMostrar.length != 0 ? Expanded(
+                                      child: Center(child:Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
+                                        alignment: Alignment.center,
+                                        child: Center(child:Text("$mensaje")),
+                                      )),
+                                      flex: 9,
+                                    ):Center(child:Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
+                                        alignment: Alignment.center,
+                                        child: Center(child:Text("$mensaje")),
+                                      ))
+                                  ],
+                                )),
                                 margin: const EdgeInsets.only(bottom: 10),
                               ),
                             ),

@@ -124,7 +124,7 @@ class Requester {
       } else {
         if(!respuesta){
         this.respuesta=true;
-        _navigationService.modelInformativo("Sesión terminada","La sesión terminó, debe volver a logearse");
+        _navigationService.modelInformativo("success","Sesión terminada","La sesión terminó, debe volver a logearse");
         }
         return dioError;
       }

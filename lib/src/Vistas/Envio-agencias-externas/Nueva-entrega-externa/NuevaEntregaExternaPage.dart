@@ -5,9 +5,9 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'NuevaEntregaExternaController.dart';
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
 class NuevoEntregaExternaPage extends StatefulWidget {
-
 
   @override
   _NuevoEntregaExternaPageState createState() =>
@@ -62,7 +62,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: () async {
               listarNovalidados();
               if (listaEnviosNoValidados.length == 0) {
                 principalcontroller.confirmacionDocumentosValidadosEntrega(
@@ -70,10 +70,27 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                     context,
                     codigoBandeja);
               } else {
-                confirmarNovalidados(
+                bool respuestaarray = await confirmarArray(
                     context,
+                    "success",
+                    "EXACT",
                     "Te faltan asociar estos documentos",
                     listaEnviosNoValidados);
+                    if(respuestaarray==null){ 
+                    listaEnviosNoValidados.clear();
+                    listaEnviosValidados.clear();
+                    Navigator.of(context).pop();
+                }else{
+                if (respuestaarray) {
+                  principalcontroller.confirmacionDocumentosValidadosEntrega(
+                        listaEnviosValidados,
+                        context,
+                        codigoBandeja);
+                }else{
+                    listaEnviosNoValidados.clear();
+                    listaEnviosValidados.clear();
+                    Navigator.of(context).pop();
+                }}
               }
             },
             color: Color(0xFF2C6983),
@@ -158,12 +175,12 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     final textBandeja = Container(
-      child: Text("Valija"),
+      child: Text("Código de valija"),
       margin: const EdgeInsets.only(left: 15),
     );
 
     final textSobre = Container(
-      child: Text("Envío"),
+      child: Text("Código de envío"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -379,7 +396,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     Widget _validarListado(List<String> validados, List<EnvioModel> envios) {
           return _crearListadoinMemoria(validados,envios);
-
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -520,46 +536,4 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 
-  void confirmarNovalidados(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    List<Widget> listadecodigos = new List();
-
-    for (EnvioModel codigo in novalidados) {
-      String codigoPa = codigo.codigoPaquete;
-      listadecodigos.add(Text('$codigoPa'));
-    }
-
-    showDialog(
-      barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: ListBody(children: listadecodigos),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Seguir sin estos documentos'),
-                  onPressed: () {
-                    principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados,
-                        context,
-                        codigoBandeja);
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver a leer'),
-                  onPressed: () {
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
-
 }
-
-//                  Navigator.of(context).pushNamed(men.link);

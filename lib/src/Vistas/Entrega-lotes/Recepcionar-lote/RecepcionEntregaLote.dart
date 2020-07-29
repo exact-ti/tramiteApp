@@ -6,7 +6,7 @@ import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'RecepcionController.dart';
 
 class RecepcionEntregaLotePage extends StatefulWidget {
@@ -72,8 +72,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           if (listaEnvios.length == 0) {
             bool respuestatrue = await notificacion(
                 context, "success", "EXACT", "Se ha completado la recepción");
-            if (respuestatrue) {
-              Navigator.of(context).pushNamed('/envio-lote');
+            if (respuestatrue != null) {
+              if (respuestatrue) {
+                Navigator.of(context).pushNamed('/envio-lote');
+              }
             }
             setState(() {
               listaEnvios = listaEnvios;
@@ -191,9 +193,24 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
-              confirmarPendientes(
-                  context, "Te faltan asociar estos documentos", listaEnvios);
+            onPressed: () async {
+              bool respuestaarray = await confirmarArray(context, "success",
+                  "EXACT", "Te faltan asociar estos documentos", listaEnvios);
+              if (respuestaarray == null) {
+                Navigator.of(context).pop();
+              } else {
+                if (respuestaarray) {
+                  bool respuestaTrue = await notificacion(context, "success",
+                      "EXACT", "Se recepcionado correctamente las valijas");
+                  if (respuestaTrue =!null) {
+                    if (respuestaTrue) {
+                      Navigator.of(context).pushNamed('/envio-lote');
+                    }
+                  }
+                } else {
+                  Navigator.of(context).pop();
+                }
+              }
             },
             color: Color(0xFF2C6983),
             //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -341,7 +358,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
                             width: double.infinity,
-                            child: principalcontroller.labeltext("Lote")),
+                            child: principalcontroller
+                                .labeltext("Código de lote")),
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -359,7 +377,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
                             //width: double.infinity,
-                            child: principalcontroller.labeltext("Valija")),
+                            child: principalcontroller
+                                .labeltext("Código de valija")),
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -393,72 +412,5 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     return BoxDecoration(
       border: Border.all(color: colorletra),
     );
-  }
-
-  void confirmarNovalidados(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    Widget informacion = principalcontroller.contenidoPopUp(
-        colorletra, novalidados, novalidados.length);
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: informacion,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Descartar pendientes'),
-                  onPressed: () {
-                    listaEnvios.clear();
-                    _bandejaController.text = "";
-                    codigoBandeja = "";
-                    _sobreController.text = "";
-                    codigoSobre = "";
-                    Navigator.of(context).pop();
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver a leer'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
-
-  void confirmarPendientes(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    Widget informacion = principalcontroller.contenidoPopUp(
-        colorletra, novalidados, novalidados.length);
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: informacion,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Descartar pendientes'),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/envio-lote');
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver a leer'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
   }
 }

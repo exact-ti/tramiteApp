@@ -63,32 +63,35 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
       return Container(
           height: 70,
-          child: ListView(shrinkWrap: true, children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(left: 20),
-              height: 35,
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text("$destino",
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold)),
-                    Container(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: switched == 0
-                          ? Text("$numvalijas valijas",
-                              style: TextStyle(fontSize: 12))
-                          : Text("$codigo", style: TextStyle(fontSize: 12)),
-                    ),
-                  ]),
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 20, top: 10),
-                height: 35,
-                child: Text("$numdocumentos envíos",
-                    style: TextStyle(fontSize: 12))),
-          ]));
+          child: ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.only(left: 20),
+                  height: 35,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text("$destino",
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold)),
+                        Container(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: switched == 0
+                              ? Text("$numvalijas valijas",
+                                  style: TextStyle(fontSize: 12))
+                              : Text("$codigo", style: TextStyle(fontSize: 12)),
+                        ),
+                      ]),
+                ),
+                Container(
+                    padding: const EdgeInsets.only(left: 20, top: 10),
+                    height: 35,
+                    child: Text("$numdocumentos envíos",
+                        style: TextStyle(fontSize: 12))),
+              ]));
     }
 
     void iniciarEnvio(EnvioInterSedeModel entrega) async {
@@ -109,45 +112,23 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     Widget iconoRecepcion(EnvioInterSedeModel entrega, BuildContext context) {
       return Container(
           height: 70,
-          child: /*entrega.estadoEnvio == 1
-              ? */
-              IconButton(
-                  icon: FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RecepcionInterPage(recorridopage: entrega),
-                        ));
-                  })
-          /* : Opacity(
-                  opacity: 0.0,
-                  child: FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  ))*/
-          );
+          child: Center(
+              child: FaIcon(
+            FontAwesomeIcons.locationArrow,
+            color: Color(0xffC7C7C7),
+            size: 25,
+          )));
     }
 
     Widget iconoEnvio(EnvioInterSedeModel entrega) {
       return Container(
           height: 70,
           child: entrega.estadoEnvio.id == creado
-              ? IconButton(
-                  icon: FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  ),
-                  onPressed: () {
-                    iniciarEnvio(entrega);
-                  })
+              ? Center(child: FaIcon(
+                  FontAwesomeIcons.locationArrow,
+                  color: Color(0xffC7C7C7),
+                  size: 25,
+                )) 
               : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
@@ -159,39 +140,52 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
     Widget crearItem(EnvioInterSedeModel entrega, int switched) {
       return Container(
-        decoration: myBoxDecoration(),
-        margin: EdgeInsets.only(bottom: 5),
-        child: Row(children: <Widget>[
-          Expanded(
-              flex: 1,
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: InkWell(
+              onTap: () {
+                if (switched == 0) {
+                  iniciarEnvio(entrega);
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            RecepcionInterPage(recorridopage: entrega),
+                      ));
+                }
+              }, // handle your onTap here
               child: Container(
-                  height: 70,
-                  child: Center(
-                      child: FaIcon(
-                    FontAwesomeIcons.cube,
-                    color: Color(0xff000000),
-                    size: 40,
-                  )))),
-          Expanded(
-            child: informacionEntrega(entrega, switched),
-            flex: 3,
-          ),
-          Expanded(
-              flex: 1,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    switched == 0
-                        ? iconoEnvio(entrega)
-                        : iconoRecepcion(entrega, context)
-                  ])),
-        ]),
-      );
+                child: Row(children: <Widget>[
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                          height: 70,
+                          child: Center(
+                              child: FaIcon(
+                            FontAwesomeIcons.cube,
+                            color: Color(0xff000000),
+                            size: 40,
+                          )))),
+                  Expanded(
+                    child: informacionEntrega(entrega, switched),
+                    flex: 3,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            switched == 0
+                                ? iconoEnvio(entrega)
+                                : iconoRecepcion(entrega, context)
+                          ])),
+                ]),
+              )));
     }
 
     Widget _crearListado(int switched) {
       envios.clear();
-
       return FutureBuilder(
           future:
               principalcontroller.listarentregasInterSedeController(switched),
@@ -208,17 +202,53 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
           });
     }
 
+    final sendRecepcion = Container(
+        margin: const EdgeInsets.only(left: 5),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RecepcionInterPage(recorridopage: null),
+                    ));
+              },
+              color: Colors.grey,
+              child:
+                  Text('Recepcionar', style: TextStyle(color: Colors.white))),
+        ));
+
     final sendButton = Container(
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/nueva-entrega-intersede');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        child: Text('Nuevo', style: TextStyle(color: Colors.white)),
+        margin: const EdgeInsets.only(right: 5),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+              },
+              color: Color(0xFF2C6983),
+              child: Text('Nuevo', style: TextStyle(color: Colors.white))),
+        ));
+
+    final filaBotones = Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(flex: 5, child: sendButton),
+          Expanded(
+            child: sendRecepcion,
+            flex: 5,
+          )
+        ],
       ),
     );
 
@@ -286,15 +316,15 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 8),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
+                      Container(
+                          alignment: Alignment.center,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 8),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[filaBotones],
+                          )),
                       Container(
                           height: screenHeightExcludingToolbar(context,
                               dividedBy: 20),

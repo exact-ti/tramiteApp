@@ -4,7 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -58,7 +58,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: ()  async {
               if (_bandejaController.text == "") {
                 notificacion(context, "error", "EXACT",
                     "Debe ingresar el codigo de bandeja");
@@ -71,10 +71,26 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                         listaEnviosValidados, context, codigoBandeja);
                     codigoBandeja = "";
                   } else {
-                    confirmarNovalidados(
-                        context,
-                        "Faltan los siguientes elementos a validar:",
-                        listaEnviosNoValidados);
+                   bool respuestaarray = await confirmarArray(
+                    context,
+                    "success",
+                    "EXACT",
+                    "Faltan los siguientes elementos a validar:",
+                    listaEnviosNoValidados);
+                    if(respuestaarray==null){
+                  listaEnviosNoValidados.clear();
+                  listaEnviosValidados.clear();
+                }else{
+                if (respuestaarray) {
+                                        codigoSobre = "";
+                    principalcontroller.confirmacionDocumentosValidadosEntrega(
+                        listaEnviosValidados, context, codigoBandeja);
+                }else{
+                   
+                    listaEnviosNoValidados.clear();
+                    listaEnviosValidados.clear();
+                    Navigator.of(context).pop();
+                }}
                   }
                 } else {
                   notificacion(context, "error", "EXACT",
@@ -160,12 +176,12 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     final textBandeja = Container(
-      child: Text("Valija"),
+      child: Text("Código de valija"),
       margin: const EdgeInsets.only(left: 15),
     );
 
     final textSobre = Container(
-      child: Text("Código"),
+      child: Text("Código de sobre"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -466,18 +482,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                           margin: const EdgeInsets.only(bottom: 30),
                         ),
                       ),
-                      /*Align(
-                alignment: Alignment.centerLeft,
-                child: listaEnvios.length != listaCodigosValidados.length
-                    ? Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        height: screenHeightExcludingToolbar(context,
-                            dividedBy: 30),
-                        //width: double.infinity,
-                        child: pendientes(listaEnvios.length))
-                    : Container(),
-              ),*/
                       Expanded(
                           child: codigoBandeja == ""
                               ? Container()
@@ -518,45 +522,4 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-
-  void confirmarNovalidados(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    List<Widget> listadecodigos = new List();
-
-    for (EnvioModel codigo in novalidados) {
-      String codigoPa = codigo.codigoPaquete;
-      listadecodigos.add(Text('$codigoPa'));
-    }
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: ListBody(children: listadecodigos),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Registrar de todos modos'),
-                  onPressed: () {
-                    codigoSobre = "";
-                    principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados, context, codigoBandeja);
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver y seguirvalidando'),
-                  onPressed: () {
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
 }
-
-//                  Navigator.of(context).pushNamed(men.link);

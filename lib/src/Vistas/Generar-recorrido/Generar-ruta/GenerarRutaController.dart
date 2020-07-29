@@ -8,7 +8,9 @@ import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Providers/rutas/impl/RutaProvider.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Listar-turnos/ListarTurnosPage.dart';
 
 class GenerarRutaController {
   RutaInterface rutaInterface = new RutaImpl(new RutaProvider());
@@ -22,14 +24,32 @@ class GenerarRutaController {
       RecorridoModel recorridoModel, BuildContext context) async {
     bool recorrido = await rutaInterface.opcionRecorrido(recorridoModel);
     if (recorrido) {
-      if(recorridoModel.indicepagina==1){
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-          builder: (context) => EntregaRegularPage(recorridopage: recorridoModel),
-        ), ModalRoute.withName('/recorridos'));
-      }else{
-           Navigator.of(context).pushNamed('/recorridos');
+      if (recorridoModel.indicepagina == 1) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) =>
+                  EntregaRegularPage(recorridopage: recorridoModel),
+            ),
+            ModalRoute.withName('/recorridos'));
+      } else {
+        bool respuestatrue = await notificacion(
+            context, "success", "EXACT", "Se completó el recorrido con éxito");
+        if (respuestatrue == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ListarTurnosPage()),
+              (Route<dynamic> route) => false);
+        }
+        if (respuestatrue) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ListarTurnosPage()),
+              (Route<dynamic> route) => false);
+        }
       }
+    } else {
+      notificacion(
+          context, "error", "EXACT", "No se pudo terminar el recorrido");
     }
   }
-
 }

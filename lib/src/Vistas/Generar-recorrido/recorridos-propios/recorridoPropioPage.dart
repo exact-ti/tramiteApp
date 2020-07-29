@@ -58,7 +58,9 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
       return Container(
           height: 100,
-          child: ListView(shrinkWrap: true, children: <Widget>[
+          child: ListView(shrinkWrap: true, 
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
             Container(
               height: 20,
               child: ListTile(title: Text("$recorrido")),
@@ -90,41 +92,38 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
         booleancolor = true;
       }
       return Container(
-        decoration: myBoxDecoration(),
-        margin: EdgeInsets.only(bottom: 5),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: informacionEntrega(entrega),
-                flex: 5,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: Icon(Icons.keyboard_arrow_right,
-                                    color: Color(0xffC7C7C7), size: 50),
-                               onPressed: () {  
-                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute( 
-                                      builder: (context) => ValidacionEnvioPage(
-                                          recorridopage: entrega),
-                                    ),
-                                  );
-                                }))
-                      ])),
-            ]),
-      );
-    }
-
-    Widget crearItemVacio() {
-      return Container();
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ValidacionEnvioPage(recorridopage: entrega),
+                  ),
+                );
+              }, // handle your onTap here
+              child: Container(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: informacionEntrega(entrega),
+                        flex: 5,
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: 100,
+                                    child: Icon(Icons.keyboard_arrow_right,
+                                        color: Color(0xffC7C7C7), size: 50))
+                              ])),
+                    ]),
+              )));
     }
 
     Widget _crearListado() {
@@ -146,8 +145,6 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
             }
           });
     }
-
-    //final subtitulo = Text('Elige el recorrido', style: TextStyle(color: colorletra));
 
     final subtitulo =
         Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
@@ -178,7 +175,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Nueva entrega en sede',
+          title: Text('Recorridos programados',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -192,26 +189,28 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                    width: double.infinity,
-                    child: subtitulo),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
-              )
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 6),
+                            width: double.infinity,
+                            child: subtitulo),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListado()),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -238,6 +237,4 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
       border: Border.all(color: colorletra),
     );
   }
-
-
 }
