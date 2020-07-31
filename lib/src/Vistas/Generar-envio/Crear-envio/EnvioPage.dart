@@ -1,14 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'EnvioController.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class EnvioPage extends StatefulWidget {
   final UsuarioFrecuente usuariopage;
@@ -31,8 +28,6 @@ class _EnvioPageState extends State<EnvioPage> {
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
   String qrsobre, qrbarra, valuess = "";
-  String _name = '';
-  String _label = '';
   int indice = 0;
   int indicebandeja = 0;
   int minvalor = 0;
@@ -58,15 +53,6 @@ class _EnvioPageState extends State<EnvioPage> {
     });
     valuess = "";
     super.initState();
-  }
-
-  Future _traerdatosescanersobre() async {
-    qrsobre =
-        await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-    setState(() {
-      _sobreController.text = qrsobre;
-      _label = qrsobre;
-    });
   }
 
   Widget errorsobre(String rest, int numero, bool vali) {
@@ -145,15 +131,6 @@ class _EnvioPageState extends State<EnvioPage> {
         });
   }
 
-  Future _traerdatosescanerbandeja() async {
-    qrbarra =
-        await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-    setState(() {
-      _bandejaController.text = qrbarra;
-      _label = qrbarra;
-    });
-  }
-
   Widget datosUsuarios(String text) {
     return ListTile(title: new Text(text, style: TextStyle(fontSize: 15)));
   }
@@ -198,6 +175,61 @@ class _EnvioPageState extends State<EnvioPage> {
     const PrimaryColor = const Color(0xFF2C6983);
     const LetraColor = const Color(0xFF68A1C8);
     const Colorplomo = const Color(0xFFEAEFF2);
+
+    void enfocarFocusf1(BuildContext context) {
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
+      FocusScope.of(context).requestFocus(f1);
+    }
+
+    void enfocarFocusf2(BuildContext context) {
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
+      FocusScope.of(context).requestFocus(f2);
+    }
+
+    void enfocarFocusf3(BuildContext context) {
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
+      FocusScope.of(context).requestFocus(f3);
+    }
+
+    void validarEnvio(BuildContext context) async {
+      if (_sobreController.text.length == 0) {
+        bool respuestatrue = await notificacion(
+            context, "error", "EXACT", "El código de sobre es obligatorio");
+        if (respuestatrue == null || respuestatrue) {
+          enfocarFocusf1(context);
+        }
+      } else {
+        indice = 1;
+        indicebandeja = 1;
+        if (_formKey.currentState.validate() && validarenvio()) {
+          setState(() {
+            confirmaciondeenvio = true;
+          });
+          FocusScope.of(context).unfocus();
+          new TextEditingController().clear();
+          envioController.crearEnvio(
+              context,
+              recordObject.id,
+              _sobreController.text,
+              _bandejaController.text,
+              _observacionController.text);
+          setState(() {
+            _sobreController.text = "";
+            _bandejaController.text = "";
+            _observacionController.text = "";
+            confirmaciondeenvio = false;
+            indice = 0;
+          });
+        } else {
+          notificacion(
+              context, "Error", "EXACT", "No se pudo realizar el envío");
+        }
+      }
+    }
+
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 20),
         child: Padding(
@@ -207,32 +239,7 @@ class _EnvioPageState extends State<EnvioPage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-              indice = 1;
-              indicebandeja = 1;
-              if (_formKey.currentState.validate() && validarenvio()) {
-/*                 setState(() {
-                  confirmaciondeenvio = true;
-                }); */
-                FocusScope.of(context).unfocus();
-                new TextEditingController().clear();
-                envioController.crearEnvio(
-                    context,
-                    recordObject.id,
-                    _sobreController.text,
-                    _bandejaController.text,
-                    _observacionController.text);
-/*                 setState(() {
-                  _sobreController.text = "";
-                  _bandejaController.text = "";
-                  _observacionController.text = "";
-                  confirmaciondeenvio = false;
-                  indice = 0;
-                }); */
-              } else {
-                print("No se puede enviar");
-              }
-              //performLogin(context);
-              //Navigator.of(context).pushNamed("principal");
+              validarEnvio(context);
             },
             color: Color(0xFF2C6983),
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -260,44 +267,45 @@ class _EnvioPageState extends State<EnvioPage> {
         ),
       ),
       onFieldSubmitted: (value) async {
-        if (_sobreController.text.length == 0) {
-          bool respuestatrue = await notificacion(
-              context, "error", "EXACT", "El código de sobre es obligatorio");
-          if (respuestatrue == null || respuestatrue) {
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
-            FocusScope.of(context).requestFocus(f1);
-          }
-        } else {
-          indice = 1;
-          indicebandeja = 1;
-          if (_formKey.currentState.validate() && validarenvio()) {
-            setState(() {
-              confirmaciondeenvio = true;
-            });
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
-            envioController.crearEnvio(
-                context,
-                recordObject.id,
-                _sobreController.text,
-                _bandejaController.text,
-                _observacionController.text);
-            setState(() {
-              _sobreController.text = "";
-              _bandejaController.text = "";
-              _observacionController.text = "";
-              confirmaciondeenvio = false;
-              indice = 0;
-            });
-          } else {
-            print("No se puede enviar");
-          }
-        }
+        validarEnvio(context);
       },
     );
 
+    void enfocarCodigoBandeja(String value) async {
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
+      if (value.length == 0) {
+        FocusScope.of(context).requestFocus(f3);
+      } else {
+        if (value.length > 0 && value.length < minvalor) {
+          bool respuestatrue = await notificacion(context, "error", "EXACT",
+              "La longitud mínima es de $minvalor caracteres");
+          if (respuestatrue == null || respuestatrue == true) {
+            enfocarFocusf2(context);
+          }
+        } else {
+          bool respuestac =
+              await envioController.validarexistenciabandeja(value);
+          if (respuestac) {
+            enfocarFocusf3(context);
+          } else {
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT", "No es posible procesar el código");
+            if (respuestatrue == null || respuestatrue == true) {
+              enfocarFocusf2(context);
+            }
+          }
+        }
+      }
+    }
 
+    Future _traerdatosescanerbandeja() async {
+      qrbarra = await getDataFromCamera();
+      enfocarCodigoBandeja(qrbarra);
+      setState(() {
+        _bandejaController.text = qrbarra;
+      });
+    }
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
@@ -310,39 +318,10 @@ class _EnvioPageState extends State<EnvioPage> {
           if (text.length > 0 && text.length < 5) {
             indicebandeja = 2;
           }
-          /*if (!envioController.validarexistencia(text)) {
-            indicebandeja = 3;
-          }*/
         });
       },
       onFieldSubmitted: (value) async {
-        FocusScope.of(context).unfocus();
-        new TextEditingController().clear();
-        if (value.length == 0) {
-            FocusScope.of(context).requestFocus(f3);
-        } else {
-          if (value.length > 0 && value.length < minvalor) {
-            notificacion(context, "error", "EXACT",
-                "La longitud mínima es de $minvalor caracteres");
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
-            FocusScope.of(context).requestFocus(f2);
-          } else {
-            bool respuestac =
-                await envioController.validarexistenciabandeja(value);
-            if (respuestac) {
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-              FocusScope.of(context).requestFocus(f3);
-            } else {
-              notificacion(context, "error", "EXACT",
-                  "No es posible procesar el código");
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-              FocusScope.of(context).requestFocus(f2);
-            }
-          }
-        }
+        enfocarCodigoBandeja(value);
       },
       decoration: InputDecoration(
         contentPadding:
@@ -364,34 +343,41 @@ class _EnvioPageState extends State<EnvioPage> {
       ),
     );
 
-    void validarcodigoSobre(String value) async {
+    void enfocarcodigoSobre(String value) async {
       FocusScope.of(context).unfocus();
-        if (value.length == 0) {
-          bool respuestatrue = await notificacion(
-              context, "error", "EXACT", "El código de sobre es obligatorio");
+      if (value.length == 0) {
+        bool respuestatrue = await notificacion(
+            context, "error", "EXACT", "El código de sobre es obligatorio");
+        if (respuestatrue == null || respuestatrue) {
+          enfocarFocusf1(context);
+        }
+      } else {
+        if (value.length > 0 && value.length < minvalor) {
+          bool respuestatrue = await notificacion(context, "error", "EXACT",
+              "La longitud mínima es de $minvalor caracteres");
           if (respuestatrue == null || respuestatrue) {
-            FocusScope.of(context).requestFocus(f1);
+            enfocarFocusf1(context);
           }
         } else {
-          if (value.length > 0 && value.length < minvalor) {
-            bool respuestatrue = await notificacion(context, "error", "EXACT",
-                "La longitud mínima es de $minvalor caracteres");
-            if (respuestatrue == null || respuestatrue) {
-              FocusScope.of(context).requestFocus(f1);
-            }
+          bool respuestac = await envioController.validarexistencia(value);
+          if (respuestac) {
+            enfocarFocusf2(context);
           } else {
-            bool respuestac = await envioController.validarexistencia(value);
-            if (respuestac) {
-              FocusScope.of(context).requestFocus(f2);
-            } else {
-              notificacion(context, "error", "EXACT",
-                  "No es posible procesar el código");
-              FocusScope.of(context).requestFocus(f1);
-            }
+            notificacion(
+                context, "error", "EXACT", "No es posible procesar el código");
+            enfocarFocusf1(context);
           }
         }
+      }
     }
 
+    Future _traerdatosescanersobre() async {
+      qrsobre = await getDataFromCamera();
+      enfocarcodigoSobre(qrsobre);
+      setState(() {
+        _sobreController.text = qrsobre;
+      });
+    }
 
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
@@ -400,48 +386,18 @@ class _EnvioPageState extends State<EnvioPage> {
       focusNode: f1,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) async {
-        FocusScope.of(context).unfocus();
-        if (value.length == 0) {
-          bool respuestatrue = await notificacion(
-              context, "error", "EXACT", "El código de sobre es obligatorio");
-          if (respuestatrue == null || respuestatrue) {
-            FocusScope.of(context).requestFocus(f1);
-          }
-        } else {
-          if (value.length > 0 && value.length < minvalor) {
-            bool respuestatrue = await notificacion(context, "error", "EXACT",
-                "La longitud mínima es de $minvalor caracteres");
-            if (respuestatrue == null || respuestatrue) {
-              FocusScope.of(context).requestFocus(f1);
-            }
-          } else {
-            bool respuestac = await envioController.validarexistencia(value);
-            if (respuestac) {
-              FocusScope.of(context).requestFocus(f2);
-            } else {
-              notificacion(context, "error", "EXACT",
-                  "No es posible procesar el código");
-              FocusScope.of(context).requestFocus(f1);
-            }
-          }
-        }
+        enfocarcodigoSobre(value);
       },
       onChanged: (text) {
         setState(() {
           if (text.length > 0 && text.length < 5) {
             indice = 2;
           }
-          //_sobreController.text=text;
-          /*if (!envioController.validarexistencia(text)) {
-            indice = 3;
-          }*/
         });
       },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        //labelText: _label,
-        //labelStyle: new TextStyle(color: Color(0xFF000000), fontSize: 16.0),
         filled: true,
         fillColor: Color(0xFFEAEFF2),
         errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),

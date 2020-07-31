@@ -2,21 +2,17 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
-import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
-import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
-import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
-import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
 import 'modals/confirmation.dart';
+import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
 
@@ -333,8 +329,37 @@ Future<String> getDataFromCamera() async {
   return qrbarra;
 }
 
+void enfocarInputfx(BuildContext context, FocusNode fx) {
+  FocusScope.of(context).unfocus();
+  new TextEditingController().clear();
+  FocusScope.of(context).requestFocus(fx);
+}
+
+void desenfocarInputfx(BuildContext context) {
+  FocusScope.of(context).unfocus();
+  new TextEditingController().clear();
+}
+
+void popuptoinput(BuildContext context, FocusNode fx, String tipo,
+    String titulo, String mensaje) async {
+  bool respuestatrue = await notificacion(context, tipo, titulo, mensaje);
+  if (respuestatrue) {
+    enfocarInputfx(context, fx);
+  }
+}
+
 BoxDecoration myBoxDecoration(Color colorletra) {
   return BoxDecoration(
     border: Border.all(color: colorletra),
   );
+}
+
+Widget scaffoldbody(Widget principal, BuildContext context) {
+  return SingleChildScrollView(
+      child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height -
+                  AppBar().preferredSize.height -
+                  MediaQuery.of(context).padding.top),
+          child: principal));
 }

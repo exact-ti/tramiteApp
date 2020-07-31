@@ -1,5 +1,6 @@
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 
 class EnvioInterface {
 
@@ -11,7 +12,9 @@ class EnvioInterface {
 
     Future<List<EnvioInterSedeModel>> listarAgenciasUsuario(){}
 
-    Future<List<EnvioModel>> listarActivos(int switched){}
+    Future<List<EnvioModel>> listarActivos(int switched,List<int> estadosids){}
+
+    Future<List<EstadoEnvio>> listarEstadosEnvios(){} 
 
     }
 

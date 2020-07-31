@@ -56,7 +56,8 @@ Future<bool> notificacion(
           contentPadding: EdgeInsets.all(0),
         );
       });
-
-        return respuesta;
-
+  if (respuesta == null || respuesta) {
+    respuesta = true;
+  }
+  return respuesta;
 }

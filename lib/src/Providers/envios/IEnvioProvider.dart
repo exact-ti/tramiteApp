@@ -1,6 +1,7 @@
 
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 
 abstract class IEnvioProvider{
 
@@ -11,15 +12,12 @@ abstract class IEnvioProvider{
   //agencias
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario();  
 
-  Future<List<EnvioModel>> listarEnviosActivosByUsuario();  
+  Future<List<EnvioModel>> listarEnviosActivosByUsuario(List<int> estadosids);  
 
 
-  Future<List<EnvioModel>> listarRecepcionesActivas();  
+  Future<List<EnvioModel>> listarRecepcionesActivas(List<int> estadosids);  
 
-  Future<List<EnvioModel>> listarEnviosActivosByUsuario2();  
-
-
-  Future<List<EnvioModel>> listarRecepcionesActivas2();  
+  Future<List<EstadoEnvio>> listarEstadosEnvios();  
 
 
 }

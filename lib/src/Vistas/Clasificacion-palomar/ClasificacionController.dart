@@ -19,9 +19,8 @@ class ClasificacionController {
       palomares.add(palomar2);
       return palomares;
     } else {
-      notificacion(context, "error", "EXACT", "El sobre no existe en la base de datos");
+      palomares = [];
     }
-    palomares = [];
     return palomares;
   }
   //PalomarModel palomar = palomarModel.fromOneJson(palomardata);

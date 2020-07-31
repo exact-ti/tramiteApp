@@ -1,7 +1,5 @@
 
-import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/consultas/IConsultaProvider.dart';
 
 import 'ConsultaInterface.dart';

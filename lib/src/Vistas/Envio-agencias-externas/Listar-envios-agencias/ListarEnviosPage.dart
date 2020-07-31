@@ -276,11 +276,6 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              /*Container(
-                child: Text("Envío a agencias",
-                    style: TextStyle(fontSize: 30, color: othercolor,)),
-                margin: const EdgeInsets.only(bottom: 10,top: 30),
-              ),*/
               Align(
                 alignment: Alignment.center,
                 child: Container(
@@ -337,16 +332,3 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
   }
 }
 
-
-
-/* IconButton(
-                            icon: FaIcon(
-                              FontAwesomeIcons.chevronRight,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              if (!validados.containsValue(true)) {
-                                iniciarItem(entrega);
-                              }
-                            }) */

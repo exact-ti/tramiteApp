@@ -61,8 +61,8 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
     String codigo = paqueteExterno.paqueteId;
 
     Response resp = await req.post('/servicio-tramite/utds/$utdId/paquetes/$codigo/custodia',null,null);
-    
-    bool b = resp.data;
+    dynamic respdata = resp.data;
+    bool b = respdata["data"];
 
     return b;
   }

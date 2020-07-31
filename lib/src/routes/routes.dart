@@ -20,6 +20,7 @@ import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
 
@@ -46,6 +47,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/envios-activos' :  (BuildContext context) => ListarEnviosActivosPage(),
     '/recepcionar-valija' :  (BuildContext context) => RecepcionInterPage(recorridopage: null),
     '/recepcionar-lote' :  (BuildContext context) => RecepcionEntregaLotePage(entregaLotepage:null),
+    '/dashboard' :  (BuildContext context) => DashboardPage(),
+
 
 
     //==================Menu secundario====================================

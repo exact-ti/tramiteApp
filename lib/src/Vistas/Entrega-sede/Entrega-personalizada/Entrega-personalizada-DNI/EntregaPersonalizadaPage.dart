@@ -74,15 +74,16 @@ class _EntregapersonalizadoPageDNIState
               listacodigos = listacodigos;
             });
           } else {
-            notificacion(
-                context, "error", "EXACT", "Codigo de Sobre incorrecto");
-            f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
+            popuptoinput(
+                context, f1, "error", "EXACT", "Codigo de Sobre incorrecto");
           }
         } else {
-          notificacion(
-              context, "error", "EXACT", "Codigo ya se encuentra validado");
+          popuptoinput(
+              context, f2, "error", "EXACT", "Codigo ya se encuentra validado");
         }
+      } else {
+        popuptoinput(
+            context, f2, "error", "EXACT", "El código de sobre es obligatorio");
       }
     }
 
@@ -97,17 +98,14 @@ class _EntregapersonalizadoPageDNIState
 
     final textDNI = Container(
       child: Text("DNI"),
-      margin: const EdgeInsets.only(left: 15),
     );
 
     final textSobre = Container(
       child: Text("Código de sobre"),
-      margin: const EdgeInsets.only(left: 15),
     );
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       if (_dniController.text == "") {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT", "Primero debe ingresar el DNI");
@@ -117,8 +115,7 @@ class _EntregapersonalizadoPageDNIState
     }
 
     Future _traerdatosescanerDNI() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarDNIText(qrbarra);
     }
 
@@ -129,12 +126,9 @@ class _EntregapersonalizadoPageDNIState
       controller: _dniController,
       onFieldSubmitted: (value) {
         if (value.length == 0) {
-          notificacion(context, "error", "EXACT", "El DNI es obligatorio");
-          f2.unfocus();
-          FocusScope.of(context).requestFocus(f1);
+          popuptoinput(context, f1, "error", "EXACT", "El DNI es obligatorio");
         } else {
-          f1.unfocus();
-          FocusScope.of(context).requestFocus(f2);
+          enfocarInputfx(context, f2);
         }
       },
       decoration: InputDecoration(
@@ -164,20 +158,12 @@ class _EntregapersonalizadoPageDNIState
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if (value.length == 0) {
-          notificacion(
-              context, "error", "EXACT", "El codigo de sobre es obligatorio");
-          f1.unfocus();
-          FocusScope.of(context).requestFocus(f2);
-        } else {
           if (_dniController.text == "") {
-            _sobreController.text = "";
-            notificacion(context, "error", "EXACT",
-                "El DNI es necesario para la entrega");
+          popuptoinput(
+              context, f1, "error", "EXACT", "el DNI es necesario para la entrega");
           } else {
             _validarSobreText(value);
           }
-        }
       },
       decoration: InputDecoration(
         contentPadding:
@@ -266,7 +252,8 @@ class _EntregapersonalizadoPageDNIState
                   decorationStyle: TextDecorationStyle.wavy,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
-        ),/* 
+        ),
+        /* 
         drawer: crearMenu(context), */
         body: SingleChildScrollView(
             child: ConstrainedBox(
@@ -323,15 +310,6 @@ class _EntregapersonalizadoPageDNIState
                             alignment: Alignment.bottomCenter,
                             child: _crearListadoinMemoria(listacodigos)),
                       ),
-                      /*Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: botonesinferiores),
-              ),*/
                     ],
                   ),
                 ))));

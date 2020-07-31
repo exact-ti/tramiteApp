@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
@@ -30,6 +29,9 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   String qrsobre, qrbarra = "";
   String codigoBandeja = "";
   String codigoSobre = "";
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   var listadetinatario;
   var colorletra = const Color(0xFFACADAD);
 
@@ -42,6 +44,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     } else {
       listaEnvios = [];
     }
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
@@ -72,65 +78,80 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           if (listaEnvios.length == 0) {
             bool respuestatrue = await notificacion(
                 context, "success", "EXACT", "Se ha completado la recepción");
-            if (respuestatrue != null) {
-              if (respuestatrue) {
-                Navigator.of(context).pushNamed('/envio-lote');
-              }
+            if (respuestatrue) {
+              Navigator.of(context).pushNamed('/envio-lote');
             }
             setState(() {
+              _sobreController.text = codigo;
               listaEnvios = listaEnvios;
             });
           } else {
             setState(() {
+              _sobreController.text = codigo;
               listaEnvios = listaEnvios;
             });
+            enfocarInputfx(context, f2);
           }
         } else {
-          notificacion(
-              context, "error", "EXACT", "No se pudo completar la operación");
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT",
+              "No es posible procesar el código");
         }
       } else {
         bool respuesta = await principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo);
         if (respuesta) {
-          notificacion(context, "success", "EXACT", "Se registro el código");
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT", "Se registró la valija");
         } else {
-          notificacion(
-              context, "error", "EXACT", "No es posible procesar el código");
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT",
+              "No es posible procesar el código");
         }
       }
     }
 
     void _validarSobreText(String value) {
+      desenfocarInputfx(context);
       if (value != "") {
         contieneCodigo(value);
       } else {
-        notificacion(context, "error", "EXACT", "El código es obligatorio");
+        popuptoinput(context, f2, "error", "EXACT",
+            "El código de valija es obligatorio");
       }
     }
 
     void _validarBandejaText(String value) async {
+      desenfocarInputfx(context);
       if (value != "") {
         listaEnvios =
-            await principalcontroller.listarEnviosLotes(context, codigoBandeja);
+            await principalcontroller.listarEnviosLotes(context, value);
         if (listaEnvios != null) {
           setState(() {
             codigoBandeja = value;
             _bandejaController.text = value;
             listaEnvios = listaEnvios;
           });
+          enfocarInputfx(context, f2);
         } else {
           setState(() {
             listaEnvios = [];
+            _bandejaController.text = value;
           });
-          notificacion(context, "error", "EXACT", "No contiene envíos");
+          popuptoinput(context, f1, "error", "EXACT", "No contiene envíos");
         }
       } else {
         setState(() {
           listaEnvios = [];
         });
-        notificacion(context, "error", "EXACT",
-            "El campo de la bandeja no puede estar vacío");
+        popuptoinput(context, f1, "error", "EXACT",
+            "El campo del lote no puede estar vacío");
       }
     }
 
@@ -167,8 +188,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       if (codigoBandeja == "") {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT",
@@ -179,8 +199,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarBandejaText(qrbarra);
     }
 
@@ -202,7 +221,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                 if (respuestaarray) {
                   bool respuestaTrue = await notificacion(context, "success",
                       "EXACT", "Se recepcionado correctamente las valijas");
-                  if (respuestaTrue =!null) {
+                  if (respuestaTrue = !null) {
                     if (respuestaTrue) {
                       Navigator.of(context).pushNamed('/envio-lote');
                     }
@@ -226,9 +245,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
+      focusNode: f1,
       autofocus: false,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -256,11 +276,12 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f2,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          notificacion(context, "error", "EXACT",
+          popuptoinput(context, f1, "error", "EXACT",
               "Primero debe ingresar el codigo de la bandeja");
         } else {
           _validarSobreText(value);

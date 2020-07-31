@@ -6,7 +6,6 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
-
 import 'ConsultaEnvioController.dart';
 
 class ConsultaEnvioPage extends StatefulWidget {
@@ -36,8 +35,16 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   List<String> listaCodigosValidados = new List();
   bool activo = false;
   bool button = false;
+  FocusNode _focusNode;
+  FocusNode f1paquete = FocusNode();
+  FocusNode f2remitente = FocusNode();
+  FocusNode f3destinatario = FocusNode();
   var colorletra = const Color(0xFFACADAD);
   void initState() {
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _paqueteController.clear();
+    });
     super.initState();
     listaEnviosVacios = [];
     listaTurnos = [];
@@ -93,8 +100,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
               if (_paqueteController.text == "" &&
                   _remitenteController.text == "" &&
                   _destinatarioController.text == "") {
-                       notificacion(
-     context, "error", "EXACT",  "Se debe llenar al menos un campo"); 
+                notificacion(context, "error", "EXACT",
+                    "Se debe llenar al menos un campo");
                 setState(() {
                   button = false;
                   listaEnvios = [];
@@ -140,21 +147,13 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     void _validarPaqueteText(String value) async {
       codigoPaquete = value;
       _paqueteController.text = value;
+      enfocarInputfx(context, f2remitente);
     }
 
     void _validarRemitenteText(String value) async {
       codigoremitente = value;
       _remitenteController.text = value;
-    }
-
-    bool validarContiene(List<EnvioModel> lista, EnvioModel envio) {
-      bool boleano = false;
-      for (EnvioModel en in lista) {
-        if (en.id == envio.id) {
-          boleano = true;
-        }
-      }
-      return boleano;
+      enfocarInputfx(context, f3destinatario);
     }
 
     void _validarDestinatarioText(String value) async {
@@ -173,17 +172,6 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     final textDestinatario = Container(
       child: Text("Para"),
     );
-
-    void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
-      if (listaEnvios.length == 0) {
-        listaEnvios.add(envio);
-      } else {
-        if (!listaEnvios.contains(envio)) {
-          listaEnvios.add(envio);
-        }
-      }
-    }
 
     Widget crearItem(EnvioModel envio, int i) {
       return Container(
@@ -246,8 +234,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                                 trackingPopUp(context, envio.id);
                               },
                               child: Text(envio.codigoPaquete,
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 15)),
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 15)),
                             )),
                         flex: 3,
                       ),
@@ -267,8 +255,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     }
 
     Future _traerdatosescanerPaquete() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
       _validarPaqueteText(qrbarra);
@@ -277,8 +264,9 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     var paquete = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f1paquete,
       controller: _paqueteController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarPaqueteText(value);
       },
@@ -308,8 +296,9 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     var remitente = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f2remitente,
       controller: _remitenteController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarRemitenteText(value);
       },
@@ -339,8 +328,9 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     var destinatario = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f3destinatario,
       controller: _destinatarioController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarDestinatarioText(value);
       },

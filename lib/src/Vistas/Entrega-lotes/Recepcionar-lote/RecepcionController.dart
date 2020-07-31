@@ -26,10 +26,6 @@ class RecepcionControllerLote {
         }
     List<EnvioModel> recorridos =
         await recepcionInterface.enviosCore(codigo);
-    if (recorridos.isEmpty) {
-      notificacion(
-              context, "error", "EXACT", "No hay envíos para recoger");
-    }
     return recorridos;
   }
 

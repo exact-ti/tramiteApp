@@ -40,7 +40,7 @@ class ValidacionController {
     EnvioModel envio = await entregaInterface.validarCodigo(codigo, id);
     if (envio == null) {
       notificacion(
-          context, "error", "EXACT", "EL codigo no pertenece al recorrido");
+          context, "error", "EXACT", "EL código no pertenece al recorrido");
     }
 
     return envio;

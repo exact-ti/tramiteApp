@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
@@ -19,6 +20,7 @@ class EnvioProvider implements IEnvioProvider {
   EnvioModel envioModel = new EnvioModel();
   UtdModel utdModel = new UtdModel();
   BuzonModel buzonModel = new BuzonModel();
+  EstadoEnvio estadoEnvio = new EstadoEnvio();
 
   @override
   Future<bool> crearEnvioProvider(EnvioModel envio) async {
@@ -58,11 +60,16 @@ class EnvioProvider implements IEnvioProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosActivosByUsuario() async {
+  Future<List<EnvioModel>> listarEnviosActivosByUsuario(List<int> estadosids) async {
+    List<String> ids = new List();
+    estadosids.forEach((element) {
+      ids.add("$element");
+      });
+    final gruposIds = ids.reduce((value, element) => value + ',' + element);
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/salida');
+    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/salida?estadosIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
@@ -72,12 +79,16 @@ class EnvioProvider implements IEnvioProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarRecepcionesActivas() async {
+  Future<List<EnvioModel>> listarRecepcionesActivas(List<int> estadosids) async {
+    List<String> ids = new List();
+    estadosids.forEach((element) {
+      ids.add("$element");
+      });
+    final gruposIds = ids.reduce((value, element) => value + ',' + element);
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/buzones/$id/envios/activos/entrada');
+    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/entrada?estadosIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
@@ -87,48 +98,11 @@ class EnvioProvider implements IEnvioProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosActivosByUsuario2() async {
-    List<EnvioModel> enviosMode = await listarfake1();
-    return enviosMode;
-  }
-
-  @override
-  Future<List<EnvioModel>> listarRecepcionesActivas2() async {
-    List<EnvioModel> enviosMode = await listarfake2();
-    return enviosMode;
-  }
-
-  Future<List<EnvioModel>> listarfake1() async {
-    List<EnvioModel> listarenvios = new List();
-    EnvioModel envio1 = new EnvioModel();
-    EnvioModel envio2 = new EnvioModel();
-    envio1.observacion = "San Ica";
-    envio1.usuario = "Ronald Vega";
-    envio1.codigoPaquete = "123456";
-    envio2.observacion = "La PEru";
-    envio2.usuario = "Crhistian Maman";
-    envio2.codigoPaquete = "123457";
-    listarenvios.add(envio1);
-    listarenvios.add(envio2);
-    return Future.delayed(new Duration(seconds: 1), () {
-      return listarenvios;
-    });
-  }
-
-  Future<List<EnvioModel>> listarfake2() async {
-    List<EnvioModel> listarenvios = new List();
-    EnvioModel envio1 = new EnvioModel();
-    EnvioModel envio2 = new EnvioModel();
-    envio1.observacion = "San Isidro";
-    envio1.usuario = "Ronald Santos";
-    envio1.codigoPaquete = "123458";
-    envio2.observacion = "La Molina";
-    envio2.usuario = "Crhistian campos";
-    envio2.codigoPaquete = "123459";
-    listarenvios.add(envio1);
-    listarenvios.add(envio2);
-    return Future.delayed(new Duration(seconds: 1), () {
-      return listarenvios;
-    });
+  Future<List<EstadoEnvio>> listarEstadosEnvios() async {
+    Response resp = await req.get('/servicio-tramite/etapasenvios?incluirHistoricos=false');
+    dynamic respuestaData = resp.data;
+    List<dynamic> respdatalist = respuestaData["data"];
+    List<EstadoEnvio> listEstados = estadoEnvio.fromJsonToEnviosActivos(respdatalist);
+    return listEstados;
   }
 }

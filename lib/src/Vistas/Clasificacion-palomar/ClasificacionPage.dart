@@ -1,8 +1,10 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/palomarModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 
@@ -22,16 +24,21 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   final _sobreController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
-List<PalomarModel> listapalomar = [];
+  List<PalomarModel> listapalomar = [];
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
-
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
   var nuevo = 0;
 
   @override
   void initState() {
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _sobreController.clear();
+    });
     super.initState();
   }
 
@@ -44,19 +51,23 @@ List<PalomarModel> listapalomar = [];
     var colorwidget = colorplomo;
 
     void _validarText(String value) async {
-      listapalomar = await principalcontroller.listarpalomarByCodigo(context, value);
-      if (listapalomar != null) {
+    desenfocarInputfx(context);
+      listapalomar =await principalcontroller.listarpalomarByCodigo(context, value);
+      if (listapalomar.length != 0) {
         setState(() {
           _sobreController.text = value;
           codigoValidar = value;
           listapalomar = listapalomar;
         });
+        desenfocarInputfx(context);
       } else {
         setState(() {
           _sobreController.text = value;
           codigoValidar = value;
           listapalomar = [];
         });
+        popuptoinput(context, f1, "error", "EXACT",
+            "El sobre no existe en la base de datos");
       }
     }
 
@@ -75,8 +86,8 @@ List<PalomarModel> listapalomar = [];
                     child: Container(
                       margin: const EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
-                      child:
-                          Text('Palomar', style: TextStyle(color: Colors.black,fontSize: 15)),
+                      child: Text('Palomar',
+                          style: TextStyle(color: Colors.black, fontSize: 15)),
                     ),
                     flex: 3,
                   ),
@@ -95,7 +106,8 @@ List<PalomarModel> listapalomar = [];
                     child: Container(
                       margin: const EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
-                      child: Text('Tipo', style: TextStyle(color: Colors.black)),
+                      child:
+                          Text('Tipo', style: TextStyle(color: Colors.black)),
                     ),
                     flex: 3,
                   ),
@@ -114,7 +126,7 @@ List<PalomarModel> listapalomar = [];
                       alignment: Alignment.centerRight,
                       margin: const EdgeInsets.only(right: 20),
                       child: Text('Ubicación',
-                          style: TextStyle(color: Colors.black,fontSize: 15)),
+                          style: TextStyle(color: Colors.black, fontSize: 15)),
                     ),
                     flex: 3,
                   ),
@@ -128,37 +140,14 @@ List<PalomarModel> listapalomar = [];
         ],
       ));
     }
-
-
-
-    final sendButton = Container(
-      //margin: const EdgeInsets.only(top: 10),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          //Navigator.of(context).pushNamed('/entregas-pisos-propios');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-        child: Text('Cambiar Forma',
-            style: TextStyle(color: Colors.white, fontSize: 12)),
-      ),
-    );
-
     const PrimaryColor = const Color(0xFF2C6983);
-
-    final titulotext = Text('Clasificar documento en palomar',
-        style: TextStyle(
-            fontSize: 22, color: PrimaryColor, fontWeight: FontWeight.bold));
-
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       textAlign: TextAlign.center,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarText(value);
       },
@@ -184,8 +173,8 @@ List<PalomarModel> listapalomar = [];
     );
 
     Future _traerdatosescanerbandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
+      desenfocarInputfx(context);
       _validarText(qrbarra);
     }
 
@@ -203,20 +192,16 @@ List<PalomarModel> listapalomar = [];
               onPressed: _traerdatosescanerbandeja),
         ),
       ),
-    ]); 
+    ]);
 
-
-       Widget _crearcontenido(List<PalomarModel> lista) {
-
-          if(lista.length==0){
-              return Container();
-          }else{
-              return ListView.builder(
-                  itemCount: lista.length,
-                  itemBuilder: (context, i) => crearItem(lista[i]));
-          }
-
-
+    Widget _crearcontenido(List<PalomarModel> lista) {
+      if (lista.length == 0) {
+        return Container();
+      } else {
+        return ListView.builder(
+            itemCount: lista.length,
+            itemBuilder: (context, i) => crearItem(lista[i]));
+      }
     }
 
     return Scaffold(
@@ -236,32 +221,32 @@ List<PalomarModel> listapalomar = [];
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 40),
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 10),
-                    width: double.infinity,
-                    child: campodetextoandIcono),
-              ),
-              Expanded(
-                child: _sobreController.text == ""
-                    ? Container()
-                    : Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        alignment: Alignment.bottomCenter,
-                        child: _crearcontenido(listapalomar)),
-              )
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 40),
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 10),
+                            width: double.infinity,
+                            child: campodetextoandIcono),
+                      ),
+                      Expanded(
+                        child: _sobreController.text == ""
+                            ? Container()
+                            : Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                alignment: Alignment.bottomCenter,
+                                child: _crearcontenido(listapalomar)),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

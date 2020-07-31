@@ -21,16 +21,7 @@ class RecepcionController {
   );
   }
 
-  Future<List<EnvioModel>> listarEnviosLotes(
-      BuildContext context,  String codigo, bool opcion) async {
-    List<EnvioModel> recorridos =
-        await recepcionInterface.enviosCore(codigo);
-    if (recorridos.isEmpty) {
-      notificacion(
-     context, "error", "EXACT", "No hay envíos para recoger"); 
-    }
-    return recorridos;
-  }
+ 
 
    Future<List<EnvioModel>> listarEnviosPrincipal(
       BuildContext context,List<String> codigos, String codigo) async {

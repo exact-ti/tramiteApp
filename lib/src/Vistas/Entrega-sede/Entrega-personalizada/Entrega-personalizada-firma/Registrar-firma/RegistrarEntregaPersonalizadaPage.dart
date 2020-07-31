@@ -120,14 +120,12 @@ class _RegistrarEntregapersonalizadoPageState
     );
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra  = await getDataFromCamera();
       _validarSobreText(qrbarra);
     }
 
     Future _traerdatosescanerFIRMA() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra  = await getDataFromCamera();
       _validarFIRMAText(qrbarra);
     }
 

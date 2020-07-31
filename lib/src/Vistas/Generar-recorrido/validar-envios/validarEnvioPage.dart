@@ -32,6 +32,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   String codigoValidar = "";
   String textdestinatario = "";
   List<String> listaCodigosValidados = new List();
+    FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
   bool inicio = true;
   var listadetinatario;
   var listadetinatarioDisplay;
@@ -43,7 +45,10 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   void initState() {
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _sobreController.clear();
+    });
     setState(() {
       codigoValidar = "";
       textdestinatario = "";
@@ -60,6 +65,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     var colorwidget = colorplomo;
 
     void _validarText(String value) {
+      desenfocarInputfx( context);
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -73,6 +79,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             listaCodigosValidados.add(value);
             inicio = false;
           });
+          if(listaEnvios.length!=listaCodigosValidados.length){
+              enfocarInputfx( context, f1); 
+          }
         } else {
           setState(() {
             _sobreController.text = "";
@@ -80,12 +89,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             inicio = false;
           });
         }
+      }else{
+        popuptoinput(context, f1, "error", "EXACT", "Es necesario ingresar el código del documento");
       }
     }
 
     Future _traerdatosescanerbandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra  = await getDataFromCamera();
       _validarText(qrbarra);
     }
 
@@ -152,6 +162,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
       autofocus: false,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarText(value);
       },
@@ -249,6 +260,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             } else {
               return Container();
             }
+            
           });
     }
 
@@ -275,11 +287,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               final envio = snapshot.data;
               listaEnvios.add(envio);
               validados.add(envio.codigoPaquete);
+              enfocarInputfx( context,  f1);
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
                       crearItem(listaEnvios[i], validados));
             } else {
+              enfocarInputfx( context,  f1);
               if (listaEnvios.length != 0) {
                 return ListView.builder(
                     itemCount: listaEnvios.length,
@@ -300,7 +314,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
           return _crearListadoinMemoria(codigos);
         }
       } else {
-        return _crearListadoAgregar(codigos, codigo);
+        Widget agregado =  _crearListadoAgregar(codigos, codigo);
+        return agregado;
       }
     }
 

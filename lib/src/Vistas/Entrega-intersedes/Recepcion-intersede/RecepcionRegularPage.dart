@@ -40,6 +40,9 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   String textdestinatario = "";
   String mensajeconfirmation = "";
   List<String> listaCodigosValidados = new List();
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   bool inicio = true;
   var listadetinatario;
   var listadetinatarioDisplay;
@@ -83,6 +86,10 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       codigoBandeja = recorridoUsuario.codigo;
       mostrarenviosiniciales();
     }
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
@@ -167,27 +174,30 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             setState(() {
               mensajeconfirmation = "El sobre $value fue recepcionado";
               listaEnvios = listaEnvios;
+              _sobreController.text = value;
             });
           } else {
             setState(() {
               mensajeconfirmation = "No es posible procesar el código";
+              _sobreController.text = value;
             });
-            /* notificacion(
-                context, "error", "EXACT", "No es posible procesar el código"); */
           }
+          enfocarInputfx(context, f2);
         } else {
           dynamic respuestaValidar = await principalcontroller.recogerdocumento(
               context, _bandejaController.text, value, true);
           if (respuestaValidar["status"] != "success") {
             setState(() {
               mensajeconfirmation = "No es posible procesar el código";
+              _sobreController.text = value;
             });
+            enfocarInputfx(context, f2);
           } else {
             setState(() {
               mensajeconfirmation = "El sobre $value fue recepcionado";
+              _sobreController.text = value;
             });
-            /* notificacion(
-                context, "success", "EXACT", "Se ha registrado el envío"); */
+            enfocarInputfx(context, f2);
           }
         }
       }
@@ -196,29 +206,25 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     void _validarBandejaText(String value) async {
       if (value != "") {
         listaEnvios = await principalcontroller.listarEnvios(context, value);
-        if (listaEnvios != null) {
-          if (listaEnvios.length != 0) {
-            setState(() {
-              mensajeconfirmation="";
-              _bandejaController.text = value;
-              listaEnvios = listaEnvios;
-            });
-          } else {
-            notificacion(
-                context, "error", "EXACT", "No es posible procesar el código");
-            setState(() {
-              mensajeconfirmation="";
-              listaEnvios = [];
-            });
-          }
-        } else {
-          notificacion(
-              context, "error", "EXACT", "No es posible procesar el código");
+        if (listaEnvios.length != 0) {
           setState(() {
-            mensajeconfirmation="";
-            listaEnvios = [];
+            mensajeconfirmation = "";
+            _bandejaController.text = value;
+            listaEnvios = listaEnvios;
           });
+          enfocarInputfx(context, f2);
+        } else {
+          setState(() {
+            mensajeconfirmation = "";
+            listaEnvios = [];
+            _bandejaController.text = value;
+          });
+          popuptoinput(context, f1, "error", "EXACT",
+              "No es posible procesar el código");
         }
+      }else{
+          popuptoinput(context, f1, "error", "EXACT",
+              "El código del lote es obligatorio");        
       }
     }
 
@@ -264,9 +270,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (_bandejaController.text  == "") {
+      qrbarra = await getDataFromCamera();
+      if (_bandejaController.text == "" || listaEnvios.length == 0) {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT",
             "Primero debe ingresar el codigo de la valija");
@@ -276,8 +281,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarBandejaText(qrbarra);
     }
 
@@ -291,7 +295,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -319,12 +324,13 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f2,
       textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (_bandejaController.text == "") {  
+      onFieldSubmitted: (value) async {
+        if (_bandejaController.text == "") {
           _sobreController.text = "";
-          notificacion(context, "error", "EXACT",
-              "Primero debe ingresar el codigo de la bandeja");
+          popuptoinput(context, f1, "error", "EXACT",
+              "Primero debe ingresar el código de bandeja");
         } else {
           _validarSobreText(value);
         }
@@ -452,9 +458,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                           margin: const EdgeInsets.only(bottom: 10),
                         ),
                       ),
-                      mensajeconfirmation.length==0?Container():Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child:Center(child:Text(mensajeconfirmation))),
+                      mensajeconfirmation.length == 0
+                          ? Container()
+                          : Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: Center(child: Text(mensajeconfirmation))),
                       Expanded(
                           child:
                               Container(child: _validarListado(listaEnvios))),

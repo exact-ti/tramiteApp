@@ -20,35 +20,15 @@ class NuevoEntregaExternaController {
   IAgenciasExternasInterface agenciacore =
       new AgenciasExternasImpl(new AgenciaExternaProvider());
   EnvioModel envioModel = new EnvioModel();
-  Future<List<EnvioModel>> listarEnviosEntrega(
+  Future<dynamic> listarEnviosEntrega(
       BuildContext context, String codigo) async {
-    List<EnvioModel> listEnvio = new List();
     dynamic recorridos = await agenciacore.listarEnviosAgenciasByCodigo(codigo);
-    if (recorridos["status"] == "success") {
-      dynamic datapalomar = recorridos["data"];
-      listEnvio = envioModel.fromJsonValidar(datapalomar);
-    } else {
-      notificacion(context, "error", "EXACT", recorridos["message"]);
-      listEnvio = [];
-    }
-    /*     if (recorridos != null) {
-      if (recorridos.length == 0) {
-        mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-      }
-    } */
-    return listEnvio;
+    return recorridos;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
       String bandeja, String codigo, BuildContext context) async {
     EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
-    if (envio == null) {
-      notificacion(
-          context, "error", "EXACT", "No es posible procesar el código");
-    } else {
-      notificacion(context, "success", "EXACT", "Envío agregado a la entrega");
-    }
-
     return envio;
   }
 

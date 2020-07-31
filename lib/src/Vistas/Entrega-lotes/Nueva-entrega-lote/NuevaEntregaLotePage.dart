@@ -27,15 +27,20 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
-  String codigoBandeja = "";
-  String codigoSobre = "";
   int cantidadPendientes = 0;
   int cantidadInicial = 0;
   String selectedFc;
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var colorletra = const Color(0xFFACADAD);
   void initState() {
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
     listaEnviosVacios = [];
     listaTurnos = [];
@@ -45,20 +50,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
-    listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
-      for (EnvioModel envio in listaEnvios) {
-        if (listaCodigosValidados.contains(envio.codigoPaquete)) {
-          listaEnviosValidados.add(envio);
-        } else {
-          listaEnviosNoValidados.add(envio);
-        }
-      }
-    }
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
@@ -85,7 +76,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                         listaEnviosVacios,
                         context,
                         int.parse(selectedFc),
-                        codigoBandeja);
+                        _bandejaController.text);
                   }
                 }
               }
@@ -96,20 +87,28 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
         ));
 
     void _validarBandejaText(String value) async {
-      listaTurnos = await principalcontroller.listarturnos(context, value);
+      desenfocarInputfx(context);
+      TurnoModel turnoModel = new TurnoModel();
+      dynamic turnosmap =
+          await principalcontroller.listarturnos(context, value);
+      if (turnosmap["status"] == "success") {
+        listaTurnos = turnoModel.fromJson(turnosmap["data"]);
+      } else {
+        listaTurnos = [];
+      }
       selectedFc = null;
-      if (listaTurnos != null) {
+      if (listaTurnos.length != 0) {
         setState(() {
           listaTurnos = listaTurnos;
-          codigoBandeja = value;
           _bandejaController.text = value;
         });
+        enfocarInputfx(context, f2);
       } else {
         setState(() {
           listaTurnos = [];
-          codigoBandeja = "";
-          _bandejaController.text = "";
+          _bandejaController.text = value;
         });
+        popuptoinput(context, f1, "error", "EXACT", turnosmap["message"]);
       }
     }
 
@@ -124,31 +123,37 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
 
     void _validarSobreText(String value) async {
-      EnvioModel envioModel = await principalcontroller.validarCodigo(
-          value, context, listaEnviosVacios);
-      setState(() {
-        codigoSobre = value;
-        _sobreController.text = value;
-      });
-
-      if (envioModel != null) {
-        if (listaEnviosVacios.length == 0) {
-          listaEnviosVacios.add(envioModel);
-          setState(() {
-            _sobreController.text = "";
-            listaEnviosVacios = listaEnviosVacios;
-          });
-        } else {
-          if (!validarContiene(listaEnviosVacios, envioModel)) {
+        desenfocarInputfx(context);
+      if (value == "") {
+        popuptoinput(context, f2, "error", "EXACT",
+            "el código de valija es obligatorio");
+      } else {
+        EnvioModel envioModel = await principalcontroller.validarCodigo(
+            value, context, listaEnviosVacios);
+        setState(() {
+          _sobreController.text = value;
+        });
+        if (envioModel != null) {
+          if (listaEnviosVacios.length == 0) {
             listaEnviosVacios.add(envioModel);
             setState(() {
               _sobreController.text = "";
               listaEnviosVacios = listaEnviosVacios;
             });
           } else {
-            notificacion(
-                context, "error", "EXACT", "Este codigo ya se ha agregado");
+            if (!validarContiene(listaEnviosVacios, envioModel)) {
+              listaEnviosVacios.add(envioModel);
+              setState(() {
+                listaEnviosVacios = listaEnviosVacios;
+              });
+            } else {
+            popuptoinput(context, f2, "error", "EXACT",
+              "La valija ya fue agregada al lote");
+            }
           }
+        }else{        
+            popuptoinput(context, f2, "error", "EXACT",
+              "No es posible procesar el código");
         }
       }
     }
@@ -165,17 +170,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       child: Text("Código de valija"),
     );
 
-    void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
-      if (listaEnvios.length == 0) {
-        listaEnvios.add(envio);
-      } else {
-        if (!listaEnvios.contains(envio)) {
-          listaEnvios.add(envio);
-        }
-      }
-    }
-
     Widget crearItem(EnvioModel envio, int i) {
       String codigopaquete = envio.codigoPaquete;
       return Container(
@@ -189,55 +183,32 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
               color: Color(0xffC7C7C7),
             ),
           ));
-      /*else {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading:
-                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-              trailing: Text(""),
-            ));
-      }*/
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       if (_bandejaController.text == "") {
         _sobreController.text = "";
-        notificacion(context, "error", "EXACT",
-            "Primero debe ingresar el codigo de la lote");
+        popuptoinput(context, f1, "error", "EXACT",
+            "Primero debe ingresar el codigo del lote");
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
       _validarBandejaText(qrbarra);
     }
 
-    /*Widget pendientes(int cantidad) {
-      int cantidadp = listaEnvios.length - listaCodigosValidados.length;
-      if(cantidadp==0){
-          cantidadp=cantidad;
-      }
-      if (cantidadp == 1) {
-        return Text("Queda $cantidadp documento pendiente");
-      }
-      return Text("Quedan $cantidad documentos pendientes");
-    }*/
-
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f1,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -265,11 +236,12 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f2,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if (codigoBandeja == "") {
+        if (_bandejaController.text == "") {
           _sobreController.text = "";
-          notificacion(context, "error", "EXACT",
+          popuptoinput(context, f1, "error", "EXACT",
               "Primero debe ingresar el codigo del lote");
         } else {
           _validarSobreText(value);
@@ -467,7 +439,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 12),
                             width: double.infinity,
-                            child: comboList(codigoBandeja, listaTurnos)),
+                            child: comboList(
+                                _bandejaController.text, listaTurnos)),
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -532,5 +505,3 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 }
-
-//                  Navigator.of(context).pushNamed(men.link);

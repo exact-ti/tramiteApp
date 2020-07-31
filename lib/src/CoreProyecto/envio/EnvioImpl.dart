@@ -3,6 +3,7 @@
 
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Providers/bandejas/IBandejaProvider.dart';
 import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
 import 'package:tramiteapp/src/Providers/paquetes/IPaqueteProvider.dart';
@@ -48,14 +49,19 @@ class EnvioImpl implements EnvioInterface {
   }
 
   @override
-  Future<List<EnvioModel>> listarActivos(int switched) async{
+  Future<List<EnvioModel>> listarActivos(int switched,List<int> estadosids) async{
     List<EnvioModel> envios;
       if(switched==0){
-      envios = await envio.listarEnviosActivosByUsuario();
+      envios = await envio.listarEnviosActivosByUsuario(estadosids);
       }else{
-       envios = await envio.listarRecepcionesActivas();       
+       envios = await envio.listarRecepcionesActivas(estadosids);       
       }
       return envios;
+  }
+
+  @override
+  Future<List<EstadoEnvio>> listarEstadosEnvios() async {
+    return await envio.listarEstadosEnvios();
   }
 
 

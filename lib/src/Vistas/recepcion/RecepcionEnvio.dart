@@ -24,9 +24,14 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   var colorletra = const Color(0xFFACADAD);
   bool isSwitched = false;
   var colorseleccion = const Color(0xFFB7DCEE);
-
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
   @override
   void initState() {
+        _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
@@ -170,8 +175,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
 
     Future _traerdatosescanerBandeja() async {
       if (!validados.containsValue(true)) {
-        qrbarra =
-            await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+        qrbarra  = await getDataFromCamera();
         _validarBandejaText(qrbarra);
       }
     }
@@ -235,6 +239,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f1,
       controller: _bandejaController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
@@ -289,7 +294,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Recepción de envíos',
+          title: Text('Confirmar envíos',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,

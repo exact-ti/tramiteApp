@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,14 +22,19 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
-  String codigoBandeja = "";
-  String codigoSobre = "";
   int cantidadPendientes = 0;
   int cantidadInicial = 0;
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var colorletra = const Color(0xFFACADAD);
   void initState() {
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
@@ -58,39 +62,42 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: ()  async {
+            onPressed: () async {
               if (_bandejaController.text == "") {
                 notificacion(context, "error", "EXACT",
                     "Debe ingresar el codigo de bandeja");
               } else {
                 if (listaEnvios.length != 0) {
                   listarNovalidados();
-                  codigoSobre = "";
+                  _sobreController.text = "";
                   if (listaEnviosNoValidados.length == 0) {
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados, context, codigoBandeja);
-                    codigoBandeja = "";
+                        listaEnviosValidados, context, _bandejaController.text);
+                    _bandejaController.text;
                   } else {
-                   bool respuestaarray = await confirmarArray(
-                    context,
-                    "success",
-                    "EXACT",
-                    "Faltan los siguientes elementos a validar:",
-                    listaEnviosNoValidados);
-                    if(respuestaarray==null){
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                }else{
-                if (respuestaarray) {
-                                        codigoSobre = "";
-                    principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados, context, codigoBandeja);
-                }else{
-                   
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                    Navigator.of(context).pop();
-                }}
+                    bool respuestaarray = await confirmarArray(
+                        context,
+                        "success",
+                        "EXACT",
+                        "Faltan los siguientes elementos a validar:",
+                        listaEnviosNoValidados);
+                    if (respuestaarray == null) {
+                      listaEnviosNoValidados.clear();
+                      listaEnviosValidados.clear();
+                    } else {
+                      if (respuestaarray) {
+                        _sobreController.text = "";
+                        principalcontroller
+                            .confirmacionDocumentosValidadosEntrega(
+                                listaEnviosValidados,
+                                context,
+                                _bandejaController.text);
+                      } else {
+                        listaEnviosNoValidados.clear();
+                        listaEnviosValidados.clear();
+                        Navigator.of(context).pop();
+                      }
+                    }
                   }
                 } else {
                   notificacion(context, "error", "EXACT",
@@ -114,9 +121,10 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         if (perteneceLista) {
           setState(() {
             _sobreController.text = "";
-            codigoSobre = value;
             listaCodigosValidados.add(value);
           });
+
+          enfocarInputfx(context, f2);
         } else {
           EnvioModel enviocontroller = await principalcontroller
               .validarCodigoEntrega(_bandejaController.text, value, context);
@@ -125,15 +133,28 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               listaEnvios.add(enviocontroller);
               listaCodigosValidados.add(value);
             });
+            bool respuestatrue = await notificacion(
+                context, "success", "EXACT", "Envío agregado a la entrega");
+            if (respuestatrue == null || respuestatrue) {
+              enfocarInputfx(context, f2);
+            }
+          } else {
+            setState(() {
+              _sobreController.text = value;
+            });
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT", "No es posible procesar el código");
+            if (respuestatrue == null || respuestatrue) {
+              enfocarInputfx(context, f2);
+            }
           }
-          /*setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-          });*/
         }
       } else {
-        notificacion(
+        bool respuestatrue = await notificacion(
             context, "error", "EXACT", "El campo del sobre no puede ser vacío");
+        if (respuestatrue == null || respuestatrue) {
+          enfocarInputfx(context, f2);
+        }
       }
     }
 
@@ -142,36 +163,41 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           await principalcontroller.listarEnviosEntrega(context, codigo);
       if (listaEnvios != null) {
         setState(() {
-          codigoSobre = "";
           listaEnvios = listaEnvios;
           listaCodigosValidados.clear();
           _sobreController.text = "";
-          codigoBandeja = codigo;
           _bandejaController.text = codigo;
         });
+        enfocarInputfx(context, f2);
       } else {
+        bool respuestatrue = await notificacion(
+            context, "error", "EXACT", "No es posible procesar el código");
         setState(() {
           listaCodigosValidados.clear();
           _sobreController.text = "";
-          codigoSobre = "";
           listaEnvios = [];
-          codigoBandeja = codigo;
           _bandejaController.text = codigo;
         });
+        if (respuestatrue == null || respuestatrue) {
+          enfocarInputfx(context, f1);
+        }
       }
     }
 
-    void _validarBandejaText(String value) {
+    void _validarBandejaText(String value) async {
       if (value != "") {
         validarLista(value);
       } else {
-        notificacion(context, "error", "EXACT", "La bandeja es obligatoria");
+        bool respuestrue = await notificacion(
+            context, "error", "EXACT", "La bandeja es obligatoria");
         setState(() {
           listaEnvios.clear();
           listaCodigosValidados.clear();
           _sobreController.text = "";
-          codigoSobre = "";
         });
+        if (respuestrue == null || respuestrue) {
+          enfocarInputfx(context, f1);
+        }
       }
     }
 
@@ -237,33 +263,23 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (codigoBandeja == "") {
+      qrbarra = await getDataFromCamera();
+      if (_bandejaController.text == "") {
         _sobreController.text = "";
-        notificacion(context, "error", "EXACT",
+        bool respuestatrue = await notificacion(context, "error", "EXACT",
             "Primero debe ingresar el codigo de la bandeja");
+        if (respuestatrue == null || respuestatrue) {
+          enfocarInputfx(context, f1);
+        }
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarBandejaText(qrbarra);
     }
-
-    /*Widget pendientes(int cantidad) {
-      int cantidadp = listaEnvios.length - listaCodigosValidados.length;
-      if(cantidadp==0){
-          cantidadp=cantidad;
-      }
-      if (cantidadp == 1) {
-        return Text("Queda $cantidadp documento pendiente");
-      }
-      return Text("Quedan $cantidad documentos pendientes");
-    }*/
 
     Widget _crearListadoinMemoria(
         List<EnvioModel> envios, List<String> validados) {
@@ -280,7 +296,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -309,11 +326,15 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       autofocus: false,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (codigoBandeja == "") {
+      focusNode: f2,
+      onFieldSubmitted: (value) async {
+        if (_bandejaController.text == "") {
           _sobreController.text = "";
-          notificacion(context, "error", "EXACT",
+          bool respuestatrue = await notificacion(context, "error", "EXACT",
               "Primero debe ingresar el codigo de la bandeja");
+          if (respuestatrue == null || respuestatrue) {
+            enfocarInputfx(context, f1);
+          }
         } else {
           _validarSobreText(value);
         }
@@ -342,7 +363,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
           future: principalcontroller.validarCodigoEntrega(
-              codigoBandeja, codigoporValidar, context),
+              _bandejaController.text, codigoporValidar, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
@@ -372,15 +393,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
     Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
       return _crearListadoinMemoria(lista, validados);
-      /*if (codigo == "") {
-        return _crearListadoinMemoria(lista,validados);
-      } else {
-        if (validados.contains(codigo)) {
-          return _crearListadoinMemoria(lista,validados);
-        } else {
-          return _crearListadoAgregar(validados, codigo);
-        }
-      }*/
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -483,7 +495,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                         ),
                       ),
                       Expanded(
-                          child: codigoBandeja == ""
+                          child: _bandejaController.text == ""
                               ? Container()
                               : Container(
                                   child: _validarListado(
