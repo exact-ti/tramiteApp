@@ -1,15 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
+import 'package:tramiteapp/src/ModelDto/DetalleRuta.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-import 'dart:convert';
 
 import '../IRutaProvider.dart';
 
@@ -19,6 +17,7 @@ class RutaProvider implements IRutaProvider {
   UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
   EntregaModel entregaModel = new EntregaModel();
   RutaModel rutaModel = new RutaModel();
+  DetalleRutaModel detallerutaModel = new DetalleRutaModel();
   RecorridoModel recorridoModel = new RecorridoModel(); 
   UtdModel utdModel = new UtdModel();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
@@ -50,6 +49,24 @@ class RutaProvider implements IRutaProvider {
     }else{
       return true;
     }
+  }
+
+  @override
+  Future<List<DetalleRutaModel>> listarDetalleMiRutaEntrega(String areaId,int recorridoId) async{
+    Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/areas/$areaId/detalle/entrega');
+    dynamic respdata = resp.data;
+    List <dynamic> listdata= respdata["data"];
+    List<DetalleRutaModel> listrutas = detallerutaModel.detalleRutafromJson(listdata);
+    return listrutas;
+    }
+  
+    @override
+    Future<List<DetalleRutaModel>> listarDetalleMiRutaRecojo(String areaId,int recorridoId) async{
+    Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/areas/$areaId/detalle/recojo');
+    dynamic respdata = resp.data;
+    List <dynamic> listdata= respdata["data"];
+    List<DetalleRutaModel> listrutas = detallerutaModel.detalleRutafromJson(listdata);
+    return listrutas;
   }
 
   

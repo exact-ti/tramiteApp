@@ -3,7 +3,6 @@ import 'package:tramiteapp/src/CoreProyecto/Palomar/PalomarImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Palomar/PalomarInterface.dart';
 import 'package:tramiteapp/src/ModelDto/palomarModel.dart';
 import 'package:tramiteapp/src/Providers/palomares/impl/PalomarProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 
 class ClasificacionController {
   PalomarInterface usuarioInterface = new PalomarImpl(new PalomarProvider());

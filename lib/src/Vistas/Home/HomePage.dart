@@ -20,10 +20,44 @@ class _HomePageState extends State<HomePage> {
     cargarPreferences();
   }
 
+
+      void cargar (){
+/*                           _scaffoldKey.currentState.showSnackBar(
+                      new SnackBar(duration: new Duration(seconds: 4), content:
+                      new Row(
+                        children: <Widget>[
+                          new CircularProgressIndicator(),
+                          new Text("  Signing-In...")
+                        ],
+                      ),
+                      ));
+                  _handleSignIn()
+                      .whenComplete(() =>
+                      Navigator.of(context).pushNamed("/Home")
+                  ); */
+      }
+
+
+
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
     const LetraColor = const Color(0xFF68A1C8);
+
+    Widget loginButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 70),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        onPressed: () {
+          cargar ();
+        },
+        padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+        color: Colors.lightBlueAccent,
+        child: Text('LOG IN', style: TextStyle(color: Colors.white)),
+      ),
+    );
     
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +83,8 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold))),
             Center(
                 child: Text("Expertos en Gestion Documental",
-                    style: TextStyle(fontSize: 20, color: Colors.grey)))
+                    style: TextStyle(fontSize: 20, color: Colors.grey))),
+            loginButton,
           ],
         ),
       ),

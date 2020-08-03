@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 
 import 'GenerarRutaController.dart';
@@ -112,41 +113,44 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     }
 
     Widget crearItem(RutaModel ruta) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
-      /*if (ruta.visitada) {
-        colorwidget = colorplomo;
-      } else {
-        colorwidget = colorblanco;
-      }*/
-      return Container(
-        decoration: myBoxDecoration(),
-        margin: EdgeInsets.only(bottom: 5),
-        height: 80,
-        //color: colorwidget,
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: informacionIcono(ruta.nombre),
-                flex: 2,
-              ),
-              Expanded(
-                child: informacionArea(ruta.nombre),
-                flex: 3,
-              ),
-              Expanded(
-                child: informacionRecojo(ruta),
-                flex: 3,
-              ),
-              Expanded(
-                child: Center(
-                  child: informacionEntrega(ruta),
-                ),
-                flex: 3,
-              ),
-            ]),
-      );
+      return InkWell(
+          onTap: () {
+            Map<String, Object> objetoSend = {'ruta': ruta, 'recorridoId': this.recorridoUsuario.id};
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      DetalleRutaPage(objetoModo: objetoSend),
+                ));
+          },
+          child: Container(
+            decoration: myBoxDecoration(),
+            margin: EdgeInsets.only(bottom: 5),
+            height: 80,
+            //color: colorwidget,
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: informacionIcono(ruta.nombre),
+                    flex: 2,
+                  ),
+                  Expanded(
+                    child: informacionArea(ruta.nombre),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: informacionRecojo(ruta),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: informacionEntrega(ruta),
+                    ),
+                    flex: 3,
+                  ),
+                ]),
+          ));
     }
 
     Widget _crearListado() {
@@ -181,7 +185,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         Text("Tu ruta", style: TextStyle(fontSize: 20, color: colorletra));
 
     final sendBack = Container(
-        margin: const EdgeInsets.only(top: 40,right: 5),
+        margin: const EdgeInsets.only(top: 40, right: 5),
         child: ButtonTheme(
           minWidth: 130.0,
           height: 40.0,
@@ -200,7 +204,9 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         ));
 
     final sendButton = Container(
-        margin: recorridoUsuario.indicepagina != 1 ? const EdgeInsets.only(top: 40,left: 5): const EdgeInsets.only(top: 40),
+        margin: recorridoUsuario.indicepagina != 1
+            ? const EdgeInsets.only(top: 40, left: 5)
+            : const EdgeInsets.only(top: 40),
         child: ButtonTheme(
           minWidth: 130.0,
           height: 40.0,
@@ -216,7 +222,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                     if (respuestabool) {
                       principalcontroller.opcionRecorrido(
                           recorridoUsuario, context);
-                    } 
+                    }
                   } else {
                     principalcontroller.opcionRecorrido(
                         recorridoUsuario, context);
@@ -295,7 +301,9 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 4),
                             width: double.infinity,
-                            child:recorridoUsuario.indicepagina != 1 ? filaBotones: sendButton),
+                            child: recorridoUsuario.indicepagina != 1
+                                ? filaBotones
+                                : sendButton),
                       ),
                     ],
                   ),

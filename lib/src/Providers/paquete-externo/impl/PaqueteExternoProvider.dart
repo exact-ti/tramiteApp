@@ -19,7 +19,8 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
 
   @override
   Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno) async{
-    Response resp = await req.get('/servicio-tramite/tipospaquetes?interno=$interno');
+    bool inactivos = false;
+    Response resp = await req.get('/servicio-tramite/tipospaquetes?interno=$interno&mostrarInactivos=$inactivos');
     List<dynamic> tipoPaquetes = resp.data;
     List<TipoPaqueteModel> listTipoPaquete = tipoPaqueteModel.fromJson(tipoPaquetes);
     return listTipoPaquete;
