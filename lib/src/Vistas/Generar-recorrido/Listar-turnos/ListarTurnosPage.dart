@@ -1,6 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -24,16 +25,10 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
 
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -80,8 +75,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     Widget crearItem(EntregaModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
       if (booleancolor) {
         colorwidget = colorplomo;
         booleancolor = false;
@@ -95,7 +88,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           child: InkWell(
               onTap: () {
                 principalcontroller.onSearchButtonPressed(context, entrega);
-              }, // handle your onTap here
+              },
               child: Container(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,21 +118,38 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EntregaModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final entregas = snapshot.data;
-              return ListView.builder(
-                  itemCount: entregas.length,
-                  itemBuilder: (context, i) => crearItem(entregas[i]));
-            } else {
-              return Container();
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    final entregas = snapshot.data;
+                    if (entregas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: entregas.length,
+                          itemBuilder: (context, i) => crearItem(entregas[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
 
     final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
         child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: RaisedButton(

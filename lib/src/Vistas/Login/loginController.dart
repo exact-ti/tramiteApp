@@ -8,9 +8,10 @@ import 'package:tramiteapp/src/Providers/configuraciones/impl/ConfiguracionProvi
 import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
 import 'dart:convert';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
 class LoginController {
   AccesoInterface accesoInterface = new AccesoImpl(
@@ -20,24 +21,26 @@ class LoginController {
       new ConfiguracionProvider(),
       new UtdProvider());
   final _prefs = new PreferenciasUsuario();
+  final NavigationService _navigationService = locator<NavigationService>();
 
-  validarlogin(BuildContext context, String username, String password) {
-    accesoInterface.login(username, password).then((data) {
-      print(data);
-      if (data == null) {
-        notificacion(
-            context, "error", "EXACT", 'Usuario y/o contraseña incorrecta');
-      } else {
-        Menu menuu = new Menu();
-        List<dynamic> menus = json.decode(_prefs.menus);
-        List<Menu> listmenu = menuu.fromPreferencs(menus);
-        for (Menu men in listmenu) {
-          if (men.home) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                men.link, (Route<dynamic> route) => false);
-          }
+  validarlogin(BuildContext context, String username, String password) async {
+    _navigationService.showModal();
+    dynamic respuesta = await accesoInterface.login(username, password);
+    if (respuesta == null) {
+      Navigator.pop(context);
+      notificacion(
+          context, "error", "EXACT", 'Usuario y/o contraseña incorrecta');
+    } else {
+      Menu menuu = new Menu();
+      List<dynamic> menus = json.decode(_prefs.menus);
+      List<Menu> listmenu = menuu.fromPreferencs(menus);
+      for (Menu men in listmenu) {
+        if (men.home) {
+          _navigationService.goBack();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              men.link, (Route<dynamic> route) => false);
         }
       }
-    });
+    }
   }
 }

@@ -3,8 +3,8 @@ import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Detalle-ruta/DetalleRutaPage.dart';
 
 import 'GenerarRutaController.dart';
 
@@ -115,12 +115,14 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     Widget crearItem(RutaModel ruta) {
       return InkWell(
           onTap: () {
-            Map<String, Object> objetoSend = {'ruta': ruta, 'recorridoId': this.recorridoUsuario.id};
+            Map<String, Object> objetoSend = {
+              'ruta': ruta,
+              'recorridoId': this.recorridoUsuario.id
+            };
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      DetalleRutaPage(objetoModo: objetoSend),
+                  builder: (context) => DetalleRutaPage(objetoModo: objetoSend),
                 ));
           },
           child: Container(
@@ -160,23 +162,33 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           future: principalcontroller.listarMiRuta(recorridoUsuario.id),
           builder:
               (BuildContext context, AsyncSnapshot<List<RutaModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final rutas = snapshot.data;
-              cantidad = rutas.length;
-              if (cantidad == 0) {
-                return Container(
-                    child: Center(
-                  child: Text("No hay pendientes",
-                      style: TextStyle(fontSize: 20, color: Colors.grey)),
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
                 ));
-              }
-              return ListView.builder(
-                  itemCount: rutas.length,
-                  itemBuilder: (context, i) => crearItem(rutas[i]));
-            } else {
-              return Container();
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    final rutas = snapshot.data;
+                    if (rutas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: rutas.length,
+                          itemBuilder: (context, i) => crearItem(rutas[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }

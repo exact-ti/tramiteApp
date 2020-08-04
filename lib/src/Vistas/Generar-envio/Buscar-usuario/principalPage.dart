@@ -1,5 +1,5 @@
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
@@ -13,7 +13,6 @@ class PrincipalPage extends StatefulWidget {
 class _PrincipalPageState extends State<PrincipalPage> {
   PrincipalController principalcontroller = new PrincipalController();
   EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
 
   var listadestinatarios;
   String textdestinatario = "";
@@ -27,16 +26,10 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
 
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -50,24 +43,23 @@ class _PrincipalPageState extends State<PrincipalPage> {
     var booleancolor = true;
     var colorwidget = colorplomo;
 
-
-    Widget  crearItem(UsuarioFrecuente usuario) {
-          if (booleancolor) {
-                colorwidget = colorplomo;
-                booleancolor = false;
-              } else {
-                colorwidget = colorblanco;
-                booleancolor = true;
-              }
-      return  Container(
+    Widget crearItem(UsuarioFrecuente usuario) {
+      if (booleancolor) {
+        colorwidget = colorplomo;
+        booleancolor = false;
+      } else {
+        colorwidget = colorblanco;
+        booleancolor = true;
+      }
+      return Container(
           child: new ListTile(
               onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EnvioPage(usuariopage: usuario),
-                ),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EnvioPage(usuariopage: usuario),
+                  ),
+                );
               },
               title: new Text(usuario.nombre, style: TextStyle(fontSize: 15)),
               subtitle: new Text(usuario.sede + " - " + usuario.area,
@@ -76,77 +68,57 @@ class _PrincipalPageState extends State<PrincipalPage> {
                 Icons.keyboard_arrow_right,
                 color: Color(0xffC7C7C7),
               )),
-          //height: 70,
           alignment: Alignment.center,
           decoration: new BoxDecoration(
               color: colorwidget,
               border: new Border(top: BorderSide(color: colorborde))));
     }
 
-    Widget crearItemVacio() {
-      return Container();
-    }
-
-    Widget _crearListado() {
-      booleancolor = true;
-      colorwidget = colorplomo;
-      return FutureBuilder(
-          future: principalcontroller.listarusuariosfrecuentes(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final usuarios = snapshot.data;
-              return ListView.builder(
-                  itemCount: usuarios.length,
-                  itemBuilder: (context, i) => crearItem(usuarios[i]));
-            } else {
-              return Container();
-            }
-          });
-    }
-
     Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
       colorwidget = colorplomo;
-      List<UsuarioFrecuente> usuarios =[];
+      List<UsuarioFrecuente> usuarios = [];
       return FutureBuilder(
           future: principalcontroller.listarUsuariosporFiltro(texto),
           builder: (BuildContext context,
               AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              usuarios = snapshot.data;
-            }else{
-              usuarios=[];
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Center(
+                    child: new Text('No hay conexión con el servidor'));
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return Center(child: new Text('Ha surgido un problema'));
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    usuarios = snapshot.data;
+                    if (usuarios.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: usuarios.length,
+                          itemBuilder: (context, i) => crearItem(usuarios[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
-              return ListView.builder(
-                  itemCount: usuarios.length,
-                  itemBuilder: (context, i) => crearItem(usuarios[i]));
-
           });
     }
 
     Widget _myListView(String buscador) {
-        return _crearListadoporfiltro(buscador);
+      return _crearListadoporfiltro(buscador);
     }
 
     String _text = "";
-
-    /*
-    void onChangedApplyFormat(String text) {
-      /*var lista = principalcontroller.ListarDestinario(text);
-      for (Map<String, dynamic> list in lista) {
-        print(text.length);
-      }*/
-      listadestinatarios = principalcontroller.ListarDestinario(text);
-
-      setState(() => 
-      _text = text
-      ); // you need this
-            
-    }*/
 
     final destinatario = TextFormField(
       keyboardType: TextInputType.text,
@@ -154,26 +126,12 @@ class _PrincipalPageState extends State<PrincipalPage> {
       onChanged: (text) {
         setState(() {
           textdestinatario = text;
-          /*listadetinatarioDisplay = listadetinatario.where((destinatario){
-                    var nombredestinatario = destinatario["nombre"];
-                    return nombredestinatario.contains(text);
-                  }).toList();*/
-          //var nombre = "asdads";
         });
       },
-      //controller: _rutController,
-      //textAlign: TextAlign.center,
-      /*  : (text) {
-              setState(() => _text = text); // you need this
-            },*/
       decoration: InputDecoration(
-        //border: InputBorder.none,
-        //focusedBorder: InputBorder.none,
         prefixIcon: Icon(Icons.search),
         contentPadding: new EdgeInsets.symmetric(vertical: 11.0),
-        //border: OutlineInputBorder(),
         filled: true,
-        //fillColor: Color(0xffF0F3F4),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: BorderSide(
@@ -188,7 +146,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
           ),
         ),
         hintText: 'Ingrese destinatario',
-        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),borderSide: BorderSide(color: Color(0xffF0F3F4),width: 0.0)),
       ),
     );
 
@@ -196,18 +153,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
       Text('Generar envío', style: TextStyle(fontSize: 10)),
       SizedBox(width: 250, child: TextField()),
     ]);
-
-    /*final prueba = Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              height: screenHeightExcludingToolbar(context, dividedBy: 40),
-              width: double.infinity,
-              child: Text("Usuarios Frecuentes:",style: TextStyle(
-            fontSize: 15,color: Color(0xFFACADAD)))
-            )
-            ,
-          );*/
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
@@ -220,7 +165,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
-        drawer: sd.crearMenu(context),
+        drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -228,43 +173,32 @@ class _PrincipalPageState extends State<PrincipalPage> {
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 10),
-                    width: double.infinity,
-                    child: destinatario),
-              ),
-              Row(
-                children: <Widget>[
-                  textdestinatario != "" ? Container() : prueba
-                ],
-              ),
-              /* Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 40),
-                    width: double.infinity,
-                    child: Text("Usuarios Frecuentes:",style: TextStyle(
-                  fontSize: 15,color: colorletra))
-                  )
-                  ,
-                ),*/
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: _myListView(textdestinatario)),
-              )
-            ],
-          ),
-        ))));
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 10),
+                            width: double.infinity,
+                            child: destinatario),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          textdestinatario != "" ? Container() : prueba
+                        ],
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _myListView(textdestinatario)),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

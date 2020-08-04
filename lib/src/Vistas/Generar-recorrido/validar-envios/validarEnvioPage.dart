@@ -26,13 +26,12 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   List<EnvioModel> listaEnviosNoValidados = new List();
   ValidacionController principalcontroller = new ValidacionController();
   EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String textdestinatario = "";
   List<String> listaCodigosValidados = new List();
-    FocusNode _focusNode;
+  FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   bool inicio = true;
   var listadetinatario;
@@ -65,7 +64,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     var colorwidget = colorplomo;
 
     void _validarText(String value) {
-      desenfocarInputfx( context);
+      desenfocarInputfx(context);
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -79,8 +78,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             listaCodigosValidados.add(value);
             inicio = false;
           });
-          if(listaEnvios.length!=listaCodigosValidados.length){
-              enfocarInputfx( context, f1); 
+          if (listaEnvios.length != listaCodigosValidados.length) {
+            enfocarInputfx(context, f1);
           }
         } else {
           setState(() {
@@ -89,13 +88,14 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             inicio = false;
           });
         }
-      }else{
-        popuptoinput(context, f1, "error", "EXACT", "Es necesario ingresar el código del documento");
+      } else {
+        popuptoinput(context, f1, "error", "EXACT",
+            "Es necesario ingresar el código del documento");
       }
     }
 
     Future _traerdatosescanerbandeja() async {
-      qrbarra  = await getDataFromCamera();
+      qrbarra = await getDataFromCamera();
       _validarText(qrbarra);
     }
 
@@ -152,8 +152,11 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             },
             color: Color(0xFF2C6983),
             //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child:
-                Text(listaEnvios.length == 0?'Crear solo recojo':'Crear recorrido', style: TextStyle(color: Colors.white)),
+            child: Text(
+                listaEnvios.length == 0
+                    ? 'Crear solo recojo'
+                    : 'Crear recorrido',
+                style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -250,17 +253,34 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               .validacionEnviosController(recorridoUsuario.id),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i], validados));
-            } else {
-              return Container();
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    final envios = snapshot.data;
+                    if (envios.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: envios.length,
+                          itemBuilder: (context, i) =>
+                              crearItem(envios[i], validados));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
-            
           });
     }
 
@@ -287,13 +307,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               final envio = snapshot.data;
               listaEnvios.add(envio);
               validados.add(envio.codigoPaquete);
-              enfocarInputfx( context,  f1);
+              enfocarInputfx(context, f1);
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
                       crearItem(listaEnvios[i], validados));
             } else {
-              enfocarInputfx( context,  f1);
+              enfocarInputfx(context, f1);
               if (listaEnvios.length != 0) {
                 return ListView.builder(
                     itemCount: listaEnvios.length,
@@ -314,7 +334,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
           return _crearListadoinMemoria(codigos);
         }
       } else {
-        Widget agregado =  _crearListadoAgregar(codigos, codigo);
+        Widget agregado = _crearListadoAgregar(codigos, codigo);
         return agregado;
       }
     }

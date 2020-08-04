@@ -28,16 +28,9 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -82,8 +75,6 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
     }
 
     Widget crearItem(RecorridoModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
       if (booleancolor) {
         colorwidget = colorplomo;
         booleancolor = false;
@@ -103,7 +94,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                         ValidacionEnvioPage(recorridopage: entrega),
                   ),
                 );
-              }, // handle your onTap here
+              },
               child: Container(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,21 +118,37 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
     }
 
     Widget _crearListado() {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<RecorridoModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final recorridos = snapshot.data;
-              return ListView.builder(
-                  itemCount: recorridos.length,
-                  itemBuilder: (context, i) => crearItem(recorridos[i]));
-            } else {
-              return Container();
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    final entregas = snapshot.data;
+                    if (entregas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: entregas.length,
+                          itemBuilder: (context, i) => crearItem(entregas[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }

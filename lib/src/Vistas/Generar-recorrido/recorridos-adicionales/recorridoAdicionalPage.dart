@@ -15,7 +15,6 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
   RecorridoAdicionalController principalcontroller =
       new RecorridoAdicionalController();
   EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
 
   var listadestinatarios;
   String textdestinatario = "";
@@ -29,16 +28,9 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -129,15 +121,34 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
           future: principalcontroller.recorridosController(texto),
           builder: (BuildContext context,
               AsyncSnapshot<List<RecorridoModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              final recorridos = snapshot.data;
-              return ListView.builder(
-                  itemCount: recorridos.length,
-                  itemBuilder: (context, i) => crearItem(recorridos[i]));
-            } else {
-              return ListView.builder(
-                  itemCount: 1, itemBuilder: (context, i) => crearItemVacio());
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    final entregas = snapshot.data;
+                    if (entregas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: entregas.length,
+                          itemBuilder: (context, i) => crearItem(entregas[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }

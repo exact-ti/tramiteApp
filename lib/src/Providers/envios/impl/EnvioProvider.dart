@@ -10,6 +10,8 @@ import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'dart:convert';
 
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
 class EnvioProvider implements IEnvioProvider {
   Requester req = Requester();
@@ -21,6 +23,7 @@ class EnvioProvider implements IEnvioProvider {
   UtdModel utdModel = new UtdModel();
   BuzonModel buzonModel = new BuzonModel();
   EstadoEnvio estadoEnvio = new EstadoEnvio();
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   Future<bool> crearEnvioProvider(EnvioModel envio) async {
@@ -69,11 +72,12 @@ class EnvioProvider implements IEnvioProvider {
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/salida?estadosIds=$gruposIds');
+    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/salida?etapasIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
-    List<dynamic> envio = resp.data;
+    dynamic respuesta = resp.data;
+    List<dynamic> envio = respuesta["data"];
     List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
     return enviosMode;
   }
@@ -88,11 +92,12 @@ class EnvioProvider implements IEnvioProvider {
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/activos/entrada?estadosIds=$gruposIds');
+    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/entrada?etapasIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
-    List<dynamic> envio = resp.data;
+    dynamic respuesta = resp.data;
+    List<dynamic> envio = respuesta["data"];
     List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
     return enviosMode;
   }

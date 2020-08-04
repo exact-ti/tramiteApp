@@ -359,7 +359,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       ),
     );
 
-    Widget _crearListadoAgregar(
+/*     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
       return FutureBuilder(
           future: principalcontroller.validarCodigoEntrega(
@@ -389,7 +389,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               }
             }
           });
-    }
+    } */
 
     Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
       return _crearListadoinMemoria(lista, validados);

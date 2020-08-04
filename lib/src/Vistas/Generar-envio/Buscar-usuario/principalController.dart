@@ -13,8 +13,7 @@ class PrincipalController {
 
   UsuarioInterface usuarioInterface = new UsuarioImpl(new UsuarioProvider());
   Future<List<UsuarioFrecuente>> listarusuariosfrecuentes() async {
-    List<UsuarioFrecuente> usuarios =
-        await usuarioInterface.listarUsuariosFrecuentes();
+    List<UsuarioFrecuente> usuarios = await usuarioInterface.listarUsuariosFrecuentes();
     return usuarios;
   }
 

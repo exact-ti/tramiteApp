@@ -12,6 +12,8 @@ import 'package:tramiteapp/src/Providers/agenciasExternas/impl/AgenciasExternasP
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
 class NuevoEntregaExternaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -20,15 +22,25 @@ class NuevoEntregaExternaController {
   IAgenciasExternasInterface agenciacore =
       new AgenciasExternasImpl(new AgenciaExternaProvider());
   EnvioModel envioModel = new EnvioModel();
+  final NavigationService _navigationService = locator<NavigationService>();
+
   Future<dynamic> listarEnviosEntrega(
       BuildContext context, String codigo) async {
+    _navigationService.showModal();
+
     dynamic recorridos = await agenciacore.listarEnviosAgenciasByCodigo(codigo);
+    _navigationService.goBack();
+
     return recorridos;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
       String bandeja, String codigo, BuildContext context) async {
+    _navigationService.showModal();
+
     EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
+    _navigationService.goBack();
+
     return envio;
   }
 
@@ -43,8 +55,12 @@ class NuevoEntregaExternaController {
             context, "error", "EXACT", "No hay envios para la agencia");
       } else {
         RecorridoModel recorrido = new RecorridoModel();
+        _navigationService.showModal();
+
         recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
             enviosvalidados, codigo);
+        _navigationService.goBack();
+
         if (recorrido.id != null) {
           bool respuestatrue = await notificacion(context, "success", "EXACT",
               "Se ha registrado correctamente el envio");

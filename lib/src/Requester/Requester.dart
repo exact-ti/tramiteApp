@@ -32,8 +32,9 @@ class Requester {
     };
 
     try {
-      return await Dio().post(properties['API'] + path,
+      Response token = await Dio().post(properties['API'] + path,
           data: data, options: Options(headers: header));
+      return token;
     } on DioError catch (e) {
       return e.response;
     }
@@ -50,40 +51,44 @@ class Requester {
     };
 
     try {
-      return await Dio().post(properties['API'] + path,
+      _navigationService.showModal();
+
+      Response refreshtoken = await Dio().post(properties['API'] + path,
           data: data, options: Options(headers: header));
+      _navigationService.goBack();
+
+      return refreshtoken;
     } on DioError catch (e) {
       return e.response;
     }
   }
 
   Future<Response> get(String url) async {
-    this.tipoPeticion = 1;
-    return await addInterceptors(_dio)
-        .get(properties['API'] + url,onReceiveProgress: (int sent, int total) {
 
-  if (total != -1) {
-    print("PORCENTAJE");
-   print((sent / total * 100).toStringAsFixed(0) + "%");
-  }
-  }, );
+    Response respuestaGet =
+        await addInterceptors(_dio).get(properties['API'] + url);
+
+    return respuestaGet;
   }
 
   Future<Response> post(String url, dynamic data, dynamic params) async {
-    this.tipoPeticion = 2;
-    if (params == null) {
-      return await addInterceptors(_dio)
-          .post(properties['API'] + url, data: data,onSendProgress: (int sent, int total) {
-            print("utilizando el post");
-    print("$sent $total");
-  },);
-    } else {
-      return await addInterceptors(_dio)
-          .post(properties['API'] + url, data: data, queryParameters: params,onSendProgress: (int sent, int total) {
-            print("utilizando el post");
-    print("$sent $total");
-  },);
-    }
+/*     if (params == null) {
+      return await addInterceptors(_dio).post(
+        properties['API'] + url,
+        data: data
+      );
+    } else { */
+    _navigationService.showModal();
+
+    Response respuestaPost = await addInterceptors(_dio).post(
+      properties['API'] + url,
+      data: data,
+      queryParameters: params,
+    );
+    _navigationService.goBack();
+
+    return respuestaPost;
+/*     } */
   }
 
   dynamic requestInterceptor(RequestOptions options) async {
@@ -111,20 +116,24 @@ class Requester {
         RequestOptions request = dioError.request;
         switch (request.method) {
           case "GET":
-            response = await this.get(request.path.substring(properties['API'].length));
+            response = await this
+                .get(request.path.substring(properties['API'].length));
             break;
           case "POST":
-            response = await this
-                .post(request.path.substring(properties['API'].length), request.data, request.queryParameters);
+            response = await this.post(
+                request.path.substring(properties['API'].length),
+                request.data,
+                request.queryParameters);
             break;
           default:
             return dioError;
         }
         return response;
       } else {
-        if(!respuesta){
-        this.respuesta=true;
-        _navigationService.modelInformativo("success","Sesión terminada","La sesión terminó, debe volver a logearse");
+        if (!respuesta) {
+          this.respuesta = true;
+          _navigationService.modelInformativo("success", "Sesión terminada",
+              "La sesión terminó, debe volver a logearse");
         }
         return dioError;
       }
@@ -139,7 +148,6 @@ class Requester {
       ..interceptors.add(InterceptorsWrapper(
           onRequest: (RequestOptions options) => requestInterceptor(options),
           onResponse: (Response response) => responseInterceptor(response),
-          onError: (DioError dioError) =>
-              errorInterceptor(dioError)));
+          onError: (DioError dioError) => errorInterceptor(dioError)));
   }
 }

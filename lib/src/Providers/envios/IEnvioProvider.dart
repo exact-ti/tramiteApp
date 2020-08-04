@@ -14,7 +14,6 @@ abstract class IEnvioProvider{
 
   Future<List<EnvioModel>> listarEnviosActivosByUsuario(List<int> estadosids);  
 
-
   Future<List<EnvioModel>> listarRecepcionesActivas(List<int> estadosids);  
 
   Future<List<EstadoEnvio>> listarEstadosEnvios();  

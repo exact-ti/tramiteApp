@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
@@ -11,6 +13,7 @@ import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 
+import 'loader.dart';
 import 'modals/confirmation.dart';
 import 'modals/information.dart';
 
@@ -352,6 +355,29 @@ BoxDecoration myBoxDecoration(Color colorletra) {
   return BoxDecoration(
     border: Border.all(color: colorletra),
   );
+}
+
+Widget sinResultados(String mensaje){
+  return Center(child:Text(mensaje,style: TextStyle(color: colorletra,fontSize: 20,fontWeight:FontWeight.bold)));
+}
+
+Widget loadingGet(){
+  return new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                child: ColorLoader3(
+                  radius: 40.0,
+                  dotRadius: 10.0,
+                ),
+              ),  
+              Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: FadingText("Loading",style: TextStyle(fontSize: 20,color: colorletra),)),
+            ],
+          );
 }
 
 Widget scaffoldbody(Widget principal, BuildContext context) {

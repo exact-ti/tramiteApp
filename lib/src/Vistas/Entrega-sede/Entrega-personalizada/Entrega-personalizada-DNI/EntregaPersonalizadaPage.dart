@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
@@ -16,11 +15,8 @@ class _EntregapersonalizadoPageDNIState
     extends State<EntregapersonalizadoPageDNI> {
   final _sobreController = TextEditingController();
   final _dniController = TextEditingController();
-  //final _sobreController = TextEditingController();
   EntregaPersonalizadaController personalizadacontroller =
       new EntregaPersonalizadaController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";

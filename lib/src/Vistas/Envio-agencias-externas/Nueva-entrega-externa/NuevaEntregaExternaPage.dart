@@ -334,33 +334,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       ),
     );
 
-    Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(
-              _bandejaController.text, codigoporValidar, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              listaEnvios.add(envio);
-              validados.add(envio.codigoPaquete);
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados, 1));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados, 1));
-              } else {
-                return Container();
-              }
-            }
-          });
-    }
 
     Widget _validarListado(List<String> validados, List<EnvioModel> envios) {
       return _crearListadoinMemoria(validados, envios);

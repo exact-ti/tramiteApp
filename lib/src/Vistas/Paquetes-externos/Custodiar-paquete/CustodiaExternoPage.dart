@@ -98,8 +98,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     return TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
-      focusNode: f1,
-      controller: _codigoController,
+/*       focusNode: f1,
+ */      controller: _codigoController,
       onFieldSubmitted: (text) {
         // if (text.length > 5){
 
@@ -139,14 +139,34 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
             future: _listarCreados(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<PaqueteExterno>> snapshot) {
-              if (snapshot.hasData) {
-                this.creados = snapshot.data;
-                return ListView.builder(
-                    itemCount: this.creados.length,
-                    itemBuilder: (context, i) => _crearItem(this.creados[i]));
-              } else {
-                return Container();
-              }
+                              switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    this.creados = snapshot.data;
+                    if (this.creados.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: this.creados.length,
+                          itemBuilder: (context, i) => _crearItem(this.creados[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
+            }
             }),
       ),
     );

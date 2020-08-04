@@ -88,11 +88,24 @@ class _DashboardPageState extends State<DashboardPage> {
     return FutureBuilder(
         future: dashboardController.listarItems(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
+    switch (snapshot.connectionState) {
+        case ConnectionState.none:
+        return Center(child: new Text('No hay conexión con el servidor')); // error output
+        case ConnectionState.waiting:
+        return Center(
+            child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: loadingGet(), // waiting indicator
+        ));
+        default:
+        if (snapshot.hasError) return Center(child: new Text('Ha surgido un problema'));
+        return futurowidget(snapshot.data); 
+        }
+/*           if (snapshot.hasData) {
             return futurowidget(snapshot.data);
           } else {
             return Container();
-          }
+          } */
         });
   }
 

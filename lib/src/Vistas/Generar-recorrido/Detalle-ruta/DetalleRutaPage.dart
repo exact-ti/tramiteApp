@@ -39,8 +39,8 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   @override
   void initState() {
     isSelected = [true, false];
-    this.recorridoID=objetoModo["recorridoId"];
-    this.rutaModel=objetoModo["ruta"];
+    this.recorridoID = objetoModo["recorridoId"];
+    this.rutaModel = objetoModo["ruta"];
     setState(() {
       textdestinatario = "";
     });
@@ -94,8 +94,8 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       String ubicacion = rutaModel.ubicacion;
       return Container(
           child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
- crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
               margin: const EdgeInsets.only(top: 10),
@@ -106,7 +106,9 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                       margin: const EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
                       child: Text('Área:',
-                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
                     ),
                     flex: 2,
                   ),
@@ -125,7 +127,10 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                       alignment: Alignment.centerRight,
                       margin: const EdgeInsets.only(right: 20),
                       child: Text('Ubicación:',
-                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold/* , fontSize: 15 */)),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight:
+                                  FontWeight.bold /* , fontSize: 15 */)),
                     ),
                     flex: 2,
                   ),
@@ -139,21 +144,40 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       ));
     }
 
-
     Widget _crearListado(int switched) {
       detallesRuta.clear();
       return FutureBuilder(
-          future:
-              principalcontroller.listarDetalleRuta(switched, rutaModel.id,recorridoID),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<DetalleRutaModel>> snapshot) {
-            if (snapshot.hasData) {
-              detallesRuta = snapshot.data;
-              return ListView.builder(
-                  itemCount: detallesRuta.length,
-                  itemBuilder: (context, i) => crearItem(detallesRuta[i], switched));
-            } else {
-              return Container();
+          future: principalcontroller.listarDetalleRuta(
+              switched, rutaModel.id, recorridoID),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<DetalleRutaModel>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    detallesRuta = snapshot.data;
+                    if (detallesRuta.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: detallesRuta.length,
+                          itemBuilder: (context, i) =>
+                              crearItem(detallesRuta[i], switched));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
@@ -190,7 +214,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
         });
       },
       isSelected: isSelected,
-    );  
+    );
 
     Widget mainscaffold() {
       return Padding(

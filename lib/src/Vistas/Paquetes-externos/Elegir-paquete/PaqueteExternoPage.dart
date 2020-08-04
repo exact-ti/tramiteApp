@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
@@ -103,15 +104,32 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         child: FutureBuilder(
           future: paqueteExternoController.listarPaquetesPorTipo(false),
           builder: (BuildContext context, AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
-            if (snapshot.hasData) {
-              final tipoPaquetes = snapshot.data;
-              return ListView.builder(
-                itemCount: tipoPaquetes.length,
-                itemBuilder: (context,i) => _crearItem(tipoPaquetes[i]),
-              );
-            }
-            else{
-              return Container();
+                switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    final tipoPaquetes = snapshot.data;
+                    if (tipoPaquetes.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: tipoPaquetes.length,
+                          itemBuilder: (context, i) => _crearItem(tipoPaquetes[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           }
         ),

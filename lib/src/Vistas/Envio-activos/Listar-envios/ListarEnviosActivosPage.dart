@@ -140,45 +140,63 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
           future: principalcontroller.listarEnviosEstados(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EstadoEnvio>> snapshot) {
-            if (snapshot.hasData) {
-              estadosSave = snapshot.data;
-              if (estadosSave.length != 0) {
-                List<EstadoEnvio> listaparam = new List();
-                if (objetoModo != null) {
-                  estadosSave.forEach((element) {
-                    if (element.id == objetoModo["estadoid"]) {
-                      listaparam.add(element);
-                      element.estado = true;
-                    }
-                  });
-                } else {
-                  estadosSave.forEach((element) {
-                    listaparam.add(element);
-                    element.estado = true;
-                  });
-                }
-
-                return Container(
-                    child: Tags(
-                  itemCount: listaparam.length,
-                  itemBuilder: (int index) {
-                    return Tooltip(
-                        message: listaparam[index].nombre,
-                        child: ItemTags(
-                          title: listaparam[index].nombre,
-                          pressEnabled: false,
-                          textStyle: TextStyle(fontSize: 13),
-                          key: Key(index.toString()),
-                          index: index,
-                        ));
-                  },
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
                 ));
-              } else {
-                return Container();
-              }
-            } else {
-              return Container();
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    estadosSave = snapshot.data;
+                    if (estadosSave.length != 0) {
+                      List<EstadoEnvio> listaparam = new List();
+                      if (objetoModo != null) {
+                        estadosSave.forEach((element) {
+                          if (element.id == objetoModo["estadoid"]) {
+                            listaparam.add(element);
+                            element.estado = true;
+                          } else {
+                            element.estado = false;
+                          }
+                        });
+                      } else {
+                        estadosSave.forEach((element) {
+                          listaparam.add(element);
+                          element.estado = true;
+                        });
+                      }
+
+                      return Container(
+                          child: Tags(
+                        itemCount: listaparam.length,
+                        itemBuilder: (int index) {
+                          return Tooltip(
+                              message: listaparam[index].nombre,
+                              child: ItemTags(
+                                title: listaparam[index].nombre,
+                                pressEnabled: false,
+                                textStyle: TextStyle(fontSize: 13),
+                                key: Key(index.toString()),
+                                index: index,
+                              ));
+                        },
+                      ));
+                    } else {
+                      return Container();
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
+
           });
     }
 
@@ -198,13 +216,33 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               principalcontroller.listarActivosController(switched, estadosIds),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i], switched));
-            } else {
-              return Container();
+
+                            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    final envios = snapshot.data;
+                    if (envios.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: envios.length,
+                          itemBuilder: (context, i) => crearItem(envios[i], switched));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
