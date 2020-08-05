@@ -1,10 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'EnvioController.dart';
 
 class EnvioPage extends StatefulWidget {
@@ -31,22 +27,15 @@ class _EnvioPageState extends State<EnvioPage> {
   int indice = 0;
   int indicebandeja = 0;
   int minvalor = 0;
+  String errorSobre = "";
+  String errorBandeja = "";
   FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   FocusNode f3 = FocusNode();
-  final _prefs = new PreferenciasUsuario();
-  ConfiguracionModel configuracionModel = new ConfiguracionModel();
   @override
   void initState() {
-    List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
-    List<ConfiguracionModel> configuration =
-        configuracionModel.fromPreferencs(configuraciones);
-    for (ConfiguracionModel confi in configuration) {
-      if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
-        minvalor = int.parse(confi.valor);
-      }
-    }
+    minvalor = obtenerCantidadMinima();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) _bandejaController.clear();
@@ -55,80 +44,12 @@ class _EnvioPageState extends State<EnvioPage> {
     super.initState();
   }
 
-  Widget errorsobre(String rest, int numero, bool vali) {
-    if (vali) {
-      return Container();
-    }
-
-    if (rest.length == 0 && numero == 0) {
-      return Container();
-    }
-
-    if (rest.length == 0 && numero != 0) {
-      return respuesta("Es necesario ingresar el código del sobre");
-    }
-
-    if (rest.length > 0 && rest.length < minvalor) {
-      return respuesta("La longitud mínima es de $minvalor caracteres");
-    }
-
-    return FutureBuilder(
-        future: envioController.validarexistencia(rest),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            final validador = snapshot.data;
-            if (!validador) {
-              validarSobre = false;
-              return respuesta("El código no existe");
-            } else {
-              validarSobre = true;
-              return Container();
-            }
-          } else {
-            return Container();
-          }
-        });
-
-    //return Container();
+  Widget errorsobre(String contenido) {
+    return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
   }
 
   Widget respuesta(String contenido) {
     return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
-  }
-
-  Widget errorbandeja(String rest, int numero, bool valie) {
-    if (valie) {
-      return Container();
-    }
-
-    if (rest.length == 0) {
-      return Container();
-    }
-
-    if (rest.length == 0 && numero == 0) {
-      return Container();
-    }
-
-    if (rest.length > 0 && rest.length < minvalor) {
-      return respuesta("La longitud mínima es de $minvalor caracteres");
-    }
-
-    return FutureBuilder(
-        future: envioController.validarexistenciabandeja(rest),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            final validador = snapshot.data;
-            if (!validador) {
-              validarBandeja = false;
-              return respuesta("El código no existe");
-            } else {
-              validarBandeja = true;
-              return Container();
-            }
-          } else {
-            return Container();
-          }
-        });
   }
 
   Widget datosUsuarios(String text) {
@@ -141,93 +62,16 @@ class _EnvioPageState extends State<EnvioPage> {
         title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
-  int nums = 5;
-
-  bool validarenvio() {
-    if (_sobreController.text.length == 0) {
-      return false;
-    }
-
-    if (_sobreController.text.length > 0 &&
-        _sobreController.text.length < nums) {
-      return false;
-    }
-
-    if (_bandejaController.text.length > 0 &&
-        _bandejaController.text.length < nums) {
-      return false;
-    }
-
-    if (!validarSobre || !validarBandeja) {
-      if (_bandejaController.text.length == 0) {
-        return true;
-      }
-      return false;
-    }
-
-    return true;
-  }
-
-  var colorplomos = const Color(0xFFEAEFF2);
-  bool inicio = false;
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
-    const LetraColor = const Color(0xFF68A1C8);
-    const Colorplomo = const Color(0xFFEAEFF2);
-
-    void enfocarFocusf1(BuildContext context) {
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      FocusScope.of(context).requestFocus(f1);
-    }
-
-    void enfocarFocusf2(BuildContext context) {
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      FocusScope.of(context).requestFocus(f2);
-    }
-
-    void enfocarFocusf3(BuildContext context) {
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      FocusScope.of(context).requestFocus(f3);
-    }
-
-    void validarEnvio(BuildContext context) async {
-      if (_sobreController.text.length == 0) {
-        bool respuestatrue = await notificacion(
-            context, "error", "EXACT", "El código de sobre es obligatorio");
-        if (respuestatrue == null || respuestatrue) {
-          enfocarFocusf1(context);
-        }
-      } else {
-        indice = 1;
-        indicebandeja = 1;
-        if (_formKey.currentState.validate() && validarenvio()) {
-          setState(() {
-            confirmaciondeenvio = true;
-          });
-          FocusScope.of(context).unfocus();
-          new TextEditingController().clear();
-          envioController.crearEnvio(
-              context,
-              recordObject.id,
-              _sobreController.text,
-              _bandejaController.text,
-              _observacionController.text);
-          setState(() {
-            _sobreController.text = "";
-            _bandejaController.text = "";
-            _observacionController.text = "";
-            confirmaciondeenvio = false;
-            indice = 0;
-          });
-        } else {
-          notificacion(
-              context, "Error", "EXACT", "No se pudo realizar el envío");
-        }
-      }
+    void validarEnvio() {
+      envioController.crearEnvio(
+          context,
+          recordObject.id,
+          _sobreController.text,
+          _bandejaController.text,
+          _observacionController.text);
     }
 
     final sendButton = Container(
@@ -239,9 +83,17 @@ class _EnvioPageState extends State<EnvioPage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () {
-              validarEnvio(context);
+              if (errorSobre.length == 0 &&
+                  errorBandeja.length == 0 &&
+                  _sobreController.text.length != 0) {
+                validarEnvio();
+              }
             },
-            color: Color(0xFF2C6983),
+            color: errorSobre.length != 0 ||
+                    errorBandeja.length != 0 ||
+                    _sobreController.text.length == 0
+                ? Colors.grey
+                : Color(0xFF2C6983),
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Enviar', style: TextStyle(color: Colors.white)),
           ),
@@ -267,44 +119,50 @@ class _EnvioPageState extends State<EnvioPage> {
         ),
       ),
       onFieldSubmitted: (value) async {
-        validarEnvio(context);
-      },
+              if (errorSobre.length == 0 &&
+                  errorBandeja.length == 0 &&
+                  _sobreController.text.length != 0) {
+                validarEnvio();
+              }
+        },
     );
 
-    void enfocarCodigoBandeja(String value) async {
+    void enfocarCodigoBandeja() async {
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
-      if (value.length == 0) {
-        FocusScope.of(context).requestFocus(f3);
+      if (errorBandeja.length != 0) {
+        popuptoinput(context, f2, "error", "EXACT", errorBandeja);
       } else {
-        if (value.length > 0 && value.length < minvalor) {
-          bool respuestatrue = await notificacion(context, "error", "EXACT",
-              "La longitud mínima es de $minvalor caracteres");
-          if (respuestatrue == null || respuestatrue == true) {
-            enfocarFocusf2(context);
-          }
+        enfocarInputfx(context, f3);
+      }
+    }
+
+    evaluarBandeja(texto) async {
+      if (texto.length >= obtenerCantidadMinima()) {
+        bool respuestac = await envioController.validarexistenciabandeja(texto);
+        if (!respuestac) {
+          setState(() {
+            errorBandeja = "No es posible procesar el código";
+          });
         } else {
-          bool respuestac =
-              await envioController.validarexistenciabandeja(value);
-          if (respuestac) {
-            enfocarFocusf3(context);
-          } else {
-            bool respuestatrue = await notificacion(
-                context, "error", "EXACT", "No es posible procesar el código");
-            if (respuestatrue == null || respuestatrue == true) {
-              enfocarFocusf2(context);
-            }
-          }
+          setState(() {
+            errorBandeja = "";
+          });
         }
+      } else {
+        setState(() {
+          errorBandeja = "La longitud mínima es de $minvalor caracteres";
+        });
       }
     }
 
     Future _traerdatosescanerbandeja() async {
       qrbarra = await getDataFromCamera();
-      enfocarCodigoBandeja(qrbarra);
-      setState(() {
-        _bandejaController.text = qrbarra;
-      });
+            setState(() {
+            _bandejaController.text = qrbarra;
+          });
+      await evaluarBandeja(qrbarra);
+      enfocarCodigoBandeja();
     }
 
     var bandeja = TextFormField(
@@ -314,14 +172,10 @@ class _EnvioPageState extends State<EnvioPage> {
       controller: _bandejaController,
       textInputAction: TextInputAction.next,
       onChanged: (text) {
-        setState(() {
-          if (text.length > 0 && text.length < 5) {
-            indicebandeja = 2;
-          }
-        });
+        evaluarBandeja(text);
       },
       onFieldSubmitted: (value) async {
-        enfocarCodigoBandeja(value);
+        enfocarCodigoBandeja();
       },
       decoration: InputDecoration(
         contentPadding:
@@ -343,40 +197,47 @@ class _EnvioPageState extends State<EnvioPage> {
       ),
     );
 
-    void enfocarcodigoSobre(String value) async {
+    void enfocarcodigoSobre() async {
       FocusScope.of(context).unfocus();
-      if (value.length == 0) {
-        bool respuestatrue = await notificacion(
-            context, "error", "EXACT", "El código de sobre es obligatorio");
-        if (respuestatrue == null || respuestatrue) {
-          enfocarFocusf1(context);
-        }
+      if (errorSobre.length != 0) {
+        popuptoinput(context, f1, "error", "EXACT", errorSobre);
       } else {
-        if (value.length > 0 && value.length < minvalor) {
-          bool respuestatrue = await notificacion(context, "error", "EXACT",
-              "La longitud mínima es de $minvalor caracteres");
-          if (respuestatrue == null || respuestatrue) {
-            enfocarFocusf1(context);
+        enfocarInputfx(context, f2);
+      }
+    }
+
+    void evaluarSobre(String texto) async {
+      if (texto.length == 0) {
+        setState(() {
+          errorSobre = "El código de sobre es obligatorio";
+        });
+      } else {
+        if (texto.length >= obtenerCantidadMinima()) {
+          bool respuestac = await envioController.validarexistenciaSobre(texto);
+          if (!respuestac) {
+            setState(() {
+              errorSobre = "No es posible procesar el código";
+            });
+          } else {
+            setState(() {
+              errorSobre = "";
+            });
           }
         } else {
-          bool respuestac = await envioController.validarexistencia(value);
-          if (respuestac) {
-            enfocarFocusf2(context);
-          } else {
-            notificacion(
-                context, "error", "EXACT", "No es posible procesar el código");
-            enfocarFocusf1(context);
-          }
+          setState(() {
+            errorSobre = "La longitud mínima es de $minvalor caracteres";
+          });
         }
       }
     }
 
     Future _traerdatosescanersobre() async {
       qrsobre = await getDataFromCamera();
-      enfocarcodigoSobre(qrsobre);
-      setState(() {
-        _sobreController.text = qrsobre;
-      });
+                  setState(() {
+            _sobreController.text = qrsobre;
+          });
+       await evaluarSobre(qrsobre);
+      enfocarcodigoSobre();
     }
 
     var sobre = TextFormField(
@@ -386,14 +247,10 @@ class _EnvioPageState extends State<EnvioPage> {
       focusNode: f1,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) async {
-        enfocarcodigoSobre(value);
+        enfocarcodigoSobre();
       },
       onChanged: (text) {
-        setState(() {
-          if (text.length > 0 && text.length < 5) {
-            indice = 2;
-          }
-        });
+        evaluarSobre(text);
       },
       decoration: InputDecoration(
         contentPadding:
@@ -450,30 +307,18 @@ class _EnvioPageState extends State<EnvioPage> {
                               Container(
                                 height: 35,
                                 child: ListTile(
-                                  leading: Icon(
-                                      Icons.perm_identity), //account_circle
-                                  title:
-                                      /* Align(
-                            child: */
-                                      new Text(recordObject.nombre,
-                                          style: TextStyle(fontSize: 15)),
-                                  //alignment: Alignment(-1.2, 0),
-                                  /*),*/
+                                  leading: Icon(Icons.perm_identity),
+                                  title: new Text(recordObject.nombre,
+                                      style: TextStyle(fontSize: 15)),
                                 ),
-                              ), //recordObject.area + " - " + recordObject.sede
+                              ),
                               ListTile(
-                                leading:
-                                    Icon(Icons.location_on), //account_circle
-                                title:
-                                    /*Align(
-                          child:*/
-                                    new Text(
-                                        recordObject.area +
-                                            " - " +
-                                            recordObject.sede,
-                                        style: TextStyle(fontSize: 15)),
-                                //   alignment: Alignment(-1.2, 0),
-                                /*),*/
+                                leading: Icon(Icons.location_on),
+                                title: new Text(
+                                    recordObject.area +
+                                        " - " +
+                                        recordObject.sede,
+                                    style: TextStyle(fontSize: 15)),
                               ),
                               Container(
                                 margin: const EdgeInsets.only(top: 15),
@@ -497,8 +342,9 @@ class _EnvioPageState extends State<EnvioPage> {
                                   ),
                                 ),
                               ]),
-                              errorsobre(_sobreController.text, indice,
-                                  confirmaciondeenvio),
+                              errorSobre.length == 0
+                                  ? Container()
+                                  : errorsobre(errorSobre),
                               Container(
                                 margin: const EdgeInsets.only(top: 15),
                                 height: 40,
@@ -522,8 +368,9 @@ class _EnvioPageState extends State<EnvioPage> {
                                   ),
                                 ),
                               ]),
-                              errorbandeja(_bandejaController.text,
-                                  indicebandeja, confirmaciondeenvio),
+                              errorBandeja.length == 0
+                                  ? Container()
+                                  : errorsobre(errorBandeja),
                               Container(
                                 margin: const EdgeInsets.only(top: 15),
                                 child: ListTile(
@@ -538,4 +385,3 @@ class _EnvioPageState extends State<EnvioPage> {
                             ]))))));
   }
 }
-//                  Navigator.of(context).pushNamed(men.link);

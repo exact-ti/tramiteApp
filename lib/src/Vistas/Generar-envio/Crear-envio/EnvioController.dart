@@ -53,7 +53,7 @@ class EnvioController {
     }
   }
 
-  Future<bool> validarexistencia(String texto) async {
+  Future<bool> validarexistenciaSobre(String texto) async {
     bool respuesta = await envioInterface.validarCodigo(texto);
     return respuesta;
   }

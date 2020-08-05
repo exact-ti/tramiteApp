@@ -13,7 +13,7 @@ class PrincipalPage extends StatefulWidget {
 class _PrincipalPageState extends State<PrincipalPage> {
   PrincipalController principalcontroller = new PrincipalController();
   EnvioController envioController = new EnvioController();
-
+    int cantidad = obtenerCantidadMinima();
   var listadestinatarios;
   String textdestinatario = "";
 
@@ -73,13 +73,21 @@ class _PrincipalPageState extends State<PrincipalPage> {
               color: colorwidget,
               border: new Border(top: BorderSide(color: colorborde))));
     }
+      
+      dynamic retonarFuncion(String texto){
+              final futureVar = principalcontroller.listarUsuariosporFiltro(texto);
+    return futureVar;
+      } //calling the function here instead and storing its future in a variable
 
     Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
       colorwidget = colorplomo;
       List<UsuarioFrecuente> usuarios = [];
-      return FutureBuilder(
-          future: principalcontroller.listarUsuariosporFiltro(texto),
+      if(this.cantidad>texto.length&&texto.length>0){
+        return Container();
+      }else{
+              return FutureBuilder(
+          future: retonarFuncion(texto),
           builder: (BuildContext context,
               AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
             switch (snapshot.connectionState) {
@@ -112,6 +120,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
                 }
             }
           });
+
+      }
     }
 
     Widget _myListView(String buscador) {
@@ -166,6 +176,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
+        resizeToAvoidBottomInset: false, 
+        resizeToAvoidBottomPadding: false,
+        // set it to false
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

@@ -51,12 +51,8 @@ class Requester {
     };
 
     try {
-      _navigationService.showModal();
-
       Response refreshtoken = await Dio().post(properties['API'] + path,
           data: data, options: Options(headers: header));
-      _navigationService.goBack();
-
       return refreshtoken;
     } on DioError catch (e) {
       return e.response;
