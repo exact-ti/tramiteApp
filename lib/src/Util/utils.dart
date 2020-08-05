@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'dart:collection';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
-import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
-
 import 'loader.dart';
 import 'modals/confirmation.dart';
 import 'modals/information.dart';
@@ -274,9 +273,12 @@ final colorplomo = Color(0xFFEAEFF2);
 final colorblanco = Color(0xFFFFFFFF);
 
 Future<String> getDataFromCamera() async {
-  String qrbarra =
-      await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+
+
+  var scanResult = await BarcodeScanner.scan();
+    String qrbarra =scanResult;
   return qrbarra;
+
 }
 
 void enfocarInputfx(BuildContext context, FocusNode fx) {
