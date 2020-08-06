@@ -41,12 +41,6 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    var booleancolor = true;
-    var colorwidget = colorplomo;
-
     void _validarText(String value) async {
     desenfocarInputfx(context);
       listapalomar =await principalcontroller.listarpalomarByCodigo(context, value);

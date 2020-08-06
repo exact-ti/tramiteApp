@@ -53,20 +53,6 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
-    listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
-      for (EnvioModel envio in listaEnvios) {
-        if (listaCodigosValidados.contains(envio.codigoPaquete)) {
-          listaEnviosValidados.add(envio);
-        } else {
-          listaEnviosNoValidados.add(envio);
-        }
-      }
-    }
 
     void listarEnvios(String paquete, String remitente, String destinatario,
         bool opcion) async {
@@ -117,31 +103,6 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
             child: Text('Buscar', style: TextStyle(color: Colors.white)),
           ),
         ));
-
-    /*void _validarSobreText(String value) {
-      if (value != "") {
-        bool perteneceLista = false;
-        for (EnvioModel envio in listaEnvios) {
-          if (envio.codigoPaquete == value) {
-            perteneceLista = true;
-          }
-        }
-        if (perteneceLista) {
-          setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-            listaCodigosValidados.add(value);
-            codigoBandeja = _bandejaController.text;
-          });
-        } else {
-          setState(() {
-            _sobreController.text = "";
-            codigoSobre = value;
-            codigoBandeja = _bandejaController.text;
-          });
-        }
-      }
-    }*/
 
     void _validarPaqueteText(String value) async {
       codigoPaquete = value;

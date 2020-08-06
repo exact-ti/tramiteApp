@@ -22,8 +22,11 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
   }
 
-  Widget tick(Indicador indicador,int modalidad) {
-    Map<String, Object> objetoSend = {'modalidad': modalidad, 'estadoid': indicador.id};
+  Widget tick(Indicador indicador, int modalidad) {
+    Map<String, Object> objetoSend = {
+      'modalidad': modalidad,
+      'estadoid': indicador.id
+    };
     return Expanded(
         child: Container(
             alignment: Alignment.center,
@@ -35,12 +38,12 @@ class _DashboardPageState extends State<DashboardPage> {
                   Text(indicador.cantidad.toString()),
                   InkWell(
                       onTap: () {
-                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ListarEnviosActivosPage(objetoModo: objetoSend),
-                        ));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ListarEnviosActivosPage(
+                                  objetoModo: objetoSend),
+                            ));
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -88,19 +91,22 @@ class _DashboardPageState extends State<DashboardPage> {
     return FutureBuilder(
         future: dashboardController.listarItems(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-    switch (snapshot.connectionState) {
-        case ConnectionState.none:
-        return Center(child: new Text('No hay conexión con el servidor')); // error output
-        case ConnectionState.waiting:
-        return Center(
-            child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: loadingGet(), // waiting indicator
-        ));
-        default:
-        if (snapshot.hasError) return Center(child: new Text('Ha surgido un problema'));
-        return futurowidget(snapshot.data); 
-        }
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Center(
+                  child: new Text(
+                      'No hay conexión con el servidor')); // error output
+            case ConnectionState.waiting:
+              return Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: loadingGet(), // waiting indicator
+              ));
+            default:
+              if (snapshot.hasError)
+                return Center(child: new Text('Ha surgido un problema'));
+              return futurowidget(snapshot.data);
+          }
 /*           if (snapshot.hasData) {
             return futurowidget(snapshot.data);
           } else {
@@ -119,7 +125,7 @@ class _DashboardPageState extends State<DashboardPage> {
             height: screenHeightExcludingToolbar(context, dividedBy: 6),
             width: MediaQuery.of(context).size.width,
             child: Container(
-              child: itemContent(data["entrada"],entrada),
+              child: itemContent(data["entrada"], entrada),
             )),
         textModo("Salidas"),
         Container(
@@ -127,23 +133,23 @@ class _DashboardPageState extends State<DashboardPage> {
             height: screenHeightExcludingToolbar(context, dividedBy: 6),
             width: MediaQuery.of(context).size.width,
             child: Container(
-              child: itemContent(data["salida"],salida),
+              child: itemContent(data["salida"], salida),
             )),
       ],
     );
   }
 
-  Widget itemContent(List<dynamic> data,int modalidad) {
+  Widget itemContent(List<dynamic> data, int modalidad) {
     List<Indicador> indicadores = indicadorModel.fromJsonToIndicador(data);
     int tam = indicadores.length;
     List<Widget> listaWidget = new List();
     for (int i = 0; i < tam; i++) {
       Indicador indicador = indicadores[i];
       if (i != (tam - 1)) {
-        listaWidget.add(tick(indicador,modalidad));
+        listaWidget.add(tick(indicador, modalidad));
         listaWidget.add(line());
       } else {
-        listaWidget.add(tick(indicador,modalidad));
+        listaWidget.add(tick(indicador, modalidad));
       }
     }
     return Row(
