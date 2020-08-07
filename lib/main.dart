@@ -8,9 +8,9 @@ import 'package:tramiteapp/src/routes/routes.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/Util/timezone.dart' as timezone;
+import 'package:flutter_localizations/flutter_localizations.dart';
 
- 
-void main() async { 
+void main() async {
   final prefs = new PreferenciasUsuario();
   WidgetsFlutterBinding.ensureInitialized();
   await prefs.initPrefs();
@@ -18,26 +18,26 @@ void main() async {
   print(timezone.parse('2020-06-10 13:56'));
   setupLocator();
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp,DeviceOrientation.portraitDown])
-      .then((_) => runApp(MyApp()),
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
+    (_) => runApp(MyApp()),
   );
-  }
+}
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Componentes App',
-      debugShowCheckedModeBanner: false,
-      //home: HomePage()
-      initialRoute: '/login',  
-      routes: getAplicationRoutes(),
-      onGenerateRoute: (settings){
-        return MaterialPageRoute(
-          builder: ( BuildContext context ) =>HomePage()
-        );
-      },
-      navigatorKey: locator<NavigationService>().navigatorKey
-    );
+        title: 'Componentes App',
+        debugShowCheckedModeBanner: false,
+        //home: HomePage()
+        initialRoute: '/login',
+        routes: getAplicationRoutes(),
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [const Locale('en'), const Locale('es')],
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(
+              builder: (BuildContext context) => HomePage());
+        },
+        navigatorKey: locator<NavigationService>().navigatorKey);
   }
 }

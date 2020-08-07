@@ -64,5 +64,22 @@ class EnvioImpl implements EnvioInterface {
     return await envio.listarEstadosEnvios();
   }
 
+  @override
+  Future<List<EnvioModel>> listarEnviosUTD() async {
+    return await envio.listarEnviosUTD();
+
+  }
+
+  @override
+  Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio, String fechaFin, int opcion) async {
+    List<EnvioModel> envios;
+      if(opcion==0){
+      envios = await envio.listarEnviosHistoricosEntrada(fechaInicio,fechaFin);
+      }else{
+       envios = await envio.listarEnviosHistoricosSalida(fechaInicio,fechaFin);       
+      }
+      return envios;
+  }
+
 
 }

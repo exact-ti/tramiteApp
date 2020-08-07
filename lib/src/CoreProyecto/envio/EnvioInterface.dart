@@ -16,6 +16,10 @@ class EnvioInterface {
 
     Future<List<EstadoEnvio>> listarEstadosEnvios(){} 
 
+    Future<List<EnvioModel>> listarEnviosUTD(){} 
+
+    Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio,String fechaFin,int opcion){} 
+
     }
 
 

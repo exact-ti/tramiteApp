@@ -188,12 +188,6 @@ void trackingPopUp(BuildContext context, int codigo) async {
               Expanded(
                   child: SingleChildScrollView(
                       child: Column(children: listadecodigos))),
-              /*Container(
-             height: 20,   
-            child:ListView(
-              children:listadecodigos,
-            )
-              )*/
             ],
           ),
         ));

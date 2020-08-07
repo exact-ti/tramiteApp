@@ -7,11 +7,10 @@ import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'dart:convert';
-
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-import 'package:tramiteapp/src/services/locator.dart';
-import 'package:tramiteapp/src/services/navigation_service_file.dart';
+
 
 class EnvioProvider implements IEnvioProvider {
   Requester req = Requester();
@@ -23,15 +22,12 @@ class EnvioProvider implements IEnvioProvider {
   UtdModel utdModel = new UtdModel();
   BuzonModel buzonModel = new BuzonModel();
   EstadoEnvio estadoEnvio = new EstadoEnvio();
-  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   Future<bool> crearEnvioProvider(EnvioModel envio) async {
-    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
-    int id = bznmodel.id;
+    int buzonId = obtenerBuzonid();
     final formData = json.encode({
-      "remitenteId": id,
+      "remitenteId": buzonId,
       "destinatarioId": envio.destinatarioId,
       "codigoPaquete": envio.codigoPaquete,
       "codigoUbicacion": envio.codigoUbicacion,
@@ -53,10 +49,8 @@ class EnvioProvider implements IEnvioProvider {
   //agencias
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario() async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
+    int utdId =  obtenerUTDid();
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
     List<dynamic> envios = resp.data;
     List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonValidar(envios);
     return listEnvio;
@@ -69,10 +63,8 @@ class EnvioProvider implements IEnvioProvider {
       ids.add("$element");
       });
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
-    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
-    int id = bznmodel.id;
-    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/salida?etapasIds=$gruposIds');
+    int buzonId = obtenerBuzonid();
+    Response resp =await req.get('/servicio-tramite/buzones/$buzonId/envios/salida?etapasIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
@@ -89,10 +81,8 @@ class EnvioProvider implements IEnvioProvider {
       ids.add("$element");
       });
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
-    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
-    int id = bznmodel.id;
-    Response resp =await req.get('/servicio-tramite/buzones/$id/envios/entrada?etapasIds=$gruposIds');
+    int buzonId = obtenerBuzonid();
+    Response resp =await req.get('/servicio-tramite/buzones/$buzonId/envios/entrada?etapasIds=$gruposIds');
     if (resp.data == "") {
       return null;
     }
@@ -108,6 +98,36 @@ class EnvioProvider implements IEnvioProvider {
     dynamic respuestaData = resp.data;
     List<dynamic> respdatalist = respuestaData["data"];
     List<EstadoEnvio> listEstados = estadoEnvio.fromJsonToEnviosActivos(respdatalist);
+    return listEstados;
+  }
+
+  @override
+  Future<List<EnvioModel>> listarEnviosUTD() async {
+    int utdId =  obtenerUTDid();
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/envios');
+    dynamic respuestaData = resp.data;
+    List<dynamic> respdatalist = respuestaData["data"];
+    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
+    return listEstados;
+  }
+
+  @override
+  Future<List<EnvioModel>> listarEnviosHistoricosEntrada(String fechaInicio, String fechaFin) async {
+    int buzonId =  obtenerBuzonid();
+    Response resp = await req.get('/servicio-tramite/buzones/$buzonId/envios/entrada?etapasIds=5&desde=$fechaInicio&hasta=$fechaFin');
+    dynamic respuestaData = resp.data;
+    List<dynamic> respdatalist = respuestaData["data"];
+    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
+    return listEstados;
+    }
+  
+    @override
+    Future<List<EnvioModel>> listarEnviosHistoricosSalida(String fechaInicio, String fechaFin) async {
+    int buzonId =  obtenerBuzonid();
+    Response resp = await req.get('/servicio-tramite/buzones/$buzonId/envios/salida?etapasIds=5&desde=$fechaInicio&hasta=$fechaFin');
+    dynamic respuestaData = resp.data;
+    List<dynamic> respdatalist = respuestaData["data"];
+    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
     return listEstados;
   }
 }

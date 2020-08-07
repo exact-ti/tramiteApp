@@ -303,6 +303,13 @@ void popuptoinput(BuildContext context, FocusNode fx, String tipo,
 BoxDecoration myBoxDecoration(Color colorletra) {
   return BoxDecoration(
     border: Border.all(color: colorletra),
+    borderRadius:BorderRadius.circular(5)
+  );
+}
+
+BoxDecoration myBigBoxDecoration(Color colorletra) {
+  return BoxDecoration(
+    border: Border.all(color: colorletra),
   );
 }
 
@@ -352,4 +359,23 @@ int obtenerCantidadMinima(){
       }
     }
     return cantidad;
+}
+
+
+int obtenerUTDid(){
+    final _prefs = new PreferenciasUsuario();
+    UtdModel utdModel = new UtdModel();
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    int id = umodel.id;
+    return id;
+}
+
+int obtenerBuzonid(){
+    final _prefs = new PreferenciasUsuario();
+    BuzonModel buzonModel = new BuzonModel();
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+    BuzonModel umodel = buzonModel.fromPreferencs(buzon);
+    int id = umodel.id;
+    return id;
 }

@@ -18,5 +18,10 @@ abstract class IEnvioProvider{
 
   Future<List<EstadoEnvio>> listarEstadosEnvios();  
 
+  Future<List<EnvioModel>> listarEnviosUTD();  
+
+  Future<List<EnvioModel>> listarEnviosHistoricosEntrada(String fechaInicio,String fechaFin);
+
+  Future<List<EnvioModel>> listarEnviosHistoricosSalida(String fechaInicio,String fechaFin); 
 
 }

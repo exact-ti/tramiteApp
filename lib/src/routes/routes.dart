@@ -8,6 +8,7 @@ import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/Rec
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-UTD/ListarEnviosUTDPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage.dart';
@@ -16,6 +17,7 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/Listar-turnos/ListarTurn
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-adicionales/recorridoAdicionalPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-propios/recorridoPropioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
@@ -48,11 +50,9 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/recepcionar-valija' :  (BuildContext context) => RecepcionInterPage(recorridopage: null),
     '/recepcionar-lote' :  (BuildContext context) => RecepcionEntregaLotePage(entregaLotepage:null),
     '/dashboard' :  (BuildContext context) => DashboardPage(),
-
-
-
+    '/envios-en-utd' :  (BuildContext context) => ListarEnviosUTDPage(),
+    '/envios-historicos' :  (BuildContext context) => HistoricoPage(),
     //==================Menu secundario====================================
-
     '/crear-envio': (BuildContext context) => EnvioPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),
     '/entregas-pisos-adicionales': (BuildContext context) => RecorridosAdicionalesPage(),

@@ -39,15 +39,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
 
-    void _validarBandejaText(String value) {
-      if (value != "") {
-        setState(() {
-          codigoBandeja = value;
-          _bandejaController.text = "";
-        });
-      }
-    }
-
     void agregaralista(EnvioModel envioModel) {
       listaEnvios.add(envioModel.codigoPaquete);
     }
@@ -134,52 +125,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                 ],
               )));
     }
-/*
-    Widget crearItem(EnvioModel envio) {
-      String destinatario = envio.usuario;
-      String codigo = envio.codigoPaquete;
-      String observacion = envio.observacion;
-      agregaralista(envio);
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Container(
-                  alignment: Alignment.centerLeft,
-                  height: 35,
-                  child: Text("Para $destinatario")),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("$codigo",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                        trackingPopUp(context, codigo);
-                        },
-                      )),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text("En custodia en UTD $observacion")))
-                ],
-              )))
-            ],
-          ));
-    }*/
-
-    Future _traerdatosescanerBandeja() async {
-      if (!validados.containsValue(true)) {
-        qrbarra = await getDataFromCamera();
-        _validarBandejaText(qrbarra);
-      }
-    }
 
     void validarEnvio(List<String> listid) async {
       bool respuestaLista =
@@ -188,6 +133,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         notificacion(context, "success", "EXACT", "Se recepcionó los envíos");
         setState(() {
           validados.clear();
+          _bandejaController.text="";
           codigoBandeja = codigoBandeja;
         });
       } else {
@@ -195,9 +141,32 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
             context, "error", "EXACT", "No es posible procesar el código");
         validados.clear();
         setState(() {
+            _bandejaController.text="";
           codigoBandeja = codigoBandeja;
         });
       }
+    }
+
+    void _validarBandejaText(String value) {
+      if (value != "") {
+        List<String> lista = new List();
+        lista.add(value);
+        validarEnvio(lista);
+      }
+    }
+
+    Future _traerdatosescanerBandeja() async {
+      if (!validados.containsValue(true)) {
+        qrbarra = await getDataFromCamera();
+        _validarBandejaText(qrbarra);
+      }
+    }
+
+    void registrarLista() {
+      List<String> listid = new List();
+      validados
+          .forEach((k, v) => v == true ? listid.add(k) : print("no pertenece"));
+      validarEnvio(listid);
     }
 
     final sendButton2 = Container(
@@ -206,10 +175,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
           borderRadius: BorderRadius.circular(5),
         ),
         onPressed: () {
-          List<String> listid = new List();
-          validados.forEach(
-              (k, v) => v == true ? listid.add(k) : print("no pertenece"));
-          validarEnvio(listid);
+          registrarLista();
         },
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
@@ -256,7 +222,8 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
-      focusNode: f1,
+/*       focusNode: f1,
+ */
       controller: _bandejaController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {

@@ -65,6 +65,24 @@ class EnvioModel {
     return envios;
   }
 
+    List<EnvioModel> fromEnviosUTD(List<dynamic> jsons) {
+    List<EnvioModel> envios = new List();
+    for (Map<String, dynamic> json in jsons) {
+      EnvioModel envio = new EnvioModel();
+      envio.remitente = json["remitente"];
+      envio.destinatario = json["destinatario"];
+      envio.codigoPaquete = json["paqueteId"];
+      envio.observacion = json["estado"];
+      dynamic dateTimeZone = timezone.parse(json["fechaCreado"]);
+      envio.fecha = "$dateTimeZone";
+      DateTime fecha = new DateFormat("yyyy-MM-dd hh:mm:ss").parse(envio.fecha);
+      envio.fecha = DateFormat('yyyy-MM-dd hh:mm:ssa').format(fecha);
+      envio.id = json["id"];
+      envios.add(envio);
+    }
+    return envios;
+  }
+
   List<EnvioModel> fromJsonConsultaEnvio(List<dynamic> jsons) {
     List<EnvioModel> envios = new List();
     for (Map<String, dynamic> json in jsons) {
