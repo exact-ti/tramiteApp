@@ -28,11 +28,7 @@ class ListarEnviosAgenciasController {
   }
 
   Future<bool> registrarlista(BuildContext context, List<String> lista) async {
-    _navigationService.showModal();
-
     bool respuesta = await agenciacore.iniciarEntregaListaAgencia(lista);
-    _navigationService.goBack();
-
     return respuesta;
   }
 }

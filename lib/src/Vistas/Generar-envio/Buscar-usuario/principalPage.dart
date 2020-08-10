@@ -128,8 +128,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
       return _crearListadoporfiltro(buscador);
     }
 
-    String _text = "";
-
     final destinatario = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,

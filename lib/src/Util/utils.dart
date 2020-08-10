@@ -42,8 +42,15 @@ List<Widget> milistview(BuildContext context) {
     }
     listmenu.sort((a, b) => a.orden.compareTo(b.orden));
     listmenu.reversed;
+    BuzonModel buzonModel = new BuzonModel();
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+    BuzonModel umodel = buzonModel.fromPreferencs(buzon);
+    String nombreBuzon = umodel.nombre;
     list.add(DrawerHeader(
-      child: Container(),
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        child: Text("$nombreBuzon",style: TextStyle(fontSize: 15,color: Colors.white),),
+      ),
       decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/original.jpg'), fit: BoxFit.cover)),
@@ -273,12 +280,9 @@ final colorplomo = Color(0xFFEAEFF2);
 final colorblanco = Color(0xFFFFFFFF);
 
 Future<String> getDataFromCamera() async {
-
-
   var scanResult = await BarcodeScanner.scan();
-    String qrbarra =scanResult;
+  String qrbarra = scanResult;
   return qrbarra;
-
 }
 
 void enfocarInputfx(BuildContext context, FocusNode fx) {
@@ -302,9 +306,8 @@ void popuptoinput(BuildContext context, FocusNode fx, String tipo,
 
 BoxDecoration myBoxDecoration(Color colorletra) {
   return BoxDecoration(
-    border: Border.all(color: colorletra),
-    borderRadius:BorderRadius.circular(5)
-  );
+      border: Border.all(color: colorletra),
+      borderRadius: BorderRadius.circular(5));
 }
 
 BoxDecoration myBigBoxDecoration(Color colorletra) {
@@ -313,27 +316,39 @@ BoxDecoration myBigBoxDecoration(Color colorletra) {
   );
 }
 
-Widget sinResultados(String mensaje){
-  return Center(child:Text(mensaje,style: TextStyle(color: colorletra,fontSize: 20,fontWeight:FontWeight.bold)));
+Widget sinResultados(String mensaje) {
+  return Center(
+      child: Text(mensaje,
+          style: TextStyle(
+              color: colorletra, fontSize: 20, fontWeight: FontWeight.bold)));
 }
 
-Widget loadingGet(){
+Widget loadingGet() {
   return new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                child: ColorLoader3(
-                  radius: 40.0,
-                  dotRadius: 10.0,
-                ),
-              ),  
-              Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: FadingText("Loading",style: TextStyle(fontSize: 20,color: colorletra),)),
-            ],
-          );
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        child: ColorLoader3(
+          radius: 40.0,
+          dotRadius: 10.0,
+        ),
+      ),
+      Container(
+          margin: EdgeInsets.only(top: 5),
+          child: FadingText(
+            "Loading",
+            style: TextStyle(fontSize: 20, color: colorletra),
+          )),
+    ],
+  );
+}
+
+Widget textHipervinculo(String text) {
+  return Text(text,
+      style: TextStyle(
+          decoration: TextDecoration.underline, color: Colors.blue[300]));
 }
 
 Widget scaffoldbody(Widget principal, BuildContext context) {
@@ -346,36 +361,35 @@ Widget scaffoldbody(Widget principal, BuildContext context) {
           child: principal));
 }
 
-
-int obtenerCantidadMinima(){
-    final _prefs = new PreferenciasUsuario();
+int obtenerCantidadMinima() {
+  final _prefs = new PreferenciasUsuario();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
-      List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
-    List<ConfiguracionModel> configuration =configuracionModel.fromPreferencs(configuraciones);
-    int cantidad = 0;
-    for (ConfiguracionModel confi in configuration) {
-      if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
-        cantidad = int.parse(confi.valor);
-      }
+  List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
+  List<ConfiguracionModel> configuration =
+      configuracionModel.fromPreferencs(configuraciones);
+  int cantidad = 0;
+  for (ConfiguracionModel confi in configuration) {
+    if (confi.nombre == "CARACTERES_MINIMOS_BUSQUEDA") {
+      cantidad = int.parse(confi.valor);
     }
-    return cantidad;
+  }
+  return cantidad;
 }
 
-
-int obtenerUTDid(){
-    final _prefs = new PreferenciasUsuario();
-    UtdModel utdModel = new UtdModel();
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    return id;
+int obtenerUTDid() {
+  final _prefs = new PreferenciasUsuario();
+  UtdModel utdModel = new UtdModel();
+  Map<String, dynamic> utd = json.decode(_prefs.utd);
+  UtdModel umodel = utdModel.fromPreferencs(utd);
+  int id = umodel.id;
+  return id;
 }
 
-int obtenerBuzonid(){
-    final _prefs = new PreferenciasUsuario();
-    BuzonModel buzonModel = new BuzonModel();
-    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel umodel = buzonModel.fromPreferencs(buzon);
-    int id = umodel.id;
-    return id;
+int obtenerBuzonid() {
+  final _prefs = new PreferenciasUsuario();
+  BuzonModel buzonModel = new BuzonModel();
+  Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+  BuzonModel umodel = buzonModel.fromPreferencs(buzon);
+  int id = umodel.id;
+  return id;
 }

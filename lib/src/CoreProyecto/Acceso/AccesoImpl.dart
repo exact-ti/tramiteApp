@@ -1,10 +1,8 @@
 
 
 import 'dart:collection';
-import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoBuzonEnum.dart';
-import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
@@ -14,7 +12,6 @@ import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/IUtdProvider.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-
 import 'AccesoInterface.dart';
 
 class AccesoImpl implements AccesoInterface {

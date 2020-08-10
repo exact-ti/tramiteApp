@@ -1,15 +1,16 @@
 import 'dart:collection';
-
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'ListarEnviosAgenciasController.dart';
+
+final NavigationService _navigationService = locator<NavigationService>();
 
 class ListarEnviosAgenciasPage extends StatefulWidget {
   @override
@@ -22,35 +23,31 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       new ListarEnviosAgenciasController();
   EnvioController envioController = new EnvioController();
   Map<String, dynamic> validados = new HashMap();
-  String textdestinatario = "";
-  var colorletra = const Color(0xFFACADAD);
   var colorseleccion = const Color(0xFF6DA1BB);
   List<EnvioInterSedeModel> enviosvalidados = new List();
+  bool respuestaBack = false;
 
-  var prueba;
-  var inicio = false;
-  var nuevo = 0;
-  bool monVal = false;
-  bool tuVal = false;
-  bool wedVal = false;
   @override
   void initState() {
-    setState(() {
-      textdestinatario = "";
-    });
+    inicializarEnviosRecepcion();
     super.initState();
+  }
+
+  inicializarEnviosRecepcion() async {
+    enviosvalidados =
+        await principalcontroller.listarAgenciasExternasController();
+    enviosvalidados.forEach((element) {
+      int cod = element.utdId;
+      validados["$cod"] = false;
+    });
+    setState(() {
+      respuestaBack = true;
+      enviosvalidados = enviosvalidados;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    const othercolor = const Color(0xFF6F7375);
-
-    var booleancolor = true;
-    var colorwidget = colorplomo;
-
     Widget informacionEntrega(EnvioInterSedeModel entrega) {
       String destino = entrega.destino;
       int numvalijas = entrega.numvalijas;
@@ -96,8 +93,16 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       if (respuesta) {
         notificacion(
             context, "success", "EXACT", "Se inició la entrega correctamente");
+        _navigationService.showModal();
+        enviosvalidados =
+            await principalcontroller.listarAgenciasExternasController();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        _navigationService.goBack();
         setState(() {
-          textdestinatario = textdestinatario;
+          enviosvalidados = enviosvalidados;
         });
       } else {
         notificacion(
@@ -127,7 +132,6 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           },
           child: Container(
               decoration: myBoxDecoration(validados["$codigoUtd"]),
-              /* color:  validados["$codigoUtd"] ==false ? Colors.white : Colors.black,*/
               margin: const EdgeInsets.only(bottom: 5),
               child: InkWell(
                   onTap: () {
@@ -148,7 +152,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                         iniciarItem(entrega);
                       }
                     }
-                  }, // handle your onTap here
+                  },
                   child: Container(
                     child: Row(children: <Widget>[
                       Expanded(
@@ -190,39 +194,15 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                   ))));
     }
 
-    Widget _crearListado(String codigo) {
-      return FutureBuilder(
-          future: principalcontroller.listarAgenciasExternasController(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    final entregas = snapshot.data;
-                    if (entregas.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: entregas.length,
-                          itemBuilder: (context, i) => crearItem(entregas[i]));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
+    Widget _crearListado(List<EnvioInterSedeModel> envios) {
+      if (envios.length == 0) {
+        return Container(
+            child: Center(child: sinResultados("No hay envíos para agencias")));
+      } else {
+        return ListView.builder(
+            itemCount: envios.length,
+            itemBuilder: (context, i) => crearItem(envios[i]));
+      }
     }
 
     final sendButton = Container(
@@ -247,17 +227,36 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       List<String> listid = new List();
       validados
           .forEach((k, v) => v == true ? listid.add(k) : print("no pertenece"));
+
       bool respuesta =
           await principalcontroller.registrarlista(context, listid);
-
       if (respuesta) {
         notificacion(
             context, "success", "EXACT", "Se inició la entrega correctamente");
+        _navigationService.showModal();
+
+        validados.clear();
+        enviosvalidados =
+            await principalcontroller.listarAgenciasExternasController();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        _navigationService.goBack();
         setState(() {
-          validados.clear();
-          textdestinatario = textdestinatario;
+          enviosvalidados = enviosvalidados;
+          validados = validados;
         });
       } else {
+        validados.clear();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        setState(() {
+          enviosvalidados = enviosvalidados;
+          validados = validados;
+        });
         notificacion(
             context, "error", "EXACT", "No se pudo iniciar la entrega");
       }
@@ -277,73 +276,55 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
       ),
     );
 
-    const PrimaryColor = const Color(0xFF2C6983);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
+    Widget mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.bottomLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 8),
+                  width: double.infinity,
+                  child: sendButton),
+            ),
+            !respuestaBack
+                ? Expanded(
+                    child: Container(
+                        child: Center(
+                            child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: loadingGet(),
+                  ))))
+                : Expanded(
+                    child: Container(
+                        alignment: Alignment.bottomCenter,
+                        child: _crearListado(enviosvalidados)),
+                  ),
+            validados.containsValue(true)
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        alignment: Alignment.center,
+                        height:
+                            screenHeightExcludingToolbar(context, dividedBy: 8),
+                        width: double.infinity,
+                        child: sendButton2),
+                  )
+                : Container(),
           ],
-          title: Text('Envío Agencias',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
         ),
-        drawer: sd.crearMenu(context),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    alignment: Alignment.bottomLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: _crearListado(textdestinatario)),
-              ),
-              validados.containsValue(true)
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                          margin: const EdgeInsets.only(bottom: 20),
-                          alignment: Alignment.center,
-                          height: screenHeightExcludingToolbar(context,
-                              dividedBy: 8),
-                          width: double.infinity,
-                          child: sendButton2),
-                    )
-                  : Container(),
-            ],
-          ),
-        ));
-  }
+      );
+    }
 
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+    return Scaffold(
+        appBar: crearTitulo("Envios activos"),
+        drawer: crearMenu(context),
+        body: scaffoldbody(mainscaffold(), context));
   }
 
   BoxDecoration myBoxDecoration(bool seleccionado) {

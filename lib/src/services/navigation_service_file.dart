@@ -82,22 +82,7 @@ class NavigationService {
     Widget alert = WillPopScope(
         onWillPop: () {},
         child: AlertDialog(
-          content: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                child: ColorLoader3(
-                  radius: 40.0,
-                  dotRadius: 10.0,
-                ),
-              ),  
-              Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: FadingText("Loading",style: TextStyle(fontSize: 20,color: colorletra),)),
-            ],
-          ),
+          content: loadingGet(),
         ));
     showDialog(
         barrierDismissible: false,

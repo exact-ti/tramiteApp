@@ -16,16 +16,13 @@ class RecepcionController {
     );
   }
 
-  Future<List<EnvioModel>> listarEnviosPrincipal(
-      BuildContext context, List<String> codigos, String codigo) async {
-    List<EnvioModel> envios =
-        await recepcionInterface.listarEnviosPrincipalCore();
+  Future<List<EnvioModel>> listarEnviosPrincipal() async {
+    List<EnvioModel> envios =await recepcionInterface.listarEnviosPrincipalCore();
     return envios;
   }
 
   Future<bool> guardarLista(BuildContext context, List<String> lista) async {
-    bool respuesta =
-        await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
+    bool respuesta =await recepcionInterface.registrarListaEnvioPrincipalCore(lista);
     return respuesta;
   }
 }

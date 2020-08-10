@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/TipoEntregaPersonalizadaModel.dart';
 

@@ -150,9 +150,16 @@ class _EnvioPageState extends State<EnvioPage> {
           });
         }
       } else {
+        if(texto.length!=0){
         setState(() {
           errorBandeja = "La longitud mínima es de $minvalor caracteres";
         });
+        }else{
+        setState(() {
+          errorBandeja = "";
+        });          
+        }
+
       }
     }
 

@@ -64,7 +64,7 @@ class _WatermarkPaint extends CustomPainter {
 
 class _MyHomePageState extends State<GenerarFirmaPage> {
   ByteData _img = ByteData(0);
-  var color = Colors.red;
+  var color = Colors.black;
   var strokeWidth = 5.0;
   final _sign = GlobalKey<SignatureState>();
 
