@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
-
 import 'loginController.dart';
 
 class LoginPage extends StatefulWidget {
-  static String tag = 'login-page';
-
   @override
   _LoginPageState createState() => new _LoginPageState();
 }
@@ -15,10 +13,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   SharedPreferences sharedPreferences;
   bool pressbutton = true;
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   @override
   void initState() {
     super.initState();
-    checkLoginStatus(); 
+    checkLoginStatus();
   }
 
   checkLoginStatus() async {
@@ -44,11 +45,20 @@ class _LoginPageState extends State<LoginPage> {
           child: Image.asset('assets/usuariologin.png'),
         ));
 
-    final email = TextFormField(
+    void enfocarcodigocontrasena() {
+      FocusScope.of(context).unfocus();
+      enfocarInputfx(context, f2);
+    }
+
+    var email = TextFormField(
       controller: _usernameController,
       keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.none,
+      textInputAction: TextInputAction.next,
       autofocus: false,
+      focusNode: f1,
+      onFieldSubmitted: (value) {
+        enfocarcodigocontrasena();
+      },
       textAlign: TextAlign.center,
       decoration: InputDecoration(
         border: InputBorder.none,
@@ -57,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
         fillColor: Color(0xffF0F3F4),
         hintText: 'Usuario',
         contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
     );
 
@@ -66,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       String password = _passwordController.text;
       if (username == "" || password == "") {
         notificacion(
-     context, "error", "EXACT", "Ingrese todos los datos solicitados"); 
+            context, "error", "EXACT", "Ingrese todos los datos solicitados");
       } else {
         logincontroller.validarlogin(context, username, password);
       }
@@ -75,12 +84,28 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
 
+    void enfocarUsuarioOrContrasena() {
+      FocusScope.of(context).unfocus();
+      if (_usernameController.text.length == 0) {
+        enfocarInputfx(context, f1);
+      } else {
+        if (pressbutton) {
+          pressbutton = false;
+          performLogin(context);
+        }
+      }
+    }
+
     final password = TextFormField(
       controller: _passwordController,
       autofocus: false,
       obscureText: true,
       textAlign: TextAlign.center,
-      textInputAction: TextInputAction.none,
+      focusNode: f2,
+      onFieldSubmitted: (value) async {
+        enfocarUsuarioOrContrasena();
+      },
+      textInputAction: TextInputAction.send ,
       decoration: InputDecoration(
         filled: true,
         border: InputBorder.none,
@@ -88,7 +113,6 @@ class _LoginPageState extends State<LoginPage> {
         fillColor: Color(0xffF0F3F4),
         hintText: 'contraseña',
         contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-        //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
     );
 
@@ -100,12 +124,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
         onPressed: () {
           FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-          if(pressbutton){
-          pressbutton = false;
-          performLogin(context);
-          } 
-          //Navigator.of(context).pushNamed("principal");
+          new TextEditingController().clear();
+          if (pressbutton) {
+            pressbutton = false;
+            performLogin(context);
+          }
         },
         padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
         color: Colors.lightBlueAccent,
@@ -120,20 +143,6 @@ class _LoginPageState extends State<LoginPage> {
       style: TextStyle(
           fontWeight: FontWeight.bold, fontSize: 30, color: Colors.blueGrey),
     );
-    final titulo2 = Text(
-      'de Valijas',
-      textAlign: TextAlign.center,
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: Colors.blueGrey),
-    );
-/* 
-    final letrafooter = Text(
-      'Forgot password?',
-      textAlign: TextAlign.center,
-       overflow: TextOverflow.ellipsis,
-         style: TextStyle( fontSize: 18,color: Colors.lightBlue ),
-    ); */
 
     return Scaffold(
       backgroundColor: Colors.white,

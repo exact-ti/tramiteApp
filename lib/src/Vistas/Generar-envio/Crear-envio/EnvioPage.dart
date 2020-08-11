@@ -119,12 +119,12 @@ class _EnvioPageState extends State<EnvioPage> {
         ),
       ),
       onFieldSubmitted: (value) async {
-              if (errorSobre.length == 0 &&
-                  errorBandeja.length == 0 &&
-                  _sobreController.text.length != 0) {
-                validarEnvio();
-              }
-        },
+        if (errorSobre.length == 0 &&
+            errorBandeja.length == 0 &&
+            _sobreController.text.length != 0) {
+          validarEnvio();
+        }
+      },
     );
 
     void enfocarCodigoBandeja() async {
@@ -150,24 +150,23 @@ class _EnvioPageState extends State<EnvioPage> {
           });
         }
       } else {
-        if(texto.length!=0){
-        setState(() {
-          errorBandeja = "La longitud mínima es de $minvalor caracteres";
-        });
-        }else{
-        setState(() {
-          errorBandeja = "";
-        });          
+        if (texto.length != 0) {
+          setState(() {
+            errorBandeja = "La longitud mínima es de $minvalor caracteres";
+          });
+        } else {
+          setState(() {
+            errorBandeja = "";
+          });
         }
-
       }
     }
 
     Future _traerdatosescanerbandeja() async {
       qrbarra = await getDataFromCamera();
-            setState(() {
-            _bandejaController.text = qrbarra;
-          });
+      setState(() {
+        _bandejaController.text = qrbarra;
+      });
       await evaluarBandeja(qrbarra);
       enfocarCodigoBandeja();
     }
@@ -240,10 +239,10 @@ class _EnvioPageState extends State<EnvioPage> {
 
     Future _traerdatosescanersobre() async {
       qrsobre = await getDataFromCamera();
-                  setState(() {
-            _sobreController.text = qrsobre;
-          });
-       await evaluarSobre(qrsobre);
+      setState(() {
+        _sobreController.text = qrsobre;
+      });
+      await evaluarSobre(qrsobre);
       enfocarcodigoSobre();
     }
 
@@ -315,13 +314,13 @@ class _EnvioPageState extends State<EnvioPage> {
                                 height: 35,
                                 child: ListTile(
                                   leading: Icon(Icons.perm_identity),
-                                  title: new Text(recordObject.nombre,
+                                  title: new Text("Para: "+recordObject.nombre,
                                       style: TextStyle(fontSize: 15)),
                                 ),
                               ),
                               ListTile(
                                 leading: Icon(Icons.location_on),
-                                title: new Text(
+                                title: new Text("Área: "+
                                     recordObject.area +
                                         " - " +
                                         recordObject.sede,
