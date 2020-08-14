@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
@@ -48,7 +50,9 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
 
       return Container(
           height: 70,
-          child: ListView(shrinkWrap: true, children: <Widget>[
+          child: ListView(shrinkWrap: true, 
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
             Container(
               padding: const EdgeInsets.only(left: 20),
               height: 35,
@@ -63,16 +67,24 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                       padding: const EdgeInsets.only(left: 20),
                       child: switched == 0
                           ? Container()
-                          : Text("$codigo",
-                              style: TextStyle(fontSize: 10)),
+                          : Text("$codigo", style: TextStyle(fontSize: 10)),
                     ),
                   ]),
             ),
             Container(
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 height: 35,
-                child: Text("$numvalijas valijas",
-                    style: TextStyle(fontSize: 12))),
+                child: switched == 0
+                    ? Text(
+                        numvalijas == 1
+                            ? "$numvalijas Lote"
+                            : "$numvalijas Lotes",
+                        style: TextStyle(fontSize: 12))
+                    : Text(
+                        numvalijas == 1
+                            ? "$numvalijas valija"
+                            : "$numvalijas valijas",
+                        style: TextStyle(fontSize: 12))),
           ]));
     }
 
@@ -94,34 +106,27 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
     Widget iconoRecepcion(EntregaLoteModel entregaLote, BuildContext context) {
       return Container(
           height: 70,
-          child: IconButton(
-              icon: FaIcon(
+          child: Center(
+            child:FaIcon(
                 FontAwesomeIcons.locationArrow,
                 color: Color(0xffC7C7C7),
                 size: 25,
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecepcionEntregaLotePage(
-                          entregaLotepage: entregaLote),
-                    ));
-              }));
+              )
+          ));
     }
 
     void iniciarEnvioLote(EntregaLoteModel entrega) async {
       bool respuesta =
           await listarLoteController.onSearchButtonPressed(context, entrega);
       if (respuesta) {
-        listarLoteController.confirmarAlerta(context,
-            "Se ha iniciado el envío correctamente", "Inicio Correcto");
+        notificacion(context, "success", "EXACT",
+            "Se ha iniciado el envío correctamente");
         setState(() {
           indexSwitch = indexSwitch;
         });
       } else {
-        listarLoteController.confirmarAlerta(
-            context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
+        notificacion(
+            context, "error", "EXACT", "No se pudo iniciar la entrega");
       }
     }
 
@@ -129,15 +134,13 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
       return Container(
           height: 70,
           child: entrega.estadoEnvio.id == creado
-              ? IconButton(
-                  icon: FaIcon(
+              ? Center(
+                child:FaIcon(
                     FontAwesomeIcons.locationArrow,
                     color: Color(0xffC7C7C7),
                     size: 25,
-                  ),
-                  onPressed: () {
-                    iniciarEnvioLote(entrega);
-                  })
+                  )
+              )
               : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
@@ -149,34 +152,48 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
 
     Widget crearItem(EntregaLoteModel entrega, int switched) {
       return Container(
-        decoration: sd.myBoxDecoration(sd.colorletra),
-        margin: EdgeInsets.only(bottom: 5),
-        child: Row(children: <Widget>[
-          Expanded(
-              flex: 1,
+          decoration: sd.myBoxDecoration(sd.colorletra),
+          margin: EdgeInsets.only(bottom: 5),
+          child: InkWell(
+              onTap: () {
+                if (switched == 0) {
+                  iniciarEnvioLote(entrega);
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            RecepcionEntregaLotePage(entregaLotepage: entrega),
+                      ));
+                }
+              }, // handle your onTap here
               child: Container(
-                  height: 70,
-                  child: Center(
-                      child: FaIcon(
-                    FontAwesomeIcons.cube,
-                    color: Color(0xff000000),
-                    size: 40,
-                  )))),
-          Expanded(
-            child: informacionEntrega(entrega, switched),
-            flex: 3,
-          ),
-          Expanded(
-              flex: 1,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    switched == 0
-                        ? iconoEnvio(entrega)
-                        : iconoRecepcion(entrega, context)
-                  ])),
-        ]),
-      );
+                child: Row(children: <Widget>[
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                          height: 70,
+                          child: Center(
+                              child: FaIcon(
+                            FontAwesomeIcons.cube,
+                            color: Color(0xff000000),
+                            size: 40,
+                          )))),
+                  Expanded(
+                    child: informacionEntrega(entrega, switched),
+                    flex: 3,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            switched == 0
+                                ? iconoEnvio(entrega)
+                                : iconoRecepcion(entrega, context)
+                          ])),
+                ]),
+              )));
     }
 
     Widget _crearListado(int switched) {
@@ -186,34 +203,89 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           future: listarEntregas(switched),
           builder: (BuildContext context,
               AsyncSnapshot<List<EntregaLoteModel>> snapshot) {
-            if (snapshot.hasData) {
-              entregas = snapshot.data;
-              return ListView.builder(
-                  itemCount: entregas.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(entregas[i], switched));
-            } else {
-              return Container();
+
+                  switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    entregas = snapshot.data;
+                    if (entregas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: entregas.length,
+                          itemBuilder: (context, i) => crearItem(entregas[i], switched));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
 
+    final sendRecepcion = Container(
+        margin: const EdgeInsets.only(left: 5),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RecepcionEntregaLotePage(entregaLotepage: null),
+                    ));
+              },
+              color: Colors.grey,
+              child:
+                  Text('Recepcionar', style: TextStyle(color: Colors.white))),
+        ));
+
     final sendButton = Container(
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NuevoEntregaLotePage(),
-            ),
-          );
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        child: Text('Nuevo', style: TextStyle(color: Colors.white)),
+        margin: const EdgeInsets.only(right: 5),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NuevoEntregaLotePage(),
+                  ),
+                );
+              },
+              color: Color(0xFF2C6983),
+              child: Text('Nuevo', style: TextStyle(color: Colors.white))),
+        ));
+
+    final filaBotones = Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(flex: 5, child: sendButton),
+          Expanded(
+            child: sendRecepcion,
+            flex: 5,
+          )
+        ],
       ),
     );
 
@@ -260,15 +332,11 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  height:
-                      sd.screenHeightExcludingToolbar(context, dividedBy: 8),
-                  width: double.infinity,
-                  child: sendButton),
-            ),
+            Container(
+                alignment: Alignment.center,
+                height: sd.screenHeightExcludingToolbar(context, dividedBy: 8),
+                width: double.infinity,
+                child: filaBotones),
             Container(
                 height: sd.screenHeightExcludingToolbar(context, dividedBy: 20),
                 child: tabs),

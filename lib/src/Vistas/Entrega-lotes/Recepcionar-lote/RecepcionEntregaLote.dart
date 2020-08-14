@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'RecepcionController.dart';
 
 class RecepcionEntregaLotePage extends StatefulWidget {
@@ -29,6 +29,9 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   String qrsobre, qrbarra = "";
   String codigoBandeja = "";
   String codigoSobre = "";
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   var listadetinatario;
   var colorletra = const Color(0xFFACADAD);
 
@@ -38,17 +41,22 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       _bandejaController.text = entregaLote.paqueteId;
       codigoBandeja = entregaLote.paqueteId;
       iniciarlistaEnvios();
-    }else{
+    } else {
       listaEnvios = [];
     }
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
-  void iniciarlistaEnvios() async{
-      listaEnvios = await principalcontroller.listarEnviosLotes(context, codigoBandeja);
-      setState(() {
-        listaEnvios = listaEnvios;
-      });
+  void iniciarlistaEnvios() async {
+    listaEnvios =
+        await principalcontroller.listarEnviosLotes(context, codigoBandeja);
+    setState(() {
+      listaEnvios = listaEnvios;
+    });
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
@@ -63,63 +71,88 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
         }
       }
       if (pertenecia == true) {
-       bool respuesta = await principalcontroller.recogerdocumentoLote(context, codigoBandeja,codigo);
-            if(respuesta){
-              listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
-              if(listaEnvios.length==0){
-                  confirmarRecepcion(context,"Mensaje","Se ha completado la recepción");
-              setState(() {
-                listaEnvios=listaEnvios;
-              });
-              }else{
-              setState(() {
-                listaEnvios=listaEnvios;
-              });
-              }
-            }else{
-              mostrarAlerta(context, "No se pudo completar la operación", "Mensaje");
-            }
-      } else {
-      bool respuesta = await  principalcontroller.recogerdocumentoLote(
+        bool respuesta = await principalcontroller.recogerdocumentoLote(
             context, codigoBandeja, codigo);
-            if(respuesta){
-                  mostrarAlerta(context, "Se registro el código", "Mensaje");
-            }else{
-                  mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+        if (respuesta) {
+          listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
+          if (listaEnvios.length == 0) {
+            bool respuestatrue = await notificacion(
+                context, "success", "EXACT", "Se ha completado la recepción");
+            if (respuestatrue) {
+              Navigator.of(context).pushNamed('/envio-lote');
             }
+            setState(() {
+              _sobreController.text = codigo;
+              listaEnvios = listaEnvios;
+            });
+          } else {
+            setState(() {
+              _sobreController.text = codigo;
+              listaEnvios = listaEnvios;
+            });
+            enfocarInputfx(context, f2);
+          }
+        } else {
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT",
+              "No es posible procesar el código");
+        }
+      } else {
+        bool respuesta = await principalcontroller.recogerdocumentoLote(
+            context, codigoBandeja, codigo);
+        if (respuesta) {
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT", "Se registró la valija");
+        } else {
+          setState(() {
+            _sobreController.text = codigo;
+          });
+          popuptoinput(context, f2, "error", "EXACT",
+              "No es posible procesar el código");
+        }
       }
     }
 
     void _validarSobreText(String value) {
+      desenfocarInputfx(context);
       if (value != "") {
-          contieneCodigo(value);
-      }else{
-        mostrarAlerta(context, "El código es obligatorio", "Mensaje");
+        contieneCodigo(value);
+      } else {
+        popuptoinput(context, f2, "error", "EXACT",
+            "El código de valija es obligatorio");
       }
     }
 
     void _validarBandejaText(String value) async {
+      desenfocarInputfx(context);
       if (value != "") {
-      listaEnvios = await principalcontroller.listarEnviosLotes(context, codigoBandeja);
-        if(listaEnvios!=null){
-        setState(() {
-          codigoBandeja = value;
-          _bandejaController.text = value;
-          listaEnvios=listaEnvios;
-        });
-        }else{
-         setState(() {
-            listaEnvios=[];
-        });
-          mostrarAlerta(context, "No contiene envíos", "Mensaje");
+        listaEnvios =
+            await principalcontroller.listarEnviosLotes(context, value);
+        if (listaEnvios != null) {
+          setState(() {
+            codigoBandeja = value;
+            _bandejaController.text = value;
+            listaEnvios = listaEnvios;
+          });
+          enfocarInputfx(context, f2);
+        } else {
+          setState(() {
+            listaEnvios = [];
+            _bandejaController.text = value;
+          });
+          popuptoinput(context, f1, "error", "EXACT", "No contiene envíos");
         }
-      }else{
-         setState(() {
-            listaEnvios=[];
+      } else {
+        setState(() {
+          listaEnvios = [];
         });
-        mostrarAlerta(context, "El campo de la bandeja no puede estar vacío", "Mensaje");
+        popuptoinput(context, f1, "error", "EXACT",
+            "El campo del lote no puede estar vacío");
       }
-
     }
 
     void agregaralista(EnvioModel envio) {
@@ -155,37 +188,51 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la bandeja");
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarBandejaText(qrbarra);
     }
 
     Widget sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
-                confirmarPendientes(
-                    context, "Te faltan asociar estos documentos", listaEnvios);
+            onPressed: () async {
+              bool respuestaarray = await confirmarArray(context, "success",
+                  "EXACT", "Te faltan asociar estos documentos", listaEnvios);
+              if (respuestaarray == null) {
+                Navigator.of(context).pop();
+              } else {
+                if (respuestaarray) {
+                  bool respuestaTrue = await notificacion(context, "success",
+                      "EXACT", "Se recepcionado correctamente las valijas");
+                  if (respuestaTrue = !null) {
+                    if (respuestaTrue) {
+                      Navigator.of(context).pushNamed('/envio-lote');
+                    }
+                  }
+                } else {
+                  Navigator.of(context).pop();
+                }
+              }
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
@@ -198,9 +245,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
 
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
+      focusNode: f1,
       autofocus: false,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -228,14 +276,13 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f2,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
         if (codigoBandeja == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          popuptoinput(context, f1, "error", "EXACT",
+              "Primero debe ingresar el codigo de la bandeja");
         } else {
           _validarSobreText(value);
         }
@@ -260,10 +307,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
       ),
     );
 
-
-
-    Widget _validarListado(List<EnvioModel> envios ) {
-        return _crearListadoinMemoria(envios);
+    Widget _validarListado(List<EnvioModel> envios) {
+      return _crearListadoinMemoria(envios);
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -321,160 +366,72 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: principalcontroller.labeltext("Lote")),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: principalcontroller.labeltext("Valija")),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 40),
-                ),
-              ),
-              Expanded(child: _validarListado(listaEnvios)),
-              listaEnvios.length != 0?Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
-                    width: double.infinity,
-                    child: sendButton),
-              ):Container(),
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: principalcontroller
+                                .labeltext("Código de lote")),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: principalcontroller
+                                .labeltext("Código de valija")),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 40),
+                        ),
+                      ),
+                      Expanded(child: _validarListado(listaEnvios)),
+                      listaEnvios.length != 0
+                          ? Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: screenHeightExcludingToolbar(context,
+                                      dividedBy: 5),
+                                  width: double.infinity,
+                                  child: sendButton),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ))));
   }
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(color: colorletra),
     );
-  }
-
-  void confirmarNovalidados(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    Widget informacion = principalcontroller.contenidoPopUp(
-        colorletra, "La molina", novalidados.length);
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: informacion,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Descartar pendientes'),
-                  onPressed: () {
-                    listaEnvios.clear();
-                    _bandejaController.text = "";
-                    codigoBandeja = "";
-                    _sobreController.text = "";
-                    codigoSobre = "";
-                    Navigator.of(context).pop();
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver a leer'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
-
-
-  void confirmarRecepcion(
-      BuildContext context, String titulo,String mensaje ) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: Text('$mensaje'),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () {
-Navigator.of(context).pushNamed('/envio-lote');                  })
-            ],
-          );
-        });
-  }
-
-
-  void confirmarPendientes(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    Widget informacion = principalcontroller.contenidoPopUp(
-        colorletra, "Faltan", novalidados.length);
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: informacion,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Descartar pendientes'),
-                  onPressed: () {
-                                        Navigator.of(context).pushNamed('/envio-lote');
-                    /*
-                    listaEnvios.clear();
-                    _bandejaController.text = "";
-                    codigoBandeja = "";
-                    _sobreController.text = "";
-                    codigoSobre = "";
-                    Navigator.of(context).pop();*/
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver a leer'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
   }
 }

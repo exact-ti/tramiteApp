@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'dart:convert' as prefix0;
-
 //Menu menuFromJson(String str) => Menu.fromJson(json.decode(str));
 
 String menuToJson(Menu data) => json.encode(data.toJson());

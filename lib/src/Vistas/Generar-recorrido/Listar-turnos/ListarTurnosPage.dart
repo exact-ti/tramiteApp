@@ -1,6 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -24,16 +25,10 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
   @override
   void initState() {
-    //listadetinatario= principalcontroller.ListarDestinario();
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
 
     setState(() {
-      //listadetinatario =principalcontroller.ListarDestinario();
-      //listadetinatarioDisplay = listadetinatario;
-
-      /* */
-
       textdestinatario = "";
     });
     super.initState();
@@ -54,30 +49,32 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
       return Container(
           height: 100,
-          child: ListView(shrinkWrap: true, children: <Widget>[
-            Container(
-              height: 20,
-              child: ListTile(title: Text("$recorrido")),
-            ),
-            Container(
-                height: 20,
-                child: ListTile(
-                    title: Text("$estado", style: TextStyle(fontSize: 11)))),
-            Container(
-                height: 20,
-                child: ListTile(
-                  title: Text("$usuario"),
-                  leading: Icon(
-                    Icons.perm_identity,
-                    color: Color(0xffC7C7C7),
-                  ),
-                )),
-          ]));
+          child: ListView(
+              shrinkWrap: false,
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                Container(
+                  height: 20,
+                  child: ListTile(title: Text("$recorrido")),
+                ),
+                Container(
+                    height: 20,
+                    child: ListTile(
+                        title:
+                            Text("$estado", style: TextStyle(fontSize: 11)))),
+                Container(
+                    height: 20,
+                    child: ListTile(
+                      title: Text("$usuario"),
+                      leading: Icon(
+                        Icons.perm_identity,
+                        color: Color(0xffC7C7C7),
+                      ),
+                    )),
+              ]));
     }
 
     Widget crearItem(EntregaModel entrega) {
-      //String nombrearea = usuario.area;
-      //String nombresede = usuario.sede;
       if (booleancolor) {
         colorwidget = colorplomo;
         booleancolor = false;
@@ -86,31 +83,32 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         booleancolor = true;
       }
       return Container(
-        decoration: myBoxDecoration(),
-        margin: EdgeInsets.only(bottom: 5),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: informacionEntrega(entrega),
-                flex: 5,
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 100,
-                            child: IconButton(
-                                icon: Icon(Icons.keyboard_arrow_right,
-                                    color: Color(0xffC7C7C7), size: 50),
-                                onPressed:(){
-                                  principalcontroller.onSearchButtonPressed(context, entrega);
-                                } ))
-                      ])),
-            ]),
-      );
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: InkWell(
+              onTap: () {
+                principalcontroller.onSearchButtonPressed(context, entrega);
+              },
+              child: Container(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: informacionEntrega(entrega),
+                        flex: 5,
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: 100,
+                                    child: Icon(Icons.keyboard_arrow_right,
+                                        color: Color(0xffC7C7C7), size: 50))
+                              ])),
+                    ]),
+              )));
     }
 
     Widget _crearListado() {
@@ -120,21 +118,38 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EntregaModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final entregas = snapshot.data;
-              return ListView.builder(
-                  itemCount: entregas.length,
-                  itemBuilder: (context, i) => crearItem(entregas[i]));
-            } else {
-              return Container();
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    booleancolor = true;
+                    final entregas = snapshot.data;
+                    if (entregas.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: entregas.length,
+                          itemBuilder: (context, i) => crearItem(entregas[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
 
     final sendButton = Container(
-        //margin: const EdgeInsets.only(top: 10),
         child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: RaisedButton(
@@ -174,26 +189,28 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
-                child:Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter, child: _crearListado()),
-              )
-            ],
-          ),
-        ))));
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 6),
+                            width: double.infinity,
+                            child: sendButton),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListado()),
+                      )
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

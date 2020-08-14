@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
@@ -70,9 +71,6 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         )
       )
     )));
-
-
-
   }
 
   
@@ -106,15 +104,32 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         child: FutureBuilder(
           future: paqueteExternoController.listarPaquetesPorTipo(false),
           builder: (BuildContext context, AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
-            if (snapshot.hasData) {
-              final tipoPaquetes = snapshot.data;
-              return ListView.builder(
-                itemCount: tipoPaquetes.length,
-                itemBuilder: (context,i) => _crearItem(tipoPaquetes[i]),
-              );
-            }
-            else{
-              return Container();
+                switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    final tipoPaquetes = snapshot.data;
+                    if (tipoPaquetes.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: tipoPaquetes.length,
+                          itemBuilder: (context, i) => _crearItem(tipoPaquetes[i]));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           }
         ),
@@ -133,7 +148,11 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
     return Container(
       decoration: myBoxDecoration(),
       margin: EdgeInsets.only(bottom: 5),
-      child: Row(
+      child:InkWell(
+              onTap: () {
+                _onSearchButtonPressed(item);
+              }, // handle your onTap here
+              child:  Container(child:Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
@@ -141,29 +160,24 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
             flex: 5,
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 100,
-                  child: IconButton(
-                    icon: Icon(
+                  height: 80,
+                  child: Icon(
                       Icons.keyboard_arrow_right,
                       color: Color(0xffC7C7C7), 
                       size: 50
-                    ),
-                    onPressed: (){
-                      _onSearchButtonPressed(item);
-                    }
-                  )
+                    )
                 )
               ]
             )
           )
         ]
       )
-    );
+    )));
   }
  
   void _onSearchButtonPressed(TipoPaqueteModel item){

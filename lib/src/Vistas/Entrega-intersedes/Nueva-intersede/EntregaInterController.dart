@@ -4,122 +4,65 @@ import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/EntregaImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
   InterSedeInterface intersedeInterface =
       new InterSedeImpl(new InterSedeProvider());
-
-  Future<List<EnvioModel>> listarEnvios(BuildContext context,
-      EnvioInterSedeModel interSedeModel, String codigo) async {
-    List<EnvioModel> recorridos =
-        await intersedeInterface.listarEnviosByCodigo(codigo);
-  if(recorridos!=null){
-    if (recorridos.length==0) {
-      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-    }
-  }
-
-    return recorridos;
-  }
+  final NavigationService _navigationService = locator<NavigationService>();
 
   Future<List<EnvioModel>> listarEnviosEntrega(
       BuildContext context, String codigo) async {
-    List<EnvioModel> recorridos = await intersedeInterface.listarEnviosByCodigo(codigo);
+    _navigationService.showModal();
 
-    if (recorridos==null) {
-      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-    }
+    List<EnvioModel> recorridos =
+        await intersedeInterface.listarEnviosByCodigo(codigo);
+
+    _navigationService.goBack();
+
     return recorridos;
-  }
-
-  void recogerdocumento(
-      int id, String codigo, String paquete, bool opcion) async {
-   /* recorridoCore.registrarRecorridoCore(codigo, id, paquete, opcion);*/
-  }
-
-  void redirectMiRuta(RecorridoModel recorrido, BuildContext context) async {
-    recorrido.indicepagina = 2;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GenerarRutaPage(recorridopage: recorrido),
-        ));
-  }
-
-  Future<EnvioModel> validarCodigo(
-      String codigo, int id, BuildContext context) async {
-    EnvioModel envio; /*= await intersedeInterface.validarCodigo(codigo, id);*/
-    if (envio == null) {
-      mostrarAlerta(
-          context, "EL codigo no pertenece al recorrido", "Codigo Incorrecto");
-    }
-
-    return envio;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
       String codigobandeja, String codigo, BuildContext context) async {
+    _navigationService.showModal();
+
     EnvioModel envio =
         await intersedeInterface.validarCodigo(codigo, codigobandeja);
-    if (envio == null) {
-      mostrarAlerta(
-          context, "No es posible procesar el código", "Codigo Incorrecto");
-    }else{
-      mostrarAlerta(
-          context, "Envío agregado a la entrega", "Codigo correcto");      
-    }
 
+    _navigationService.goBack();
 
     return envio;
   }
 
-  void confirmacionDocumentosValidados(
-      EnvioInterSedeModel sede,
-      List<EnvioModel> enviosvalidados,
-      BuildContext context,
-      int id,
-      String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
-        enviosvalidados, codigo);
-
-    confirmarAlerta(
-        context, "Se ha registrado correctamente la valija", "Registro");
-  }
-
   void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
       BuildContext context, String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await intersedeInterface.listarEnviosValidadosInterSede(
+    _navigationService.showModal();
+
+    dynamic respuesta = await intersedeInterface.listarEnviosValidadosInterSede(
         enviosvalidados, codigo);
 
-    confirmarAlerta(
-        context, "Se ha registrado correctamente la valija", "Registro");
-  }
+    _navigationService.goBack();
 
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/envio-intersede'),
-              )
-            ],
-          );
-        });
+    if (respuesta["status"] == "success") {
+      bool respuestatrue = await notificacion(context, "success", "EXACT",
+          "Se ha registrado correctamente la valija");
+
+      _navigationService.goBack();
+
+      if (respuestatrue != null) {
+        if (respuestatrue) {
+          Navigator.of(context).pushNamed('/envio-interutd');
+        }
+      }
+    } else {
+      notificacion(context, "error", "EXACT", respuesta["message"]);
+    }
   }
 }

@@ -10,8 +10,8 @@ class EntregaPersonalizadaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
 
 
-  Future<bool> guardarEntrega(BuildContext context, int id, String dni, String paquete) async {
-     bool repuesta = await recorridoCore.registrarEntregaPersonalizadaProvider(dni, id, paquete);
+  Future<bool> guardarEntrega(BuildContext context, String dni, String paquete) async {
+     bool repuesta = await recorridoCore.registrarEntregaPersonalizadaProvider(dni, paquete);
      return repuesta;
   }
 

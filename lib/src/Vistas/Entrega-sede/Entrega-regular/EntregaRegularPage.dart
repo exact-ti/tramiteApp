@@ -1,13 +1,10 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/EntregaPersonalizadaPage.dart';
-
+import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'EntregaRegularController.dart';
 
 class EntregaRegularPage extends StatefulWidget {
@@ -27,6 +24,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   //final _sobreController = TextEditingController();
+  EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaenvios2 = new List();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
@@ -42,6 +40,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   String codigoSobre = "";
   String textdestinatario = "";
   int numeroRecorrido;
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var listadetinatario;
@@ -53,13 +54,17 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   var validarSobre = false;
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
-  String _name = '';
+  String codigoMostrar = '';
   int indice = 0;
   int indicebandeja = 0;
   @override
   void initState() {
     numeroRecorrido = recorridoUsuario.id;
     valuess = "";
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
 
@@ -68,48 +73,6 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
     const SecondColor = const Color(0xFF6698AE);
-
-    final sendButton = Container(
-        margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              /*
-              indice = 1;
-              indicebandeja = 1;
-
-              if (_formKey.currentState.validate() && validarenvio()) {
-                setState(() {
-                    confirmaciondeenvio=true;
-                });
-                print("SI puede enviar");
-                envioController.crearEnvio(context,1, recordObject.id,_sobreController.text,_bandejaController.text,_observacionController.text);
-                setState(() {
-                  _sobreController.text="";
-                  _bandejaController.text="";
-                  _observacionController.text="";
-                });
-              } else {
-                print("No se puede enviar");
-              }*/
-              //performLogin(context);
-              //Navigator.of(context).pushNamed("principal");
-            },
-            color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Guardar', style: TextStyle(color: Colors.white)),
-          ),
-        ));
-
-        bool contiene(List<EnvioModel> envios,String documento){  
-
-        }
-
-
 
     void registrarDocumento(String documento) async {
       bool pertenecia = false;
@@ -126,12 +89,14 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               codigoBandeja,
               documento,
               isSwitched);
-
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
-            listaenvios2.removeWhere((value) => value.codigoPaquete == documento);
+            listaenvios2
+                .removeWhere((value) => value.codigoPaquete == documento);
+            codigoMostrar = documento;
           } else {
+            codigoMostrar = "";
             mensaje = respuestaMap["message"];
           }
         } else {
@@ -144,29 +109,38 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (respuestaMap["status"] == "success") {
             listaenvios2
                 .removeWhere((value) => value.codigoPaquete == documento);
-                          mensaje = "Se registró la entrega";
+            mensaje = "Se registró la entrega";
+            codigoMostrar = documento;
           } else {
+            codigoMostrar = "";
             mensaje = respuestaMap["message"];
           }
         }
         setState(() {
+          codigoMostrar = documento;
           mensaje = mensaje;
           listaenvios2 = listaenvios2;
         });
       } else {
         if (isSwitched) {
-          dynamic respuestaMap =
-              await envioController.recogerdocumentoRecojo(context,
-                  recorridoUsuario.id, codigoBandeja, documento, isSwitched);
+          dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
+              context,
+              recorridoUsuario.id,
+              codigoBandeja,
+              documento,
+              isSwitched);
           if (respuestaMap.containsValue("success")) {
             dynamic respuestaMap2 = respuestaMap["data"];
             mensaje = respuestaMap2["destino"];
+            codigoMostrar = documento;
           } else {
+            codigoMostrar = "";
             mensaje = respuestaMap["message"];
           }
-                  setState(() {
-          mensaje = mensaje;
-        });
+          setState(() {
+            codigoMostrar = codigoMostrar;
+            mensaje = mensaje;
+          });
         } else {
           dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
               context,
@@ -176,19 +150,21 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               isSwitched);
           if (respuestaMap["status"] == "success") {
             setState(() {
-                          mensaje = "Se registró la entrega";
-            });          } else {
-            setState(() {
-                          mensaje = respuestaMap["message"];
+              codigoMostrar = documento;
+              mensaje = "Se registró la entrega";
             });
-            /*mostrarAlerta(
-                context, respuestaMap["message"], "mensaje");*/
+          } else {
+            setState(() {
+              codigoMostrar = "";
+              mensaje = respuestaMap["message"];
+            });
           }
         }
       }
+      enfocarInputfx(context, f2);
     }
 
-    void _validarSobreText(String value) {
+    void _validarSobreText(String value) async {
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -200,32 +176,91 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           setState(() {
             _sobreController.text = "";
             codigoSobre = value;
-            //listaCodigosValidados.add(value);
           });
         } else {
           setState(() {
             _sobreController.text = "";
-            //codigoSobre = value;
           });
         }
         registrarDocumento(value);
+      } else {
+        bool respuesta = await notificacion(
+            context, "error", "EXACT", "Ingrese el codigo de sobre");
+        if (respuesta = null || respuesta) {
+          enfocarInputfx(context, f2);
+        }
       }
     }
 
     void _validarBandejaText(String value) async {
       if (value != "") {
-        listaenvios2 = await principalcontroller.listarEnvios(
-            context, recorridoUsuario.id, value, isSwitched);
-        if (listaenvios2 == null) {
-          mostrarAlerta(context, "El código no pertenece a tu ruta", "Mensaje");
-          setState(() {
-            listaenvios2 = [];
-          });
+        if (isSwitched) {
+          listaenvios2 = await principalcontroller.listarEnviosRecojo(
+              context, recorridoUsuario.id, value);
+          if (listaenvios2 == null) {
+            /*  bool respuestatrue = await  */ notificacion(context, "error",
+                "EXACT", "El código no existe en la base de datos");
+/*             if (respuestatrue == null || respuestatrue) {
+              enfocarInputfx(context, f1); */
+            setState(() {
+              mensaje = "";
+              listaenvios2 = [];
+              _bandejaController.text = value;
+            });
+            enfocarInputfx(context, f1);
+/*             } */
+          } else {
+            if (listaenvios2.length == 0) {
+              if (isSwitched) {
+                bool respuestatrue = await notificacion(context, "error",
+                    "EXACT", "No tiene envíos por recoger en el área");
+                if (respuestatrue == null || respuestatrue == true) {
+                  enfocarInputfx(context, f1);
+                }
+              } else {
+                bool respuestatrue = await notificacion(context, "error",
+                    "EXACT", "No tiene envíos por entregar en el área");
+                if (respuestatrue == null || respuestatrue == true) {
+                  enfocarInputfx(context, f1);
+                }
+              }
+              setState(() {
+                mensaje = "";
+                listaenvios2 = [];
+                _bandejaController.text = value;
+              });
+            } else {
+              enfocarInputfx(context, f2);
+              setState(() {
+                mensaje = "";
+                codigoBandeja = value;
+                _bandejaController.text = value;
+              });
+            }
+          }
         } else {
-          setState(() {
-            codigoBandeja = value;
-            _bandejaController.text = value;
-          });
+          dynamic respuesta = await principalcontroller.listarEnviosEntrega(
+              context, recorridoUsuario.id, value);
+          if (respuesta["status"] == "success") {
+            listaenvios2 = envioModel.fromJsonValidar(respuesta["data"]);
+            enfocarInputfx(context, f2);
+            setState(() {
+              listaenvios2 = listaenvios2;
+              codigoBandeja = value;
+              _bandejaController.text = value;
+            });
+          } else {
+            setState(() {
+              listaenvios2 = [];
+              codigoBandeja = "";
+              _bandejaController.text = "";
+            });
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT", respuesta["message"]);
+            if (respuestatrue == null || respuestatrue == true) {
+              enfocarInputfx(context, f1);
+            }
+          }
         }
       }
     }
@@ -237,8 +272,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    EntregapersonalizadoPage(recorridopage: recorridoUsuario),
+                builder: (context) => ListarTipoPersonalizadaPage(),
               ),
             );
           },
@@ -279,6 +313,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             listaCodigosValidados.clear();
             isSwitched = value;
             mensaje = "";
+            codigoMostrar = "";
           });
         },
         activeTrackColor: SecondColor,
@@ -328,42 +363,26 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-                    FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
+      qrbarra = await getDataFromCamera();
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
       if (codigoBandeja == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        bool respuesta = await notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la bandeja");
+        if (respuesta == null || respuesta) {
+          enfocarInputfx(context, f1);
+        }
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-                    FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
+      qrbarra = await getDataFromCamera();
+      FocusScope.of(context).unfocus();
+      new TextEditingController().clear();
       _validarBandejaText(qrbarra);
-    }
-
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarEnvios(
-              context, recorridoUsuario.id, codigoBandeja, isSwitched),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              final envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i]));
-            } else {
-              return Container();
-            }
-          });
     }
 
     Widget _crearListadoinMemoria(List<EnvioModel> lista) {
@@ -372,40 +391,12 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           itemBuilder: (context, i) => crearItem(lista[i]));
     }
 
-/*
-        Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigo(
-              codigoporValidar, recorridoUsuario.id, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              listaEnvios.add(envio);
-              validados.add(envio.codigoPaquete);
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados));
-              } else {
-                return Container();
-              }
-            }
-          });
-    }
-*/
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f1,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -432,15 +423,22 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
+      focusNode: f2,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (codigoBandeja == "") {
+      onFieldSubmitted: (value) async {
+        if (_bandejaController.text == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          bool respuestatrue = await notificacion(context, "error", "EXACT",
+              "Primero debe ingresar el codigo de la bandeja");
+          if (respuestatrue == null || respuestatrue) {
+            enfocarInputfx(context, f1);
+            setState(() {
+              listaenvios2 = [];
+              codigoMostrar = "";
+              mensaje = "";
+            });
+          }
         } else {
           _validarSobreText(value);
         }
@@ -466,7 +464,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     );
 
     Widget _validarListado(List<EnvioModel> lista) {
-        return _crearListadoinMemoria(lista);
+      return _crearListadoinMemoria(lista);
     }
 
     final campodetextoandIconoBandeja = Row(children: <Widget>[
@@ -531,98 +529,129 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: contenerSwitch2,
-                  margin: const EdgeInsets.only(bottom: 20),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoBandeja),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 30),
-                    //width: double.infinity,
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoSobre,
-                  margin: const EdgeInsets.only(bottom: 10),
-                ),
-              ),
-              mensaje.length == 0 ? Container() : Align(
-                alignment: Alignment.center,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  child: Text("$mensaje"),
-                  margin: const EdgeInsets.only(bottom: 10),
-                ),
-              ),
-              Expanded(
-                  child: codigoBandeja == ""
-                      ? Container()
-                      : Container(
-                          child: _validarListado(listaenvios2))),
-              /*Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                    width: double.infinity,
-                    child: sendButton),
-              ),*/
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: botonesinferiores),
-              ),
-            ],
-          ),
-        ))));
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: contenerSwitch2,
+                          margin: const EdgeInsets.only(bottom: 20),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            width: double.infinity,
+                            child: textBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoBandeja),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            //width: double.infinity,
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 10),
+                        ),
+                      ),
+                      mensaje.length == 0
+                          ? Container()
+                          : Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                child: Container(
+                                    child: codigoMostrar.length != 0
+                                        ? Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Center(
+                                                    child: Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Text("$codigoMostrar",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                )),
+                                                flex: 3,
+                                              ),
+                                              Expanded(
+                                                child: Center(
+                                                    child: Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 20),
+                                                  alignment: Alignment.center,
+                                                  child: Center(
+                                                      child: Text("$mensaje")),
+                                                )),
+                                                flex: 9,
+                                              )
+                                            ],
+                                          )
+                                        : Center(
+                                            child: Container(
+                                            alignment: Alignment.center,
+                                            child:
+                                                Center(child: Text("$mensaje")),
+                                          ))),
+                                margin: const EdgeInsets.only(bottom: 10),
+                              ),
+                            ),
+                      Expanded(
+                          child: codigoBandeja == ""
+                              ? Container()
+                              : Container(
+                                  child: _validarListado(listaenvios2))),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: botonesinferiores),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -646,4 +675,3 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 }
-//                  Navigator.of(context).pushNamed(men.link);

@@ -11,7 +11,9 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/agenciasExternas/impl/AgenciasExternasProvider.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
 class NuevoEntregaExternaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
@@ -19,64 +21,59 @@ class NuevoEntregaExternaController {
       new InterSedeImpl(new InterSedeProvider());
   IAgenciasExternasInterface agenciacore =
       new AgenciasExternasImpl(new AgenciaExternaProvider());
+  EnvioModel envioModel = new EnvioModel();
+  final NavigationService _navigationService = locator<NavigationService>();
 
-  Future<List<EnvioModel>> listarEnviosEntrega(
+  Future<dynamic> listarEnviosEntrega(
       BuildContext context, String codigo) async {
-    List<EnvioModel> recorridos =
-        await agenciacore.listarEnviosAgenciasByCodigo(codigo);
+    _navigationService.showModal();
 
-  if(recorridos!=null){
-    if (recorridos.length==0) {
-      mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-    }
-  }
+    dynamic recorridos = await agenciacore.listarEnviosAgenciasByCodigo(codigo);
+    _navigationService.goBack();
+
     return recorridos;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
-      String bandeja,String codigo, BuildContext context) async {
-    EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja,codigo);
-    if (envio == null) {
-      mostrarAlerta(
-          context, "No es posible procesar el código", "Codigo Incorrecto");
-    }else{
-      mostrarAlerta(
-          context, "Envío agregado a la entrega", "Mensaje");      
-    }
+      String bandeja, String codigo, BuildContext context) async {
+    _navigationService.showModal();
+
+    EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
+    _navigationService.goBack();
 
     return envio;
   }
 
   void confirmacionDocumentosValidadosEntrega(List<EnvioModel> enviosvalidados,
       BuildContext context, String codigo) async {
-    RecorridoModel recorrido = new RecorridoModel();
-    recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
-        enviosvalidados, codigo);
-    if(recorrido.id!=null){
+    if (codigo == "") {
+      notificacion(
+          context, "error", "EXACT", "El código de la valija es obligatorio");
+    } else {
+      if (enviosvalidados.length == 0) {
+        notificacion(
+            context, "error", "EXACT", "No hay envios para la agencia");
+      } else {
+        RecorridoModel recorrido = new RecorridoModel();
+        _navigationService.showModal();
 
-            confirmarAlerta(
-        context, "Se ha registrado correctamente el envio", "Registro");
-    } else{
-        mostrarAlerta(context, "No se  pudo registrar el envío", "Mensaje");
-    }   
+        recorrido.id = await agenciacore.listarEnviosAgenciasValidados(
+            enviosvalidados, codigo);
+        _navigationService.goBack();
 
-  }
-
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/envios-agencia'),
-              )
-            ],
-          );
-        });
+        if (recorrido.id != null) {
+          bool respuestatrue = await notificacion(context, "success", "EXACT",
+              "Se ha registrado correctamente el envio");
+          if (respuestatrue != null) {
+            if (respuestatrue) {
+              Navigator.of(context).pushNamed('/envios-agencia');
+            }
+          }
+        } else {
+          notificacion(
+              context, "error", "EXACT", "No se  pudo registrar el envío");
+        }
+      }
+    }
   }
 }

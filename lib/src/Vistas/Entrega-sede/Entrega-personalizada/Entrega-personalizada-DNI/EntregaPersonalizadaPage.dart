@@ -1,32 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 import 'EntregaPersonalizadaController.dart';
 
-
-class EntregapersonalizadoPage extends StatefulWidget {
-  final RecorridoModel recorridopage;
-
-  const EntregapersonalizadoPage({Key key, this.recorridopage}) : super(key: key);
-
+class EntregapersonalizadoPageDNI extends StatefulWidget {
   @override
-  _EntregaPersonalizadaPageState createState() =>
-      new _EntregaPersonalizadaPageState(recorridopage);
+  _EntregapersonalizadoPageDNIState createState() =>
+      new _EntregapersonalizadoPageDNIState();
 }
 
-class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
-  RecorridoModel recorridoUsuario;
-  _EntregaPersonalizadaPageState(this.recorridoUsuario);
+class _EntregapersonalizadoPageDNIState
+    extends State<EntregapersonalizadoPageDNI> {
   final _sobreController = TextEditingController();
   final _dniController = TextEditingController();
-  //final _sobreController = TextEditingController();
-  EntregaPersonalizadaController personalizadacontroller = new EntregaPersonalizadaController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  EntregaPersonalizadaController personalizadacontroller =
+      new EntregaPersonalizadaController();
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String codigoDNI = "";
@@ -51,7 +43,7 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
   @override
   void initState() {
     valuess = "";
-    listacodigos=[];
+    listacodigos = [];
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
@@ -59,34 +51,45 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
     });
   }
 
+  void notifierAccion(String mensaje, String color) {
+    final snack = new SnackBar(
+      content: new Text("Se registró el envío"),
+      backgroundColor: primaryColor,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
+  }
+
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
 
-
     void _validarSobreText(String value) async {
       if (value != "") {
-        if(!listacodigos.contains(value)){
-       bool  respuesta = await personalizadacontroller.guardarEntrega(context, recorridoUsuario.id,_dniController.text,value);
-          if(respuesta){
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
-          listacodigos.add(value);
-          setState(() { 
-            _sobreController.text = "";
-            codigoSobre = "";
-            listacodigos=listacodigos;
-          });
-          }else{
-            mostrarAlerta(context, "Codigo de Sobre incorrecto", "Mensaje");
-            f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
+        if (!listacodigos.contains(value)) {
+          bool respuesta = await personalizadacontroller.guardarEntrega(
+              context, _dniController.text, value);
+          if (respuesta) {
+            desenfocarInputfx(context);
+            listacodigos.add(value);
+            setState(() {
+              _sobreController.text = "";
+              codigoSobre = "";
+              listacodigos = listacodigos;
+            });
+            notifierAccion("Se registró la entrega", "38CE00");
+          } else {
+            popuptoinput(
+                context, f2, "error", "EXACT", "Codigo de Sobre incorrecto");
           }
-        }else{
-              mostrarAlerta(context, "Codigo ya se encuentra validado", "Mensaje");
+        } else {
+          popuptoinput(
+              context, f2, "error", "EXACT", "Codigo ya se encuentra validado");
         }
-        }
+      } else {
+        popuptoinput(
+            context, f2, "error", "EXACT", "El código de sobre es obligatorio");
+      }
     }
 
     void _validarDNIText(String value) {
@@ -98,50 +101,26 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       }
     }
 
-    final botonesinferiores = Row(children: [
-      Expanded(
-        child: Container(),
-        flex: 5,
-      ),
-      Expanded(
-        child: InkWell(
-          onTap: () {
-            personalizadacontroller.redirectMiRuta(recorridoUsuario,context);
-          },
-          child: Text(
-            'volver',
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-      ),
-    ]);
-
     final textDNI = Container(
       child: Text("DNI"),
-      margin: const EdgeInsets.only(left: 15),
     );
 
     final textSobre = Container(
       child: Text("Código de sobre"),
-      margin: const EdgeInsets.only(left: 15),
     );
 
-
-
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (_dniController.text== "") {
+      qrbarra = await getDataFromCamera();
+      if (_dniController.text == "") {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el DNI",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT", "Primero debe ingresar el DNI");
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerDNI() async {
-      qrbarra =await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarDNIText(qrbarra);
     }
 
@@ -151,15 +130,12 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       focusNode: f1,
       controller: _dniController,
       onFieldSubmitted: (value) {
-            if(value.length==0){
-               mostrarAlerta(context, "El DNI es obligatorio", "Mensaje"); 
-                             f2.unfocus();
-            FocusScope.of(context).requestFocus(f1);
-            }else{
-            f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
-            }
-          },
+        if (value.length == 0) {
+          popuptoinput(context, f1, "error", "EXACT", "El DNI es obligatorio");
+        } else {
+          enfocarInputfx(context, f2);
+        }
+      },
       decoration: InputDecoration(
         contentPadding:
             new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -187,23 +163,12 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-        if(value.length==0){
-            mostrarAlerta(context, 
-            "El codigo de sobre es obligatorio", "Mensaje");
-              f1.unfocus();
-            FocusScope.of(context).requestFocus(f2);
-        }else{
         if (_dniController.text == "") {
-          _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "El DNI es necesario para la entrega",
-              "Ingreso incorrecto");
+          popuptoinput(context, f1, "error", "EXACT",
+              "el DNI es necesario para la entrega");
         } else {
           _validarSobreText(value);
         }
-        }
-
       },
       decoration: InputDecoration(
         contentPadding:
@@ -257,19 +222,18 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
       ),
     ]);
 
-   Widget crearItem(String codigopaquete) {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
-              trailing: Icon(
-                Icons.check,
-                color: Color(0xffC7C7C7),
-              ),
-            ));
-    
+    Widget crearItem(String codigopaquete) {
+      return Container(
+          decoration: myBoxDecoration(),
+          margin: EdgeInsets.only(bottom: 5),
+          child: ListTile(
+            title: Text("$codigopaquete"),
+            leading: FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
+            trailing: Icon(
+              Icons.check,
+              color: Color(0xffC7C7C7),
+            ),
+          ));
     }
 
     Widget _crearListadoinMemoria(List<String> validados) {
@@ -277,7 +241,6 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
           itemCount: validados.length,
           itemBuilder: (context, i) => crearItem(validados[i]));
     }
-
 
     return Scaffold(
         appBar: AppBar(
@@ -295,70 +258,67 @@ class _EntregaPersonalizadaPageState extends State<EntregapersonalizadoPage> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
         ),
-        drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        /* 
+        drawer: crearMenu(context), */
+        key: scaffoldkey,
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 30),
-                    width: double.infinity,
-                    child: textDNI,
-                    margin: const EdgeInsets.only(top: 50),
-                    ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoDNI),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 30),
-                    child: textSobre),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height:screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: campodetextoandIconoSobre,
-                    margin: const EdgeInsets.only(bottom: 40),),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child:_crearListadoinMemoria(listacodigos)),
-              ),
-              /*Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.center,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 12),
-                    width: double.infinity,
-                    child: botonesinferiores),
-              ),*/
-            ],
-          ),
-        ))));
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          width: double.infinity,
+                          child: textDNI,
+                          margin: const EdgeInsets.only(top: 50),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 12),
+                            width: double.infinity,
+                            child: campodetextoandIconoDNI),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.bottomLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 30),
+                            child: textSobre),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 12),
+                          width: double.infinity,
+                          child: campodetextoandIconoSobre,
+                          margin: const EdgeInsets.only(bottom: 40),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListadoinMemoria(listacodigos)),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {

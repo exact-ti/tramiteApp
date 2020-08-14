@@ -19,14 +19,15 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
 
   @override
   Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno) async{
-    Response resp = await req.get('/servicio-tramite/tipospaquetes?interno=$interno');
+    bool inactivos = false;
+    Response resp = await req.get('/servicio-tramite/tipospaquetes?interno=$interno&mostrarInactivos=$inactivos');
     List<dynamic> tipoPaquetes = resp.data;
     List<TipoPaqueteModel> listTipoPaquete = tipoPaqueteModel.fromJson(tipoPaquetes);
     return listTipoPaquete;
   }
 
   @override
-  Future<bool> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete) async {
+  Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int utdId = umodel.id;
@@ -36,7 +37,7 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
 
     Response resp = await req.post('/servicio-tramite/utds/$utdId/tipospaquetes/$tipoPaqueteId/importacion',formData,null);
     
-    bool b = resp.data;
+    dynamic b = resp.data;
 
     return b;
   }
@@ -61,8 +62,8 @@ class PaqueteExternoProvider implements IPaqueteExternoProvider {
     String codigo = paqueteExterno.paqueteId;
 
     Response resp = await req.post('/servicio-tramite/utds/$utdId/paquetes/$codigo/custodia',null,null);
-    
-    bool b = resp.data;
+    dynamic respdata = resp.data;
+    bool b = respdata["data"];
 
     return b;
   }

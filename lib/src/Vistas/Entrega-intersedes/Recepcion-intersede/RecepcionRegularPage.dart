@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
 import 'RecepcionRegularController.dart';
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
 class RecepcionInterPage extends StatefulWidget {
   final EnvioInterSedeModel recorridopage;
@@ -36,7 +37,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   String codigoBandeja = "";
   String codigoSobre = "";
   String textdestinatario = "";
+  String mensajeconfirmation = "";
   List<String> listaCodigosValidados = new List();
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
+  FocusNode f2 = FocusNode();
   bool inicio = true;
   var listadetinatario;
   var listadetinatarioDisplay;
@@ -51,42 +56,40 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   int indice = 0;
   int indicebandeja = 0;
 
+  mostrarenviosiniciales() async {
+    listaEnvios = await principalcontroller.listarEnvios(
+        context, _bandejaController.text);
 
- mostrarenviosiniciales() async{
-    listaEnvios =await principalcontroller.listarEnvios( context,
-      _bandejaController.text);
-
-     if(listaEnvios!=null){
-       if(listaEnvios.length==0){
-       setState(() {
-         listaEnvios=[];
-       });
-       }else{
-            setState(() {
-         listaEnvios=listaEnvios;
-       });    
-       }
-
-     }else{
-       setState(() {
-         listaEnvios=[];
-       });
-     }
-
+    if (listaEnvios != null) {
+      if (listaEnvios.length == 0) {
+        setState(() {
+          listaEnvios = [];
+        });
+      } else {
+        setState(() {
+          listaEnvios = listaEnvios;
+        });
+      }
+    } else {
+      setState(() {
+        listaEnvios = [];
+      });
+    }
   }
 
   @override
   void initState() {
-    valuess = "";
     if (recorridoUsuario != null) {
       _bandejaController.text = recorridoUsuario.codigo;
       codigoBandeja = recorridoUsuario.codigo;
-       mostrarenviosiniciales();
+      mostrarenviosiniciales();
     }
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _bandejaController.clear();
+    });
     super.initState();
   }
-
- 
 
   var colorplomos = const Color(0xFFEAEFF2);
   @override
@@ -96,30 +99,55 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: () async {
               if (listaEnvios.length > 0) {
-                confirmarNovalidados(context, "Faltan los siguientes elementos a validar");
+                bool respuestaarray = await confirmarArray(
+                    context,
+                    "success",
+                    "EXACT",
+                    "Faltan los siguientes elementos a validar",
+                    listaEnvios);
+                if (respuestaarray == null) {
+                  Navigator.of(context).pop();
+                } else {
+                  if (respuestaarray) {
+                    codigoBandeja = "";
+                    bool respuestatrue = await notificacion(context, "success",
+                        "EXACT", "Se ha recepcionado los documentos con éxito");
+                    if (respuestatrue != null) {
+                      if (respuestatrue) {
+                        Navigator.of(context).pushNamed('/envio-interUtd');
+                      }
+                    }
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                }
               } else {
                 codigoBandeja = "";
-                entregaController.confirmarAlerta(
-                    context,
-                    "Se ha completado con la recepción de documentos",
-                    "Recepción completa");
+                bool respuestatrue = await notificacion(context, "success",
+                    "EXACT", "Se ha completado con la recepción de documentos");
+                if (respuestatrue != null) {
+                  if (respuestatrue) {
+                    Navigator.of(context).pushNamed('/envio-interUtd');
+                  }
+                }
               }
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
 
-    void _validarSobreText(String value) async{
+    void _validarSobreText(String value) async {
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -128,28 +156,47 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
         }
         if (perteneceLista) {
-        dynamic respuestaValidar = await principalcontroller.recogerdocumento( context,  _bandejaController.text, value,true);
-        if(respuestaValidar["status"] == "success"){
-          listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
-          if(listaEnvios.length==0){
-                    entregaController.confirmarAlerta(
-                        context,
-                        "Se ha recepcionado los documentos con éxito",
-                        "Recepción de documentos");
-          }
-          setState(() {
-             listaEnvios=listaEnvios;
-          });
-        }else{
-            mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-        }
-        } else {
-             dynamic respuestaValidar = await principalcontroller.recogerdocumento( context, _bandejaController.text,value,true);
-              if(respuestaValidar["status"] != "success"){
-                  mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
-              }else{
-                  mostrarAlerta(context, "Se ha registrado el envío", "Mensaje");
+          dynamic respuestaValidar = await principalcontroller.recogerdocumento(
+              context, _bandejaController.text, value, true);
+          if (respuestaValidar["status"] == "success") {
+            listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
+            if (listaEnvios.length == 0) {
+              bool respuestatrue = await notificacion(context, "success",
+                  "EXACT", "Se ha recepcionado los documentos con éxito");
+              if (respuestatrue != null) {
+                if (respuestatrue) {
+                  Navigator.of(context).pushNamed('/envio-interUtd');
+                }
               }
+            }
+            setState(() {
+              mensajeconfirmation = "El sobre $value fue recepcionado";
+              listaEnvios = listaEnvios;
+              _sobreController.text = value;
+            });
+          } else {
+            setState(() {
+              mensajeconfirmation = "No es posible procesar el código";
+              _sobreController.text = value;
+            });
+          }
+          enfocarInputfx(context, f2);
+        } else {
+          dynamic respuestaValidar = await principalcontroller.recogerdocumento(
+              context, _bandejaController.text, value, true);
+          if (respuestaValidar["status"] != "success") {
+            setState(() {
+              mensajeconfirmation = "No es posible procesar el código";
+              _sobreController.text = value;
+            });
+            enfocarInputfx(context, f2);
+          } else {
+            setState(() {
+              mensajeconfirmation = "El sobre $value fue recepcionado";
+              _sobreController.text = value;
+            });
+            enfocarInputfx(context, f2);
+          }
         }
       }
     }
@@ -157,29 +204,30 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     void _validarBandejaText(String value) async {
       if (value != "") {
         listaEnvios = await principalcontroller.listarEnvios(context, value);
-        if (listaEnvios != null) {
-          if (listaEnvios.length != 0) {
-            setState(() {
-              listaEnvios = listaEnvios;
-            });
-          } else {
-            mostrarAlerta(
-                context, "No es posible procesar el código", "Mensaje");
-            setState(() {
-              listaEnvios = [];
-            });
-          }
-        } else {
-          mostrarAlerta(context, "No es posible procesar el código", "Mensaje");
+        if (listaEnvios.length != 0) {
           setState(() {
-            listaEnvios = [];
+            mensajeconfirmation = "";
+            _bandejaController.text = value;
+            listaEnvios = listaEnvios;
           });
+          enfocarInputfx(context, f2);
+        } else {
+          setState(() {
+            mensajeconfirmation = "";
+            listaEnvios = [];
+            _bandejaController.text = value;
+          });
+          popuptoinput(context, f1, "error", "EXACT",
+              "No es posible procesar el código");
         }
+      }else{
+          popuptoinput(context, f1, "error", "EXACT",
+              "El código del lote es obligatorio");        
       }
     }
 
     final textBandeja = Container(
-      child: Text("Código de bandeja"),
+      child: Text("Código de valija"),
       margin: const EdgeInsets.only(left: 15),
     );
 
@@ -220,37 +268,19 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
-      if (codigoBandeja == "") {
+      qrbarra = await getDataFromCamera();
+      if (_bandejaController.text == "" || listaEnvios.length == 0) {
         _sobreController.text = "";
-        mostrarAlerta(context, "Primero debe ingresar el codigo de la bandeja",
-            "Ingreso incorrecto");
+        notificacion(context, "error", "EXACT",
+            "Primero debe ingresar el codigo de la valija");
       } else {
         _validarSobreText(qrbarra);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra =
-          await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarBandejaText(qrbarra);
-    }
-
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarEnvios(context, codigoBandeja),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              final envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i]));
-            } else {
-              return Container();
-            }
-          });
     }
 
     Widget _crearListadoinMemoria(List<EnvioModel> envios) {
@@ -259,40 +289,12 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           itemBuilder: (context, i) => crearItem(listaEnvios[i]));
     }
 
-/*
-        Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigo(
-              codigoporValidar, recorridoUsuario.id, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              listaEnvios.add(envio);
-              validados.add(envio.codigoPaquete);
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados));
-              } else {
-                return Container();
-              }
-            }
-          });
-    }
-*/
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _bandejaController,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -320,14 +322,13 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       controller: _sobreController,
+      focusNode: f2,
       textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (codigoBandeja == "") {
+      onFieldSubmitted: (value) async {
+        if (_bandejaController.text == "") {
           _sobreController.text = "";
-          mostrarAlerta(
-              context,
-              "Primero debe ingresar el codigo de la bandeja",
-              "Ingreso incorrecto");
+          popuptoinput(context, f1, "error", "EXACT",
+              "Primero debe ingresar el código de bandeja");
         } else {
           _validarSobreText(value);
         }
@@ -351,7 +352,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         ),
       ),
     );
-
 
     Widget _validarListado(List<EnvioModel> envios) {
       return _crearListadoinMemoria(envios);
@@ -453,9 +453,14 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                               dividedBy: 12),
                           width: double.infinity,
                           child: campodetextoandIconoSobre,
-                          margin: const EdgeInsets.only(bottom: 40),
+                          margin: const EdgeInsets.only(bottom: 10),
                         ),
                       ),
+                      mensajeconfirmation.length == 0
+                          ? Container()
+                          : Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: Center(child: Text(mensajeconfirmation))),
                       Expanded(
                           child:
                               Container(child: _validarListado(listaEnvios))),
@@ -495,42 +500,4 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     return screenHeight(context,
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
-
-  void confirmarNovalidados(BuildContext context, String titulo) {
-    List<Widget> listadecodigos = new List();
-
-    for (EnvioModel codigo in listaEnvios) {
-      String codigoPa = codigo.codigoPaquete;
-      listadecodigos.add(Text('$codigoPa'));
-    }
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: ListBody(children: listadecodigos),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Registrar de todos modos'),
-                  onPressed: () {
-                    codigoBandeja = "";
-                    entregaController.confirmarAlerta(
-                        context,
-                        "Se ha recepcionado los documentos con éxito",
-                        "Recepción de documentos");
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                  child: Text('Volver y seguir validando'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
 }
-//                  Navigator.of(context).pushNamed(men.link);

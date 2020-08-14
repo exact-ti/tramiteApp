@@ -18,11 +18,11 @@ class EntregaInterface {
 
     Future<EnvioModel> validarCodigo(String codigo, int id){}
 
-    Future<List<TurnoModel>> listarTurnosByCodigoLote(String codigo){}
+    Future<dynamic> listarTurnosByCodigoLote(String codigo){}
 
     Future<EnvioModel> listarValijaByCodigoLote(String codigo){}
 
-    Future<bool> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo){}
+    Future<dynamic> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo){}
 
 
 

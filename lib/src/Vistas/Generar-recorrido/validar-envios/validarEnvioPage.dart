@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
+import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -25,12 +26,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   List<EnvioModel> listaEnviosNoValidados = new List();
   ValidacionController principalcontroller = new ValidacionController();
   EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String textdestinatario = "";
   List<String> listaCodigosValidados = new List();
+  FocusNode _focusNode;
+  FocusNode f1 = FocusNode();
   bool inicio = true;
   var listadetinatario;
   var listadetinatarioDisplay;
@@ -42,7 +44,10 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   void initState() {
     prueba = Text("Usuarios frecuentes",
         style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _sobreController.clear();
+    });
     setState(() {
       codigoValidar = "";
       textdestinatario = "";
@@ -59,6 +64,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     var colorwidget = colorplomo;
 
     void _validarText(String value) {
+      desenfocarInputfx(context);
       if (value != "") {
         bool perteneceLista = false;
         for (EnvioModel envio in listaEnvios) {
@@ -72,6 +78,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             listaCodigosValidados.add(value);
             inicio = false;
           });
+          if (listaEnvios.length != listaCodigosValidados.length) {
+            enfocarInputfx(context, f1);
+          }
         } else {
           setState(() {
             _sobreController.text = "";
@@ -79,50 +88,75 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             inicio = false;
           });
         }
+      } else {
+        popuptoinput(context, f1, "error", "EXACT",
+            "Es necesario ingresar el código del documento");
       }
     }
 
     Future _traerdatosescanerbandeja() async {
-      qrbarra = await FlutterBarcodeScanner.scanBarcode("#004297", "Cancel", true);
+      qrbarra = await getDataFromCamera();
       _validarText(qrbarra);
     }
 
     listarNovalidados() {
       bool esvalidado = false;
-      List<dynamic> as =  listaEnvios;
-      List<dynamic> ads =  listaCodigosValidados;
+      List<dynamic> as = listaEnvios;
+      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
-          if(listaCodigosValidados.contains(envio.codigoPaquete)){
-              listaEnviosValidados.add(envio);
-          }else{
-            listaEnviosNoValidados.add(envio);
-          }
+        if (listaCodigosValidados.contains(envio.codigoPaquete)) {
+          listaEnviosValidados.add(envio);
+        } else {
+          listaEnviosNoValidados.add(envio);
+        }
       }
     }
 
     Widget sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: () async {
               listarNovalidados();
               if (listaEnviosNoValidados.length == 0) {
                 principalcontroller.confirmacionDocumentosValidados(
                     listaEnviosValidados, context, recorridoUsuario.id);
               } else {
-                confirmarNovalidados(
+                bool respuestaarray = await confirmarArray(
                     context,
+                    "success",
+                    "EXACT",
                     "Te faltan asociar estos documentos",
                     listaEnviosNoValidados);
+                if (respuestaarray == null) {
+                  listaEnviosNoValidados.clear();
+                  listaEnviosValidados.clear();
+                } else {
+                  if (respuestaarray) {
+                    listaEnviosNoValidados.clear();
+                    principalcontroller.confirmacionDocumentosValidados(
+                        listaEnviosValidados, context, recorridoUsuario.id);
+                    listaEnviosValidados.clear();
+                    listaEnvios.clear();
+                  } else {
+                    listaEnviosNoValidados.clear();
+                    listaEnviosValidados.clear();
+                  }
+                }
               }
             },
             color: Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Continuar', style: TextStyle(color: Colors.white)),
+            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            child: Text(
+                listaEnvios.length == 0
+                    ? 'Crear solo recojo'
+                    : 'Crear recorrido',
+                style: TextStyle(color: Colors.white)),
           ),
         ));
 
@@ -131,6 +165,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
       autofocus: false,
       controller: _sobreController,
       textInputAction: TextInputAction.done,
+      focusNode: f1,
       onFieldSubmitted: (value) {
         _validarText(value);
       },
@@ -190,7 +225,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
+              leading:
+                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
               trailing: Icon(
                 Icons.check,
                 color: Color(0xffC7C7C7),
@@ -202,7 +238,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
-              leading: FaIcon(FontAwesomeIcons.qrcode,color:Color(0xffC7C7C7)),
+              leading:
+                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
               trailing: Text(""),
             ));
       }
@@ -216,15 +253,33 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               .validacionEnviosController(recorridoUsuario.id),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
-              final envios = snapshot.data;
-              return ListView.builder(
-                  itemCount: envios.length,
-                  itemBuilder: (context, i) => crearItem(envios[i], validados));
-            } else {
-              return Container();
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return sinResultados("No hay conexión con el servidor");
+              case ConnectionState.waiting:
+                return Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ));
+              default:
+                if (snapshot.hasError) {
+                  return sinResultados("Ha surgido un problema");
+                } else {
+                  if (snapshot.hasData) {
+                    final envios = snapshot.data;
+                    if (envios.length == 0) {
+                      return sinResultados("No se han encontrado resultados");
+                    } else {
+                      return ListView.builder(
+                          itemCount: envios.length,
+                          itemBuilder: (context, i) =>
+                              crearItem(envios[i], validados));
+                    }
+                  } else {
+                    return sinResultados("No se han encontrado resultados");
+                  }
+                }
             }
           });
     }
@@ -252,11 +307,13 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               final envio = snapshot.data;
               listaEnvios.add(envio);
               validados.add(envio.codigoPaquete);
+              enfocarInputfx(context, f1);
               return ListView.builder(
                   itemCount: listaEnvios.length,
                   itemBuilder: (context, i) =>
                       crearItem(listaEnvios[i], validados));
             } else {
+              enfocarInputfx(context, f1);
               if (listaEnvios.length != 0) {
                 return ListView.builder(
                     itemCount: listaEnvios.length,
@@ -277,7 +334,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
           return _crearListadoinMemoria(codigos);
         }
       } else {
-        return _crearListadoAgregar(codigos, codigo);
+        Widget agregado = _crearListadoAgregar(codigos, codigo);
+        return agregado;
       }
     }
 
@@ -307,7 +365,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               onPressed: () {},
             )
           ],
-          title: Text('Entregas en sede',
+          title: Text('Validación de documentos',
               style: TextStyle(
                   fontSize: 18,
                   decorationStyle: TextDecorationStyle.wavy,
@@ -315,41 +373,44 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                   fontWeight: FontWeight.normal)),
         ),
         drawer: crearMenu(context),
-        body:SingleChildScrollView(
+        body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height -
                         AppBar().preferredSize.height -
                         MediaQuery.of(context).padding.top),
                 child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                    width: double.infinity,
-                    child: campodetextoandIcono),
-              ),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child:_validarListado(listaCodigosValidados, codigoValidar)),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: screenHeightExcludingToolbar(context, dividedBy: 5),
-                    width: double.infinity,
-                    child: sendButton),
-              ),
-            ],
-          ),
-        ))));
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 6),
+                            width: double.infinity,
+                            child: campodetextoandIcono),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _validarListado(
+                                listaCodigosValidados, codigoValidar)),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeightExcludingToolbar(context,
+                                dividedBy: 5),
+                            width: double.infinity,
+                            child: sendButton),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   Size screenSize(BuildContext context) {
@@ -367,52 +428,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 
-  void _onSearchButtonPressed() {}
-
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(color: colorletra),
     );
-  }
-
-  void confirmarNovalidados(
-      BuildContext context, String titulo, List<EnvioModel> novalidados) {
-    List<Widget> listadecodigos = new List();
-
-    for (EnvioModel codigo in novalidados) {
-      String codigoPa = codigo.codigoPaquete;
-      listadecodigos.add(Text('$codigoPa'));
-    }
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: SingleChildScrollView(
-              child: ListBody(children: listadecodigos),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                  child: Text('Seguir sin estos documentos'),
-                  onPressed: () {
-                    listaEnviosNoValidados.clear();
-                    principalcontroller.confirmacionDocumentosValidados(
-                        listaEnviosValidados, context, recorridoUsuario.id);
-                    listaEnviosValidados.clear();
-                    listaEnvios.clear();
-                  }),
-              SizedBox(height: 1.0, width: 5.0),
-              FlatButton(
-                child: Text('Volver a leer'),
-                onPressed: () {
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                  Navigator.of(context).pop();
-                } 
-              )
-            ],
-          );
-        });
   }
 }

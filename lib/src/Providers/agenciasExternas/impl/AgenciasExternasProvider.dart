@@ -52,18 +52,15 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosAgenciaByCodigo(String codigo) async {
+  Future<dynamic> listarEnviosAgenciaByCodigo(String codigo) async {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
     Response resp = await req.get(
         '/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
-     if(resp.data==""){
-       return [];
-     }   
-    List<dynamic> envios = resp.data;
-    List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
-    return listEnvio;
+    dynamic envios = resp.data;
+    //List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
+    return envios;
   }
 
   @override

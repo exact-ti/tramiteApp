@@ -16,4 +16,11 @@ class BuzonImpl implements BuzonInterface {
     List<BuzonModel> buzonModelList = await buzonProvider.listarBuzonesPorIds(ids);
     return buzonModelList;
   }
+
+  @override
+  Future<List<BuzonModel>> listarBuzones() async {
+  List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+    return buzones;
+  }
+
 }

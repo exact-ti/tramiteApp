@@ -31,21 +31,6 @@ class ListaEntregaLoteController {
     }*/
     return respuesta;
   }
-  void confirmarAlerta(BuildContext context, String mensaje, String titulo) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('$titulo'),
-            content: Text(mensaje),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ],
-          );
-        });
-  }
+
   
 }

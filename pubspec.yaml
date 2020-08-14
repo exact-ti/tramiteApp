@@ -30,9 +30,18 @@ dependencies:
   spreadsheet_decoder: ^1.1.0
   file_picker: ^1.4.2
   font_awesome_flutter: ^8.8.1
-
+  timezone: ^0.5.7
+  get_it:
+  rxdart: ^0.24.1
+  flutter_signature_pad: ^2.0.2
+  http_parser: ^3.1.4
+  flutter_tags: "^0.4.8+2"
+  barcode_scan: ^2.0.0
+  progress_indicators: ^0.1.5
 dev_dependencies:
   flutter_driver:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   test:
 
@@ -56,6 +65,8 @@ flutter:
     - assets/verbales.xlsx
     - assets/campañas.xlsx
     - data/chequeras.xlsx
+    - assets/logoExact.PNG
+    - assets/images/logoprincipal.PNG
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,28 +1,27 @@
 
 
-import 'TurnoModel.dart';
 import 'package:intl/intl.dart';
+import 'package:tramiteapp/src/ModelDto/CargoModel.dart';
+import 'package:tramiteapp/src/Util/timezone.dart' as timezone;
 
 class TrackingDetalleModel {
 
   String fecha;
-  String remitente;
-  String sede;
+  String estado;
+  String ubicacion;
   String area;
-
-  TrackingDetalleModel({
-        this.remitente='',
-        this.sede='',
-        this.area='',
-    });
-
+  CargoModel cargo;
 
       TrackingDetalleModel fromJson(dynamic json){
        TrackingDetalleModel detalleModel= new TrackingDetalleModel();
-          detalleModel.remitente = json["estado"];
-          DateTime fecha = new DateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(json["fecha"]);
+       CargoModel cargoModel = new CargoModel();
+          detalleModel.estado = json["estado"];
+          dynamic dateTimeZone = timezone.parse(json["fecha"]);
+          detalleModel.fecha="$dateTimeZone";
+          DateTime fecha = new DateFormat("yyyy-MM-dd hh:mm:ss").parse(detalleModel.fecha);
           detalleModel.fecha= DateFormat('yyyy-MM-dd hh:mm:ssa').format(fecha);
-          detalleModel.sede  = json["ubicacion"];
+          detalleModel.ubicacion  = json["ubicacion"];
+          detalleModel.cargo =cargoModel.fromOneJsonCargo(json["cargo"]);
           return detalleModel;
     }
 }

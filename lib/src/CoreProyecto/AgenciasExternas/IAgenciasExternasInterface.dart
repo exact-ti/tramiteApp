@@ -4,7 +4,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 class IAgenciasExternasInterface {
   Future<List<EnvioInterSedeModel>> listarEnviosAgenciasUsuario() {}
 
-  Future<List<EnvioModel>> listarEnviosAgenciasByCodigo(
+  Future<dynamic> listarEnviosAgenciasByCodigo(
        String codigo) {}
 
   Future<EnvioModel> validarCodigoAgencia(String bandeja,String codigo) {}
