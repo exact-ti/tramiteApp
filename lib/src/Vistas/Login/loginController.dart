@@ -31,14 +31,20 @@ class LoginController {
       notificacion(
           context, "error", "EXACT", 'Usuario y/o contraseña incorrecta');
     } else {
-      Menu menuu = new Menu();
-      List<dynamic> menus = json.decode(_prefs.menus);
-      List<Menu> listmenu = menuu.fromPreferencs(menus);
-      for (Menu men in listmenu) {
-        if (men.home) {
-          _navigationService.goBack();
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              men.link, (Route<dynamic> route) => false);
+      if (respuesta.containsKey("error")) {
+         Navigator.pop(context);
+      notificacion(
+          context, "error", "EXACT", respuesta["mensaje"]);
+      } else {
+        Menu menuu = new Menu();
+        List<dynamic> menus = json.decode(_prefs.menus);
+        List<Menu> listmenu = menuu.fromPreferencs(menus);
+        for (Menu men in listmenu) {
+          if (men.home) {
+            _navigationService.goBack();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                men.link, (Route<dynamic> route) => false);
+          }
         }
       }
     }

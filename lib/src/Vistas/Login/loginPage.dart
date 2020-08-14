@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
@@ -25,9 +26,19 @@ class _LoginPageState extends State<LoginPage> {
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") != null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-          (Route<dynamic> route) => false);
+      if (int.parse(sharedPreferences.getString("perfil")) == cliente) {
+        if (sharedPreferences.getString("buzon") != null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+              (Route<dynamic> route) => false);
+        }
+      } else {
+        if (sharedPreferences.getString("utd") != null || sharedPreferences.getString("buzon") != null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+              (Route<dynamic> route) => false);
+        }
+      }
     }
   }
 
@@ -105,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
       onFieldSubmitted: (value) async {
         enfocarUsuarioOrContrasena();
       },
-      textInputAction: TextInputAction.send ,
+      textInputAction: TextInputAction.send,
       decoration: InputDecoration(
         filled: true,
         border: InputBorder.none,

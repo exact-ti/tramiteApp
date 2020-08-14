@@ -41,14 +41,14 @@ List<Widget> milistview(BuildContext context) {
     }
     listmenu.sort((a, b) => a.orden.compareTo(b.orden));
     listmenu.reversed;
-    BuzonModel buzonModel = new BuzonModel();
+/*     BuzonModel buzonModel = new BuzonModel();
     Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel umodel = buzonModel.fromPreferencs(buzon);
-    String nombreBuzon = umodel.nombre;
+    String nombreBuzon = umodel.nombre; */
     list.add(DrawerHeader(
       child: Container(
-        alignment: Alignment.bottomLeft,
-        child: Text("$nombreBuzon",style: TextStyle(fontSize: 15,color: Colors.white),),
+/*         alignment: Alignment.bottomLeft,
+        child: Text("$nombreBuzon",style: TextStyle(fontSize: 15,color: Colors.white),), */
       ),
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -217,6 +217,14 @@ void eliminarpreferences(BuildContext context) async {
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
         (Route<dynamic> route) => false);
   }
+}
+
+
+void deletepreferencesWithoutContext() async {
+  SharedPreferences sharedPreferences;
+  sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.clear();
+  sharedPreferences.commit();
 }
 
 final _icons = <String, IconData>{
