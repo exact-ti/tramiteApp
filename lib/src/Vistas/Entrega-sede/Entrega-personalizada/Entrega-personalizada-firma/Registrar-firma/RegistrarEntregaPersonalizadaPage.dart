@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'RegistrarEntregaPersonalizadaController.dart';
+
 class RegistrarEntregapersonalizadoPage extends StatefulWidget {
   final dynamic firma;
 
@@ -23,6 +24,7 @@ class _RegistrarEntregapersonalizadoPageState
   final _firmaController = TextEditingController();
   RegistrarEntregaPersonalizadaController personalizadacontroller =
       new RegistrarEntregaPersonalizadaController();
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
@@ -59,43 +61,43 @@ class _RegistrarEntregapersonalizadoPageState
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
+  void notifierAccion(String mensaje, Color color) {
+    final snack = new SnackBar(
+      content: new Text(mensaje),
+      backgroundColor: color,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
+  }
 
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF4D828D);
-
     void _validarSobreText(String value) async {
       if (value != "") {
-/*         if (!listacodigos.contains(value)) {
- */
-        dynamic respuesta = await personalizadacontroller.guardarEntrega(
-            context, imagenFirma, value);
-        if (respuesta.containsValue("success")) {
-          FocusScope.of(context).unfocus();
-          new TextEditingController().clear();
-          listacodigos.add(value);
-          setState(() {
-            respuestaBack = "El envío $value fue entregado correctamente";
-            _sobreController.text = "";
-            codigoSobre = "";
-            listacodigos = listacodigos;
-            colorRespuesta = true;
-          });
+        if (!listacodigos.contains(value)) {
+          dynamic respuesta = await personalizadacontroller.guardarEntrega(
+              context, imagenFirma, value);
+          if (respuesta.containsValue("success")) {
+            desenfocarInputfx(context);
+            listacodigos.add(value);
+            setState(() {
+              _sobreController.text = "";
+              codigoSobre = "";
+              listacodigos = listacodigos;
+            });
+            notifierAccion("Se registró la entrega", primaryColor);
+          } else {
+            setState(() {
+              _sobreController.text = "";
+              listacodigos = listacodigos;
+            });
+            /* enfocarInputfx(context, f2); */
+            notifierAccion(respuesta["message"], Colors.red);
+          }
         } else {
-          setState(() {
-            respuestaBack = respuesta["message"];
-            _sobreController.text = "";
-            colorRespuesta = false;
-            codigoSobre = "";
-            listacodigos = listacodigos;
-          });
-          f1.unfocus();
-          FocusScope.of(context).requestFocus(f2);
+          notifierAccion("Código ya se encuentra validado", Colors.red);
         }
-/*         } else {
-          mostrarAlerta(context, "Codigo ya se encuentra validado", "Mensaje");
-        } */
+      } else {
+        notifierAccion("el código de sobre es obligatorio", Colors.red);
       }
     }
 
@@ -119,12 +121,12 @@ class _RegistrarEntregapersonalizadoPageState
     );
 
     Future _traerdatosescanerSobre() async {
-      qrbarra  = await getDataFromCamera();
+      qrbarra = await getDataFromCamera();
       _validarSobreText(qrbarra);
     }
 
     Future _traerdatosescanerFIRMA() async {
-      qrbarra  = await getDataFromCamera();
+      qrbarra = await getDataFromCamera();
       _validarFIRMAText(qrbarra);
     }
 
@@ -138,16 +140,9 @@ class _RegistrarEntregapersonalizadoPageState
         if (value.length == 0) {
           notificacion(
               context, "error", "EXACT", "El codigo de sobre es obligatorio");
-          f1.unfocus();
-          FocusScope.of(context).requestFocus(f2);
+          enfocarInputfx(context, f2);
         } else {
-          if (_firmaController.text == "") {
-            _sobreController.text = "";
-            notificacion(context, "error", "EXACT",
-                "La firma es necesario para la entrega");
-          } else {
             _validarSobreText(value);
-          }
         }
       },
       decoration: InputDecoration(
@@ -171,9 +166,9 @@ class _RegistrarEntregapersonalizadoPageState
     );
 
     final campodetextoandIconoFIRMA = Container(
-      child: imagenFirma.length == 0
+      child: /* imagenFirma.length == 0
           ? Container()
-          : LimitedBox(
+          : */ LimitedBox(
               maxHeight: screenHeightExcludingToolbar(context, dividedBy: 5),
               child: Container(
                   child: RotationTransition(
@@ -221,7 +216,7 @@ class _RegistrarEntregapersonalizadoPageState
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: PrimaryColor,
+          backgroundColor: primaryColor,
           actions: [
             IconButton(
               icon: Icon(Icons.notifications),
@@ -234,8 +229,10 @@ class _RegistrarEntregapersonalizadoPageState
                   decorationStyle: TextDecorationStyle.wavy,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.normal)),
-        ),/* 
+        ),
+        /* 
         drawer: crearMenu(context), */
+        key: scaffoldkey,
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -284,7 +281,12 @@ class _RegistrarEntregapersonalizadoPageState
                           margin: const EdgeInsets.only(bottom: 40),
                         ),
                       ),
-                      Align(
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: _crearListadoinMemoria(listacodigos)),
+                      ),
+/*                       Align(
                         alignment: Alignment.center,
                         child: respuestaBack.length == 0
                             ? Container()
@@ -297,7 +299,7 @@ class _RegistrarEntregapersonalizadoPageState
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 20)))),
-                      ),
+                      ), */
                     ],
                   ),
                 ))));

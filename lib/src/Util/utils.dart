@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:collection';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
@@ -60,12 +59,13 @@ List<Widget> milistview(BuildContext context) {
           leading: getICon(men.icono),
           title: Text(men.nombre),
           onTap: () => Navigator.of(context).pushNamed(men.link)));
-      /* Navigator.of(context).pushNamedAndRemoveUntil(
-                men.link, ModalRoute.withName('/principal-admin'))));*/
-
     }
 
     if (_prefs.buzon != "") {
+      list.add(ListTile(
+          leading: getICon("clasificar"),
+          title: Text("Retirar envío"),
+          onTap: () => Navigator.of(context).pushNamed("/retirar-envio")));
       list.add(menuOpcion(context));
       list.add(cerrarsesion(context));
     }
@@ -293,6 +293,7 @@ void enfocarInputfx(BuildContext context, FocusNode fx) {
 
 void desenfocarInputfx(BuildContext context) {
   FocusScope.of(context).unfocus();
+  FocusScope.of(context).requestFocus(new FocusNode()); //remove focus
   new TextEditingController().clear();
 }
 
@@ -322,6 +323,8 @@ Widget sinResultados(String mensaje) {
           style: TextStyle(
               color: colorletra, fontSize: 20, fontWeight: FontWeight.bold)));
 }
+
+
 
 Widget loadingGet() {
   return new Column(

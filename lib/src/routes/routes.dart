@@ -22,6 +22,7 @@ import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
+import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
@@ -52,6 +53,7 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/dashboard' :  (BuildContext context) => DashboardPage(),
     '/envios-en-utd' :  (BuildContext context) => ListarEnviosUTDPage(),
     '/envios-historicos' :  (BuildContext context) => HistoricoPage(),
+    '/retirar-envio' :  (BuildContext context) => RetirarEnvioPage(),
     //==================Menu secundario====================================
     '/crear-envio': (BuildContext context) => EnvioPage(),
     '/entregas-pisos-propios': (BuildContext context) => RecorridosPropiosPage(),

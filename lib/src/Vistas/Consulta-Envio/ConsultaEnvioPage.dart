@@ -79,9 +79,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
-              FocusScope.of(context).unfocus();
-              new TextEditingController().clear();
+            onPressed: () { 
+              desenfocarInputfx(context);
               if (_paqueteController.text == "" &&
                   _remitenteController.text == "" &&
                   _destinatarioController.text == "") {

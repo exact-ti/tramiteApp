@@ -17,6 +17,7 @@ class _EntregapersonalizadoPageDNIState
   final _dniController = TextEditingController();
   EntregaPersonalizadaController personalizadacontroller =
       new EntregaPersonalizadaController();
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
@@ -50,6 +51,14 @@ class _EntregapersonalizadoPageDNIState
     });
   }
 
+  void notifierAccion(String mensaje, String color) {
+    final snack = new SnackBar(
+      content: new Text("Se registró el envío"),
+      backgroundColor: primaryColor,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
+  }
+
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
@@ -61,17 +70,17 @@ class _EntregapersonalizadoPageDNIState
           bool respuesta = await personalizadacontroller.guardarEntrega(
               context, _dniController.text, value);
           if (respuesta) {
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
+            desenfocarInputfx(context);
             listacodigos.add(value);
             setState(() {
               _sobreController.text = "";
               codigoSobre = "";
               listacodigos = listacodigos;
             });
+            notifierAccion("Se registró la entrega", "38CE00");
           } else {
             popuptoinput(
-                context, f1, "error", "EXACT", "Codigo de Sobre incorrecto");
+                context, f2, "error", "EXACT", "Codigo de Sobre incorrecto");
           }
         } else {
           popuptoinput(
@@ -154,12 +163,12 @@ class _EntregapersonalizadoPageDNIState
       controller: _sobreController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {
-          if (_dniController.text == "") {
-          popuptoinput(
-              context, f1, "error", "EXACT", "el DNI es necesario para la entrega");
-          } else {
-            _validarSobreText(value);
-          }
+        if (_dniController.text == "") {
+          popuptoinput(context, f1, "error", "EXACT",
+              "el DNI es necesario para la entrega");
+        } else {
+          _validarSobreText(value);
+        }
       },
       decoration: InputDecoration(
         contentPadding:
@@ -251,6 +260,7 @@ class _EntregapersonalizadoPageDNIState
         ),
         /* 
         drawer: crearMenu(context), */
+        key: scaffoldkey,
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

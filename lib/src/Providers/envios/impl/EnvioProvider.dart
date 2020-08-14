@@ -130,4 +130,10 @@ class EnvioProvider implements IEnvioProvider {
     List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
     return listEstados;
   }
+
+  @override
+  Future<dynamic> retirarEnvioProvider(EnvioModel envioModel) async {
+      return true;
+  }
+
 }
