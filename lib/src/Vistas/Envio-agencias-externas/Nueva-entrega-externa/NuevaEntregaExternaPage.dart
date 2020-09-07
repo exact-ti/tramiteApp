@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

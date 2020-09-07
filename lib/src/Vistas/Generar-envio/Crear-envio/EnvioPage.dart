@@ -75,8 +75,31 @@ class _EnvioPageState extends State<EnvioPage> {
     }
 
     final sendButton = Container(
-        margin: const EdgeInsets.only(top: 20),
-        child: Padding(
+      width: double.infinity,
+        margin: const EdgeInsets.only(top: 20,bottom: 10),
+                    alignment: Alignment.center,
+
+        child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: ()  {
+                            if (errorSobre.length == 0 &&
+                  errorBandeja.length == 0 &&
+                  _sobreController.text.length != 0) {
+                validarEnvio();
+              }
+            },
+            color: errorSobre.length != 0 ||
+                    errorBandeja.length != 0 ||
+                    _sobreController.text.length == 0
+                ? Colors.grey
+                : Color(0xFF2C6983),
+            child: Text('Enviar', style: TextStyle(color: Colors.white))),
+      ) /* Padding(
           padding: EdgeInsets.symmetric(horizontal: 120),
           child: RaisedButton(
             shape: RoundedRectangleBorder(
@@ -97,7 +120,7 @@ class _EnvioPageState extends State<EnvioPage> {
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Enviar', style: TextStyle(color: Colors.white)),
           ),
-        ));
+        ) */);
     final observacion = TextFormField(
       maxLines: 6,
       controller: _observacionController,

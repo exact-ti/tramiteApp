@@ -109,7 +109,6 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                       ));
                 },
                 color: Color(0xFF2C6983),
-                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 child: Text('Guardar', style: TextStyle(color: Colors.white)),
               ),
             )),
@@ -133,7 +132,6 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                   debugPrint("cleared");
                 },
                 color: Color(0xFF858585),
-                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 child: Text('Limpiar', style: TextStyle(color: Colors.white)),
               ),
             )),

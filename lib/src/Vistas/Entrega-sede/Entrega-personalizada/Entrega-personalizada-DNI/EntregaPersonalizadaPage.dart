@@ -77,14 +77,14 @@ class _EntregapersonalizadoPageDNIState
               codigoSobre = "";
               listacodigos = listacodigos;
             });
-            notifierAccion("Se registró la entrega", "38CE00");
+            notifierAccion("El envío $value fue entregado correctamente", "38CE00");
           } else {
             popuptoinput(
-                context, f2, "error", "EXACT", "Codigo de Sobre incorrecto");
+                context, f2, "error", "EXACT", "El código no existe, por favor intente nuevamente");
           }
         } else {
           popuptoinput(
-              context, f2, "error", "EXACT", "Codigo ya se encuentra validado");
+              context, f2, "error", "EXACT", "Código ya se encuentra validado");
         }
       } else {
         popuptoinput(
@@ -165,7 +165,7 @@ class _EntregapersonalizadoPageDNIState
       onFieldSubmitted: (value) {
         if (_dniController.text == "") {
           popuptoinput(context, f1, "error", "EXACT",
-              "el DNI es necesario para la entrega");
+              "Ingrese primero el DNI para asociar a la entrega personalizada");
         } else {
           _validarSobreText(value);
         }

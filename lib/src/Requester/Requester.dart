@@ -60,31 +60,32 @@ class Requester {
   }
 
   Future<Response> get(String url) async {
-
     Response respuestaGet =
         await addInterceptors(_dio).get(properties['API'] + url);
 
     return respuestaGet;
   }
 
-  Future<Response> post(String url, dynamic data, dynamic params) async {
-/*     if (params == null) {
-      return await addInterceptors(_dio).post(
-        properties['API'] + url,
-        data: data
-      );
-    } else { */
+  Future<Response> put(String url, dynamic data, dynamic params) async {
     _navigationService.showModal();
+    Response respuestaPost = await addInterceptors(_dio).put(
+      properties['API'] + url,
+      data: data,
+      queryParameters: params,
+    );
+    _navigationService.goBack();
+    return respuestaPost;
+  }
 
+  Future<Response> post(String url, dynamic data, dynamic params) async {
+    _navigationService.showModal();
     Response respuestaPost = await addInterceptors(_dio).post(
       properties['API'] + url,
       data: data,
       queryParameters: params,
     );
     _navigationService.goBack();
-
     return respuestaPost;
-/*     } */
   }
 
   dynamic requestInterceptor(RequestOptions options) async {

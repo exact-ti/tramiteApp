@@ -62,7 +62,7 @@ Future<bool> confirmarArray(BuildContext context, String tipo, String titulo,
                                     width: 1.5, color: Colors.grey[100])),
                           ),
                           child: Container(
-                            child: Text('Continuar de todos modos',
+                            child: Text('Registrar de todos modos',
                                 style: TextStyle(color: Colors.black)),
                           ))),
                 ), InkWell(
@@ -79,7 +79,7 @@ Future<bool> confirmarArray(BuildContext context, String tipo, String titulo,
                                       width: 1.5, color: Colors.grey[100])),
                             ),
                             child: Container(
-                              child: Text('Cancelar',
+                              child: Text('Seguir validando',
                                   style: TextStyle(color: Colors.black)),
                             ))),
                   )

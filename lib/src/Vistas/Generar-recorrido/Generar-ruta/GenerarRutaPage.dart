@@ -80,7 +80,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               child: new Center(
                   child: ListTile(
                       title: Text("Para recoger",
-                          style: TextStyle(fontSize: 10)))),
+                          style: TextStyle(fontSize: 9)))),
             ),
             Center(
               child: Container(
@@ -101,7 +101,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                 height: 40,
                 child: ListTile(
                     title:
-                        Text("Para Entrega", style: TextStyle(fontSize: 10))),
+                        Text("Para Entrega", style: TextStyle(fontSize: 9))),
               ),
             ),
             Center(

@@ -83,9 +83,10 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
   }
 
-  Future<bool> retirarEnvioController(EnvioModel envioModel) async {
-    dynamic respuesta = await principalcontroller.retirarEnvio(envioModel);
-/*     if (respuesta.containsValue("success")) {
+  Future<bool> retirarEnvioController(EnvioModel envioModel,String motivo) async {
+    dynamic respuesta = await principalcontroller.retirarEnvio(envioModel,motivo);
+        desenfocarInputfx(context);
+    if (respuesta.containsValue("success")) {
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
       await notificacion(context, "success", "Exact", "Se retiró el envío");
@@ -93,15 +94,14 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     } else {
       await notificacion(context, "Error", "Exact", respuesta["message"]);
       return false;
-    } */
-    desenfocarInputfx(context);
-    if (respuesta) {
+    }
+/*     if (respuesta) {
       await notificacion(context, "success", "Exact", "Se retiró el envío");
       return true;
     } else {
       await notificacion(context, "Error", "Exact", "No se retiró el envío");
       return false;
-    }
+    } */
   }
 
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
@@ -177,7 +177,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         });
                       } else {
                         bool respuesta =
-                            await retirarEnvioController(envioModel);
+                            await retirarEnvioController(envioModel,_observacionController.text);
                         if (respuesta) {
                           Navigator.pop(context, true);
                         }
@@ -218,7 +218,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                 });
                               } else {
                                 bool respuesta =
-                                    await retirarEnvioController(envioModel);
+                                    await retirarEnvioController(envioModel,_observacionController.text);
                                 if (respuesta) {
                                   Navigator.pop(context, true);
                                 }

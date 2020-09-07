@@ -161,7 +161,7 @@ modificarUtdOrBuzon(BuildContext context, int tipo) async {
       builder: (context) {
         return AlertDialog(
           title: Text(tipo == cliente
-              ? "Seleccione un nuevo buzon"
+              ? "Seleccione un nuevo buzón"
               : "Seleccione un nuevo UTD"),
           content: Container(
               height: heightCel,

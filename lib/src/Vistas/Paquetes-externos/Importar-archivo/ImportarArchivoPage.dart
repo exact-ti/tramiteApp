@@ -39,9 +39,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
   @override
   Widget build(BuildContext context) {
-    // const PrimaryColor = const Color(0xFF2C6983);
-    // const LetraColor = const Color(0xFF68A1C8);
-
     return Scaffold(
       appBar: sd.crearTitulo(titulo),
       drawer: sd.crearMenu(context),
@@ -80,7 +77,20 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             alignment: Alignment.center,
             height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
             width: double.infinity,
-            child: RaisedButton(
+            child: ButtonTheme(
+              minWidth: 150.0,
+              height: 50.0,
+              child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  onPressed: () async {
+                    contenido = _adjuntarArchivo(context);
+                  },
+                  color: sd.primaryColor,
+                  child:
+                      Text('Adjuntar', style: TextStyle(color: Colors.white))),
+            ) /* RaisedButton(
                 padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
                 textColor: Colors.white,
                 color: sd.primaryColor,
@@ -90,7 +100,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                 ),
                 onPressed: () {
                   contenido = _adjuntarArchivo(context);
-                })),
+                }) */
+            ),
       ),
     );
   }
@@ -104,7 +115,21 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             alignment: Alignment.center,
             height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
             width: double.infinity,
-            child: RaisedButton(
+            child: ButtonTheme(
+              minWidth: 150.0,
+              height: 50.0,
+              child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  onPressed: () async {
+                    _importarRegistros(context);
+                    setState(() {});
+                  },
+                  color: sd.primaryColor,
+                  child:
+                      Text('Importar', style: TextStyle(color: Colors.white))),
+            ) /* RaisedButton(
               padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
               textColor: Colors.white,
               color: sd.primaryColor,
@@ -116,7 +141,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                 _importarRegistros(context);
                 setState(() {});
               },
-            )),
+            ) */
+            ),
       ),
     );
   }
@@ -169,8 +195,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         if (this.codigo_paquete_incorrecto > 0) {
-          bool respuestabool =
-              await confirmacion(context, "success", "EXACT", description);
+          bool respuestabool = await confirmacion(context, "success", "EXACT",
+              description + ". ¿Desea registrar los documentos correctos?");
           if (respuestabool != null) {
             if (!respuestabool) {
               return;
@@ -182,13 +208,14 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          notificacion(context, "success", "EXACT", "Correcto");
+          notificacion(
+              context, "success", "EXACT", "Se registraron los documentos");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
-          contenido = Container();
+          contenido = null;
           setState(() {
-            contenido = Container();
+            contenido = null;
           });
         } else {
           List<dynamic> duplicados = resp["data"];
@@ -223,14 +250,15 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          notificacion(context, "success", "EXACT", "Correcto");
+          notificacion(
+              context, "success", "EXACT", "Se registraron los documentos");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
           this.codigo_paquete_incorrecto = 0;
-          contenido = Container();
+          contenido = null;
           setState(() {
-            contenido = Container();
+            contenido = null;
           });
         } else {
           List<dynamic> duplicados = resp["data"];
@@ -452,10 +480,31 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         if (item.nombre == valorCampo) {
           c = Colors.red;
         }
+
         return DataRow(cells: [
-          DataCell(Text(item.id.toString())),
+/*           DataCell(Text(item.id.toString())),
           DataCell(Text(item.idBuzon.toString())),
-          DataCell(Text(item.nombre, style: TextStyle(color: c)))
+          DataCell(Text(item.nombre, style: TextStyle(color: c))), */
+          DataCell(item.id.toString() == ""
+              ? Text(
+                  "No ingresado",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red),
+                )
+              : Text(item.id.toString(), textAlign: TextAlign.center)),
+          DataCell(item.idBuzon.toString() == ""
+              ? Text("No ingresado",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red))
+              : Container(
+                  child: Text(item.idBuzon.toString(),
+                      textAlign: TextAlign.center),
+                  alignment: Alignment.center,
+                )),
+          DataCell(item.idBuzon.toString() == ""
+              ? Text("")
+              : Text(item.nombre,
+                  textAlign: TextAlign.center, style: TextStyle(color: c)))
         ]);
       }).toList();
     } else {
@@ -464,10 +513,19 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
     return DataTable(
       headingRowHeight: 50.0,
+      columnSpacing: 50,
       columns: [
-        DataColumn(label: Text('Código')),
-        DataColumn(label: Text('Id-buzón')),
-        DataColumn(label: Text('Buzón'))
+        DataColumn(
+            label: Expanded(
+                child: Text(
+          'Código',
+          textAlign: TextAlign.center,
+        ))),
+        DataColumn(
+            label: Expanded(
+                child: Text('Id. buzón', textAlign: TextAlign.center))),
+        DataColumn(
+            label: Expanded(child: Text('Buzón', textAlign: TextAlign.center)))
       ],
       rows: widgets,
     );
@@ -519,7 +577,12 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   padding: const EdgeInsets.all(20),
                 ),
                 InkWell(
-                  onTap: () => Navigator.pop(context, true),
+                  onTap: () {
+                    setState(() {
+                      this.contenido = null;
+                    });
+                    Navigator.pop(context, true);
+                  },
                   child: Center(
                       child: Container(
                           height: 50.00,
@@ -532,7 +595,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                                     width: 1.5, color: Colors.grey[100])),
                           ),
                           child: Container(
-                            child: Text('Volver a adjuntar archivo',
+                            child: Text('Aceptar',
                                 style: TextStyle(color: Colors.black)),
                           ))),
                 )

@@ -82,8 +82,8 @@ class EnvioImpl implements EnvioInterface {
   }
 
   @override
-  Future retirarEnvio(EnvioModel envioModel) {
-    return envio.retirarEnvioProvider(envioModel);
+  Future retirarEnvio(EnvioModel envioModel,String motivo) {
+    return envio.retirarEnvioProvider(envioModel,motivo);
   }
 
 

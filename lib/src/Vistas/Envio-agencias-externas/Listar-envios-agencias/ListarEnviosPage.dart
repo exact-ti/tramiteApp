@@ -206,7 +206,23 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     final sendButton = Container(
-      child: RaisedButton(
+      child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: () async {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NuevoEntregaExternaPage(),
+                  ));
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Nueva', style: TextStyle(color: Colors.white))),
+      ) /* RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -220,7 +236,8 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Nueva', style: TextStyle(color: Colors.white)),
-      ),
+      ) */
+      ,
     );
 
     void registrarlista() async {
@@ -263,7 +280,19 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     final sendButton2 = Container(
-      child: RaisedButton(
+      child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: () async {
+              registrarlista();
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Enviar', style: TextStyle(color: Colors.white))),
+      ) /* RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -273,7 +302,8 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Enviar', style: TextStyle(color: Colors.white)),
-      ),
+      ) */
+      ,
     );
 
     Widget mainscaffold() {
@@ -322,7 +352,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Envios activos"),
+        appBar: crearTitulo("Entregas externas"),
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

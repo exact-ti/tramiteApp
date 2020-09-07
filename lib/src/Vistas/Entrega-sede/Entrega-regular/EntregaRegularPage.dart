@@ -23,16 +23,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   EntregaregularController envioController = new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  //final _sobreController = TextEditingController();
   EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaenvios2 = new List();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
   EntregaregularController principalcontroller = new EntregaregularController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String mensaje = "";

@@ -232,7 +232,6 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               }
             },
             color: Color(0xFF2C6983),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));

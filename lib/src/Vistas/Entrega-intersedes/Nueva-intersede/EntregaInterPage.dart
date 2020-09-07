@@ -42,7 +42,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
 
     listarNovalidados() {
       for (EnvioModel envio in listaEnvios) {
@@ -56,14 +55,15 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () async {
-              if (_bandejaController.text == "") {
+             if (_bandejaController.text == "") {
                 notificacion(context, "error", "EXACT",
                     "Debe ingresar el codigo de bandeja");
               } else {
@@ -359,38 +359,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       ),
     );
 
-/*     Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(
-              _bandejaController.text, codigoporValidar, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              if (!listaEnvios.contains(envio)) {
-                listaEnvios.add(envio);
-              }
-              if (!validados.contains(envio.codigoPaquete)) {
-                validados.add(envio.codigoPaquete);
-              }
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados, 1));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados, 1));
-              } else {
-                return Container();
-              }
-            }
-          });
-    } */
-
     Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
       return _crearListadoinMemoria(lista, validados);
     }
@@ -500,7 +468,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                               : Container(
                                   child: _validarListado(
                                       listaEnvios, listaCodigosValidados))),
-                      Align(
+                      listaCodigosValidados.length!=0? Align(
                         alignment: Alignment.center,
                         child: Container(
                             alignment: Alignment.center,
@@ -508,7 +476,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                                 dividedBy: 6),
                             width: double.infinity,
                             child: sendButton),
-                      ),
+                      ):Container(),
                     ],
                   ),
                 ))));

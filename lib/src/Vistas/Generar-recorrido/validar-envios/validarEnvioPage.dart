@@ -151,7 +151,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               }
             },
             color: Color(0xFF2C6983),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text(
                 listaEnvios.length == 0
                     ? 'Crear solo recojo'

@@ -151,14 +151,14 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                 : "Se recepcionó los envíos");
         _navigationService.showModal();
         listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
-         validados.clear();
+        validados.clear();
         listaEnviosModel.forEach((element) {
           String cod = element.codigoPaquete;
           validados["$cod"] = false;
         });
         _navigationService.goBack();
         setState(() {
-          validados=validados;
+          validados = validados;
           _bandejaController.text = "";
           listaEnviosModel = listaEnviosModel;
         });
@@ -200,7 +200,19 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     }
 
     final sendButton2 = Container(
+        child: ButtonTheme(
+      minWidth: 150.0,
+      height: 50.0,
       child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          onPressed: () async {
+            registrarLista();
+          },
+          color: Color(0xFF2C6983),
+          child: Text('Recepcionar', style: TextStyle(color: Colors.white))),
+    ) /* RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -210,8 +222,8 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Recepcionar', style: TextStyle(color: Colors.white)),
-      ),
-    );
+      ), */
+        );
 
     Widget _crearListado(List<EnvioModel> listaEnv) {
       if (listaEnv.length == 0)

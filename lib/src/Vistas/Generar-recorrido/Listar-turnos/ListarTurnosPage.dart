@@ -150,9 +150,22 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     final sendButton = Container(
-        child: Padding(
+        child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: ()  {
+          Navigator.of(context).pushNamed('/entregas-pisos-propios');
+
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white))),
+      )/*Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: RaisedButton(
+      child:   RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -162,8 +175,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         color: Color(0xFF2C6983),
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white)),
-      ),
-    ));
+      ) ,
+    )*/);
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
