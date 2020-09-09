@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -396,21 +397,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Nueva entrega',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Nueva entrega"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

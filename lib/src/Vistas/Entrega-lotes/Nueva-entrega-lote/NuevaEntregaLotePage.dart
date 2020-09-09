@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'NuevaEntregaLoteController.dart';
 
@@ -374,21 +375,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entrega de lotes',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Entrega de lotes"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

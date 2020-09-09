@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:http/http.dart' as http;
 
 class Requester {
   static final Requester _instancia = new Requester._internal();
@@ -18,6 +19,7 @@ class Requester {
   Requester._internal();
 
   final Dio _dio = Dio();
+  final http.Client _client = http.Client();
 
   final _prefs = new PreferenciasUsuario();
 
@@ -64,6 +66,23 @@ class Requester {
         await addInterceptors(_dio).get(properties['API'] + url);
 
     return respuestaGet;
+  }
+
+  Future<Stream<dynamic>> sse(String url) async {
+    var token = _prefs.token;
+    var request = http.Request("GET", Uri.parse(properties['API'] + url));
+    request.headers["Authorization"] = token;
+    http.StreamedResponse response = await _client.send(request);
+    
+    return response.stream.transform(utf8.decoder).where((data) {
+      try {
+        json.decode(data);
+        print(data);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }).map((data) => jsonDecode(data));
   }
 
   Future<Response> put(String url, dynamic data, dynamic params) async {
@@ -138,7 +157,6 @@ class Requester {
     return dioError;
   }
 
-  /* Configuraciones */
 
   Dio addInterceptors(Dio dio) {
     return dio

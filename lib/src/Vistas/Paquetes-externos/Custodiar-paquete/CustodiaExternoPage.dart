@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoController.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class CustodiaExternoPage extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: sd.crearTitulo('Custodiar envíos'),
+        appBar: CustomAppBar(text: "Custodiar envíos"),
         drawer: sd.crearMenu(context),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

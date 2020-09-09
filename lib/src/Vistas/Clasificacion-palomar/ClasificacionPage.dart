@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'ClasificacionController.dart';
 
@@ -196,15 +197,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          title: Text('Clasificar envios',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Clasificar envios"),
         drawer: sd.crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

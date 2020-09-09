@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-DNI/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Generar-Firma/GenerarFirmaPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 
 import 'ListarTipoPersonalizadaController.dart';
@@ -52,7 +53,7 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
     
     return Scaffold(
-      appBar: sd.crearTitulo('Entrega personalizada'),/* 
+      appBar: CustomAppBar(text: "Entrega personalizada"),/* 
       drawer: sd.crearMenu(context), */
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'ListarEnviosController.dart';
 
@@ -309,21 +310,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
     const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas InterUTD',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Entregas InterUTD"),
         drawer: sd.crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

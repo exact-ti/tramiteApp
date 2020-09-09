@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'RecepcionRegularController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
@@ -389,21 +390,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Recibir Valijas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Recibir Valijas"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

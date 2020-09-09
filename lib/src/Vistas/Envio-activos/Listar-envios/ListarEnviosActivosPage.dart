@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'ListarEnviosActivosController.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
@@ -475,7 +476,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Envios activos"),
+        appBar: CustomAppBar(text: "Envios activos"),
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

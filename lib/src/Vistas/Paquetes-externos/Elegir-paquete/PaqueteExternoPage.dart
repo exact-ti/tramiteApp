@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
  
 
 class PaqueteExternoPage extends StatefulWidget {
@@ -49,7 +50,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
 
     
     return Scaffold(
-      appBar: sd.crearTitulo('Custodia de documentos externos'),
+      appBar: CustomAppBar(text: "Custodia de documentos externos"),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

@@ -4,6 +4,8 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:intl/intl.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'HistoricoController.dart';
@@ -441,7 +443,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Históricos"),
+        appBar: CustomAppBar(text: "Históricos"),
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

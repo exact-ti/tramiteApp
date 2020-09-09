@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -157,22 +158,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
       ),
     );
 
-    final titulo = Row(children: <Widget>[
-      Text('Generar envío', style: TextStyle(fontSize: 10)),
-      SizedBox(width: 250, child: TextField()),
-    ]);
-
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          title: Text('Generar envío',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar:CustomAppBar(text: "Generar envío"),
         drawer: crearMenu(context),
         resizeToAvoidBottomInset: false, 
         resizeToAvoidBottomPadding: false,

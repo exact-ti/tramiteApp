@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'ConsultaEnvioController.dart';
 
@@ -418,21 +419,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Consultas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar: CustomAppBar(text: "Consultas"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

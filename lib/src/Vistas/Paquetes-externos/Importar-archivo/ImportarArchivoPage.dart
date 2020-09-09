@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 //import 'dart:html';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
@@ -13,13 +11,12 @@ import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
-import 'package:path/path.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:tramiteapp/src/ModelDto/PaqueteExternoBuzonModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoController.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class ImportarArchivoPage extends StatefulWidget {
   @override
@@ -40,7 +37,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: sd.crearTitulo(titulo),
+      appBar: CustomAppBar(text: titulo),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
       body: Container(

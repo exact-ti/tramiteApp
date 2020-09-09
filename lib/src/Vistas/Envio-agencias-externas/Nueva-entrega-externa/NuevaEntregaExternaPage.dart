@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'NuevaEntregaExternaController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
@@ -371,21 +372,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas externas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar:CustomAppBar(text: "Entregas externas"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

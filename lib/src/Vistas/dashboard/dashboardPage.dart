@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Enumerator/TipoEstadoEnum.dart';
 import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'dashboardController.dart';
 
@@ -167,7 +168,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: crearTitulo("Dashboard"),
+        appBar: CustomAppBar(text: "Dashboard"),
         drawer: crearMenu(context),
         backgroundColor: Colors.white,
         body: scaffoldbody(mainscaffold(), context));

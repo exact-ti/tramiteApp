@@ -2,6 +2,7 @@ import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -177,24 +178,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white)),
       ) ,
     )*/);
-
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas en sede',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar:CustomAppBar(text: "Entregas en sede"),
         drawer: sd.crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(

@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'RetirarEnvioController.dart';
 
 class RetirarEnvioPage extends StatefulWidget {
@@ -683,7 +684,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Retirar envío"),
+        appBar:CustomAppBar(text: "Retirar envío"),
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

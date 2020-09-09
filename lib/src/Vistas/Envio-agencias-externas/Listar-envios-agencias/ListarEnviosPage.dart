@@ -6,6 +6,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'ListarEnviosAgenciasController.dart';
@@ -352,7 +353,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Entregas externas"),
+        appBar: CustomAppBar(text: "Entregas externas") ,
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

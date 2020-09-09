@@ -1,6 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'ListarEnviosUTDController.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
@@ -118,7 +119,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Envíos en UTD"),
+        appBar: CustomAppBar(text: "Envíos en UTD"),
         drawer: crearMenu(context),
         body: scaffoldbody(mainscaffold(), context));
   }

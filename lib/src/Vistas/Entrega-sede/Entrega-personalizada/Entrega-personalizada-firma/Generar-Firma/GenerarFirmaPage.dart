@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Registrar-firma/RegistrarEntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class GenerarFirmaPage extends StatefulWidget {
   @override
@@ -139,7 +140,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
     ]);
 
     return Scaffold(
-        appBar: sd.crearTitulo('Entrega personalizada'),/* 
+        appBar:CustomAppBar(text: "Entrega personalizada"),/* 
         drawer: sd.crearMenu(context), */
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

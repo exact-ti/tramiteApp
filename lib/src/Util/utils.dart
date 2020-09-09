@@ -19,6 +19,11 @@ import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
 
+final primaryColor = Color(0xFF2C6983);
+final colorletra = Color(0xFFACADAD);
+final colorplomo = Color(0xFFEAEFF2);
+final colorblanco = Color(0xFFFFFFFF);
+
 Drawer crearMenu(BuildContext context) {
   return Drawer(
     child: ListView(padding: EdgeInsets.zero, children: milistview(context)),
@@ -255,8 +260,6 @@ void redirection(BuildContext context, String ruta) {
   Navigator.pushReplacementNamed(context, ruta);
 }
 
-////////////
-
 Size screenSize(BuildContext context) {
   return MediaQuery.of(context).size;
 }
@@ -270,22 +273,6 @@ double screenHeightExcludingToolbar(BuildContext context,
     {double dividedBy = 1}) {
   return screenHeight(context, dividedBy: dividedBy, reducedBy: kToolbarHeight);
 }
-
-Widget crearTitulo(String titulo) {
-  return AppBar(
-      backgroundColor: primaryColor,
-      title: Text(titulo,
-          style: TextStyle(
-              fontSize: 18,
-              decorationStyle: TextDecorationStyle.wavy,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.normal)));
-}
-
-final primaryColor = Color(0xFF2C6983);
-final colorletra = Color(0xFFACADAD);
-final colorplomo = Color(0xFFEAEFF2);
-final colorblanco = Color(0xFFFFFFFF);
 
 Future<String> getDataFromCamera() async {
   var scanResult = await BarcodeScanner.scan();

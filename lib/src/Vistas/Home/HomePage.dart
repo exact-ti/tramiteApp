@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';
@@ -11,29 +12,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
-
   @override
   void initState() {
     super.initState();
     cargarPreferences();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
     const LetraColor = const Color(0xFF68A1C8);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: PrimaryColor,
-        title: Text('Bienvenido',
-            style: TextStyle(
-                fontSize: 18,
-                decorationStyle: TextDecorationStyle.wavy,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.normal)),
-      ),
+      appBar: CustomAppBar(text: "Bienvenido"),
       drawer: sd.crearMenu(context),
       backgroundColor: Colors.white,
       body: Center(

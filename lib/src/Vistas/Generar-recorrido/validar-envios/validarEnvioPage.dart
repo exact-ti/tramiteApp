@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -354,23 +355,8 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
       ),
     ]);
 
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Validación de documentos',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
+        appBar:CustomAppBar(text: "Validación de documentos"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(
