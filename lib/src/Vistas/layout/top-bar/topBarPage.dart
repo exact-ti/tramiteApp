@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/widgets/menuPopUp.dart';
 import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -20,9 +21,8 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
   TopBarController topBarController = new TopBarController();
-  List<NotificacionModel> listanotificaciones = new List();
+  List<NotificacionModel> listanotificacionesPendientes = new List();
   AppLifecycleState notification;
-  int cantidadNotificaciones;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -33,28 +33,22 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   void initState() {
+    listanotificacionesPendientes = [];
     super.initState();
-    cantidadNotificaciones = 0;
-    gestionNotificaciones();
+    /* gestionNotificaciones(); */
   }
 
   void gestionNotificaciones() async {
-    Stream<List<NotificacionModel>> notificacionesStream =
-        await topBarController.esucharnotificaciones();
-    notificacionesStream.map((notificationesstream) {
-      notificationesstream.forEach((element) {
-        listanotificaciones.add(element);
-      });
+    listanotificacionesPendientes =
+        await topBarController.listarNotificacionesPendientes();
+    setState(() {
+      listanotificacionesPendientes = listanotificacionesPendientes;
     });
-/*     setState(() {
-      if (listanotificaciones.length == 0) {
-        cantidadNotificaciones = 0;
-        print(cantidadNotificaciones);
-      } else {
-        cantidadNotificaciones = listanotificaciones.length;
-        print(cantidadNotificaciones);
-      }
-    }); */
+    Stream<List<NotificacionModel>> notificacionesStream =
+        topBarController.esucharnotificaciones3();
+    notificacionesStream.listen((event) {
+      listanotificacionesPendientes = event;
+    });
   }
 
   @override
@@ -76,8 +70,8 @@ class _CustomAppBarState extends State<CustomAppBar>
               color: Colors.white,
               size: 30,
             ),
-            cantidadNotificaciones < 100
-                ? Container(
+            listanotificacionesPendientes.length < 100
+                ? listanotificacionesPendientes.length!=0? Container(
                     width: 30,
                     height: 30,
                     alignment: Alignment.topRight,
@@ -93,13 +87,13 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            "$cantidadNotificaciones",
+                            listanotificacionesPendientes.length.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
                       ),
                     ),
-                  )
+                  ) : Container()
                 : Container(
                     width: 30,
                     height: 30,
@@ -116,7 +110,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            "$cantidadNotificaciones",
+                            listanotificacionesPendientes.length.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -133,8 +127,10 @@ class _CustomAppBarState extends State<CustomAppBar>
         actions: [
           IconButton(
             icon: myAppBarIcon(),
-            onPressed: () {},
-          )
+            onPressed: () {
+              
+            },
+          ),
         ],
         title: Text(widget.text,
             style: TextStyle(

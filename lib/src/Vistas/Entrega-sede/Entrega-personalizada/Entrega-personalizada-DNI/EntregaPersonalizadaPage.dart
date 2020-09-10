@@ -63,7 +63,6 @@ class _EntregapersonalizadoPageDNIState
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
 
     void _validarSobreText(String value) async {
       if (value != "") {
@@ -103,7 +102,7 @@ class _EntregapersonalizadoPageDNIState
     }
 
     final textDNI = Container(
-      child: Text("DNI"),
+      child: Text("Código"),
     );
 
     final textSobre = Container(
@@ -245,8 +244,6 @@ class _EntregapersonalizadoPageDNIState
 
     return Scaffold(
         appBar: CustomAppBar(text: "Entrega personalizada"),
-        /* 
-        drawer: crearMenu(context), */
         key: scaffoldkey,
         body: SingleChildScrollView(
             child: ConstrainedBox(

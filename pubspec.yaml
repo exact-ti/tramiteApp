@@ -26,7 +26,7 @@ dependencies:
   shared_preferences:
   oauth2: ^1.5.0
   dio: 3.0.9
-  flutter_barcode_scanner: ^0.0.9
+  #flutter_barcode_scanner: ^0.0.9
   spreadsheet_decoder: ^1.1.0
   file_picker: ^1.4.2
   font_awesome_flutter: ^8.8.1

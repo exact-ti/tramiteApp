@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,7 +65,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               borderRadius: BorderRadius.circular(5),
             ),
             onPressed: () async {
-             if (_bandejaController.text == "") {
+              if (_bandejaController.text == "") {
                 notificacion(context, "error", "EXACT",
                     "Debe ingresar el codigo de bandeja");
               } else {
@@ -127,27 +128,33 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
           enfocarInputfx(context, f2);
         } else {
-          EnvioModel enviocontroller = await principalcontroller
-              .validarCodigoEntrega(_bandejaController.text, value, context);
-          if (enviocontroller != null) {
-            setState(() {
-              listaEnvios.add(enviocontroller);
-              listaCodigosValidados.add(value);
-            });
-            bool respuestatrue = await notificacion(
-                context, "success", "EXACT", "Envío agregado a la entrega");
-            if (respuestatrue == null || respuestatrue) {
-              enfocarInputfx(context, f2);
+          bool respuestaPopUp = await confirmacion(
+              context, "success", "EXACT", "¿Desea custodiar el envío $value");
+          if (respuestaPopUp) {
+            EnvioModel enviocontroller = await principalcontroller
+                .validarCodigoEntrega(_bandejaController.text, value, context);
+            if (enviocontroller != null) {
+              setState(() {
+                listaEnvios.add(enviocontroller);
+                listaCodigosValidados.add(value);
+              });
+              bool respuestatrue = await notificacion(
+                  context, "success", "EXACT", "Envío agregado a la entrega");
+              if (respuestatrue) {
+                enfocarInputfx(context, f2);
+              }
+            } else {
+              setState(() {
+                _sobreController.text = value;
+              });
+              bool respuestatrue = await notificacion(context, "error", "EXACT",
+                  "No es posible procesar el código");
+              if (respuestatrue == null || respuestatrue) {
+                enfocarInputfx(context, f2);
+              }
             }
           } else {
-            setState(() {
-              _sobreController.text = value;
-            });
-            bool respuestatrue = await notificacion(
-                context, "error", "EXACT", "No es posible procesar el código");
-            if (respuestatrue == null || respuestatrue) {
-              enfocarInputfx(context, f2);
-            }
+            enfocarInputfx(context, f2);
           }
         }
       } else {
@@ -455,15 +462,17 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                               : Container(
                                   child: _validarListado(
                                       listaEnvios, listaCodigosValidados))),
-                      listaCodigosValidados.length!=0? Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 6),
-                            width: double.infinity,
-                            child: sendButton),
-                      ):Container(),
+                      listaCodigosValidados.length != 0
+                          ? Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: screenHeightExcludingToolbar(context,
+                                      dividedBy: 6),
+                                  width: double.infinity,
+                                  child: sendButton),
+                            )
+                          : Container(),
                     ],
                   ),
                 ))));

@@ -17,7 +17,7 @@ Widget cargoOrdni(
       case 1:
         String cargodni = cargo.valor;
         repuesta = Container(
-          child: Text("Recibido con DNI $cargodni",
+          child: Text("Recibido con código $cargodni",
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 12)),

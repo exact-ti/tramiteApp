@@ -1,7 +1,6 @@
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import '../ISseProvider.dart';
-import 'package:http/http.dart';
 
 class SseProvider implements ISseProvider {
   Requester req = Requester();
@@ -17,22 +16,42 @@ class SseProvider implements ISseProvider {
 
   @override
   Future<Stream<List<NotificacionModel>>> listNotificationsByUser() async {
-     List<dynamic> listanot = new List();
-     try{
-        Stream<dynamic> response = await req.sse("/servicio-tramite/notificaciones/sse");
-        return response.map((respuesta){
-          if(respuesta["data"]==null){
+    List<dynamic> listanot = new List();
+    try {
+      Stream response = await req.sse("/servicio-tramite/notificaciones/sse");
+      return response.map((respuesta) {
+        if (respuesta == null) {
           listanot = [];
-          }else{
-          listanot = respuesta["data"];
-          }
-          List<NotificacionModel> listNotificaciones= notificacionModel.fromJsonToNotificacion(listanot);
-          return listNotificaciones;
-        });
-     }catch(e){
-        return null;
-     }
+        } else {
+          listanot = [];
+        }
+        List<NotificacionModel> listNotificaciones =
+            notificacionModel.fromJsonToNotificacion(listanot);
+        return listNotificaciones;
+      });
+    } catch (e) {
+      return null;
+    }
+  }
 
+  @override
+  Stream<List<NotificacionModel>> listNotificationsByUser2() {
+    try {
+      Stream response = req.sse2("/servicio-tramite/notificaciones/sse");
+      return response.where((event) {
+        if (event["status"] == "success") {
+          return true;
+        } else {
+          return false;
+        }
+      }).map((respuesta) {
+        List<NotificacionModel> listNotificaciones =
+            notificacionModel.fromJsonToNotificacion(respuesta["data"]);
+        return listNotificaciones;
+      });
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
@@ -49,5 +68,17 @@ class SseProvider implements ISseProvider {
         null,
         null);
     return resp; */
+  }
+
+  @override
+  Stream pruebaStreamProvider(int number) async* {
+    print('waiting inside generator a bit :)');
+    await new Future.delayed(new Duration(seconds: 5)); //sleep 5s
+    print('started generating values...');
+    for (int i = 0; i < number; i++) {
+      await new Future.delayed(new Duration(seconds: 1)); //sleep 1s
+      yield i;
+    }
+    print('ended generating values...');
   }
 }

@@ -73,7 +73,6 @@ class Requester {
     var request = http.Request("GET", Uri.parse(properties['API'] + url));
     request.headers["Authorization"] = token;
     http.StreamedResponse response = await _client.send(request);
-    
     return response.stream.transform(utf8.decoder).where((data) {
       try {
         json.decode(data);
@@ -83,6 +82,25 @@ class Requester {
         return false;
       }
     }).map((data) => jsonDecode(data));
+  }
+
+  Stream<dynamic> sse2(String url) async* {
+    var token = _prefs.token;
+    var request = http.Request("GET", Uri.parse(properties['API'] + url));
+    request.headers["Authorization"] = token;
+    http.StreamedResponse response = await _client.send(request);
+    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
+      try {
+        json.decode(data);
+        print(data);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }).map((data) => jsonDecode(data));
+    await for (final item in nuevoStream) {
+      yield item;
+    }
   }
 
   Future<Response> put(String url, dynamic data, dynamic params) async {
@@ -156,7 +174,6 @@ class Requester {
     }
     return dioError;
   }
-
 
   Dio addInterceptors(Dio dio) {
     return dio
