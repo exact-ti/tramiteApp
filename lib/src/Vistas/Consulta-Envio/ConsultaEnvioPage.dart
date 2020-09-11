@@ -80,7 +80,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () { 
+            onPressed: () {
               desenfocarInputfx(context);
               if (_paqueteController.text == "" &&
                   _remitenteController.text == "" &&
@@ -145,7 +145,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(right: 20, left: 20),
+                          margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('De',
                               style:
@@ -166,7 +166,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(left: 20),
+                          margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('para',
                               style:
@@ -187,7 +187,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                            margin: const EdgeInsets.only(left: 20, bottom: 10),
+                            margin: const EdgeInsets.only(left: 10, bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: new GestureDetector(
                               onTap: () {
@@ -201,9 +201,10 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                              "En custodia en UTD " + envio.codigoUbicacion,
+                          margin: const EdgeInsets.only(bottom: 10,right: 10),
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: Text(envio.codigoUbicacion,
                               style: TextStyle(color: Colors.black)),
                         ),
                         flex: 6,

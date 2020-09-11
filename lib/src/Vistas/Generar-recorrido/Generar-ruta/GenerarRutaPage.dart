@@ -46,8 +46,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   Widget build(BuildContext context) {
     const colorplomo = const Color(0xFFEAEFF2);
     const colorletra = const Color(0xFF7A7D7F);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
     var colorwidget = colorplomo;
 
@@ -182,6 +180,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                     if (rutas.length == 0) {
                       return sinResultados("No se han encontrado resultados");
                     } else {
+                      this.cantidad=rutas.length;
                       return ListView.builder(
                           itemCount: rutas.length,
                           itemBuilder: (context, i) => crearItem(rutas[i]));
@@ -229,7 +228,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               ),
               onPressed: () async {
                 if (recorridoUsuario.indicepagina != 1) {
-                  if (cantidad != 0) {
+                  if (this.cantidad != 0) {
                     bool respuestabool = await confirmacion(context, "success",
                         "EXACT", "Tienes pendientes ¿Desea Continuar?");
                     if (respuestabool) {

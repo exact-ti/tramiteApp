@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
 import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'EnvioController.dart';
 
@@ -76,31 +77,30 @@ class _EnvioPageState extends State<EnvioPage> {
     }
 
     final sendButton = Container(
-      width: double.infinity,
-        margin: const EdgeInsets.only(top: 20,bottom: 10),
-                    alignment: Alignment.center,
-
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 20, bottom: 10),
+        alignment: Alignment.center,
         child: ButtonTheme(
-        minWidth: 150.0,
-        height: 50.0,
-        child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: ()  {
-                            if (errorSobre.length == 0 &&
-                  errorBandeja.length == 0 &&
-                  _sobreController.text.length != 0) {
-                validarEnvio();
-              }
-            },
-            color: errorSobre.length != 0 ||
-                    errorBandeja.length != 0 ||
-                    _sobreController.text.length == 0
-                ? Colors.grey
-                : Color(0xFF2C6983),
-            child: Text('Enviar', style: TextStyle(color: Colors.white))),
-      ) /* Padding(
+          minWidth: 150.0,
+          height: 50.0,
+          child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () {
+                if (errorSobre.length == 0 &&
+                    errorBandeja.length == 0 &&
+                    _sobreController.text.length != 0) {
+                  validarEnvio();
+                }
+              },
+              color: errorSobre.length != 0 ||
+                      errorBandeja.length != 0 ||
+                      _sobreController.text.length == 0
+                  ? Colors.grey
+                  : Color(0xFF2C6983),
+              child: Text('Enviar', style: TextStyle(color: Colors.white))),
+        ) /* Padding(
           padding: EdgeInsets.symmetric(horizontal: 120),
           child: RaisedButton(
             shape: RoundedRectangleBorder(
@@ -121,7 +121,8 @@ class _EnvioPageState extends State<EnvioPage> {
             padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Enviar', style: TextStyle(color: Colors.white)),
           ),
-        ) */);
+        ) */
+        );
     final observacion = TextFormField(
       maxLines: 6,
       controller: _observacionController,
@@ -199,6 +200,10 @@ class _EnvioPageState extends State<EnvioPage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       focusNode: f2,
+    textCapitalization: TextCapitalization.sentences,
+      inputFormatters: [
+        UpperCaseTextFormatter(),
+      ],
       controller: _bandejaController,
       textInputAction: TextInputAction.next,
       onChanged: (text) {
@@ -324,14 +329,16 @@ class _EnvioPageState extends State<EnvioPage> {
                                 height: 35,
                                 child: ListTile(
                                   leading: Icon(Icons.perm_identity),
-                                  title: new Text("Para: "+recordObject.nombre,
+                                  title: new Text(
+                                      "Para: " + recordObject.nombre,
                                       style: TextStyle(fontSize: 15)),
                                 ),
                               ),
                               ListTile(
                                 leading: Icon(Icons.location_on),
-                                title: new Text("Área: "+
-                                    recordObject.area +
+                                title: new Text(
+                                    "Área: " +
+                                        recordObject.area +
                                         " - " +
                                         recordObject.sede,
                                     style: TextStyle(fontSize: 15)),

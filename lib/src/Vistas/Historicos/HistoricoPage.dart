@@ -112,7 +112,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(right: 20, left: 20),
+                          margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('De',
                               style:
@@ -133,7 +133,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(left: 20),
+                          margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('para',
                               style:
@@ -154,7 +154,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                            margin: const EdgeInsets.only(left: 20, bottom: 10),
+                            margin: const EdgeInsets.only(left: 10, bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: new GestureDetector(
                               onTap: () {
@@ -167,10 +167,12 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         flex: 3,
                       ),
                       Expanded(
+
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                              "En custodia en UTD " + envio.codigoUbicacion,
+                          margin: const EdgeInsets.only(bottom: 10,right: 10),
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: Text(envio.observacion,
                               style: TextStyle(color: Colors.black)),
                         ),
                         flex: 6,

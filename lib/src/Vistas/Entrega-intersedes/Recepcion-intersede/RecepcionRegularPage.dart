@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -182,19 +183,26 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
           enfocarInputfx(context, f2);
         } else {
-          dynamic respuestaValidar = await principalcontroller.recogerdocumento(
-              context, _bandejaController.text, value, true);
-          if (respuestaValidar["status"] != "success") {
-            setState(() {
-              mensajeconfirmation = "No es posible procesar el código";
-              _sobreController.text = value;
-            });
-            enfocarInputfx(context, f2);
+          bool respuestaPopUp = await confirmacion(
+              context, "success", "EXACT", "¿Desea custodiar el envío $value?");
+          if (respuestaPopUp) {
+            dynamic respuestaValidar =
+                await principalcontroller.recogerdocumento(
+                    context, _bandejaController.text, value, true);
+            if (respuestaValidar["status"] != "success") {
+              setState(() {
+                mensajeconfirmation = "No es posible procesar el código";
+                _sobreController.text = value;
+              });
+              enfocarInputfx(context, f2);
+            } else {
+              setState(() {
+                mensajeconfirmation = "El sobre $value fue recepcionado";
+                _sobreController.text = value;
+              });
+              enfocarInputfx(context, f2);
+            }
           } else {
-            setState(() {
-              mensajeconfirmation = "El sobre $value fue recepcionado";
-              _sobreController.text = value;
-            });
             enfocarInputfx(context, f2);
           }
         }
@@ -220,9 +228,9 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           popuptoinput(context, f1, "error", "EXACT",
               "No es posible procesar el código");
         }
-      }else{
-          popuptoinput(context, f1, "error", "EXACT",
-              "El código del lote es obligatorio");        
+      } else {
+        popuptoinput(
+            context, f1, "error", "EXACT", "El código del lote es obligatorio");
       }
     }
 

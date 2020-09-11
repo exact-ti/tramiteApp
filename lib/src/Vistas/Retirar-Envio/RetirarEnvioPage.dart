@@ -423,7 +423,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               child: Text(
-                                  "En custodia en UTD " + envio.codigoUbicacion,
+                                  envio.observacion,
                                   style: TextStyle(color: Colors.black)),
                             ),
                             flex: 6,

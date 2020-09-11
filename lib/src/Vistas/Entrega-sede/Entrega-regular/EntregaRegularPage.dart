@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
 import 'EntregaRegularController.dart';
@@ -395,6 +396,10 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       focusNode: f1,
       controller: _bandejaController,
       textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.sentences,
+      inputFormatters: [
+        UpperCaseTextFormatter(),
+      ],
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },

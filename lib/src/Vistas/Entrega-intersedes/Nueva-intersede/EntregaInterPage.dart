@@ -128,9 +128,9 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
           enfocarInputfx(context, f2);
         } else {
-          bool respuestaPopUp = await confirmacion(
+/*           bool respuestaPopUp = await confirmacion(
               context, "success", "EXACT", "¿Desea custodiar el envío $value");
-          if (respuestaPopUp) {
+          if (respuestaPopUp) { */
             EnvioModel enviocontroller = await principalcontroller
                 .validarCodigoEntrega(_bandejaController.text, value, context);
             if (enviocontroller != null) {
@@ -149,13 +149,13 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
               });
               bool respuestatrue = await notificacion(context, "error", "EXACT",
                   "No es posible procesar el código");
-              if (respuestatrue == null || respuestatrue) {
+              if (respuestatrue) {
                 enfocarInputfx(context, f2);
               }
             }
-          } else {
+/*           } else {
             enfocarInputfx(context, f2);
-          }
+          } */
         }
       } else {
         bool respuestatrue = await notificacion(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
@@ -63,7 +64,6 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
     contieneCodigo(codigo) async {
       bool pertenecia = false;
       for (EnvioModel envio in listaEnvios) {
@@ -101,19 +101,26 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               "No es posible procesar el código");
         }
       } else {
-        bool respuesta = await principalcontroller.recogerdocumentoLote(
-            context, codigoBandeja, codigo);
-        if (respuesta) {
-          setState(() {
-            _sobreController.text = codigo;
-          });
-          popuptoinput(context, f2, "error", "EXACT", "Se registró la valija");
+        bool respuestaPopUp = await confirmacion(
+            context, "success", "EXACT", "¿Desea custodiar el envío $codigo?");
+        if (respuestaPopUp) {
+          bool respuesta = await principalcontroller.recogerdocumentoLote(
+              context, codigoBandeja, codigo);
+          if (respuesta) {
+            setState(() {
+              _sobreController.text = codigo;
+            });
+            popuptoinput(
+                context, f2, "error", "EXACT", "Se registró la valija");
+          } else {
+            setState(() {
+              _sobreController.text = codigo;
+            });
+            popuptoinput(context, f2, "error", "EXACT",
+                "No es posible procesar el código");
+          }
         } else {
-          setState(() {
-            _sobreController.text = codigo;
-          });
-          popuptoinput(context, f2, "error", "EXACT",
-              "No es posible procesar el código");
+          enfocarInputfx(context, f2);
         }
       }
     }
@@ -344,7 +351,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     ]);
 
     return Scaffold(
-        appBar:CustomAppBar(text: "Recibir Lotes"),
+        appBar: CustomAppBar(text: "Recibir Lotes"),
         drawer: crearMenu(context),
         body: SingleChildScrollView(
             child: ConstrainedBox(
