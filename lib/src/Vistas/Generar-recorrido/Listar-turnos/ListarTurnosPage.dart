@@ -2,7 +2,8 @@ import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -164,23 +165,10 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
             },
             color: Color(0xFF2C6983),
             child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white))),
-      )/*Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child:   RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white)),
-      ) ,
-    )*/);
+      ));
     return Scaffold(
         appBar:CustomAppBar(text: "Entregas en sede"),
-        drawer: sd.crearMenu(context),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

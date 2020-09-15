@@ -6,7 +6,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'ListarEnviosAgenciasController.dart';
@@ -223,21 +224,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             },
             color: Color(0xFF2C6983),
             child: Text('Nueva', style: TextStyle(color: Colors.white))),
-      ) /* RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NuevoEntregaExternaPage(),
-              ));
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Nueva', style: TextStyle(color: Colors.white)),
-      ) */
+      )
       ,
     );
 
@@ -354,7 +341,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Entregas externas") ,
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }
 

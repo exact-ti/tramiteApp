@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -405,7 +405,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Nueva entrega"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

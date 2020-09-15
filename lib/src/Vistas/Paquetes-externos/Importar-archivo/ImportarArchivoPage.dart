@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-//import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,7 +15,8 @@ import 'package:tramiteapp/src/ModelDto/PaqueteExternoBuzonModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoController.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class ImportarArchivoPage extends StatefulWidget {
   @override
@@ -38,7 +38,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(text: titulo),
-      drawer: sd.crearMenu(context),
+      drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),

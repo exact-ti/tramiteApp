@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
@@ -14,7 +12,6 @@ import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
 import 'loader.dart';
-import 'modals/confirmation.dart';
 import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
@@ -23,168 +20,6 @@ final primaryColor = Color(0xFF2C6983);
 final colorletra = Color(0xFFACADAD);
 final colorplomo = Color(0xFFEAEFF2);
 final colorblanco = Color(0xFFFFFFFF);
-
-Drawer crearMenu(BuildContext context) {
-  return Drawer(
-    child: ListView(padding: EdgeInsets.zero, children: milistview(context)),
-  );
-}
-
-List<Widget> milistview(BuildContext context) {
-  List<Widget> list = new List<Widget>();
-
-  final _prefs = new PreferenciasUsuario();
-  if (_prefs.token != "") {
-    Menu menuu = new Menu();
-    String menuinicio = "";
-    List<dynamic> menus = json.decode(_prefs.menus);
-    List<Menu> listmenu = menuu.fromPreferencs(menus);
-    for (Menu men in listmenu) {
-      if (men.home) {
-        menuinicio = men.link;
-      }
-    }
-    listmenu.sort((a, b) => a.orden.compareTo(b.orden));
-    listmenu.reversed;
-/*     BuzonModel buzonModel = new BuzonModel();
-    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-    BuzonModel umodel = buzonModel.fromPreferencs(buzon);
-    String nombreBuzon = umodel.nombre; */
-    list.add(DrawerHeader(
-      child: Container(
-/*         alignment: Alignment.bottomLeft,
-        child: Text("$nombreBuzon",style: TextStyle(fontSize: 15,color: Colors.white),), */
-      ),
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/original.jpg'), fit: BoxFit.cover)),
-    ));
-    for (Menu men in listmenu) {
-      list.add(ListTile(
-          leading: getICon(men.icono),
-          title: Text(men.nombre),
-          onTap: () => Navigator.of(context).pushNamed(men.link)));
-    }
-
-    if (_prefs.buzon != "") {
-      list.add(ListTile(
-          leading: getICon("clasificar"),
-          title: Text("Retirar envío"),
-          onTap: () => Navigator.of(context).pushNamed("/retirar-envio")));
-      list.add(menuOpcion(context));
-      list.add(cerrarsesion(context));
-    }
-  }
-  return list;
-}
-
-Widget menuOpcion(BuildContext context) {
-  final _prefs = new PreferenciasUsuario();
-  if (tipoPerfil(_prefs.perfil) == cliente) {
-    dynamic buzon = json.decode(_prefs.buzon);
-    return ListTile(
-        leading: Icon(Icons.assignment_ind, color: Colors.blue),
-        title: Text(buzon["nombre"]),
-        onTap: () {
-          modificarUtdOrBuzon(context, cliente);
-        });
-  } else {
-    dynamic utd = json.decode(_prefs.utd);
-    return ListTile(
-        leading: Icon(Icons.business, color: Colors.blue),
-        title: Text(utd["nombre"]),
-        onTap: () {
-          modificarUtdOrBuzon(context, exact);
-        });
-  }
-}
-
-modificarUtdOrBuzon(BuildContext context, int tipo) async {
-  double heightCel = 0.6 * (MediaQuery.of(context).size.height);
-  List<dynamic> opciones = new List();
-  final _prefs = new PreferenciasUsuario();
-  if (tipo == cliente) {
-    BuzonModel buzonmodel = new BuzonModel();
-    List<dynamic> buzonCore = json.decode(_prefs.buzones);
-    opciones = buzonmodel.listfromPreferencs(buzonCore);
-  } else {
-    UtdModel utdModel = new UtdModel();
-    List<dynamic> utdCore = json.decode(_prefs.utds);
-    opciones = utdModel.listfromPreferencs(utdCore);
-  }
-
-  List<Widget> listadecodigos = new List();
-
-  for (dynamic opcion in opciones) {
-    listadecodigos.add(Container(
-        decoration: myBoxDecoration(colorletra),
-        alignment: Alignment.centerLeft,
-        margin: const EdgeInsets.only(top: 5),
-        padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: <Widget>[
-            InkWell(
-              child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: Center(
-                    child: Text(
-                      opcion.nombre,
-                      style: TextStyle(color: colorletra, fontSize: 12),
-                    ),
-                  )),
-              onTap: () async {
-                bool respuestabool = await confirmacion(
-                    context, "success", "EXACT", "¿Seguro que desea continua?");
-                if (respuestabool != null) {
-                  if (respuestabool) {
-                    /*       eventNotifier.value += 1; */
-                    if (tipo == cliente) {
-                      HashMap<String, dynamic> buzonhash = new HashMap();
-                      buzonhash['id'] = opcion.id;
-                      buzonhash['nombre'] = opcion.nombre;
-                      _prefs.buzon = buzonhash;
-                    } else {
-                      HashMap<String, dynamic> utdhash = new HashMap();
-                      utdhash['id'] = opcion.id;
-                      utdhash['nombre'] = opcion.nombre;
-                      _prefs.utd = utdhash;
-                    }
-                    Navigator.of(context).pushNamed('/principal-admin');
-                  }
-                }
-              },
-            )
-          ],
-        )));
-  }
-
-  showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(tipo == cliente
-              ? "Seleccione un nuevo buzón"
-              : "Seleccione un nuevo UTD"),
-          content: Container(
-              height: heightCel,
-              width: MediaQuery.of(context).size.width,
-              child: Column(children: <Widget>[
-                Expanded(
-                    child: SingleChildScrollView(
-                        child: Column(children: listadecodigos)))
-              ])),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        );
-      });
-}
 
 int tipoPerfil(String perfilId) {
   switch (perfilId) {
@@ -203,13 +38,18 @@ int tipoPerfil(String perfilId) {
   }
 }
 
-Widget cerrarsesion(BuildContext context) {
-  return ListTile(
-      leading: Icon(Icons.exit_to_app, color: Colors.blue),
-      title: Text("Cerrar Sesión"),
-      onTap: () {
-        eliminarpreferences(context);
-      });
+String titulosPage(String pos) {
+  switch (pos) {
+    case "first":
+      return "Fist BCP";
+      break;
+    case "second":
+      return "Second BBVA";
+    case "home":
+      return "Pagina principal";
+    default:
+      return "Fist BCP";
+  }
 }
 
 void eliminarpreferences(BuildContext context) async {
@@ -224,36 +64,11 @@ void eliminarpreferences(BuildContext context) async {
   }
 }
 
-
 void deletepreferencesWithoutContext() async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
   sharedPreferences.commit();
-}
-
-final _icons = <String, IconData>{
-  'home': Icons.home,
-  'envio': Icons.send,
-  'recorrido': Icons.directions_run,
-  'importar': Icons.file_upload,
-  'custodiar': Icons.check_box,
-  'clasificar': Icons.sort,
-  'interutd': Icons.transfer_within_a_station,
-  'revalija': Icons.markunread,
-  'lote': Icons.check_box_outline_blank,
-  'relote': Icons.filter_none,
-  'agencia': Icons.airline_seat_recline_normal,
-  'recepcion': Icons.receipt,
-  'consulta': Icons.record_voice_over,
-  'dashboard': Icons.dashboard,
-  'activos': Icons.accessibility,
-  'confirmar': Icons.confirmation_number,
-  'historico': Icons.history
-};
-
-Icon getICon(String nombreIcono) {
-  return Icon(_icons[nombreIcono], color: Colors.blue);
 }
 
 void redirection(BuildContext context, String ruta) {
@@ -318,8 +133,6 @@ Widget sinResultados(String mensaje) {
           style: TextStyle(
               color: colorletra, fontSize: 20, fontWeight: FontWeight.bold)));
 }
-
-
 
 Widget loadingGet() {
   return new Column(

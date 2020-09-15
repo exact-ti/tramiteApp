@@ -4,7 +4,8 @@ import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 import 'ConsultaEnvioController.dart';
 
@@ -421,7 +422,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Consultas"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

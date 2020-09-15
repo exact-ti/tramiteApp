@@ -3,7 +3,8 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'NuevaEntregaExternaController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
@@ -140,12 +141,14 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     void validarLista(String codigo) async {
       EnvioModel envioModel = new EnvioModel();
+      String dataString="";
       dynamic respuestalist =
           await principalcontroller.listarEnviosEntrega(context, codigo);
       if (respuestalist["status"] == "success") {
         dynamic datapalomar = respuestalist["data"];
         listaEnvios = envioModel.fromJsonValidar(datapalomar);
       } else {
+        dataString = respuestalist["message"];
         listaEnvios = [];
       }
       if (listaEnvios.length != 0) {
@@ -167,7 +170,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           codigoBandeja = codigo;
           _bandejaController.text = codigo;
         });
-        popuptoinput(context, f1, "error", "EXACT", respuestalist["message"]);
+        popuptoinput(context, f1, "error", "EXACT", dataString.length==0?"No cuenta con envíos asociados":dataString );
       }
     }
 
@@ -373,7 +376,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     return Scaffold(
         appBar:CustomAppBar(text: "Entregas externas"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

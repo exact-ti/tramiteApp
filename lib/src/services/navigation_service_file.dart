@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:progress_indicators/progress_indicators.dart';
-import 'package:tramiteapp/src/Util/loader.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
 class NavigationService {

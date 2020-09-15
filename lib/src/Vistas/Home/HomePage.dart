@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: CustomAppBar(text: "Bienvenido"),
-      drawer: sd.crearMenu(context),
+      drawer:  DrawerPage(),
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(

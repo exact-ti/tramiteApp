@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'EnvioController.dart';
 
 class EnvioPage extends StatefulWidget {
@@ -309,7 +310,7 @@ class _EnvioPageState extends State<EnvioPage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Generar envío"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
             child: ConstrainedBox(

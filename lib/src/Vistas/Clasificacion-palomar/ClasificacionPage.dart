@@ -4,8 +4,8 @@ import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'ClasificacionController.dart';
 
 class ClasificacionPage extends StatefulWidget {
@@ -198,7 +198,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Clasificar envios"),
-        drawer: sd.crearMenu(context),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

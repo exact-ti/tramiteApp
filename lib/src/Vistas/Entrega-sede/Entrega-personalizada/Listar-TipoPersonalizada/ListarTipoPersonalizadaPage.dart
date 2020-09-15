@@ -6,8 +6,7 @@ import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-DNI/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Generar-Firma/GenerarFirmaPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 
 import 'ListarTipoPersonalizadaController.dart';
  

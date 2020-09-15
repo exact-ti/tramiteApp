@@ -24,7 +24,7 @@ class EnvioModel {
       this.estado = true});
 
   List<EnvioModel> fromJsonValidar(List<dynamic> jsons) {
-    List<EnvioModel> envios = new List();
+    List<EnvioModel> envios = [];
     for (Map<String, dynamic> json in jsons) {
       EnvioModel envio = new EnvioModel();
       envio.id = json["id"];

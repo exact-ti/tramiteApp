@@ -6,12 +6,12 @@ import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 
-class TopBarController {
+class AppBarController {
   SseInterface sseInterface = new SseImpl(new SseProvider());
   NotificacionInterface notificacionCore = new NotificacionImpl(new NotificacionProvider());
 
   List<NotificacionModel> listanotificaciones = [];
-  TopBarController() {
+  AppBarController() {
     /* esucharnotificaciones2(); */
   }
   Future<Stream<List<NotificacionModel>>> esucharnotificaciones() async {
@@ -24,9 +24,6 @@ class TopBarController {
     List<NotificacionModel> notificacionespendientes =  await notificacionCore.listarNotificacionesPendientes();
     return notificacionespendientes;
   }
-
-
-  
 
   void esucharnotificaciones2() {
     sseInterface.listarnotificaciones2().listen((event) {

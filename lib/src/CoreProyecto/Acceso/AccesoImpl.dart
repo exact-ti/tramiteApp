@@ -15,7 +15,6 @@ import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'AccesoInterface.dart';
 
 class AccesoImpl implements AccesoInterface {
-  //TipoBuzonEnum tipoBuzonEnum;
   final _prefs = new PreferenciasUsuario();
 
   LogeoInterface logeo;
@@ -88,7 +87,7 @@ class AccesoImpl implements AccesoInterface {
           };
         }
       } else {
-        if (_prefs.buzon == null && _prefs.utd == null) {
+        if (_prefs.utd == null) {
           deletepreferencesWithoutContext();
           return {
             "error":"error",

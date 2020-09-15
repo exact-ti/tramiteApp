@@ -8,8 +8,9 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
-// import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart'
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+
 
 class ListaEntregaLotePage extends StatefulWidget {
   @override
@@ -326,7 +327,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
 
     return Scaffold(
       appBar:CustomAppBar(text: titulo),
-      drawer: sd.crearMenu(context),
+      drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),

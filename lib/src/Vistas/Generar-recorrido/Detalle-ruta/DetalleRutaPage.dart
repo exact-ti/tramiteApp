@@ -4,7 +4,8 @@ import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'DetalleRutaController.dart';
 
 class DetalleRutaPage extends StatefulWidget {
@@ -251,7 +252,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
 
     return Scaffold(
         appBar: CustomAppBar(text: "Detalle de mi ruta"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }
 }

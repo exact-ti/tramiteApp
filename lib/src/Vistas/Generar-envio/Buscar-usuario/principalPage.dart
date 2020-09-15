@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -160,7 +161,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
     return Scaffold(
         appBar:CustomAppBar(text: "Generar envío"),
-        drawer: crearMenu(context),
+        drawer: DrawerPage(),
         resizeToAvoidBottomInset: false, 
         resizeToAvoidBottomPadding: false,
         // set it to false

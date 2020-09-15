@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/widgets/menuPopUp.dart';
-import 'package:tramiteapp/src/Vistas/layout/top-bar/topBarController.dart';
+
+import 'AppBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String text;
@@ -20,7 +20,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
-  TopBarController topBarController = new TopBarController();
+  AppBarController appBarController = new AppBarController();
   List<NotificacionModel> listanotificacionesPendientes = new List();
   AppLifecycleState notification;
 
@@ -40,12 +40,12 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   void gestionNotificaciones() async {
     listanotificacionesPendientes =
-        await topBarController.listarNotificacionesPendientes();
+        await appBarController.listarNotificacionesPendientes();
     setState(() {
       listanotificacionesPendientes = listanotificacionesPendientes;
     });
     Stream<List<NotificacionModel>> notificacionesStream =
-        topBarController.esucharnotificaciones3();
+        appBarController.esucharnotificaciones3();
     notificacionesStream.listen((event) {
       listanotificacionesPendientes = event;
     });
