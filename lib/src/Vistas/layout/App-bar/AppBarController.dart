@@ -1,3 +1,4 @@
+
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
@@ -8,7 +9,9 @@ import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 
 class AppBarController {
   SseInterface sseInterface = new SseImpl(new SseProvider());
-  NotificacionInterface notificacionCore = new NotificacionImpl(new NotificacionProvider());
+  NotificacionInterface notificacionCore =
+      new NotificacionImpl(new NotificacionProvider());
+
 
   List<NotificacionModel> listanotificaciones = [];
   AppBarController() {
@@ -20,8 +23,14 @@ class AppBarController {
     return entregas;
   }
 
+  Future<dynamic> verNotificaciones() async {
+    dynamic notificacionrespuesta = await notificacionCore.verNotificaciones();
+    return notificacionrespuesta;
+  }
+
   Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
-    List<NotificacionModel> notificacionespendientes =  await notificacionCore.listarNotificacionesPendientes();
+    List<NotificacionModel> notificacionespendientes =
+        await notificacionCore.listarNotificacionesPendientes();
     return notificacionespendientes;
   }
 
@@ -32,15 +41,11 @@ class AppBarController {
     });
   }
 
-  Stream<List<NotificacionModel>> esucharnotificaciones3(){
-        Stream<List<NotificacionModel>> entregas = sseInterface.listarnotificaciones2();
+  Stream<List<NotificacionModel>> esucharnotificaciones3() {
+    Stream<List<NotificacionModel>> entregas =
+        sseInterface.listarnotificaciones2();
     return entregas;
   }
 
-  Stream<int> getNumbers(int number) async* {
-    Stream<dynamic> numbers = sseInterface.pruebaStreamCore(number);
-    numbers.listen((event) {
-      return event;
-    });
-  }
+
 }

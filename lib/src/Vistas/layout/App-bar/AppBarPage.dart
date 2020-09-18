@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
+import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 
 import 'AppBarController.dart';
 
@@ -21,33 +26,57 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
   AppBarController appBarController = new AppBarController();
-  List<NotificacionModel> listanotificacionesPendientes = new List();
-  AppLifecycleState notification;
+  NotificacionController notificacionController = new NotificacionController();
+  List<NotificacionModel> listanotificacionesSinVer = new List();
+  int estadoApp;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      notification = state;
-    });
+    if (state.index != inactivo) {
+      setState(() {
+        estadoApp = state.index;
+      });
+    }
   }
 
   @override
   void initState() {
-    listanotificacionesPendientes = [];
+    listanotificacionesSinVer = [];
+    estadoApp = 0;
+    gestionNotificaciones();
+    gestionNotificacioneStream();
     super.initState();
-    /* gestionNotificaciones(); */
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void gestionNotificaciones() async {
-    listanotificacionesPendientes =
+    List<NotificacionModel> listanotificacionesPendientes =
         await appBarController.listarNotificacionesPendientes();
-    setState(() {
-      listanotificacionesPendientes = listanotificacionesPendientes;
-    });
+    if (this.mounted) {
+      setState(() {
+        listanotificacionesSinVer = listanotificacionesPendientes
+            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .toList();
+      });
+    }
+  }
+
+  void gestionNotificacioneStream() {
     Stream<List<NotificacionModel>> notificacionesStream =
         appBarController.esucharnotificaciones3();
     notificacionesStream.listen((event) {
-      listanotificacionesPendientes = event;
+      if (estadoApp == paused) {
+        event.length > 1
+            ? notificacionController.mostrarNotificacionPush(
+                "tiene ${event.length}  notificaciones nuevas",
+                "/notificaciones",
+                context)
+            : notificacionController.mostrarNotificacionPush(
+                event[0].mensaje, event[0].ruta, context);
+      }
+      setState(() {
+        listanotificacionesSinVer = event;
+      });
     });
   }
 
@@ -70,30 +99,32 @@ class _CustomAppBarState extends State<CustomAppBar>
               color: Colors.white,
               size: 30,
             ),
-            listanotificacionesPendientes.length < 100
-                ? listanotificacionesPendientes.length!=0? Container(
-                    width: 30,
-                    height: 30,
-                    alignment: Alignment.topRight,
-                    margin: EdgeInsets.only(top: 5),
-                    child: Container(
-                      width: 15,
-                      height: 15,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xffc32c37),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Center(
-                          child: Text(
-                            listanotificacionesPendientes.length.toString(),
-                            style: TextStyle(fontSize: 10),
+            listanotificacionesSinVer.length < 100
+                ? listanotificacionesSinVer.length != 0
+                    ? Container(
+                        width: 30,
+                        height: 30,
+                        alignment: Alignment.topRight,
+                        margin: EdgeInsets.only(top: 5),
+                        child: Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xffc32c37),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(0.0),
+                            child: Center(
+                              child: Text(
+                                listanotificacionesSinVer.length.toString(),
+                                style: TextStyle(fontSize: 10),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ) : Container()
+                      )
+                    : Container()
                 : Container(
                     width: 30,
                     height: 30,
@@ -110,7 +141,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            listanotificacionesPendientes.length.toString(),
+                            listanotificacionesSinVer.length.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -127,8 +158,20 @@ class _CustomAppBarState extends State<CustomAppBar>
         actions: [
           IconButton(
             icon: myAppBarIcon(),
-            onPressed: () {
-              
+            onPressed: () async {
+              dynamic respuestaBack =
+                  await appBarController.verNotificaciones();
+              if (respuestaBack["status"] == "success") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificacionesPage(),
+                  ),
+                ).whenComplete(gestionNotificaciones);
+              } else {
+                notificacion(
+                    context, "error", "EXACT", "Ha surgido un problema");
+              }
             },
           ),
         ],

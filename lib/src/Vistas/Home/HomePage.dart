@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
@@ -12,6 +13,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
+  NotificacionController notificacionController = new NotificacionController();
+
   @override
   void initState() {
     super.initState();
@@ -21,10 +24,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     const LetraColor = const Color(0xFF68A1C8);
-
+ 
     return Scaffold(
       appBar: CustomAppBar(text: "Bienvenido"),
-      drawer:  DrawerPage(),
+      drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(

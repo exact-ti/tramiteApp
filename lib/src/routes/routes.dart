@@ -20,6 +20,7 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEn
 import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
@@ -64,5 +65,8 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => ListarTipoPersonalizadaPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
+    '/notificaciones' :  (BuildContext context) => NotificacionesPage(),
+
+    
   };
 }

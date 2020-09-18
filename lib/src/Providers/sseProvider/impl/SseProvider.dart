@@ -6,13 +6,6 @@ class SseProvider implements ISseProvider {
   Requester req = Requester();
   NotificacionModel notificacionModel = new NotificacionModel();
 
-/* 
-    FlutterLocalNotificationsPlugin flp = FlutterLocalNotificationsPlugin();
-    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    var iOS = IOSInitializationSettings();
-    List<dynamic> listdata = new List();
-    var initSetttings = InitializationSettings(android, iOS);
-    flp.initialize(initSetttings); */
 
   @override
   Future<Stream<List<NotificacionModel>>> listNotificationsByUser() async {
@@ -54,31 +47,5 @@ class SseProvider implements ISseProvider {
     }
   }
 
-  @override
-  Future modificarNotificacionesVistas() async {
-/*     Response response =
-        await req.put("/servicio-tramite/notificaciones/visto", null, null);
-    return resp; */
-  }
 
-  @override
-  Future modificarNotificacionesRevisadas(int notificacionId) async {
-/*     Response resp = await req.put(
-        "/servicio-tramite/notificaciones/$notificacionId/revision",
-        null,
-        null);
-    return resp; */
-  }
-
-  @override
-  Stream pruebaStreamProvider(int number) async* {
-    print('waiting inside generator a bit :)');
-    await new Future.delayed(new Duration(seconds: 5)); //sleep 5s
-    print('started generating values...');
-    for (int i = 0; i < number; i++) {
-      await new Future.delayed(new Duration(seconds: 1)); //sleep 1s
-      yield i;
-    }
-    print('ended generating values...');
-  }
 }

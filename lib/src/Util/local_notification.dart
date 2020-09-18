@@ -8,6 +8,6 @@ void showNotification( v, flp) async {
       priority: Priority.High, importance: Importance.Max, ticker: 'ticker');
   var iOS = IOSNotificationDetails();
   var platform = NotificationDetails(android, iOS);
-  await flp.show(0, 'Tramite App', '$v', platform,
-      payload: 'VIS \n $v');
+  await flp.show(0, 'EXACT', '$v', platform,
+      payload: '$v');
 }

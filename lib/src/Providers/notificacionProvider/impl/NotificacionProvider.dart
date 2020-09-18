@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 
@@ -19,6 +18,24 @@ class NotificacionProvider implements INotificacionProvider {
     List<dynamic> respdatalist = respuestaData["data"];
     List<NotificacionModel> listNotificaciones = notificacionclase.fromJsonToNotificacion(respdatalist);
     return listNotificaciones;
+  }
+
+  @override
+  Future<dynamic> modificarNotificacionesVistas() async {
+    Response response =
+        await req.put("/servicio-tramite/notificaciones/visto", null, null);
+        dynamic responsedata = response.data;
+    return responsedata;
+  }
+
+  @override
+  Future<dynamic> modificarNotificacionesRevisadas(int notificacionId) async {
+    Response response = await req.put(
+        "/servicio-tramite/notificaciones/$notificacionId/revision",
+        null,
+        null);
+        dynamic responsedata = response.data;
+    return responsedata;
   }
 
 }

@@ -15,15 +15,6 @@ class SseImpl implements SseInterface {
         await sseProvider.listNotificationsByUser();
     return responseSse;
   }
-
-  @override
-  Stream pruebaStreamCore(int number) async* {
-    Stream<dynamic> responseSse = sseProvider.pruebaStreamProvider(number);
-    responseSse.listen((value) {
-       return value;
-    });
-  }
-
   @override
   Stream<List<NotificacionModel>> listarnotificaciones2() {
     Stream<List<NotificacionModel>> responseSse = sseProvider.listNotificationsByUser2();

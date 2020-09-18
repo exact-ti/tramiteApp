@@ -89,10 +89,11 @@ class Requester {
     var request = http.Request("GET", Uri.parse(properties['API'] + url));
     request.headers["Authorization"] = token;
     http.StreamedResponse response = await _client.send(request);
-    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
+/*       String reply = await response.stream.transform(utf8.decoder).join();
+ */    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
       try {
-        json.decode(data);
         print(data);
+        json.decode(data);
         return true;
       } catch (e) {
         return false;
@@ -102,6 +103,8 @@ class Requester {
       yield item;
     }
   }
+
+
 
   Future<Response> put(String url, dynamic data, dynamic params) async {
     _navigationService.showModal();
