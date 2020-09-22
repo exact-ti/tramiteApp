@@ -1,4 +1,4 @@
-
+import 'package:eventsource/eventsource.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
@@ -14,14 +14,6 @@ class AppBarController {
 
 
   List<NotificacionModel> listanotificaciones = [];
-  AppBarController() {
-    /* esucharnotificaciones2(); */
-  }
-  Future<Stream<List<NotificacionModel>>> esucharnotificaciones() async {
-    Stream<List<NotificacionModel>> entregas =
-        await sseInterface.listarnotificaciones();
-    return entregas;
-  }
 
   Future<dynamic> verNotificaciones() async {
     dynamic notificacionrespuesta = await notificacionCore.verNotificaciones();
@@ -34,18 +26,9 @@ class AppBarController {
     return notificacionespendientes;
   }
 
-  void esucharnotificaciones2() {
-    sseInterface.listarnotificaciones2().listen((event) {
-      print(event);
-      listanotificaciones = event;
-    });
-  }
-
-  Stream<List<NotificacionModel>> esucharnotificaciones3() {
-    Stream<List<NotificacionModel>> entregas =
-        sseInterface.listarnotificaciones2();
+  Future<EventSource> ssEventSource() async {
+    EventSource entregas = await sseInterface.listarEventSource();
     return entregas;
   }
-
 
 }

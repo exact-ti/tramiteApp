@@ -1,6 +1,5 @@
-import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
+import 'package:eventsource/eventsource.dart';
 
 abstract class ISseProvider {
-  Future<Stream<List<NotificacionModel>>> listNotificationsByUser();
-  Stream<List<NotificacionModel>> listNotificationsByUser2();
+  Future<EventSource> eventSourceList();
 }

@@ -1,7 +1,6 @@
 
-import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
+import 'package:eventsource/eventsource.dart';
 
 class SseInterface {
-    Future<Stream<List<NotificacionModel>>> listarnotificaciones() async {}
-    Stream<List<NotificacionModel>> listarnotificaciones2()  {}
+    Future<EventSource> listarEventSource() async {}
 }

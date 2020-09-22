@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:eventsource/eventsource.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
@@ -6,6 +11,8 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/notificationProvider.dart';
 
 import 'AppBarController.dart';
 
@@ -28,6 +35,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   AppBarController appBarController = new AppBarController();
   NotificacionController notificacionController = new NotificacionController();
   List<NotificacionModel> listanotificacionesSinVer = new List();
+  NotificacionModel notificacionModel = new NotificacionModel();
   int estadoApp;
 
   @override
@@ -44,9 +52,9 @@ class _CustomAppBarState extends State<CustomAppBar>
     listanotificacionesSinVer = [];
     estadoApp = 0;
     gestionNotificaciones();
-    gestionNotificacioneStream();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    gestionNotificacioneFutures();
   }
 
   void gestionNotificaciones() async {
@@ -61,34 +69,50 @@ class _CustomAppBarState extends State<CustomAppBar>
     }
   }
 
-  void gestionNotificacioneStream() {
-    Stream<List<NotificacionModel>> notificacionesStream =
-        appBarController.esucharnotificaciones3();
+  void gestionNotificacioneFutures() async {
+    EventSource notificacionesStream =
+        await appBarController.ssEventSource();
     notificacionesStream.listen((event) {
-      if (estadoApp == paused) {
-        event.length > 1
+      print(event.data + widget.text);
+      dynamic respuesta = jsonDecode(event.data);
+      if (respuesta["status"] == "success") {
+      List<NotificacionModel> listarNotificaciones = notificacionModel.fromJsonToNotificacion(respuesta["data"]);
+              if (estadoApp == paused) {
+        listarNotificaciones.length > 1
             ? notificacionController.mostrarNotificacionPush(
-                "tiene ${event.length}  notificaciones nuevas",
+                "tiene ${listarNotificaciones.length}  notificaciones nuevas",
                 "/notificaciones",
                 context)
             : notificacionController.mostrarNotificacionPush(
-                event[0].mensaje, event[0].ruta, context);
+                listarNotificaciones[0].mensaje, listarNotificaciones[0].ruta, context);
       }
-      setState(() {
-        listanotificacionesSinVer = event;
-      });
+        setState(() {
+          listanotificacionesSinVer =listarNotificaciones;
+        });
+      }
     });
+  }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+/*     appBarController.esucharnotificaciones5(context);
+ */
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+/*     sse5( context); */
   }
 
   @override
   Widget build(BuildContext context) {
+    final notificationInfo = Provider.of<NotificationInfo>(context);
     Widget myAppBarIcon() {
+      int cantidadNotificaciones = listanotificacionesSinVer.length;
       return Container(
         width: 30,
         height: 30,
@@ -99,8 +123,8 @@ class _CustomAppBarState extends State<CustomAppBar>
               color: Colors.white,
               size: 30,
             ),
-            listanotificacionesSinVer.length < 100
-                ? listanotificacionesSinVer.length != 0
+            cantidadNotificaciones < 100
+                ? cantidadNotificaciones != 0
                     ? Container(
                         width: 30,
                         height: 30,
@@ -117,7 +141,8 @@ class _CustomAppBarState extends State<CustomAppBar>
                             padding: const EdgeInsets.all(0.0),
                             child: Center(
                               child: Text(
-                                listanotificacionesSinVer.length.toString(),
+                                cantidadNotificaciones
+                                    .toString(),
                                 style: TextStyle(fontSize: 10),
                               ),
                             ),
@@ -141,7 +166,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            listanotificacionesSinVer.length.toString(),
+                            cantidadNotificaciones.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -152,6 +177,52 @@ class _CustomAppBarState extends State<CustomAppBar>
         ),
       );
     }
+
+/*     Widget futuremyAppBarIcon() {
+      return Container(
+        width: 30,
+        height: 30,
+        child: Stack(
+          children: [
+            Icon(
+              Icons.notifications,
+              color: Colors.white,
+              size: 30,
+            ),
+            FutureBuilder(
+                future: appBarController.esucharnotificaciones4(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<EventSource> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      return Text("x");
+                    case ConnectionState.waiting:
+                      return Text("x");
+                    default:
+                      if (snapshot.hasError) {
+                        return Text("x");
+                      } else {
+                        if (snapshot.hasData) {
+                          EventSource notificacionesStream  = snapshot.data;
+                          int cantidad = 0;
+                          notificacionesStream.listen((event) {
+                            print(event.data);
+                              dynamic respuesta = jsonDecode(event.data);
+                              if (respuesta["status"] == "success") {
+                               cantidad = notificacionModel.fromJsonToNotificacion(respuesta["data"]).length;
+                              }
+                          });
+                         return Container(child: Text("$cantidad"),);
+                        } else {
+                          return Text("x");
+                        }
+                      }
+                  }
+                })
+          ],
+        ),
+      );
+    } */
 
     return AppBar(
         backgroundColor: primaryColor,

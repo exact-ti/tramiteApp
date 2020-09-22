@@ -1,15 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
+import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:http/http.dart' as http;
+import 'package:eventsource/eventsource.dart';
 
 class Requester {
   static final Requester _instancia = new Requester._internal();
   final NavigationService _navigationService = locator<NavigationService>();
+  NotificacionModel notificacionModel = new NotificacionModel();
   int tipoPeticion = 0;
   bool respuesta = false;
   factory Requester() {
@@ -68,29 +71,12 @@ class Requester {
     return respuestaGet;
   }
 
-  Future<Stream<dynamic>> sse(String url) async {
+/*   Stream<dynamic> sse2(String url) async* {
     var token = _prefs.token;
     var request = http.Request("GET", Uri.parse(properties['API'] + url));
     request.headers["Authorization"] = token;
     http.StreamedResponse response = await _client.send(request);
-    return response.stream.transform(utf8.decoder).where((data) {
-      try {
-        json.decode(data);
-        print(data);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }).map((data) => jsonDecode(data));
-  }
-
-  Stream<dynamic> sse2(String url) async* {
-    var token = _prefs.token;
-    var request = http.Request("GET", Uri.parse(properties['API'] + url));
-    request.headers["Authorization"] = token;
-    http.StreamedResponse response = await _client.send(request);
-/*       String reply = await response.stream.transform(utf8.decoder).join();
- */    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
+    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
       try {
         print(data);
         json.decode(data);
@@ -102,9 +88,17 @@ class Requester {
     await for (final item in nuevoStream) {
       yield item;
     }
+  } */
+
+  Future<EventSource> sseventSource(String url) async {
+    var token = _prefs.token;
+    Map<String, dynamic> header = {
+      'Authorization': '$token',
+    };
+    EventSource eventSource =
+        await EventSource.connect(properties['API'] + url, headers: header);
+    return eventSource;
   }
-
-
 
   Future<Response> put(String url, dynamic data, dynamic params) async {
     _navigationService.showModal();
