@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
@@ -10,6 +11,7 @@ import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'dart:convert';
 import 'loader.dart';
 import 'modals/information.dart';
@@ -38,14 +40,14 @@ int tipoPerfil(String perfilId) {
   }
 }
 
-String titulosPage(String pos) {
+String titulosPage(int pos) {
   switch (pos) {
-    case "first":
+    case 0:
       return "Fist BCP";
       break;
-    case "second":
+    case 1:
       return "Second BBVA";
-    case "home":
+    case 2:
       return "Pagina principal";
     default:
       return "Fist BCP";
@@ -55,6 +57,7 @@ String titulosPage(String pos) {
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
+  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion = 1;
   sharedPreferences.clear();
   sharedPreferences.commit();
   if (context != null) {

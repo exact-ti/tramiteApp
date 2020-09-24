@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'notificationProvider.dart';
 
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey =
@@ -11,15 +13,49 @@ class NavigationService {
         .pushNamedAndRemoveUntil(routeName, (Route<dynamic> route) => false);
   }
 
+  Future<dynamic> navigationToHome(String routeName) {
+    return navigatorKey.currentState.pushNamed(routeName);
+  }
+
   goBack() {
     navigatorKey.currentState.pop();
+  }
+
+  realizarnotificacion(int cantidad) {
+    Provider.of<NotificationInfo>(navigatorKey.currentContext, listen: false)
+        .cantidadNotificacion = cantidad;
+  }
+
+  int retornarEstado() {
+    int indiceEstadoApp = Provider.of<NotificationInfo>(
+            navigatorKey.currentContext,
+            listen: false)
+        .estadoApp;
+    return indiceEstadoApp;
+  }
+
+  int estadoFinalizar() {
+    int indiceFinalizarApp = Provider.of<NotificationInfo>(
+            navigatorKey.currentContext,
+            listen: false)
+        .finalizarSubcripcion;
+    return indiceFinalizarApp;
+  }
+
+  inicializarProvider() {
+    Provider.of<NotificationInfo>(navigatorKey.currentContext, listen: false)
+        .estadoApp = 0;
+    Provider.of<NotificationInfo>(navigatorKey.currentContext, listen: false)
+        .cantidadNotificacion = 0;
+    Provider.of<NotificationInfo>(navigatorKey.currentContext, listen: false)
+        .finalizarSubcripcion = 0;
   }
 
   modelInformativo(String tipo, String titulo, String mensaje) {
     showDialog(
         barrierDismissible: false,
         context: navigatorKey
-            .currentState.overlay.context, // Using overlay's context
+            .currentState.overlay.context, 
         builder: (context) {
           return AlertDialog(
             titlePadding: EdgeInsets.all(0),

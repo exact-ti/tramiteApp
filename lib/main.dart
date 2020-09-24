@@ -30,10 +30,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-          Provider<NotificationInfo>(create: (_) => NotificationInfo()),
-      ],  
+    return ChangeNotifierProvider(
+      create: (_) => new NotificationInfo(),
       child:MaterialApp(
         title: 'Componentes App',
         debugShowCheckedModeBanner: false,

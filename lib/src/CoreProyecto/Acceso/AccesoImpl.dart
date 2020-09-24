@@ -4,11 +4,13 @@ import 'package:tramiteapp/src/Enumerator/TipoBuzonEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
+import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
+import 'package:tramiteapp/src/Providers/notificacionProvider/INotificacionProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/IUtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -22,20 +24,21 @@ class AccesoImpl implements AccesoInterface {
   IMenuProvider menuProvider;
   IConfiguracionProvider configuracionProvider;
   IUtdProvider utdProvider;
+  INotificacionProvider notificacionProvider;
 
   AccesoImpl(LogeoInterface logeo, IBuzonProvider buzon, IMenuProvider menu,
-      IConfiguracionProvider configuracion, IUtdProvider utdProvider) {
+      IConfiguracionProvider configuracion, IUtdProvider utdProvider,INotificacionProvider notificacionProvider) {
     this.logeo = logeo;
     this.menuProvider = menu;
     this.buzonProvider = buzon;
     this.configuracionProvider = configuracion;
     this.utdProvider = utdProvider;
+    this.notificacionProvider=notificacionProvider;
   }
 
   @override
   Future<Map<String, dynamic>> login(String username, String password) async {
-    Map<String, dynamic> interfaceLogear =
-        await logeo.login(username, password);
+    Map<String, dynamic> interfaceLogear =await logeo.login(username, password);
     if (interfaceLogear == null) {
       return null;
     }

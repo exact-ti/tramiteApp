@@ -1,7 +1,11 @@
+import 'package:provider/provider.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'NotificacionesController.dart';
 
 class NotificacionesPage extends StatefulWidget {
@@ -14,6 +18,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   NotificacionModel notificacionModel = new NotificacionModel();
   @override
   void initState() {
+    gestionNotificaciones();
     super.initState();
   }
 
@@ -21,6 +26,20 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     setState(() {
       notificacionModel=notificacionModel;
     });
+  }
+
+    void gestionNotificaciones() async {
+    List<NotificacionModel> listanotificacionesPendientes =
+        await notificacioncontroller.listarNotificacionesPendientes();
+    if (this.mounted) {
+        Provider.of<NotificationInfo>(context, listen: false)
+                .cantidadNotificacion =
+            listanotificacionesPendientes
+                .where((element) =>
+                    element.notificacionEstadoModel.id == pendiente)
+                .toList()
+                .length;
+    }
   }
 
   @override
@@ -101,23 +120,17 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     }
 
     Widget mainscaffold() {
-      return /* Padding(
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 40),
-        child:  */
+      return 
           Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Container(
-                /* padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5 ), */
                 alignment: Alignment.bottomCenter,
                 child: _crearListado(notificacionModel)),
           )
         ],
-      )
-          /* ) */;
+      );
     }
 
     return Scaffold(
@@ -129,8 +142,6 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                     decorationStyle: TextDecorationStyle.wavy,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.normal))),
-/*         drawer: DrawerPage(),
- */
         body: scaffoldbody(mainscaffold(), context));
   }
 }

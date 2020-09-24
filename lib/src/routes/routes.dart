@@ -25,6 +25,7 @@ import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/Custod
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/MenuDrawerPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
 
@@ -66,6 +67,7 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-personalizada': (BuildContext context) => ListarTipoPersonalizadaPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
     '/notificaciones' :  (BuildContext context) => NotificacionesPage(),
+    '/menuDrawer' :  (BuildContext context) => MenuDrawerPage(),
 
     
   };
