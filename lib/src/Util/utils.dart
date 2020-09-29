@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'dart:convert';
@@ -17,6 +20,7 @@ import 'loader.dart';
 import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
+final _prefs = new PreferenciasUsuario();
 
 final primaryColor = Color(0xFF2C6983);
 final colorletra = Color(0xFFACADAD);
@@ -57,13 +61,27 @@ String titulosPage(int pos) {
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion = 1;
+  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
+      1;
   sharedPreferences.clear();
   sharedPreferences.commit();
   if (context != null) {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
         (Route<dynamic> route) => false);
+  }
+}
+
+void eliminarpreferences2(BuildContext context) async {
+  SharedPreferences sharedPreferences;
+  sharedPreferences = await SharedPreferences.getInstance();
+  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
+      1;
+  sharedPreferences.clear();
+  sharedPreferences.commit();
+  if (context != null) {
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(builder: (context) => new LoginPage()));
   }
 }
 
@@ -169,14 +187,22 @@ Widget scaffoldbody(Widget principal, BuildContext context) {
   return SingleChildScrollView(
       child: ConstrainedBox(
           constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height -
-                  AppBar().preferredSize.height -
-                  MediaQuery.of(context).padding.top),
+              maxHeight: !boolIfPerfil()
+                  ? MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height -
+                      MediaQuery.of(context).padding.top
+                  : MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height -
+                      MediaQuery.of(context).padding.top -
+                      63),
           child: principal));
 }
 
+Widget scaffoldbody2(Widget principal, BuildContext context) {
+  return Container(child: principal);
+}
+
 int obtenerCantidadMinima() {
-  final _prefs = new PreferenciasUsuario();
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
   List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
   List<ConfiguracionModel> configuration =
@@ -191,7 +217,6 @@ int obtenerCantidadMinima() {
 }
 
 int obtenerUTDid() {
-  final _prefs = new PreferenciasUsuario();
   UtdModel utdModel = new UtdModel();
   Map<String, dynamic> utd = json.decode(_prefs.utd);
   UtdModel umodel = utdModel.fromPreferencs(utd);
@@ -200,10 +225,47 @@ int obtenerUTDid() {
 }
 
 int obtenerBuzonid() {
-  final _prefs = new PreferenciasUsuario();
   BuzonModel buzonModel = new BuzonModel();
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
   BuzonModel umodel = buzonModel.fromPreferencs(buzon);
   int id = umodel.id;
   return id;
+}
+
+Widget drawerIfPerfil() {
+  if (tipoPerfil(_prefs.perfil) == cliente) {
+    return null;
+  } else {
+    return DrawerPage();
+  }
+}
+
+bool boolIfPerfil() {
+  if (tipoPerfil(_prefs.perfil) == cliente) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void navegarHomeExact(BuildContext context) {
+  Menu menu = new Menu();
+  if (_prefs.menus != null) {
+    List<dynamic> menus = json.decode(_prefs.menus);
+    List<Menu> listmenu = menu.fromPreferencs(menus);
+    for (Menu men in listmenu) {
+      if (men.home) {
+        int indiceperfil = json.decode(_prefs.perfil);
+        if (tipoPerfil(indiceperfil.toString()) == cliente) {
+          Navigator.of(context, rootNavigator: true).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) =>
+                      new TopLevelWidget(rutaPage: men.link)));
+        } else {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              men.link, (Route<dynamic> route) => false);
+        }
+      }
+    }
+  }
 }

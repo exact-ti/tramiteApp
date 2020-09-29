@@ -4,7 +4,6 @@ import 'package:tramiteapp/src/Enumerator/TipoBuzonEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
-import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';

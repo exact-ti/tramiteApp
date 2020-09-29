@@ -7,16 +7,20 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
+import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 
 import 'AppBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String text;
+  final bool leadingbool;
   @override
   final Size preferredSize;
   CustomAppBar({
     @required this.text,
+    this.leadingbool,
   }) : preferredSize = Size.fromHeight(56.0);
 
   @override
@@ -36,8 +40,8 @@ class _CustomAppBarState extends State<CustomAppBar>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state.index != inactivo) {
-          Provider.of<NotificationInfo>(context, listen: false)
-        .estadoApp = state.index;
+      Provider.of<NotificationInfo>(context, listen: false).estadoApp =
+          state.index;
     }
   }
 
@@ -45,8 +49,12 @@ class _CustomAppBarState extends State<CustomAppBar>
   void initState() {
     listanotificacionesSinVer = [];
     estadoApp = 0;
-   super.initState();
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  void dirigirHome() {
+    navegarHomeExact(context);
   }
 
   void gestionNotificaciones() async {
@@ -143,7 +151,22 @@ class _CustomAppBarState extends State<CustomAppBar>
 
     return AppBar(
         backgroundColor: primaryColor,
+        automaticallyImplyLeading:
+            widget.leadingbool == null || widget.leadingbool == true
+                ? true
+                : false,
         actions: [
+          IconButton(
+            icon: Icon(Icons.account_circle, size: 30),
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingPage(),
+                ),
+              ).whenComplete(dirigirHome);
+            },
+          ),
           IconButton(
             icon: myAppBarIcon(),
             onPressed: () async {
@@ -163,7 +186,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                     context, "error", "EXACT", "Ha surgido un problema");
               }
             },
-          ),
+          )
         ],
         title: Text(widget.text,
             style: TextStyle(

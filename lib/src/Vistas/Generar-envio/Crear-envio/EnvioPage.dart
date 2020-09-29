@@ -3,7 +3,6 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'EnvioController.dart';
 
 class EnvioPage extends StatefulWidget {
@@ -67,7 +66,6 @@ class _EnvioPageState extends State<EnvioPage> {
 
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
     void validarEnvio() {
       envioController.crearEnvio(
           context,
@@ -101,29 +99,7 @@ class _EnvioPageState extends State<EnvioPage> {
                   ? Colors.grey
                   : Color(0xFF2C6983),
               child: Text('Enviar', style: TextStyle(color: Colors.white))),
-        ) /* Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120),
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              if (errorSobre.length == 0 &&
-                  errorBandeja.length == 0 &&
-                  _sobreController.text.length != 0) {
-                validarEnvio();
-              }
-            },
-            color: errorSobre.length != 0 ||
-                    errorBandeja.length != 0 ||
-                    _sobreController.text.length == 0
-                ? Colors.grey
-                : Color(0xFF2C6983),
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            child: Text('Enviar', style: TextStyle(color: Colors.white)),
-          ),
-        ) */
-        );
+        ));
     final observacion = TextFormField(
       maxLines: 6,
       controller: _observacionController,
@@ -201,7 +177,7 @@ class _EnvioPageState extends State<EnvioPage> {
       keyboardType: TextInputType.text,
       autofocus: false,
       focusNode: f2,
-    textCapitalization: TextCapitalization.sentences,
+      textCapitalization: TextCapitalization.sentences,
       inputFormatters: [
         UpperCaseTextFormatter(),
       ],
@@ -308,104 +284,100 @@ class _EnvioPageState extends State<EnvioPage> {
       ),
     );
 
+    mainscaffold() {
+      return Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 10, bottom: 0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      height: 35,
+                      child: ListTile(
+                        leading: Icon(Icons.perm_identity),
+                        title: new Text("Para: " + recordObject.nombre,
+                            style: TextStyle(fontSize: 15)),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.location_on),
+                      title: new Text(
+                          "Área: " +
+                              recordObject.area +
+                              " - " +
+                              recordObject.sede,
+                          style: TextStyle(fontSize: 15)),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 15),
+                      height: 40,
+                      child: ListTile(
+                          title: new Text("Código de sobre",
+                              style: TextStyle(fontSize: 15))),
+                    ),
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: sobre,
+                        flex: 5,
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          child: new IconButton(
+                              icon: Icon(Icons.camera_alt),
+                              tooltip: "Increment",
+                              onPressed: _traerdatosescanersobre),
+                        ),
+                      ),
+                    ]),
+                    errorSobre.length == 0
+                        ? Container()
+                        : errorsobre(errorSobre),
+                    Container(
+                      margin: const EdgeInsets.only(top: 15),
+                      height: 40,
+                      child: ListTile(
+                          title: new Text("Código de bandeja (Opcional)",
+                              style: TextStyle(fontSize: 15))),
+                    ),
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: bandeja,
+                        flex: 5,
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          child: new IconButton(
+                              icon: Icon(Icons.camera_alt),
+                              tooltip: "Increment",
+                              onPressed: _traerdatosescanerbandeja),
+                        ),
+                      ),
+                    ]),
+                    errorBandeja.length == 0
+                        ? Container()
+                        : errorsobre(errorBandeja),
+                    Container(
+                      margin: const EdgeInsets.only(top: 15),
+                      child: ListTile(
+                          title: new Text("Observación (Opcional)",
+                              style: TextStyle(fontSize: 15))),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 0),
+                      child: observacion,
+                    ),
+                    sendButton
+                  ])));
+    }
+
     return Scaffold(
         appBar: CustomAppBar(text: "Generar envío"),
-        drawer: DrawerPage(),
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 10, bottom: 0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Container(
-                                height: 35,
-                                child: ListTile(
-                                  leading: Icon(Icons.perm_identity),
-                                  title: new Text(
-                                      "Para: " + recordObject.nombre,
-                                      style: TextStyle(fontSize: 15)),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.location_on),
-                                title: new Text(
-                                    "Área: " +
-                                        recordObject.area +
-                                        " - " +
-                                        recordObject.sede,
-                                    style: TextStyle(fontSize: 15)),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                height: 40,
-                                child: ListTile(
-                                    title: new Text("Código de sobre",
-                                        style: TextStyle(fontSize: 15))),
-                              ),
-                              Row(children: <Widget>[
-                                Expanded(
-                                  child: sobre,
-                                  flex: 5,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 15),
-                                    child: new IconButton(
-                                        icon: Icon(Icons.camera_alt),
-                                        tooltip: "Increment",
-                                        onPressed: _traerdatosescanersobre),
-                                  ),
-                                ),
-                              ]),
-                              errorSobre.length == 0
-                                  ? Container()
-                                  : errorsobre(errorSobre),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                height: 40,
-                                child: ListTile(
-                                    title: new Text(
-                                        "Código de bandeja (Opcional)",
-                                        style: TextStyle(fontSize: 15))),
-                              ),
-                              Row(children: <Widget>[
-                                Expanded(
-                                  child: bandeja,
-                                  flex: 5,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 15),
-                                    child: new IconButton(
-                                        icon: Icon(Icons.camera_alt),
-                                        tooltip: "Increment",
-                                        onPressed: _traerdatosescanerbandeja),
-                                  ),
-                                ),
-                              ]),
-                              errorBandeja.length == 0
-                                  ? Container()
-                                  : errorsobre(errorBandeja),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: ListTile(
-                                    title: new Text("Observación (Opcional)",
-                                        style: TextStyle(fontSize: 15))),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 0),
-                                child: observacion,
-                              ),
-                              sendButton
-                            ]))))));
+        drawer: drawerIfPerfil(),
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 }

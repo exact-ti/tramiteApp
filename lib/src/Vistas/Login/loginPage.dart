@@ -14,14 +14,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   SharedPreferences sharedPreferences;
   bool pressbutton = true;
-  FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
-  }
+/*     checkLoginStatus();
+ */  }
 
   checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();

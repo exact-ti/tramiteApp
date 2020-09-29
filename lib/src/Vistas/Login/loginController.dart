@@ -9,6 +9,7 @@ import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoFusionAuth.dart';
 import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
@@ -18,6 +19,7 @@ import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionP
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
@@ -71,8 +73,14 @@ class LoginController {
         for (Menu men in listmenu) {
           if (men.home) {
             _navigationService.goBack();
+            int indiceperfil = json.decode(_prefs.perfil);
+            if(tipoPerfil(indiceperfil.toString()) == cliente){
+            Navigator.of(context).pushNamedAndRemoveUntil(
+               '/menuBottom', (Route<dynamic> route) => false);
+            }else{
             Navigator.of(context).pushNamedAndRemoveUntil(
                 men.link, (Route<dynamic> route) => false);
+            }
           }
         }
       }

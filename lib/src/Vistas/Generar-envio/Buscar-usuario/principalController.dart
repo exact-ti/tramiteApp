@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/usuario/UsuarioInterface.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';

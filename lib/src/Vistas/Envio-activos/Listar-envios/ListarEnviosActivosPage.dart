@@ -477,8 +477,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Envios activos"),
-        drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        appBar: CustomAppBar(text: "Envios activos",leadingbool: boolIfPerfil()?false:true,),
+        drawer: drawerIfPerfil(),
+        body: mainscaffold());
   }
 }

@@ -9,13 +9,13 @@ import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 // ignore: must_be_immutable
 class DrawerPage extends StatelessWidget {
   MenuController menuController = new MenuController();
+  final _prefs = new PreferenciasUsuario();
 
   Icon getICon(String nombreIcono) {
     return Icon(menuController.icons[nombreIcono], color: Colors.blue);
   }
 
   Widget menuOpcion(BuildContext context) {
-    final _prefs = new PreferenciasUsuario();
     if (tipoPerfil(_prefs.perfil) == cliente) {
       dynamic buzon = json.decode(_prefs.buzon);
       return ListTile(
@@ -49,14 +49,8 @@ class DrawerPage extends StatelessWidget {
     final _prefs = new PreferenciasUsuario();
     if (_prefs.token != "") {
       Menu menuu = new Menu();
-      String menuinicio = "";
       List<dynamic> menus = json.decode(_prefs.menus);
       List<Menu> listmenu = menuu.fromPreferencs(menus);
-      for (Menu men in listmenu) {
-        if (men.home) {
-          menuinicio = men.link;
-        }
-      }
       listmenu.sort((a, b) => a.orden.compareTo(b.orden));
       listmenu.reversed;
       list.add(DrawerHeader(
@@ -71,19 +65,15 @@ class DrawerPage extends StatelessWidget {
             title: Text(men.nombre),
             onTap: () => Navigator.of(context).pushNamed(men.link)));
       }
-
-      if (_prefs.buzon != "") {
-        list.add(menuOpcion(context));
-        list.add(cerrarsesion(context));
-      }
     }
     return list;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(padding: EdgeInsets.zero, children: milistview(context)),
-    );
+    return  Drawer(
+            child: ListView(
+                padding: EdgeInsets.zero, children: milistview(context)),
+          );
   }
 }

@@ -5,8 +5,6 @@ import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNavBar.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'dashboardController.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -169,9 +167,9 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(text: "Dashboard"),
-        drawer: DrawerPage(),
+        appBar: CustomAppBar(text: "Dashboard",leadingbool: boolIfPerfil()?false:true,),
+        drawer: drawerIfPerfil(),
         backgroundColor: Colors.white,
-        body: scaffoldbody(mainscaffold(), context));
+        body: mainscaffold());
   }
 }

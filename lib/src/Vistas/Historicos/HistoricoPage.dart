@@ -5,7 +5,6 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'HistoricoController.dart';
@@ -167,7 +166,6 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         flex: 3,
                       ),
                       Expanded(
-
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10,right: 10),
                           width: double.infinity,
@@ -193,7 +191,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
               locale: const Locale("es", "ES"),
               initialDate: DateTime.now(),
               firstDate: DateTime(1900),
-              lastDate: DateTime(2100));
+              lastDate: DateTime(2100)
+              
+              );
           if (date != null) {
             DateTime fecha =
                 new DateFormat("yyyy-MM-dd").parse(date.toIso8601String());
@@ -407,7 +407,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   width: double.infinity,
                   child: textFin),
             ),
-            Align(
+            Align( 
               alignment: Alignment.centerLeft,
               child: Container(
                   alignment: Alignment.centerLeft,
@@ -445,8 +445,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Históricos"),
-        drawer:DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        appBar: CustomAppBar(text: "Históricos",leadingbool: boolIfPerfil()?false:true,),
+        drawer:drawerIfPerfil(),
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 }

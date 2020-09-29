@@ -287,66 +287,65 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       ),
     ]);
 
+    mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  margin: const EdgeInsets.only(top: 30),
+                  alignment: Alignment.bottomLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
+                  width: double.infinity,
+                  child: principalcontroller.labeltext("Envío")),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  margin: const EdgeInsets.only(bottom: 30),
+                  alignment: Alignment.centerLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
+                  width: double.infinity,
+                  child: campodetextoandIconoBandeja),
+            ),
+            !respuestaBack
+                ? Expanded(
+                    child: Container(
+                        child: Center(
+                            child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: loadingGet(),
+                  ))))
+                : Expanded(
+                    child: Container(child: _crearListado(listaEnviosModel))),
+            validados.containsValue(true)
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        alignment: Alignment.center,
+                        height:
+                            screenHeightExcludingToolbar(context, dividedBy: 8),
+                        width: double.infinity,
+                        child: sendButton2),
+                  )
+                : Container()
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-        appBar:CustomAppBar(text: "Confirmar envíos"),
-        drawer: DrawerPage(),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            width: double.infinity,
-                            child: principalcontroller.labeltext("Envío")),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(bottom: 30),
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 12),
-                            width: double.infinity,
-                            child: campodetextoandIconoBandeja),
-                      ),
-                      !respuestaBack
-                          ? Expanded(
-                              child: Container(
-                                  child: Center(
-                                      child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: loadingGet(),
-                            ))))
-                          : Expanded(
-                              child: Container(
-                                  child: _crearListado(listaEnviosModel))),
-                      validados.containsValue(true)
-                          ? Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                  margin: const EdgeInsets.only(bottom: 20),
-                                  alignment: Alignment.center,
-                                  height: screenHeightExcludingToolbar(context,
-                                      dividedBy: 8),
-                                  width: double.infinity,
-                                  child: sendButton2),
-                            )
-                          : Container()
-                    ],
-                  ),
-                ))));
+        appBar: CustomAppBar(
+          text: "Confirmar envíos",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
+        drawer: drawerIfPerfil(),
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 
   BoxDecoration myBoxDecoration() {
