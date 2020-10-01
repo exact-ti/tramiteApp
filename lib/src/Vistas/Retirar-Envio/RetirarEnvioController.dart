@@ -28,8 +28,8 @@ class ConsultaEnvioController {
             paquete, remitente, destinatario, opcion);
           _navigationService.goBack();
 
-    if (turnos == null) {
-      notificacion(context, "error", "EXACT", "No hay turnos asignados");
+    if (turnos.length==0) {
+      notificacion(context, "error", "EXACT", "No hay envíos asignados");
     }
     return turnos;
   }

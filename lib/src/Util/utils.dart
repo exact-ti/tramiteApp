@@ -220,16 +220,14 @@ int obtenerUTDid() {
   UtdModel utdModel = new UtdModel();
   Map<String, dynamic> utd = json.decode(_prefs.utd);
   UtdModel umodel = utdModel.fromPreferencs(utd);
-  int id = umodel.id;
-  return id;
+  return umodel.id;
 }
 
 int obtenerBuzonid() {
   BuzonModel buzonModel = new BuzonModel();
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-  BuzonModel umodel = buzonModel.fromPreferencs(buzon);
-  int id = umodel.id;
-  return id;
+  BuzonModel bmodel = buzonModel.fromPreferencs(buzon);
+  return bmodel.id;
 }
 
 Widget drawerIfPerfil() {

@@ -47,10 +47,10 @@ class LoginController {
   validarlogin(BuildContext context, String username, String password) async {
     _navigationService.showModal();
     dynamic respuesta = await accesoInterface.login(username, password);
-    if (respuesta == null) {
+    if (respuesta["status"] != "success") {
       Navigator.pop(context);
       notificacion(
-          context, "error", "EXACT", 'Usuario y/o contraseña incorrecta');
+          context, "error", "EXACT", respuesta["message"]);
     } else {
       if (respuesta.containsKey("error")) {
         Navigator.pop(context);

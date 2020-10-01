@@ -64,43 +64,44 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
+        child: ButtonTheme(
+          minWidth: 150.0,
+          height: 50.0,
           child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () async {
-              listarNovalidados();
-              if (listaEnviosNoValidados.length == 0) {
-                principalcontroller.confirmacionDocumentosValidadosEntrega(
-                    listaEnviosValidados, context, codigoBandeja);
-              } else {
-                bool respuestaarray = await confirmarArray(
-                    context,
-                    "success",
-                    "EXACT",
-                    "Te faltan asociar estos documentos",
-                    listaEnviosNoValidados);
-                if (respuestaarray == null) {
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                  Navigator.of(context).pop();
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () async {
+                listarNovalidados();
+                if (listaEnviosNoValidados.length == 0) {
+                  principalcontroller.confirmacionDocumentosValidadosEntrega(
+                      listaEnviosValidados, context, codigoBandeja);
                 } else {
-                  if (respuestaarray) {
-                    principalcontroller.confirmacionDocumentosValidadosEntrega(
-                        listaEnviosValidados, context, codigoBandeja);
-                  } else {
+                  bool respuestaarray = await confirmarArray(
+                      context,
+                      "success",
+                      "EXACT",
+                      "Te faltan asociar estos documentos",
+                      listaEnviosNoValidados);
+                  if (respuestaarray == null) {
                     listaEnviosNoValidados.clear();
                     listaEnviosValidados.clear();
                     Navigator.of(context).pop();
+                  } else {
+                    if (respuestaarray) {
+                      principalcontroller
+                          .confirmacionDocumentosValidadosEntrega(
+                              listaEnviosValidados, context, codigoBandeja);
+                    } else {
+                      listaEnviosNoValidados.clear();
+                      listaEnviosValidados.clear();
+                      Navigator.of(context).pop();
+                    }
                   }
                 }
-              }
-            },
-            color: Color(0xFF2C6983),
-            child: Text('Registrar', style: TextStyle(color: Colors.white)),
-          ),
+              },
+              color: Color(0xFF2C6983),
+              child: Text('Registrar', style: TextStyle(color: Colors.white))),
         ));
 
     void _validarSobreText(String value) async {
@@ -141,7 +142,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     void validarLista(String codigo) async {
       EnvioModel envioModel = new EnvioModel();
-      String dataString="";
+      String dataString = "";
       dynamic respuestalist =
           await principalcontroller.listarEnviosEntrega(context, codigo);
       if (respuestalist["status"] == "success") {
@@ -170,7 +171,14 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           codigoBandeja = codigo;
           _bandejaController.text = codigo;
         });
-        popuptoinput(context, f1, "error", "EXACT", dataString.length==0?"No cuenta con envíos asociados":dataString );
+        popuptoinput(
+            context,
+            f1,
+            "error",
+            "EXACT",
+            dataString.length == 0
+                ? "No cuenta con envíos asociados"
+                : dataString);
       }
     }
 
@@ -337,7 +345,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       ),
     );
 
-
     Widget _validarListado(List<String> validados, List<EnvioModel> envios) {
       return _crearListadoinMemoria(validados, envios);
     }
@@ -375,7 +382,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     ]);
 
     return Scaffold(
-        appBar:CustomAppBar(text: "Entregas externas"),
+        appBar: CustomAppBar(text: "Entregas externas"),
         drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(

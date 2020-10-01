@@ -243,12 +243,25 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               context, recorridoUsuario.id, value);
           if (respuesta["status"] == "success") {
             listaenvios2 = envioModel.fromJsonValidar(respuesta["data"]);
+            if(listaenvios2.length==0){
+            setState(() {
+              listaenvios2 = [];
+              codigoBandeja = "";
+              _bandejaController.text = "";
+            });
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT","No tienes envíos para entregar a esta área");
+            if (respuestatrue) {
+              enfocarInputfx(context, f1);
+            }
+            }else{
             enfocarInputfx(context, f2);
             setState(() {
               listaenvios2 = listaenvios2;
               codigoBandeja = value;
               _bandejaController.text = value;
             });
+            }
           } else {
             setState(() {
               listaenvios2 = [];
@@ -257,7 +270,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             });
             bool respuestatrue = await notificacion(
                 context, "error", "EXACT", respuesta["message"]);
-            if (respuestatrue == null || respuestatrue == true) {
+            if (respuestatrue) {
               enfocarInputfx(context, f1);
             }
           }

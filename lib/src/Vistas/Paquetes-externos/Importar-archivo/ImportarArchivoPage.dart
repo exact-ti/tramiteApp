@@ -87,18 +87,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   color: sd.primaryColor,
                   child:
                       Text('Adjuntar', style: TextStyle(color: Colors.white))),
-            ) /* RaisedButton(
-                padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
-                textColor: Colors.white,
-                color: sd.primaryColor,
-                child: Text('Adjuntar', style: TextStyle(color: Colors.white)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(5.0),
-                ),
-                onPressed: () {
-                  contenido = _adjuntarArchivo(context);
-                }) */
-            ),
+            )),
       ),
     );
   }
@@ -126,20 +115,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   color: sd.primaryColor,
                   child:
                       Text('Importar', style: TextStyle(color: Colors.white))),
-            ) /* RaisedButton(
-              padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
-              textColor: Colors.white,
-              color: sd.primaryColor,
-              child: Text('Importar', style: TextStyle(color: Colors.white)),
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(5.0),
-              ),
-              onPressed: () {
-                _importarRegistros(context);
-                setState(() {});
-              },
-            ) */
-            ),
+            )),
       ),
     );
   }
@@ -178,26 +154,51 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         if (this.codigo_paquete_incorrecto > 1) {
-          description = description +
-              ' y ' +
-              this.codigo_paquete_incorrecto.toString() +
-              ' códigos de paquete vacíos';
-        } else {
-          if (this.codigo_paquete_incorrecto == 1) {
+          if (noencontrados == 0) {
+            description = 'Existen ' +
+                this.codigo_paquete_incorrecto.toString() +
+                ' códigos de paquete vacíos';
+          } else {
             description = description +
                 ' y ' +
                 this.codigo_paquete_incorrecto.toString() +
-                ' código de paquetes vacío';
+                ' códigos de paquete vacíos';
+          }
+        } else {
+          if (this.codigo_paquete_incorrecto == 1) {
+            if (noencontrados == 0) {
+              description = 'Existe ' +
+                  this.codigo_paquete_incorrecto.toString() +
+                  ' código de paquete vacío';
+            } else {
+              description = description +
+                  ' y ' +
+                  this.codigo_paquete_incorrecto.toString() +
+                  ' código de paquetes vacío';
+            }
           }
         }
 
-        if (this.codigo_paquete_incorrecto > 0) {
+        if (paqueteExternoList.length == 0) {
+          bool respuestabool = await notificacion(context, "success", "EXACT",
+              description + ". vuelva a adjuntar el archivo");
+          this.data = new List<PaqueteExternoBuzonModel>();
+          this.totalFilas = 0;
+          this.codigosEncontrados = 0;
+          contenido = null;
+          setState(() {
+            contenido = null;
+          });
+          if (respuestabool) {
+            return;
+          }
+        }
+
+        if (this.codigo_paquete_incorrecto > 0 || noencontrados > 0) {
           bool respuestabool = await confirmacion(context, "success", "EXACT",
               description + ". ¿Desea registrar los documentos correctos?");
-          if (respuestabool != null) {
-            if (!respuestabool) {
-              return;
-            }
+          if (!respuestabool) {
+            return;
           }
         }
 
@@ -407,7 +408,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     int encontrados = 0;
     int total = 0;
     total = lista.length;
-    //Controller validar
 
     List<int> ids = new List<int>();
 
@@ -422,7 +422,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     }
 
     List<BuzonModel> buzonModelList = await imp.listarBuzonesPorIds(ids);
-    //
+
     for (PaqueteExternoBuzonModel item in lista) {
       item.nombre = valorCampo;
       item.estado = false;
@@ -440,8 +440,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
       totalFilas = total;
       codigosEncontrados = encontrados;
     });
-
-    // mensajeResultado = _mensajeResultadoImportacion();
 
     return lista;
   }
@@ -479,9 +477,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         return DataRow(cells: [
-/*           DataCell(Text(item.id.toString())),
-          DataCell(Text(item.idBuzon.toString())),
-          DataCell(Text(item.nombre, style: TextStyle(color: c))), */
           DataCell(item.id.toString() == ""
               ? Text(
                   "No ingresado",

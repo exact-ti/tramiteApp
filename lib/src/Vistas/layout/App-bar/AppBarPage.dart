@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 
 import 'AppBarController.dart';
@@ -36,6 +39,8 @@ class _CustomAppBarState extends State<CustomAppBar>
   List<NotificacionModel> listanotificacionesSinVer = new List();
   NotificacionModel notificacionModel = new NotificacionModel();
   int estadoApp;
+  int idBuzonOrUTD = 0;
+  final _prefs = new PreferenciasUsuario();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -49,12 +54,29 @@ class _CustomAppBarState extends State<CustomAppBar>
   void initState() {
     listanotificacionesSinVer = [];
     estadoApp = 0;
+    registrarIfPerfil();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
 
+  void registrarIfPerfil() {
+    if (boolIfPerfil()) {
+      idBuzonOrUTD = obtenerBuzonid();
+    } else {
+      idBuzonOrUTD = obtenerUTDid();
+    }
+  }
+
   void dirigirHome() {
-    navegarHomeExact(context);
+    if (boolIfPerfil()) {
+      if (idBuzonOrUTD != obtenerBuzonid()) {
+        navegarHomeExact(context);
+      }
+    } else {
+      if (idBuzonOrUTD != obtenerUTDid()) {
+        navegarHomeExact(context);
+      }
+    }
   }
 
   void gestionNotificaciones() async {
@@ -161,10 +183,17 @@ class _CustomAppBarState extends State<CustomAppBar>
             onPressed: () async {
               Navigator.push(
                 context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: SettingPage(),
+                ),
+              ).whenComplete(dirigirHome);
+/*               Navigator.push(
+                context,
                 MaterialPageRoute(
                   builder: (context) => SettingPage(),
                 ),
-              ).whenComplete(dirigirHome);
+              ).whenComplete(dirigirHome); */
             },
           ),
           IconButton(
@@ -177,10 +206,17 @@ class _CustomAppBarState extends State<CustomAppBar>
                     .cantidadNotificacion = 0;
                 Navigator.push(
                   context,
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: NotificacionesPage(),
+                  ),
+                ).whenComplete(gestionNotificaciones);
+/*                 Navigator.push(
+                  context,
                   MaterialPageRoute(
                     builder: (context) => NotificacionesPage(),
                   ),
-                ).whenComplete(gestionNotificaciones);
+                ).whenComplete(gestionNotificaciones); */
               } else {
                 notificacion(
                     context, "error", "EXACT", "Ha surgido un problema");

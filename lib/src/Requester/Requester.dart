@@ -26,10 +26,11 @@ class Requester {
 
   final _prefs = new PreferenciasUsuario();
 
-  Future<Response> login(String path, dynamic data) async {
-    String basic = properties['CLIENT_ID'] + ":" + properties['CLIENT_SECRET'];
+  Future<Response> login(String path, String username, String password) async {
+    String basic = username + ":" + password;
     var basic8 = utf8.encode(basic);
     String basic64 = base64.encode(basic8);
+
     Map<String, dynamic> header = {
       'Authorization': 'Basic $basic64',
       "content-type": "application/x-www-form-urlencoded",
@@ -37,10 +38,16 @@ class Requester {
     };
 
     try {
-      Response token = await Dio().post(properties['API'] + path,
-          data: data, options: Options(headers: header));
+      Response token = await Dio().post(
+          properties['LDAP']
+              ? properties['API'] + path + "/ldap"
+              : properties['API'] + path,
+          options: Options(headers: header));
       return token;
     } on DioError catch (e) {
+      _navigationService.goBack();
+      _navigationService.modelInformativo(
+          "error", "EXACT", "Error. Ha surgido un problema!");
       return e.response;
     }
   }
@@ -107,7 +114,7 @@ class Requester {
       data: data,
       queryParameters: params,
     );
-    _navigationService.goBack();
+
     return respuestaPost;
   }
 
@@ -167,6 +174,22 @@ class Requester {
               "La sesión terminó, debe volver a logearse");
         }
         return dioError;
+      }
+    } else {
+      RequestOptions request = dioError.request;
+      switch (request.method) {
+        case "PUT":
+          _navigationService.goBack();
+          _navigationService.modelInformation(
+              "error", "EXACT", "Error. Ha surgido un problema!");
+          break;
+        case "POST":
+          _navigationService.goBack();
+          _navigationService.modelInformation(
+              "error", "EXACT", "Error. Ha surgido un problema!");
+          break;
+        default:
+          return dioError;
       }
     }
     return dioError;

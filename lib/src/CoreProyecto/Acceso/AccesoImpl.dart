@@ -37,20 +37,13 @@ class AccesoImpl implements AccesoInterface {
 
   @override
   Future<Map<String, dynamic>> login(String username, String password) async {
-    Map<String, dynamic> interfaceLogear =await logeo.login(username, password);
-    if (interfaceLogear == null) {
-      return null;
-    }
-
-    if (!interfaceLogear.containsKey("error")) {
-      _prefs.token = interfaceLogear['access_token'];
-      _prefs.refreshToken = interfaceLogear['refresh_token'];
-      _prefs.perfil = interfaceLogear['perfilId'].toString();
-
-/*       if (tipoPerfil(interfaceLogear['perfilId'].toString()) == cliente) {
- */
-      List<BuzonModel> buzones =
-          await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+    dynamic authResponse =await logeo.login(username, password);
+    if (authResponse["status"] == "success") {
+      dynamic authData = authResponse["data"];
+      _prefs.token = authData['access_token'];
+      _prefs.refreshToken = authData['refresh_token'];
+      _prefs.perfil = authData['perfilId'].toString();
+      List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
       _prefs.buzones = buzones;
       for (BuzonModel buzon in buzones) {
         if (buzon.tipoBuzon.id == personal) {
@@ -60,10 +53,7 @@ class AccesoImpl implements AccesoInterface {
           _prefs.buzon = buzonhash;
         }
       }
-/*         if( _prefs.buzon==null){
-          return null;
-        }
-      } else { */
+
       List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
       _prefs.utds = utds;
       for (UtdModel utd in utds) {
@@ -75,12 +65,8 @@ class AccesoImpl implements AccesoInterface {
           _prefs.utd = utdhash;
         }
       }
-/*         if( _prefs.utd==null){
-          return null;
-        }
-      } */
 
-      if (tipoPerfil(interfaceLogear['perfilId'].toString()) == cliente) {
+      if (tipoPerfil(authData['perfilId'].toString()) == cliente) {
         if (_prefs.buzon == null) {
           deletepreferencesWithoutContext();
           return {
@@ -105,9 +91,9 @@ class AccesoImpl implements AccesoInterface {
           await configuracionProvider.listarConfiguraciones();
       _prefs.configuraciones = configuraciones;
 
-      return interfaceLogear;
+      return authResponse;
     } else {
-      return null;
+      return authResponse;
     }
   }
 }

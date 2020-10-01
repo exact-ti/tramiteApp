@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
@@ -18,10 +17,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   final _paqueteController = TextEditingController();
   final _remitenteController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
-  List<TurnoModel> listaTurnos = new List();
-  List<EnvioModel> listaEnviosVacios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
-  List<EnvioModel> listaEnviosNoValidados = new List();
   ConsultaEnvioController principalcontroller = new ConsultaEnvioController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
@@ -46,8 +41,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       if (_focusNode.hasFocus) _paqueteController.clear();
     });
     super.initState();
-    listaEnviosVacios = [];
-    listaTurnos = [];
   }
 
   var colorplomos = const Color(0xFFEAEFF2);
@@ -85,9 +78,11 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
   }
 
-  Future<bool> retirarEnvioController(EnvioModel envioModel,String motivo) async {
-    dynamic respuesta = await principalcontroller.retirarEnvio(envioModel,motivo);
-        desenfocarInputfx(context);
+  Future<bool> retirarEnvioController(
+      EnvioModel envioModel, String motivo) async {
+    dynamic respuesta =
+        await principalcontroller.retirarEnvio(envioModel, motivo);
+    desenfocarInputfx(context);
     if (respuesta.containsValue("success")) {
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
@@ -97,13 +92,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       await notificacion(context, "Error", "Exact", respuesta["message"]);
       return false;
     }
-/*     if (respuesta) {
-      await notificacion(context, "success", "Exact", "Se retiró el envío");
-      return true;
-    } else {
-      await notificacion(context, "Error", "Exact", "No se retiró el envío");
-      return false;
-    } */
   }
 
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
@@ -178,9 +166,10 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           mensajeError = "El mótivo del retiro es obligatorio";
                         });
                       } else {
-                        bool respuesta =
-                            await retirarEnvioController(envioModel,_observacionController.text);
+                        bool respuesta = await retirarEnvioController(
+                            envioModel, _observacionController.text);
                         if (respuesta) {
+                          Navigator.pop(context, true);
                           Navigator.pop(context, true);
                         }
                       }
@@ -219,9 +208,10 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                       "El mótivo del retiro es obligatorio";
                                 });
                               } else {
-                                bool respuesta =
-                                    await retirarEnvioController(envioModel,_observacionController.text);
+                                bool respuesta = await retirarEnvioController(
+                                    envioModel, _observacionController.text);
                                 if (respuesta) {
+                                  Navigator.pop(context, true);
                                   Navigator.pop(context, true);
                                 }
                               }
@@ -353,7 +343,12 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                     envio);
                 if (respuestamodal) {
                   desenfocarInputfx(context);
-                  buscarEnvios();
+                  setState(() {
+                    _paqueteController.text = "";
+                    _remitenteController.text = "";
+                    _destinatarioController.text = "";
+                    listaEnvios = [];
+                  });
                 }
               },
               child: Column(
@@ -423,8 +418,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                  envio.observacion,
+                              child: Text(envio.observacion,
                                   style: TextStyle(color: Colors.black)),
                             ),
                             flex: 6,
@@ -685,7 +679,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
 
     return Scaffold(
-        appBar:CustomAppBar(text: "Retirar envío"),
+        appBar: CustomAppBar(text: "Retirar envío"),
         drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }

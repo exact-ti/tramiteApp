@@ -97,9 +97,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
         child: ButtonTheme(
@@ -185,7 +182,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           enfocarInputfx(context, f2);
         } else {
           bool respuestaPopUp = await confirmacion(
-              context, "success", "EXACT", "¿Desea custodiar el envío $value?");
+              context, "success", "EXACT", "El código $value no se encuentra en la lista. ¿Desea continuar?");
           if (respuestaPopUp) {
             dynamic respuestaValidar =
                 await principalcontroller.recogerdocumento(

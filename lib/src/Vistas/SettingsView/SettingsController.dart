@@ -9,7 +9,6 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 class SettingsController {
-  
   Future<bool> modificarUtdOrBuzon(BuildContext context, int tipo) async {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
@@ -48,23 +47,21 @@ class SettingsController {
                 onTap: () async {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continuar?");
-                    if (respuestabool) {
-                      if (tipo == cliente) {
-                        HashMap<String, dynamic> buzonhash = new HashMap();
-                        buzonhash['id'] = opcion.id;
-                        buzonhash['nombre'] = opcion.nombre;
-                        _prefs.buzon = buzonhash;
-                      } else {
-                        HashMap<String, dynamic> utdhash = new HashMap();
-                        utdhash['id'] = opcion.id;
-                        utdhash['nombre'] = opcion.nombre;
-                        _prefs.utd = utdhash;
-                      }
+                  if (respuestabool) {
+                    if (tipo == cliente) {
+                      HashMap<String, dynamic> buzonhash = new HashMap();
+                      buzonhash['id'] = opcion.id;
+                      buzonhash['nombre'] = opcion.nombre;
+                      _prefs.buzon = buzonhash;
+                    } else {
+                      HashMap<String, dynamic> utdhash = new HashMap();
+                      utdhash['id'] = opcion.id;
+                      utdhash['nombre'] = opcion.nombre;
+                      _prefs.utd = utdhash;
                     }
-                          Navigator.of(context).pop();
-
-/*                     Navigator.pop(context, false);
- */                },
+                  }
+                  Navigator.of(context).pop();
+                },
               )
             ],
           )));
@@ -72,7 +69,8 @@ class SettingsController {
 
     bool respuesta = await showDialog(
 /*         barrierDismissible: false,
- */        context: context,
+ */
+        context: context,
         builder: (context) {
           return AlertDialog(
             title: Text(tipo == cliente
@@ -86,7 +84,7 @@ class SettingsController {
                       child: SingleChildScrollView(
                           child: Column(children: listadecodigos)))
                 ])),
-          /*   actions: <Widget>[
+            /*   actions: <Widget>[
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () => Navigator.pop(context, false)
@@ -95,11 +93,10 @@ class SettingsController {
           );
         });
 
-        if(respuesta==null){
-          respuesta = false;
-        }
+    if (respuesta == null) {
+      respuesta = false;
+    }
 
-        return respuesta;
+    return respuesta;
   }
-  
 }
