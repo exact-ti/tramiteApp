@@ -1,27 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+/* import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
-import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
+import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'loginController.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage2 extends StatefulWidget {
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPage2State createState() => new _LoginPage2State();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPage2State extends State<LoginPage2> {
   SharedPreferences sharedPreferences;
   bool pressbutton = true;
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
-  bool passwordVisible = true;
-  String usuario = "";
-  String password = "";
   @override
   void initState() {
     super.initState();
@@ -29,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
  */
   }
 
-/*   checkLoginStatus() async {
+  checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") != null) {
       if (int.parse(sharedPreferences.getString("perfil")) == cliente) {
@@ -48,9 +43,11 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
- */
+
   @override
   Widget build(BuildContext context) {
+    final _usernameController = TextEditingController();
+    final _passwordController = TextEditingController();
     LoginController logincontroller = new LoginController();
 
     final logo = Hero(
@@ -66,22 +63,14 @@ class _LoginPageState extends State<LoginPage> {
       enfocarInputfx(context, f2);
     }
 
-    var email = TextFormField(
+    var email = TextField(
 /*       onChanged: onChanged,
- */
-      controller: _usernameController,
-      obscureText: false,
-      focusNode: f1,
+ */      obscureText: false,
       cursorColor: primaryColor,
       style: TextStyle(
         color: primaryColor,
         fontSize: 14.0,
       ),
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (newValue) {
-        usuario = newValue;
-        enfocarcodigocontrasena();
-      },
       decoration: InputDecoration(
         labelStyle: TextStyle(color: primaryColor),
         focusColor: primaryColor,
@@ -92,16 +81,16 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color:primaryColor),
         ),
         labelText: "Usuario",
         prefixIcon: Icon(
           Icons.account_circle,
           size: 18,
-          color: primaryColor,
+          color:primaryColor,
         ),
       ),
-    ) /* TextFormField(
+    )/* TextFormField(
       controller: _usernameController,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.next,
@@ -119,8 +108,7 @@ class _LoginPageState extends State<LoginPage> {
         hintText: 'Usuario',
         contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
       ),
-    ) */
-        ;
+    ) */;
 
     performLogin(BuildContext context) {
       String username = _usernameController.text;
@@ -148,19 +136,14 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
 
-    final password = TextFormField(
-      obscureText: passwordVisible,
-      controller: _passwordController,
-      focusNode: f2,
+    final password = TextField(
+/*       onChanged: onChanged,
+ */      obscureText: false,
       cursorColor: primaryColor,
       style: TextStyle(
         color: primaryColor,
         fontSize: 14.0,
       ),
-      onFieldSubmitted: (value) async {
-        enfocarUsuarioOrContrasena();
-      },
-      textInputAction: TextInputAction.send,
       decoration: InputDecoration(
         labelStyle: TextStyle(color: primaryColor),
         focusColor: primaryColor,
@@ -171,29 +154,26 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color:primaryColor),
         ),
         labelText: "Contraseña",
         prefixIcon: Icon(
           Icons.lock,
           size: 18,
-          color: primaryColor,
+          color:primaryColor,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
-            setState(() {
-              passwordVisible = !passwordVisible;
-            });
-          },
+/*             model.isVisible = !model.isVisible;
+ */          },
           child: Icon(
-            !passwordVisible ? Icons.visibility_off : Icons.visibility,
+            Icons.visibility_off,
             size: 18,
             color: primaryColor,
           ),
         ),
       ),
-    );
-    /* TextFormField(
+    );/* TextFormField(
       controller: _passwordController,
       autofocus: false,
       obscureText: true,
@@ -211,15 +191,14 @@ class _LoginPageState extends State<LoginPage> {
         hintText: 'contraseña',
         contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
       ),
-    ) */
-    ;
+    ) */;
 
     final loginButton = Material(
       child: Ink(
         decoration: BoxDecoration(
           color: primaryColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.fromBorderSide(BorderSide.none),
+          border:  Border.fromBorderSide(BorderSide.none),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
@@ -227,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 60.0,
             child: Center(
               child: Text(
-                'Ingresar',
+                'Login',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -236,13 +215,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            new TextEditingController().clear();
-            if (pressbutton) {
-              pressbutton = false;
-              performLogin(context);
-            }
+          onTap: (){
+          FocusScope.of(context).unfocus();
+          new TextEditingController().clear();
+          if (pressbutton) {
+            pressbutton = false;
+            performLogin(context);
+          }
           },
         ),
       ),
@@ -275,68 +254,25 @@ class _LoginPageState extends State<LoginPage> {
           fontWeight: FontWeight.bold, fontSize: 30, color: primaryColor),
     );
 
-    final enlace = InkWell(
-      child: Text(
-        '¿Olvidaste tu contraseña?',
-        style: TextStyle(
-          color: primaryColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 16.0,
-        ),
-      ),
-      onTap: () {
-        desenfocarInputfx(context);
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: RecuperarPasswordPage(),
-          ),
-        );
-      },
-    );
-
-    Widget mainscaffold() {
-      return Container(
-          child: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(top: 150.0, bottom: 30),
-            decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(60),
-                    bottomRight: Radius.circular(60))),
-            child: Column(
-              children: <Widget>[
-                FadeAnimation(1.7, titulo),
-                SizedBox(height: 24.0),
-                FadeAnimation(1.7, logo),
-              ],
-            ),
-          ),
-          Expanded(
-              child: Container(
-                  padding: EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 24.0),
-                      FadeAnimation(1.7, email),
-                      SizedBox(height: 8.0),
-                      FadeAnimation(1.7, password),
-                      SizedBox(height: 24.0),
-                      FadeAnimation(1.7, loginButton),
-                      SizedBox(height: 8.0),
-                      FadeAnimation(1.7, enlace),
-                    ],
-                  )))
-        ],
-      ));
-    }
-
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: scaffoldbody(mainscaffold(), context));
+      backgroundColor: Colors.white,
+      body: Center(
+          child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(left: 24.0, right: 24.0),
+        children: <Widget>[
+          FadeAnimation(1.7, titulo),
+          SizedBox(height: 24.0),
+          FadeAnimation(1.7, logo),
+          SizedBox(height: 48.0),
+          FadeAnimation(1.7, email),
+          SizedBox(height: 8.0),
+          FadeAnimation(1.7, password),
+          SizedBox(height: 24.0),
+          FadeAnimation(1.7, loginButton),
+        ],
+      )),
+    );
   }
 }
+ */

@@ -267,3 +267,19 @@ void navegarHomeExact(BuildContext context) {
     }
   }
 }
+
+String validateEmail(String value) {
+  if (value == "") {
+    return null;
+  } else {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'El correo electrónico es inválido';
+    else
+      return null;
+  }
+}

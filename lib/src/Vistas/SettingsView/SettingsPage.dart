@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/Vistas/Gestion-password/CambiarPassworPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'CountChangePage.dart';
 import 'SettingsController.dart';
@@ -103,7 +106,56 @@ class _SettingPageState extends State<SettingPage> {
     }
 
     Widget mainscaffold() {
-      return Column(
+      return SettingsList(
+        sections: [
+          SettingsSection(
+            tiles: [
+              SettingsTile(
+                title: nombreCuenta,
+                subtitle: boolIfPerfil()?'Cambiar usuario':'Cambiar UTD',
+                leading: Icon(FontAwesomeIcons.userEdit),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      child: CountChangePage(),
+                    ),
+                  ).whenComplete(cambiarBuzonOrUtd);
+                },
+              ),
+              SettingsTile(
+                title: 'Contraseña',
+                subtitle: 'Cambiar contraseña',
+                leading: Icon(FontAwesomeIcons.lock),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      child: CambiarPasswordPage(),
+                    ),
+                  );
+                },
+              ),
+              SettingsTile(
+                title: 'Cerrar sesión',
+                leading: Icon(FontAwesomeIcons.doorOpen),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () async {
+                  bool respuestaPop = await confirmacion(context, "success",
+                      "EXACT", "¿Seguro que desea cerrar sesión?");
+                  if (respuestaPop) {
+                    eliminarpreferences2(context);
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ) /* Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
@@ -111,7 +163,8 @@ class _SettingPageState extends State<SettingPage> {
                 alignment: Alignment.bottomCenter, child: _crearListado()),
           )
         ],
-      );
+      ) */
+          ;
     }
 
     return Scaffold(

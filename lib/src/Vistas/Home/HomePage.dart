@@ -17,7 +17,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    cargarPreferences();
   }
 
   @override
@@ -28,11 +27,6 @@ class _HomePageState extends State<HomePage> {
       appBar: CustomAppBar(text: "Bienvenido"),
       drawer: DrawerPage(),
       backgroundColor: Colors.white,
-/*       floatingActionButton: FloatingActionButton(onPressed: (){
-       int cantidad = Provider.of<NotificationInfo>(context,listen: true).cantidadNotificacion;
-        cantidad++; 
-        Provider.of<NotificationInfo>(context,listen: true).cantidadNotificacion=cantidad; 
-      }, child:FaIcon(FontAwesomeIcons.play),backgroundColor: Colors.pink,), */
       body: Center(
         child: ListView(
           children: <Widget>[
@@ -50,9 +44,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  void cargarPreferences() async {
-    sharedPreferences = await SharedPreferences.getInstance();
   }
 }

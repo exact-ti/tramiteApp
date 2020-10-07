@@ -129,6 +129,22 @@ class Requester {
     return respuestaPost;
   }
 
+  Future<Response> postEmail(String path, dynamic paramEmail) async {
+    try {
+      _navigationService.showModal();
+      Response repuesta = await Dio()
+          .post(properties['API'] + path, queryParameters: paramEmail);
+      _navigationService.goBack();
+
+      return repuesta;
+    } on DioError catch (e) {
+      _navigationService.goBack();
+      _navigationService.modelInformativo(
+          "error", "EXACT", "Error. Ha surgido un problema!");
+      return e.response;
+    }
+  }
+
   dynamic requestInterceptor(RequestOptions options) async {
     var token = _prefs.token;
     options.headers.addAll({"Authorization": "Bearer $token"});

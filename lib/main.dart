@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
+import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/routes/routes.dart';
 import 'package:tramiteapp/src/services/locator.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         supportedLocales: [const Locale('en'), const Locale('es')],
         onGenerateRoute: (settings) {
           return MaterialPageRoute(
-              builder: (BuildContext context) => HomePage());
+              builder: (BuildContext context) => LoginPage());
         },
         navigatorKey: locator<NavigationService>().navigatorKey));
   }

@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
@@ -42,40 +43,39 @@ class _CountChangePageState extends State<CountChangePage> {
       for (dynamic opcion in opciones) {
         listadecodigos.add(InkWell(
             onTap: () async {
-                  bool respuestabool = await confirmacion(context, "success",
-                      "EXACT", "¿Seguro que desea continuar?");
-                    if (respuestabool) {
-                      if (tipoPerfil(_prefs.perfil) == cliente) {
-                        HashMap<String, dynamic> buzonhash = new HashMap();
-                        buzonhash['id'] = opcion.id;
-                        buzonhash['nombre'] = opcion.nombre;
-                        _prefs.buzon = buzonhash;
-                      } else {
-                        HashMap<String, dynamic> utdhash = new HashMap();
-                        utdhash['id'] = opcion.id;
-                        utdhash['nombre'] = opcion.nombre;
-                        _prefs.utd = utdhash;
-                      }
-                        Navigator.of(context).pop();
-                    }
+              bool respuestabool = await confirmacion(
+                  context, "success", "EXACT", "¿Seguro que desea continuar?");
+              if (respuestabool) {
+                if (tipoPerfil(_prefs.perfil) == cliente) {
+                  HashMap<String, dynamic> buzonhash = new HashMap();
+                  buzonhash['id'] = opcion.id;
+                  buzonhash['nombre'] = opcion.nombre;
+                  _prefs.buzon = buzonhash;
+                } else {
+                  HashMap<String, dynamic> utdhash = new HashMap();
+                  utdhash['id'] = opcion.id;
+                  utdhash['nombre'] = opcion.nombre;
+                  _prefs.utd = utdhash;
+                }
+                Navigator.of(context).pop();
+              }
             },
             child: Container(
-                height: 60,
-                padding: const EdgeInsets.only(
-                    left: 10, right: 10, top: 5, bottom: 5),
-                child: Center(
-                    child: Text(opcion.nombre,
-                        style: TextStyle(fontSize: 18, color: colorletra))),
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 1.0, color: Colors.grey[300]),
                   ),
+                ),
+                child: ListTile(
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  title: Text(opcion.nombre,
+                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                  leading: boolIfPerfil()
+                      ? Icon(FontAwesomeIcons.userAlt)
+                      : Icon(FontAwesomeIcons.home),
                 ))));
       }
-
-      return Column(
-        children: listadecodigos
-      );
+      return Column(children: listadecodigos);
     }
 
     Widget mainscaffold() {
@@ -84,7 +84,9 @@ class _CountChangePageState extends State<CountChangePage> {
         children: <Widget>[
           Expanded(
             child: Container(
-                alignment: Alignment.bottomCenter, child: _crearListado()),
+                color: Colors.grey[200],
+                alignment: Alignment.bottomCenter,
+                child: _crearListado()),
           )
         ],
       );
@@ -93,7 +95,10 @@ class _CountChangePageState extends State<CountChangePage> {
     return Scaffold(
         appBar: AppBar(
             backgroundColor: primaryColor,
-            title: Text(tipoPerfil(_prefs.perfil) == cliente?"Cambiar buzón" :"Cambiar UTD",
+            title: Text(
+                tipoPerfil(_prefs.perfil) == cliente
+                    ? "Cambiar buzón"
+                    : "Cambiar UTD",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,
