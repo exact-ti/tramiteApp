@@ -1,9 +1,9 @@
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 
-class UsuarioInterface {
+abstract class UsuarioInterface {
 
-    Future<List<UsuarioFrecuente>> listarUsuariosFrecuentes() async {}
+    Future<List<UsuarioFrecuente>> listarUsuariosFrecuentes();
     
-    Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async {}
+    Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto);
 
 }

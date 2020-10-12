@@ -55,7 +55,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   var validarSobre = false;
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
-  String _name = '';
   int indice = 0;
   int indicebandeja = 0;
 

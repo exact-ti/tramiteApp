@@ -1,5 +1,4 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
@@ -38,11 +37,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
 
     Widget informacionEntrega(EntregaModel entrega) {
       String recorrido = entrega.nombreTurno;
@@ -78,10 +73,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
     Widget crearItem(EntregaModel entrega) {
       if (booleancolor) {
-        colorwidget = colorplomo;
         booleancolor = false;
       } else {
-        colorwidget = colorblanco;
         booleancolor = true;
       }
       return Container(
@@ -115,7 +108,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
     Widget _crearListado() {
       booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,

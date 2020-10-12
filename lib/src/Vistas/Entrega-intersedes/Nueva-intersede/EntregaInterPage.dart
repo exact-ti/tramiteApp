@@ -43,8 +43,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-
     listarNovalidados() {
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
@@ -167,9 +165,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     void validarLista(String codigo) async {
-      listaEnvios =
-          await principalcontroller.listarEnviosEntrega(context, codigo);
-      if (listaEnvios != null) {
+      listaEnvios = await principalcontroller.listarEnviosEntrega(context, codigo);
+      if (listaEnvios.isNotEmpty) {
         setState(() {
           listaEnvios = listaEnvios;
           listaCodigosValidados.clear();
@@ -220,7 +217,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     );
 
     void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
       if (listaEnvios.length == 0) {
         listaEnvios.add(envio);
       } else {
@@ -231,7 +227,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados, int i) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {

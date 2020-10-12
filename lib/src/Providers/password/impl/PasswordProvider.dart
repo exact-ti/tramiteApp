@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPaqueteEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';

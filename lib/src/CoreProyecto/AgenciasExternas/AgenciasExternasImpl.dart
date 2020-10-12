@@ -1,7 +1,6 @@
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/agenciasExternas/IAgenciasExternasProvider.dart';
-import 'package:tramiteapp/src/Providers/intersedes/IInterSedeProvider.dart';
 import 'IAgenciasExternasInterface.dart';
 
 

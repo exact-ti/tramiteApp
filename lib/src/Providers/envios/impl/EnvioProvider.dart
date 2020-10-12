@@ -9,13 +9,10 @@ import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'dart:convert';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 class EnvioProvider implements IEnvioProvider {
   Requester req = Requester();
-
   ConfiguracionModel configuracionmodel = new ConfiguracionModel();
-  final _prefs = new PreferenciasUsuario();
   EnvioInterSedeModel sedeModel = new EnvioInterSedeModel();
   EnvioModel envioModel = new EnvioModel();
   UtdModel utdModel = new UtdModel();
@@ -34,8 +31,7 @@ class EnvioProvider implements IEnvioProvider {
     });
 
     try {
-      Response resp =
-          await req.post('/servicio-tramite/envios', formData, null);
+      Response resp = await req.post('/servicio-tramite/envios', formData, null);
       if (resp.data != null || resp.data != "") {
         return true;
       } else {

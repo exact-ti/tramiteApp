@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -40,71 +39,6 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget menuOpcion(BuildContext context) {
-      return InkWell(
-          onTap: () async {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CountChangePage(),
-              ),
-            ).whenComplete(cambiarBuzonOrUtd);
-          },
-          child: Container(
-            height: 60,
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-            child: ListTile(
-              leading: FaIcon(
-                FontAwesomeIcons.userEdit,
-                color: primaryColor,
-                size: 25,
-              ),
-              title: Text(nombreCuenta,
-                  style: TextStyle(fontSize: 18, color: colorletra)),
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 1.0, color: Colors.grey[300]),
-              ),
-            ),
-          ));
-    }
-
-    Widget _crearListado() {
-      return Column(
-        children: <Widget>[
-          menuOpcion(context),
-          InkWell(
-              onTap: () async {
-                bool respuestaPop = await confirmacion(context, "success",
-                    "EXACT", "¿Seguro que desea cerrar sesión?");
-                if (respuestaPop) {
-                  eliminarpreferences2(context);
-                }
-              },
-              child: Container(
-                  height: 60,
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10, top: 5, bottom: 5),
-                  child: ListTile(
-                    leading: FaIcon(
-                      FontAwesomeIcons.doorOpen,
-                      color: primaryColor,
-                      size: 25,
-                    ),
-                    title: Text("Cerrar sesión",
-                        style: TextStyle(fontSize: 18, color: colorletra)),
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(width: 1.0, color: Colors.grey[300]),
-                    ),
-                  ))),
-        ],
-      );
-    }
-
     Widget mainscaffold() {
       return SettingsList(
         sections: [
@@ -112,7 +46,7 @@ class _SettingPageState extends State<SettingPage> {
             tiles: [
               SettingsTile(
                 title: nombreCuenta,
-                subtitle: boolIfPerfil()?'Cambiar usuario':'Cambiar UTD',
+                subtitle: boolIfPerfil() ? 'Cambiar usuario' : 'Cambiar UTD',
                 leading: Icon(FontAwesomeIcons.userEdit),
                 trailing: Icon(Icons.keyboard_arrow_right),
                 onTap: () {
@@ -155,16 +89,7 @@ class _SettingPageState extends State<SettingPage> {
             ],
           ),
         ],
-      ) /* Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Container(
-                alignment: Alignment.bottomCenter, child: _crearListado()),
-          )
-        ],
-      ) */
-          ;
+      );
     }
 
     return Scaffold(

@@ -72,7 +72,7 @@ class NotificacionController {
             "/notificaciones",
           )
         : mostrarNotificacionPush(
-            listarNotificacionesPendientes[0].mensaje, listarNotificacionesPendientes[0].ruta);
+            listarNotificacionesPendientes.first.mensaje, listarNotificacionesPendientes.first.ruta);
   }
 
 

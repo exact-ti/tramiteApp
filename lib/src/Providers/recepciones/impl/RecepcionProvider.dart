@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
@@ -10,7 +9,6 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
-
 import '../IRecepcionProvider.dart';
 
 class RecepcionProvider implements IRecepcionProvider {
@@ -28,8 +26,8 @@ class RecepcionProvider implements IRecepcionProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp = await req.get(
-        '/servicio-tramite/utds/$id/lotes/$codigo/recepcion');
+    Response resp =
+        await req.get('/servicio-tramite/utds/$id/lotes/$codigo/recepcion');
     if (resp.data == "") {
       return null;
     }
@@ -39,8 +37,7 @@ class RecepcionProvider implements IRecepcionProvider {
   }
 
   @override
-  Future<List<EnvioModel>> recepcionValijaProvider(
-      String codigo) async {
+  Future<List<EnvioModel>> recepcionValijaProvider(String codigo) async {
     Response resp = await req.get('/servicio-tramite/areas/$codigo/envios');
     if (resp.data == "") {
       return null;
@@ -65,16 +62,17 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<bool> recibirJumboProvider(
-     String codigoLote,String codigopaquete) async {
-           Map<String, dynamic> utd = json.decode(_prefs.utd);
+      String codigoLote, String codigopaquete) async {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/entregas/$codigopaquete/recepcion');
-    if( resp.data==""){
+    Response resp = await req
+        .get('/servicio-tramite/utds/$id/entregas/$codigopaquete/recepcion');
+    if (resp.data == "") {
       return false;
     }
     List<dynamic> envio = resp.data;
-    if (envio.length!=0) {
+    if (envio.length != 0) {
       return true;
     }
     return false;
@@ -95,8 +93,8 @@ class RecepcionProvider implements IRecepcionProvider {
 
   @override
   Future<List<EnvioModel>> listarenvios() async {
-    Response resp = await req.get(
-        '/servicio-tramite/recorridos/areas//envios/paraentrega');
+    Response resp =
+        await req.get('/servicio-tramite/recorridos/areas//envios/paraentrega');
     if (resp.data == "") {
       return null;
     }
@@ -106,7 +104,7 @@ class RecepcionProvider implements IRecepcionProvider {
   }
 
   @override
-  Future<bool> registrarEnvioProvider(String codigopaquete) async{
+  Future<bool> registrarEnvioProvider(String codigopaquete) async {
     Response resp = await req.post(
         '/servicio-tramite/recorridos/areas/paquetes/$codigopaquete/entrega',
         null,
@@ -118,12 +116,12 @@ class RecepcionProvider implements IRecepcionProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarenviosPrincipal() async{
-    Map<String,dynamic> buzon = json.decode(_prefs.buzon);
+  Future<List<EnvioModel>> listarenviosPrincipal() async {
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-    Response resp = await req.get(
-        '/servicio-tramite/buzones/$id/envios/confirmacion');
+    Response resp =
+        await req.get('/servicio-tramite/buzones/$id/envios/confirmacion');
     if (resp.data == "") {
       return null;
     }
@@ -138,28 +136,27 @@ class RecepcionProvider implements IRecepcionProvider {
     return listEnvio;
   }
 
-  Future<List<EnvioModel>> listarfake() async{
+  Future<List<EnvioModel>> listarfake() async {
     List<EnvioModel> listarenvios = new List();
     EnvioModel envio1 = new EnvioModel();
     EnvioModel envio2 = new EnvioModel();
-    envio1.observacion="San Isidro";
-    envio1.usuario="Ronald Santos";
-    envio1.codigoPaquete="123456";
-    envio2.observacion="La Molina";
-    envio2.usuario="Crhistian campos";
-    envio2.codigoPaquete="123457";
+    envio1.observacion = "San Isidro";
+    envio1.usuario = "Ronald Santos";
+    envio1.codigoPaquete = "123456";
+    envio2.observacion = "La Molina";
+    envio2.usuario = "Crhistian campos";
+    envio2.codigoPaquete = "123457";
     listarenvios.add(envio1);
     listarenvios.add(envio2);
 
     return Future.delayed(new Duration(seconds: 1), () {
       return listarenvios;
     });
-
   }
 
   @override
   Future<bool> registrarEnvioPrincipalProvider(String codigopaquete) async {
-   /* Response resp = await req.post(
+    /* Response resp = await req.post(
         '/servicio-tramite/recorridos/areas/paquetes/$codigopaquete/entrega',
         null,
         null);
@@ -171,24 +168,22 @@ class RecepcionProvider implements IRecepcionProvider {
   }
 
   @override
-  Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes) async {
-        Map<String,dynamic> buzon = json.decode(_prefs.buzon);
-        print("Entro a provider");
+  Future<bool> registrarListaEnvioPrincipalProvider(
+      List<String> codigospaquetes) async {
+    Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+    print("Entro a provider");
     BuzonModel bznmodel = buzonModel.fromPreferencs(buzon);
     int id = bznmodel.id;
-       List<String> ids = new List();
+    List<String> ids = new List();
     for (String envio in codigospaquetes) {
       ids.add(envio);
     }
     var listaIds = json.encode(ids);
-    Response resp = await req.post('/servicio-tramite/buzones/$id/envios/confirmacion',listaIds,null);
+    Response resp = await req.post(
+        '/servicio-tramite/buzones/$id/envios/confirmacion', listaIds, null);
     if (resp.data) {
       return true;
     }
     return false;
-  
   }
-
-
-
 }

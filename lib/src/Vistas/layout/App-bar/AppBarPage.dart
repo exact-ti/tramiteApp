@@ -9,9 +9,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
-
 import 'AppBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -38,7 +36,6 @@ class _CustomAppBarState extends State<CustomAppBar>
   NotificacionModel notificacionModel = new NotificacionModel();
   int estadoApp;
   int idBuzonOrUTD = 0;
-  final _prefs = new PreferenciasUsuario();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

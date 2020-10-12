@@ -1,6 +1,4 @@
 import 'package:eventsource/eventsource.dart';
-import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/ISseProvider.dart';
 import 'SseInterface.dart';
 

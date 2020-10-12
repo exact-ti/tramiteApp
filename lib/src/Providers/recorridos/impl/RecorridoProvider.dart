@@ -1,10 +1,5 @@
-import 'dart:collection';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
@@ -15,7 +10,6 @@ import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
-
 import '../IRecorridoProvider.dart';
 
 class RecorridoProvider implements IRecorridoProvider {
@@ -37,7 +31,7 @@ class RecorridoProvider implements IRecorridoProvider {
       return null;
     }
     dynamic envio = resp.data;
-   /* List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);*/
+    /* List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);*/
     return envio;
   }
 
@@ -65,7 +59,7 @@ class RecorridoProvider implements IRecorridoProvider {
         null,
         null);
     return resp.data;
-  } 
+  }
 
   @override
   Future<dynamic> registrarRecojoProvider(
@@ -115,7 +109,10 @@ class RecorridoProvider implements IRecorridoProvider {
     /* FormData formData =
         FormData.fromMap({"file": MultipartFile.fromString(firma)}); */
     dynamic formato = new MediaType('image', 'png');
-    FormData formData =FormData.fromMap({"file": MultipartFile.fromBytes(Base64Decoder().convert(firma), contentType: formato,filename:"file.png")}); 
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromBytes(Base64Decoder().convert(firma),
+          contentType: formato, filename: "file.png")
+    });
 
     Response resp = await req.post(
         '/servicio-tramite/utds/$id/paquetes/$codigopaquete/entregapersonalizada/tiposcargos/2',

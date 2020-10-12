@@ -2,14 +2,14 @@
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 
-class PaqueteExternoInterface {
+abstract class PaqueteExternoInterface {
 
-  Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno){}
+  Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno);
   
-  Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete){}
+  Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExterno, TipoPaqueteModel tipoPaquete);
 
-  Future<List<PaqueteExterno>> listarPaquetesExternosCreados(){}
+  Future<List<PaqueteExterno>> listarPaquetesExternosCreados();
 
-  Future<bool> custodiarPaquete(PaqueteExterno paqueteExterno){}
+  Future<bool> custodiarPaquete(PaqueteExterno paqueteExterno);
   
 }

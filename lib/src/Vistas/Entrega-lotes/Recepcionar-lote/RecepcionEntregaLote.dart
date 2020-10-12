@@ -77,7 +77,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             context, codigoBandeja, codigo);
         if (respuesta) {
           listaEnvios.removeWhere((value) => value.codigoPaquete == codigo);
-          if (listaEnvios.length == 0) {
+          if (listaEnvios.isEmpty) {
             bool respuestatrue = await notificacion(
                 context, "success", "EXACT", "Se ha completado la recepción");
             if (respuestatrue) {
@@ -112,7 +112,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               _sobreController.text = codigo;
             });
             popuptoinput(
-                context, f2, "error", "EXACT", "Se registró la valija");
+                context, f2, "success", "EXACT", "Se registró la valija");
           } else {
             setState(() {
               _sobreController.text = codigo;

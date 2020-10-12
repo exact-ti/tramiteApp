@@ -15,10 +15,8 @@ class ClasificacionController {
     List<PalomarModel> palomares = new List();
     PalomarModel palomarModel = new PalomarModel();
     _navigationService.showModal();
-
     dynamic palomar = await usuarioInterface.listarPalomarByCodigo(codigo);
-              _navigationService.goBack();
-
+    _navigationService.goBack();
     if (palomar["status"] == "success") {
       dynamic datapalomar = palomar["data"];
       PalomarModel palomar2 = palomarModel.fromOneJson(datapalomar);
@@ -29,5 +27,4 @@ class ClasificacionController {
     }
     return palomares;
   }
-  //PalomarModel palomar = palomarModel.fromOneJson(palomardata);
 }

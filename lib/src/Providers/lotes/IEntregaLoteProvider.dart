@@ -6,7 +6,7 @@ abstract class IEntregaLoteProvider {
 
   Future<List<EntregaLoteModel>> listarLotesPorRecibir();
 
-      Future<bool> iniciarEntregaLote(int utdDestino);  
+  Future<bool> iniciarEntregaLote(int utdDestino);  
 
   
 }

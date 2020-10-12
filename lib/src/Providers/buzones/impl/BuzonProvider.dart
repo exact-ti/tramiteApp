@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/Entity/Buzon.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';

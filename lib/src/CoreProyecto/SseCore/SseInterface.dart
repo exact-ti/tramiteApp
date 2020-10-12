@@ -1,6 +1,6 @@
 
 import 'package:eventsource/eventsource.dart';
 
-class SseInterface {
-    Future<EventSource> listarEventSource() async {}
+abstract class SseInterface {
+    Future<EventSource> listarEventSource();
 }

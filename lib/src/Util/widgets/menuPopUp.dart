@@ -33,10 +33,11 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
 
   @override
   void initState() {
-    _animationController = AnimationController(
+    var animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
     );
+    _animationController = animationController;
     _borderRadius = widget.borderRadius ?? BorderRadius.circular(4);
     _key = LabeledGlobalKey("button_icon");
     super.initState();

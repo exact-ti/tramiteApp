@@ -1,6 +1,5 @@
 
 import 'package:tramiteapp/src/ModelDto/TrackingDetalle.dart';
-import 'package:intl/intl.dart';
 
 class TrackingModel {
 

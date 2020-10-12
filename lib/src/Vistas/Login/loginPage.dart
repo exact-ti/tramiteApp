@@ -25,30 +25,27 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-/*     checkLoginStatus();
- */
+    checkLoginStatus();
   }
 
-/*   checkLoginStatus() async {
+  checkLoginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") != null) {
-      if (int.parse(sharedPreferences.getString("perfil")) == cliente) {
+      if (boolIfPerfil()) {
         if (sharedPreferences.getString("buzon") != null) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-              (Route<dynamic> route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/menuBottom', (Route<dynamic> route) => false);
         }
       } else {
         if (sharedPreferences.getString("utd") != null ||
             sharedPreferences.getString("buzon") != null) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-              (Route<dynamic> route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              rutaPrincipal(), (Route<dynamic> route) => false);
         }
       }
     }
   }
- */
+
   @override
   Widget build(BuildContext context) {
     LoginController logincontroller = new LoginController();
@@ -101,26 +98,7 @@ class _LoginPageState extends State<LoginPage> {
           color: primaryColor,
         ),
       ),
-    ) /* TextFormField(
-      controller: _usernameController,
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.next,
-      autofocus: false,
-      focusNode: f1,
-      onFieldSubmitted: (value) {
-        enfocarcodigocontrasena();
-      },
-      textAlign: TextAlign.center,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        filled: true,
-        fillColor: Color(0xffF0F3F4),
-        hintText: 'Usuario',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-      ),
-    ) */
-        ;
+    );
 
     performLogin(BuildContext context) {
       String username = _usernameController.text;
@@ -193,26 +171,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    /* TextFormField(
-      controller: _passwordController,
-      autofocus: false,
-      obscureText: true,
-      textAlign: TextAlign.center,
-      focusNode: f2,
-      onFieldSubmitted: (value) async {
-        enfocarUsuarioOrContrasena();
-      },
-      textInputAction: TextInputAction.send,
-      decoration: InputDecoration(
-        filled: true,
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        fillColor: Color(0xffF0F3F4),
-        hintText: 'contraseña',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-      ),
-    ) */
-    ;
 
     final loginButton = Material(
       child: Ink(
@@ -247,25 +205,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    /* Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 70),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        onPressed: () {
-          FocusScope.of(context).unfocus();
-          new TextEditingController().clear();
-          if (pressbutton) {
-            pressbutton = false;
-            performLogin(context);
-          }
-        },
-        padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-        color: Colors.lightBlueAccent,
-        child: Text('LOG IN', style: TextStyle(color: Colors.white)),
-      ),
-    ); */
 
     final titulo = Text(
       'Bienvenidos',

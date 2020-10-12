@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 

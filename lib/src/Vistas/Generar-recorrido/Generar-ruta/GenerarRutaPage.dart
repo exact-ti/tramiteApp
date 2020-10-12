@@ -7,7 +7,6 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-
 import 'GenerarRutaController.dart';
 
 class GenerarRutaPage extends StatefulWidget {
@@ -24,7 +23,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   _GenerarRutaPageState(this.recorridoUsuario);
   GenerarRutaController principalcontroller = new GenerarRutaController();
   EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
   var listadestinatarios;
   String textdestinatario = "";
   int cantidad = 0;
@@ -32,7 +30,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
-
   var nuevo = 0;
 
   @override
@@ -45,11 +42,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
     const colorletra = const Color(0xFF7A7D7F);
-    var booleancolor = true;
-    var colorwidget = colorplomo;
-
     Widget informacionArea(String nombre) {
       return Container(
           alignment: Alignment.centerLeft,
@@ -129,7 +122,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
             decoration: myBoxDecoration(),
             margin: EdgeInsets.only(bottom: 5),
             height: 80,
-            //color: colorwidget,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -156,8 +148,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     }
 
     Widget _crearListado() {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.listarMiRuta(recorridoUsuario.id),
           builder:
@@ -176,7 +166,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                   return sinResultados("Ha surgido un problema");
                 } else {
                   if (snapshot.hasData) {
-                    booleancolor = true;
                     final rutas = snapshot.data;
                     if (rutas.length == 0) {
                       return sinResultados("No se han encontrado resultados");

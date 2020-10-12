@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:eventsource/eventsource.dart';
-import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import '../ISseProvider.dart';

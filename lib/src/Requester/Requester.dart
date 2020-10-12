@@ -6,7 +6,6 @@ import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:http/http.dart' as http;
 import 'package:eventsource/eventsource.dart';
 
 class Requester {
@@ -18,12 +17,8 @@ class Requester {
   factory Requester() {
     return _instancia;
   }
-
   Requester._internal();
-
   final Dio _dio = Dio();
-  final http.Client _client = http.Client();
-
   final _prefs = new PreferenciasUsuario();
 
   Future<Response> login(String path, String username, String password) async {
@@ -114,7 +109,7 @@ class Requester {
       data: data,
       queryParameters: params,
     );
-
+    _navigationService.goBack();
     return respuestaPost;
   }
 

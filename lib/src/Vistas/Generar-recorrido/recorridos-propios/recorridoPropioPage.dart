@@ -40,11 +40,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
 
     Widget informacionEntrega(RecorridoModel envio) {
       String recorrido = envio.nombre;
@@ -78,10 +74,8 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
     Widget crearItem(RecorridoModel entrega) {
       if (booleancolor) {
-        colorwidget = colorplomo;
         booleancolor = false;
       } else {
-        colorwidget = colorblanco;
         booleancolor = true;
       }
       return Container(

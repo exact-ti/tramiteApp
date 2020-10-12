@@ -47,8 +47,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
         child: ButtonTheme(

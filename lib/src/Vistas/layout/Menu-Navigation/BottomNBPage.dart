@@ -49,7 +49,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         int ordenprueba = listMenu
             .where((element) => element.link == rutaname)
             .map((e) => e.orden - 1)
-            .toList()[0];
+            .toList().first;
         setState(() {
           currentIndex = ordenprueba;
         });
@@ -68,7 +68,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         menuinicio = listmenu
             .where((element) => element.home)
             .map((e) => e.link)
-            .toList()[0];
+            .toList().first;
         listMenu = listmenu;
       });
     }
@@ -133,7 +133,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           String nombre = listMenu
               .where((element) => element.orden == routeIndex + 1)
               .map((e) => e.link)
-              .toList()[0];
+              .toList().first;
           setState(() {
             currentIndex = routeIndex;
           });

@@ -1,11 +1,9 @@
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 
-class EntregaLoteInterface {
+abstract class EntregaLoteInterface {
+  Future<List<EntregaLoteModel>> listarLotesActivos();
 
-  Future<List<EntregaLoteModel>> listarLotesActivos(){}
-  
-  Future<List<EntregaLoteModel>> listarLotesPorRecibir(){}
+  Future<List<EntregaLoteModel>> listarLotesPorRecibir();
 
-  Future<bool> iniciarEntregaLote(int utdDestino) {}
-
+  Future<bool> iniciarEntregaLote(int utdDestino);
 }

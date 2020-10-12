@@ -7,7 +7,6 @@ import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dart:convert';
-
 import '../IInterSedeProvider.dart';
 
 class InterSedeProvider implements IInterSedeProvider {
@@ -72,7 +71,7 @@ class InterSedeProvider implements IInterSedeProvider {
     Map<String, dynamic> utd = json.decode(_prefs.utd);
     UtdModel umodel = utdModel.fromPreferencs(utd);
     int id = umodel.id;
-    Response resp =await req.get('/servicio-tramite/utds/1/tipospaquetes/$valijaId/paquetes/$codigo/envios');
+    Response resp =await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaId/paquetes/$codigo/envios');
     if (resp.data == "") {
       return null;
     }

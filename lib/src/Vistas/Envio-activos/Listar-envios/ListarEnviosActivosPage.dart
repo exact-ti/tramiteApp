@@ -5,7 +5,6 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'ListarEnviosActivosController.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
@@ -41,7 +40,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   @override
   void initState() {
     isSelected = [true, false];
-
     if (objetoModo == null) {
       estadosIds = [];
       isSelected = [true, false];
@@ -115,11 +113,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
     Widget listTagSave(List<int> idsparam) {
       List<EstadoEnvio> listaparam = new List();
-      estadosSave.forEach((element) {
-        if (element.estado) {
-          listaparam.add(element);
-        }
-      });
+      listaparam= estadosSave.where((element) => idsparam.contains(element.id)).toList();
       return Container(
           child: Tags(
         itemCount: listaparam.length,

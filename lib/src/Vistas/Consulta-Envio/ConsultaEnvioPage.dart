@@ -50,22 +50,19 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     listaEnviosVacios = [];
     listaTurnos = [];
   }
-
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-
-    void listarEnvios(String paquete, String remitente, String destinatario,
+  void listarEnvios(String paquete, String remitente, String destinatario,
         bool opcion) async {
       listaEnvios = await principalcontroller.listarEnvios(
           context, paquete, remitente, destinatario, opcion);
-      if (listaEnvios != null) {
+      if (listaEnvios.isNotEmpty) {
         setState(() {
           listaEnvios = listaEnvios;
         });
       } else {
-        listaEnvios = [];
+        listaEnvios.clear();
         setState(() {
           listaEnvios = listaEnvios;
         });
@@ -155,7 +152,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                         flex: 1,
                       ),
                       Expanded(
-                        child: Text(envio.remitente,
+                        child: Text(envio.remitente==null?"envío importado": envio.remitente,
                             style: TextStyle(color: Colors.black)),
                         flex: 5,
                       ),
@@ -543,5 +540,3 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 }
-
-//                  Navigator.of(context).pushNamed(men.link);

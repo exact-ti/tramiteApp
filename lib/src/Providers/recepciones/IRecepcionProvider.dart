@@ -1,30 +1,26 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 
+abstract class IRecepcionProvider {
+  Future<List<EnvioModel>> recepcionJumboProvider(String codigo);
 
-abstract class IRecepcionProvider{
+  Future<List<EnvioModel>> recepcionValijaProvider(String codigo);
 
+  Future<bool> registrarJumboProvider(String codigo, String codigopaquete);
 
-  Future<List<EnvioModel>> recepcionJumboProvider(String codigo);  
+  Future<bool> registrarEnvioProvider(String codigopaquete);
 
-  Future<List<EnvioModel>> recepcionValijaProvider(String codigo);  
+  Future<bool> registrarValijaProvider(String codigo, String codigopaquete);
 
-  Future<bool> registrarJumboProvider(String codigo, String codigopaquete);  
+  Future<List<EnvioModel>> listarenvios();
 
-  Future<bool> registrarEnvioProvider(String codigopaquete);  
+  Future<List<EnvioModel>> listarenviosPrincipal();
 
+  Future<List<EnvioModel>> listarenviosPrincipal2();
 
-  Future<bool> registrarValijaProvider(String codigo, String codigopaquete);  
+  Future<bool> registrarEnvioPrincipalProvider(String codigopaquete);
 
-  Future<List<EnvioModel>> listarenvios();  
+  Future<bool> registrarListaEnvioPrincipalProvider(
+      List<String> codigospaquetes);
 
-  Future<List<EnvioModel>> listarenviosPrincipal();  
-
-  Future<List<EnvioModel>> listarenviosPrincipal2();  
-
-  Future<bool> registrarEnvioPrincipalProvider(String codigopaquete);  
-
-  Future<bool> registrarListaEnvioPrincipalProvider(List<String> codigospaquetes);  
-
-  Future<bool> recibirJumboProvider(String codigoLote,String codigoPaquete);  
-
+  Future<bool> recibirJumboProvider(String codigoLote, String codigoPaquete);
 }

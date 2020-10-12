@@ -381,7 +381,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     for (var row in tabla.rows) {
       if (fila > 0) {
         PaqueteExternoBuzonModel paqueteBuzon = new PaqueteExternoBuzonModel();
-        paqueteBuzon.id = row[0] == null ? '' : row[0].toString();
+        paqueteBuzon.id = row.first == null ? '' : row.first.toString();
         paqueteBuzon.idBuzon = row[1] == null ? '' : row[1].toString();
         paqueteBuzon.nombre = '';
         paquetesBuzonValidar.add(paqueteBuzon);

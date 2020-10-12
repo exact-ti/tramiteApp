@@ -58,11 +58,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    var booleancolor = true;
-    var colorwidget = colorplomo;
 
     void _validarText(String value) {
       desenfocarInputfx(context);
@@ -101,9 +96,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
           listaEnviosValidados.add(envio);
@@ -208,7 +200,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {
@@ -246,8 +237,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget _crearListado(List<String> validados) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller
               .validacionEnviosController(recorridoUsuario.id),
@@ -285,8 +274,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget _crearListadoinMemoria(List<String> validados) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return ListView.builder(
           itemCount: listaEnvios.length,
           itemBuilder: (context, i) => crearItem(listaEnvios[i], validados));
@@ -294,16 +281,12 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.validarCodigo(
               codigoporValidar, recorridoUsuario.id, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
               final envio = snapshot.data;
               listaEnvios.add(envio);
               validados.add(envio.codigoPaquete);

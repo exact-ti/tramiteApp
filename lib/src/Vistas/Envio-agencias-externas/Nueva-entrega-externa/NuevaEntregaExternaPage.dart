@@ -46,13 +46,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
     listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
           listaEnviosValidados.add(envio);
@@ -208,7 +202,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     );
 
     void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
       if (listaEnvios.length == 0) {
         listaEnvios.add(envio);
       } else {
@@ -219,7 +212,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados, int i) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {

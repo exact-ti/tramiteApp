@@ -167,7 +167,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10,right: 10),
+                          margin: const EdgeInsets.only(bottom: 10, right: 10),
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: Text(envio.observacion,
@@ -186,14 +186,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
           date = await showDatePicker(
-              helpText: "Seleccionar fecha",
-              context: context,
-              locale: const Locale("es", "ES"),
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100)
-              
-              );
+            helpText: "Seleccionar fecha",
+            context: context,
+            locale: const Locale("es", "ES"),
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            fieldLabelText: "Ingregar fecha",
+            errorFormatText: "Formato inválido",
+          );
           if (date != null) {
             DateTime fecha =
                 new DateFormat("yyyy-MM-dd").parse(date.toIso8601String());
@@ -235,12 +236,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
           date = await showDatePicker(
-              helpText: "Seleccionar fecha",
-              context: context,
-              locale: const Locale("es", "ES"),
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100));
+            helpText: "Seleccionar fecha",
+            context: context,
+            locale: const Locale("es", "ES"),
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            fieldLabelText: "Ingregar fecha",
+            errorFormatText: "Formato inválido",
+          );
           if (date != null) {
             DateTime fecha =
                 new DateFormat("yyyy-MM-dd").parse(date.toIso8601String());
@@ -407,7 +411,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   width: double.infinity,
                   child: textFin),
             ),
-            Align( 
+            Align(
               alignment: Alignment.centerLeft,
               child: Container(
                   alignment: Alignment.centerLeft,
@@ -445,8 +449,11 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Históricos",leadingbool: boolIfPerfil()?false:true,),
-        drawer:drawerIfPerfil(),
+        appBar: CustomAppBar(
+          text: "Históricos",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
+        drawer: drawerIfPerfil(),
         resizeToAvoidBottomInset: false,
         body: mainscaffold());
   }

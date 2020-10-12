@@ -20,6 +20,7 @@ import 'loader.dart';
 import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
+Menu menu = new Menu();
 final _prefs = new PreferenciasUsuario();
 
 final primaryColor = Color(0xFF2C6983);
@@ -282,4 +283,12 @@ String validateEmail(String value) {
     else
       return null;
   }
+}
+
+String rutaPrincipal() {
+  List<Menu> listmenu = menu.fromPreferencs(json.decode(_prefs.menus));
+  return listmenu
+      .where((element) => element.home)
+      .map((e) => e.link)
+      .toList().first;
 }

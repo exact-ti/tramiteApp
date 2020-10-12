@@ -1,13 +1,13 @@
 
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 
-class NotificacionInterface {
+abstract class NotificacionInterface {
 
-    Future<List<NotificacionModel>> listarNotificacionesPendientes(){}
+    Future<List<NotificacionModel>> listarNotificacionesPendientes();
     
-    Future<dynamic> revisarNotificacion(int notificacionId){}
+    Future<dynamic> revisarNotificacion(int notificacionId);
     
-    Future<dynamic> verNotificaciones(){}
+    Future<dynamic> verNotificaciones();
     }
 
 

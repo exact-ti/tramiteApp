@@ -7,9 +7,6 @@ abstract class IEnvioProvider{
 
   Future<bool> crearEnvioProvider(EnvioModel envio);
 
-
-
-  //agencias
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario();  
 
   Future<List<EnvioModel>> listarEnviosActivosByUsuario(List<int> estadosids);  
