@@ -16,10 +16,10 @@ import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/impl/ConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/impl/MenuProvider.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
+import 'package:tramiteapp/src/Providers/perfiles/impl/PerfilProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
@@ -34,7 +34,7 @@ class LoginController {
       new MenuProvider(),
       new ConfiguracionProvider(),
       new UtdProvider(),
-      new NotificacionProvider());
+      new NotificacionProvider(), new PerfilProvider());
   NotificacionInterface notificacionCore =
       new NotificacionImpl(new NotificacionProvider());
   SseInterface sseInterface = new SseImpl(new SseProvider());
@@ -73,8 +73,7 @@ class LoginController {
         for (Menu men in listmenu) {
           if (men.home) {
             _navigationService.goBack();
-            int indiceperfil = json.decode(_prefs.perfil);
-            if(tipoPerfil(indiceperfil.toString()) == cliente){
+            if(_prefs.tipoperfil == cliente){
             Navigator.of(context).pushNamedAndRemoveUntil(
                '/menuBottom', (Route<dynamic> route) => false);
             }else{

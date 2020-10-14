@@ -28,7 +28,7 @@ final colorletra = Color(0xFFACADAD);
 final colorplomo = Color(0xFFEAEFF2);
 final colorblanco = Color(0xFFFFFFFF);
 
-int tipoPerfil(String perfilId) {
+/* int tipoPerfil(String perfilId) {
   switch (perfilId) {
     case "1":
       return exact;
@@ -43,7 +43,7 @@ int tipoPerfil(String perfilId) {
     default:
       return exact;
   }
-}
+} */
 
 String titulosPage(int pos) {
   switch (pos) {
@@ -199,8 +199,12 @@ Widget scaffoldbody(Widget principal, BuildContext context) {
           child: principal));
 }
 
-Widget scaffoldbody2(Widget principal, BuildContext context) {
-  return Container(child: principal);
+Widget scaffoldbodyLogin(Widget principal, BuildContext context) {
+  return SingleChildScrollView(
+      child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height),
+          child: principal));
 }
 
 int obtenerCantidadMinima() {
@@ -219,9 +223,14 @@ int obtenerCantidadMinima() {
 
 int obtenerUTDid() {
   UtdModel utdModel = new UtdModel();
-  Map<String, dynamic> utd = json.decode(_prefs.utd);
+  if (_prefs.utd!=null) {
+      Map<String, dynamic> utd = json.decode(_prefs.utd);
   UtdModel umodel = utdModel.fromPreferencs(utd);
-  return umodel.id;
+    return umodel.id;
+
+  }else{
+    return 0;
+  }
 }
 
 int obtenerBuzonid() {
@@ -232,7 +241,7 @@ int obtenerBuzonid() {
 }
 
 Widget drawerIfPerfil() {
-  if (tipoPerfil(_prefs.perfil) == cliente) {
+  if (_prefs.tipoperfil == cliente) {
     return null;
   } else {
     return DrawerPage();
@@ -240,7 +249,7 @@ Widget drawerIfPerfil() {
 }
 
 bool boolIfPerfil() {
-  if (tipoPerfil(_prefs.perfil) == cliente) {
+  if (_prefs.tipoperfil == cliente) {
     return true;
   } else {
     return false;
@@ -254,8 +263,7 @@ void navegarHomeExact(BuildContext context) {
     List<Menu> listmenu = menu.fromPreferencs(menus);
     for (Menu men in listmenu) {
       if (men.home) {
-        int indiceperfil = json.decode(_prefs.perfil);
-        if (tipoPerfil(indiceperfil.toString()) == cliente) {
+        if (_prefs.tipoperfil== cliente) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>

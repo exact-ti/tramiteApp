@@ -30,7 +30,7 @@ class _CountChangePageState extends State<CountChangePage> {
   Widget build(BuildContext context) {
     Widget _crearListado() {
       List<dynamic> opciones = new List();
-      if (tipoPerfil(_prefs.perfil) == cliente) {
+      if (_prefs.tipoperfil == cliente) {
         BuzonModel buzonmodel = new BuzonModel();
         List<dynamic> buzonCore = json.decode(_prefs.buzones);
         opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -46,7 +46,7 @@ class _CountChangePageState extends State<CountChangePage> {
               bool respuestabool = await confirmacion(
                   context, "success", "EXACT", "¿Seguro que desea continuar?");
               if (respuestabool) {
-                if (tipoPerfil(_prefs.perfil) == cliente) {
+                if (_prefs.tipoperfil == cliente) {
                   HashMap<String, dynamic> buzonhash = new HashMap();
                   buzonhash['id'] = opcion.id;
                   buzonhash['nombre'] = opcion.nombre;
@@ -96,7 +96,7 @@ class _CountChangePageState extends State<CountChangePage> {
         appBar: AppBar(
             backgroundColor: primaryColor,
             title: Text(
-                tipoPerfil(_prefs.perfil) == cliente
+                _prefs.tipoperfil == cliente
                     ? "Cambiar buzón"
                     : "Cambiar UTD",
                 style: TextStyle(

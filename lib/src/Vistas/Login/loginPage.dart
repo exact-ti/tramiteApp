@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
       cursorColor: primaryColor,
       style: TextStyle(
         color: primaryColor,
-        fontSize: 14.0,
+        fontSize: 20.0,
       ),
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (newValue) {
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: "Usuario",
         prefixIcon: Icon(
           Icons.account_circle,
-          size: 18,
+          size: 20,
           color: primaryColor,
         ),
       ),
@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
       cursorColor: primaryColor,
       style: TextStyle(
         color: primaryColor,
-        fontSize: 14.0,
+        fontSize: 20.0,
       ),
       onFieldSubmitted: (value) async {
         enfocarUsuarioOrContrasena();
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: "Contraseña",
         prefixIcon: Icon(
           Icons.lock,
-          size: 18,
+          size: 20,
           color: primaryColor,
         ),
         suffixIcon: GestureDetector(
@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: Icon(
             !passwordVisible ? Icons.visibility_off : Icons.visibility,
-            size: 18,
+            size: 20,
             color: primaryColor,
           ),
         ),
@@ -241,16 +241,20 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           Container(
             width: double.infinity,
-            padding: EdgeInsets.only(top: 150.0, bottom: 30),
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.only(bottom: 10),
+            height: screenHeightExcludingToolbar(context, dividedBy: 2),
             decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(60),
                     bottomRight: Radius.circular(60))),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 FadeAnimation(1.7, titulo),
-                SizedBox(height: 24.0),
+                SizedBox(height: 20.0),
                 FadeAnimation(1.7, logo),
               ],
             ),
@@ -276,6 +280,6 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
         backgroundColor: Colors.white,
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbodyLogin(mainscaffold(), context));
   }
 }

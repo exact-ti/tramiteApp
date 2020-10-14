@@ -27,7 +27,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void cambiarBuzonOrUtd() {
-    dynamic typePerfil = tipoPerfil(_prefs.perfil) == cliente
+    dynamic typePerfil = _prefs.tipoperfil == cliente
         ? json.decode(_prefs.buzon)
         : json.decode(_prefs.utd);
     if (this.mounted) {

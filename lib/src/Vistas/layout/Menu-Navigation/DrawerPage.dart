@@ -16,7 +16,7 @@ class DrawerPage extends StatelessWidget {
   }
 
   Widget menuOpcion(BuildContext context) {
-    if (tipoPerfil(_prefs.perfil) == cliente) {
+    if (_prefs.tipoperfil == cliente) {
       dynamic buzon = json.decode(_prefs.buzon);
       return ListTile(
           leading: Icon(Icons.assignment_ind, color: Colors.blue),

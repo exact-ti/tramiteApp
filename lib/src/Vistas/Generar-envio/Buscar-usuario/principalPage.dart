@@ -171,8 +171,9 @@ class _PrincipalPageState extends State<PrincipalPage> {
                             alignment: Alignment.topCenter,
                             child: Container(
                                 alignment: Alignment.center,
-                                height: screenHeightExcludingToolbar(context,
-                                    dividedBy: 10),
+                                margin: const EdgeInsets.only(top:20),
+/*                                 height: screenHeightExcludingToolbar(context,
+                                    dividedBy: 10), */
                                 width: double.infinity,
                                 child: destinatario),
                           ),

@@ -10,6 +10,7 @@ import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/INotificacionProvider.dart';
+import 'package:tramiteapp/src/Providers/perfiles/IPerfilProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/IUtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
@@ -24,15 +25,16 @@ class AccesoImpl implements AccesoInterface {
   IConfiguracionProvider configuracionProvider;
   IUtdProvider utdProvider;
   INotificacionProvider notificacionProvider;
-
+  IPerfilProvider perfilProvider;
   AccesoImpl(LogeoInterface logeo, IBuzonProvider buzon, IMenuProvider menu,
-      IConfiguracionProvider configuracion, IUtdProvider utdProvider,INotificacionProvider notificacionProvider) {
+      IConfiguracionProvider configuracion, IUtdProvider utdProvider,INotificacionProvider notificacionProvider,IPerfilProvider perfilProvider) {
     this.logeo = logeo;
     this.menuProvider = menu;
     this.buzonProvider = buzon;
     this.configuracionProvider = configuracion;
     this.utdProvider = utdProvider;
     this.notificacionProvider=notificacionProvider;
+    this.perfilProvider = perfilProvider;
   }
 
   @override
@@ -43,6 +45,8 @@ class AccesoImpl implements AccesoInterface {
       _prefs.token = authData['access_token'];
       _prefs.refreshToken = authData['refresh_token'];
       _prefs.perfil = authData['perfilId'].toString();
+      dynamic tipoPerfil= await perfilProvider.listarTipoPerfilByPerfil();
+      _prefs.tipoperfil = tipoPerfil['id'];
       List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
       _prefs.buzones = buzones;
       for (BuzonModel buzon in buzones) {
@@ -66,7 +70,7 @@ class AccesoImpl implements AccesoInterface {
         }
       }
 
-      if (tipoPerfil(authData['perfilId'].toString()) == cliente) {
+      if (_prefs.tipoperfil == cliente) {
         if (_prefs.buzon == null) {
           deletepreferencesWithoutContext();
           return {
