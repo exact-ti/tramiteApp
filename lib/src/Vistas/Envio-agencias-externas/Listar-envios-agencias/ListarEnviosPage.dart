@@ -6,6 +6,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'ListarEnviosAgenciasController.dart';
@@ -206,21 +208,24 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     final sendButton = Container(
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NuevoEntregaExternaPage(),
-              ));
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Nueva', style: TextStyle(color: Colors.white)),
-      ),
+      child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: () async {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NuevoEntregaExternaPage(),
+                  ));
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Nueva', style: TextStyle(color: Colors.white))),
+      )
+      ,
     );
 
     void registrarlista() async {
@@ -263,17 +268,19 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     final sendButton2 = Container(
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          registrarlista();
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Enviar', style: TextStyle(color: Colors.white)),
-      ),
+      child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: () async {
+              registrarlista();
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Enviar', style: TextStyle(color: Colors.white))),
+      )
     );
 
     Widget mainscaffold() {
@@ -322,8 +329,8 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Envios activos"),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Entregas externas") ,
+        drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }
 

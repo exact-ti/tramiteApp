@@ -4,6 +4,8 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -41,9 +43,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
     listarNovalidados() {
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
@@ -56,8 +55,9 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
@@ -126,28 +126,34 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
           enfocarInputfx(context, f2);
         } else {
-          EnvioModel enviocontroller = await principalcontroller
-              .validarCodigoEntrega(_bandejaController.text, value, context);
-          if (enviocontroller != null) {
-            setState(() {
-              listaEnvios.add(enviocontroller);
-              listaCodigosValidados.add(value);
-            });
-            bool respuestatrue = await notificacion(
-                context, "success", "EXACT", "Envío agregado a la entrega");
-            if (respuestatrue == null || respuestatrue) {
-              enfocarInputfx(context, f2);
+/*           bool respuestaPopUp = await confirmacion(
+              context, "success", "EXACT", "¿Desea custodiar el envío $value");
+          if (respuestaPopUp) { */
+            EnvioModel enviocontroller = await principalcontroller
+                .validarCodigoEntrega(_bandejaController.text, value, context);
+            if (enviocontroller != null) {
+              setState(() {
+                listaEnvios.add(enviocontroller);
+                listaCodigosValidados.add(value);
+              });
+              bool respuestatrue = await notificacion(
+                  context, "success", "EXACT", "Envío agregado a la entrega");
+              if (respuestatrue) {
+                enfocarInputfx(context, f2);
+              }
+            } else {
+              setState(() {
+                _sobreController.text = value;
+              });
+              bool respuestatrue = await notificacion(context, "error", "EXACT",
+                  "No es posible procesar el código");
+              if (respuestatrue) {
+                enfocarInputfx(context, f2);
+              }
             }
-          } else {
-            setState(() {
-              _sobreController.text = value;
-            });
-            bool respuestatrue = await notificacion(
-                context, "error", "EXACT", "No es posible procesar el código");
-            if (respuestatrue == null || respuestatrue) {
-              enfocarInputfx(context, f2);
-            }
-          }
+/*           } else {
+            enfocarInputfx(context, f2);
+          } */
         }
       } else {
         bool respuestatrue = await notificacion(
@@ -159,9 +165,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     void validarLista(String codigo) async {
-      listaEnvios =
-          await principalcontroller.listarEnviosEntrega(context, codigo);
-      if (listaEnvios != null) {
+      listaEnvios = await principalcontroller.listarEnviosEntrega(context, codigo);
+      if (listaEnvios.isNotEmpty) {
         setState(() {
           listaEnvios = listaEnvios;
           listaCodigosValidados.clear();
@@ -212,7 +217,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     );
 
     void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
       if (listaEnvios.length == 0) {
         listaEnvios.add(envio);
       } else {
@@ -223,7 +227,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados, int i) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {
@@ -359,38 +362,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
       ),
     );
 
-/*     Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigoEntrega(
-              _bandejaController.text, codigoporValidar, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              if (!listaEnvios.contains(envio)) {
-                listaEnvios.add(envio);
-              }
-              if (!validados.contains(envio.codigoPaquete)) {
-                validados.add(envio.codigoPaquete);
-              }
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados, 1));
-            } else {
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados, 1));
-              } else {
-                return Container();
-              }
-            }
-          });
-    } */
-
     Widget _validarListado(List<EnvioModel> lista, List<String> validados) {
       return _crearListadoinMemoria(lista, validados);
     }
@@ -428,22 +399,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Nueva entrega',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Nueva entrega"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -500,15 +457,17 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                               : Container(
                                   child: _validarListado(
                                       listaEnvios, listaCodigosValidados))),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 6),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
+                      listaCodigosValidados.length != 0
+                          ? Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: screenHeightExcludingToolbar(context,
+                                      dividedBy: 6),
+                                  width: double.infinity,
+                                  child: sendButton),
+                            )
+                          : Container(),
                     ],
                   ),
                 ))));

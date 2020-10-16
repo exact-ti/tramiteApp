@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:intl/intl.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'HistoricoController.dart';
@@ -110,7 +111,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(right: 20, left: 20),
+                          margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('De',
                               style:
@@ -131,7 +132,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(left: 20),
+                          margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('para',
                               style:
@@ -152,7 +153,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                            margin: const EdgeInsets.only(left: 20, bottom: 10),
+                            margin: const EdgeInsets.only(left: 10, bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: new GestureDetector(
                               onTap: () {
@@ -166,9 +167,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                              "En custodia en UTD " + envio.codigoUbicacion,
+                          margin: const EdgeInsets.only(bottom: 10, right: 10),
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: Text(envio.observacion,
                               style: TextStyle(color: Colors.black)),
                         ),
                         flex: 6,
@@ -184,12 +186,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
           date = await showDatePicker(
-              helpText: "Seleccionar fecha",
-              context: context,
-              locale: const Locale("es", "ES"),
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100));
+            helpText: "Seleccionar fecha",
+            context: context,
+            locale: const Locale("es", "ES"),
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            fieldLabelText: "Ingresar fecha",
+            errorFormatText: "Formato inválido",
+          );
           if (date != null) {
             DateTime fecha =
                 new DateFormat("yyyy-MM-dd").parse(date.toIso8601String());
@@ -231,12 +236,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
           date = await showDatePicker(
-              helpText: "Seleccionar fecha",
-              context: context,
-              locale: const Locale("es", "ES"),
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100));
+            helpText: "Seleccionar fecha",
+            context: context,
+            locale: const Locale("es", "ES"),
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            fieldLabelText: "Ingresar fecha",
+            errorFormatText: "Formato inválido",
+          );
           if (date != null) {
             DateTime fecha =
                 new DateFormat("yyyy-MM-dd").parse(date.toIso8601String());
@@ -441,8 +449,12 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Históricos"),
-        drawer: crearMenu(context),
-        body: scaffoldbody(mainscaffold(), context));
+        appBar: CustomAppBar(
+          text: "Históricos",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
+        drawer: drawerIfPerfil(),
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 }

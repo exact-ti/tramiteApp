@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:tramiteapp/src/ModelDto/TipoEntregaPersonalizadaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-DNI/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Generar-Firma/GenerarFirmaPage.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 
 import 'ListarTipoPersonalizadaController.dart';
  
@@ -31,16 +30,9 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
   @override
   Widget build(BuildContext context) {
-
-    
-    const LetraColor = const Color(0xFF68A1C8);
-    const Colorplomo = const Color(0xFFEAEFF2);
-
     const colorplomo = const Color(0xFFEAEFF2);
     const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
     
     if (booleancolor) {
         colorwidget = colorplomo;
@@ -52,8 +44,7 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
     
     return Scaffold(
-      appBar: sd.crearTitulo('Entrega personalizada'),/* 
-      drawer: sd.crearMenu(context), */
+      appBar: CustomAppBar(text: "Entrega personalizada"),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
             child: ConstrainedBox(

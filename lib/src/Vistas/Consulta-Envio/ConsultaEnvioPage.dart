@@ -4,6 +4,8 @@ import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 import 'ConsultaEnvioController.dart';
 
@@ -48,22 +50,19 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     listaEnviosVacios = [];
     listaTurnos = [];
   }
-
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-
-    void listarEnvios(String paquete, String remitente, String destinatario,
+  void listarEnvios(String paquete, String remitente, String destinatario,
         bool opcion) async {
       listaEnvios = await principalcontroller.listarEnvios(
           context, paquete, remitente, destinatario, opcion);
-      if (listaEnvios != null) {
+      if (listaEnvios.isNotEmpty) {
         setState(() {
           listaEnvios = listaEnvios;
         });
       } else {
-        listaEnvios = [];
+        listaEnvios.clear();
         setState(() {
           listaEnvios = listaEnvios;
         });
@@ -79,7 +78,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () { 
+            onPressed: () {
               desenfocarInputfx(context);
               if (_paqueteController.text == "" &&
                   _remitenteController.text == "" &&
@@ -144,7 +143,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(right: 20, left: 20),
+                          margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('De',
                               style:
@@ -153,7 +152,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                         flex: 1,
                       ),
                       Expanded(
-                        child: Text(envio.remitente,
+                        child: Text(envio.remitente==null?"Envío importado": envio.remitente,
                             style: TextStyle(color: Colors.black)),
                         flex: 5,
                       ),
@@ -165,7 +164,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(left: 20),
+                          margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.centerLeft,
                           child: Text('para',
                               style:
@@ -186,7 +185,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                            margin: const EdgeInsets.only(left: 20, bottom: 10),
+                            margin: const EdgeInsets.only(left: 10, bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: new GestureDetector(
                               onTap: () {
@@ -200,9 +199,10 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                              "En custodia en UTD " + envio.codigoUbicacion,
+                          margin: const EdgeInsets.only(bottom: 10,right: 10),
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: Text(envio.codigoUbicacion,
                               style: TextStyle(color: Colors.black)),
                         ),
                         flex: 6,
@@ -418,22 +418,8 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Consultas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Consultas"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -554,5 +540,3 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
         dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 }
-
-//                  Navigator.of(context).pushNamed(men.link);

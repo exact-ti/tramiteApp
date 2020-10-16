@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
-//import 'dart:html';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
@@ -13,13 +10,13 @@ import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
-import 'package:path/path.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:tramiteapp/src/ModelDto/PaqueteExternoBuzonModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoController.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class ImportarArchivoPage extends StatefulWidget {
   @override
@@ -39,12 +36,9 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
   @override
   Widget build(BuildContext context) {
-    // const PrimaryColor = const Color(0xFF2C6983);
-    // const LetraColor = const Color(0xFF68A1C8);
-
     return Scaffold(
-      appBar: sd.crearTitulo(titulo),
-      drawer: sd.crearMenu(context),
+      appBar: CustomAppBar(text: titulo),
+      drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -80,17 +74,20 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             alignment: Alignment.center,
             height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
             width: double.infinity,
-            child: RaisedButton(
-                padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
-                textColor: Colors.white,
-                color: sd.primaryColor,
-                child: Text('Adjuntar', style: TextStyle(color: Colors.white)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(5.0),
-                ),
-                onPressed: () {
-                  contenido = _adjuntarArchivo(context);
-                })),
+            child: ButtonTheme(
+              minWidth: 150.0,
+              height: 50.0,
+              child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  onPressed: () async {
+                    contenido = _adjuntarArchivo(context);
+                  },
+                  color: sd.primaryColor,
+                  child:
+                      Text('Adjuntar', style: TextStyle(color: Colors.white))),
+            )),
       ),
     );
   }
@@ -104,18 +101,20 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             alignment: Alignment.center,
             height: sd.screenHeightExcludingToolbar(context, dividedBy: 10),
             width: double.infinity,
-            child: RaisedButton(
-              padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
-              textColor: Colors.white,
-              color: sd.primaryColor,
-              child: Text('Importar', style: TextStyle(color: Colors.white)),
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(5.0),
-              ),
-              onPressed: () {
-                _importarRegistros(context);
-                setState(() {});
-              },
+            child: ButtonTheme(
+              minWidth: 150.0,
+              height: 50.0,
+              child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  onPressed: () async {
+                    _importarRegistros(context);
+                    setState(() {});
+                  },
+                  color: sd.primaryColor,
+                  child:
+                      Text('Importar', style: TextStyle(color: Colors.white))),
             )),
       ),
     );
@@ -155,26 +154,51 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         if (this.codigo_paquete_incorrecto > 1) {
-          description = description +
-              ' y ' +
-              this.codigo_paquete_incorrecto.toString() +
-              ' códigos de paquete vacíos';
-        } else {
-          if (this.codigo_paquete_incorrecto == 1) {
+          if (noencontrados == 0) {
+            description = 'Existen ' +
+                this.codigo_paquete_incorrecto.toString() +
+                ' códigos de paquete vacíos';
+          } else {
             description = description +
                 ' y ' +
                 this.codigo_paquete_incorrecto.toString() +
-                ' código de paquetes vacío';
+                ' códigos de paquete vacíos';
+          }
+        } else {
+          if (this.codigo_paquete_incorrecto == 1) {
+            if (noencontrados == 0) {
+              description = 'Existe ' +
+                  this.codigo_paquete_incorrecto.toString() +
+                  ' código de paquete vacío';
+            } else {
+              description = description +
+                  ' y ' +
+                  this.codigo_paquete_incorrecto.toString() +
+                  ' código de paquetes vacío';
+            }
           }
         }
 
-        if (this.codigo_paquete_incorrecto > 0) {
-          bool respuestabool =
-              await confirmacion(context, "success", "EXACT", description);
-          if (respuestabool != null) {
-            if (!respuestabool) {
-              return;
-            }
+        if (paqueteExternoList.length == 0) {
+          bool respuestabool = await notificacion(context, "success", "EXACT",
+              description + ". Vuelva a adjuntar el archivo");
+          this.data = new List<PaqueteExternoBuzonModel>();
+          this.totalFilas = 0;
+          this.codigosEncontrados = 0;
+          contenido = null;
+          setState(() {
+            contenido = null;
+          });
+          if (respuestabool) {
+            return;
+          }
+        }
+
+        if (this.codigo_paquete_incorrecto > 0 || noencontrados > 0) {
+          bool respuestabool = await confirmacion(context, "success", "EXACT",
+              description + ". ¿Desea registrar los documentos correctos?");
+          if (!respuestabool) {
+            return;
           }
         }
 
@@ -182,13 +206,14 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          notificacion(context, "success", "EXACT", "Correcto");
+          notificacion(
+              context, "success", "EXACT", "Se registraron los documentos");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
-          contenido = Container();
+          contenido = null;
           setState(() {
-            contenido = Container();
+            contenido = null;
           });
         } else {
           List<dynamic> duplicados = resp["data"];
@@ -223,14 +248,15 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             paqueteExternoList, widget.tipoPaqueteModel);
 
         if (resp["status"] == "success") {
-          notificacion(context, "success", "EXACT", "Correcto");
+          notificacion(
+              context, "success", "EXACT", "Se registraron los documentos");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
           this.codigo_paquete_incorrecto = 0;
-          contenido = Container();
+          contenido = null;
           setState(() {
-            contenido = Container();
+            contenido = null;
           });
         } else {
           List<dynamic> duplicados = resp["data"];
@@ -355,7 +381,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     for (var row in tabla.rows) {
       if (fila > 0) {
         PaqueteExternoBuzonModel paqueteBuzon = new PaqueteExternoBuzonModel();
-        paqueteBuzon.id = row[0] == null ? '' : row[0].toString();
+        paqueteBuzon.id = row.first == null ? '' : row.first.toString();
         paqueteBuzon.idBuzon = row[1] == null ? '' : row[1].toString();
         paqueteBuzon.nombre = '';
         paquetesBuzonValidar.add(paqueteBuzon);
@@ -382,7 +408,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     int encontrados = 0;
     int total = 0;
     total = lista.length;
-    //Controller validar
 
     List<int> ids = new List<int>();
 
@@ -397,7 +422,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     }
 
     List<BuzonModel> buzonModelList = await imp.listarBuzonesPorIds(ids);
-    //
+
     for (PaqueteExternoBuzonModel item in lista) {
       item.nombre = valorCampo;
       item.estado = false;
@@ -415,8 +440,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
       totalFilas = total;
       codigosEncontrados = encontrados;
     });
-
-    // mensajeResultado = _mensajeResultadoImportacion();
 
     return lista;
   }
@@ -452,10 +475,28 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         if (item.nombre == valorCampo) {
           c = Colors.red;
         }
+
         return DataRow(cells: [
-          DataCell(Text(item.id.toString())),
-          DataCell(Text(item.idBuzon.toString())),
-          DataCell(Text(item.nombre, style: TextStyle(color: c)))
+          DataCell(item.id.toString() == ""
+              ? Text(
+                  "No ingresado",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red),
+                )
+              : Text(item.id.toString(), textAlign: TextAlign.center)),
+          DataCell(item.idBuzon.toString() == ""
+              ? Text("No ingresado",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red))
+              : Container(
+                  child: Text(item.idBuzon.toString(),
+                      textAlign: TextAlign.center),
+                  alignment: Alignment.center,
+                )),
+          DataCell(item.idBuzon.toString() == ""
+              ? Text("")
+              : Text(item.nombre,
+                  textAlign: TextAlign.center, style: TextStyle(color: c)))
         ]);
       }).toList();
     } else {
@@ -464,10 +505,19 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
     return DataTable(
       headingRowHeight: 50.0,
+      columnSpacing: 50,
       columns: [
-        DataColumn(label: Text('Código')),
-        DataColumn(label: Text('Id-buzón')),
-        DataColumn(label: Text('Buzón'))
+        DataColumn(
+            label: Expanded(
+                child: Text(
+          'Código',
+          textAlign: TextAlign.center,
+        ))),
+        DataColumn(
+            label: Expanded(
+                child: Text('Id. buzón', textAlign: TextAlign.center))),
+        DataColumn(
+            label: Expanded(child: Text('Buzón', textAlign: TextAlign.center)))
       ],
       rows: widgets,
     );
@@ -519,7 +569,12 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   padding: const EdgeInsets.all(20),
                 ),
                 InkWell(
-                  onTap: () => Navigator.pop(context, true),
+                  onTap: () {
+                    setState(() {
+                      this.contenido = null;
+                    });
+                    Navigator.pop(context, true);
+                  },
                   child: Center(
                       child: Container(
                           height: 50.00,
@@ -532,7 +587,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                                     width: 1.5, color: Colors.grey[100])),
                           ),
                           child: Container(
-                            child: Text('Volver a adjuntar archivo',
+                            child: Text('Aceptar',
                                 style: TextStyle(color: Colors.black)),
                           ))),
                 )

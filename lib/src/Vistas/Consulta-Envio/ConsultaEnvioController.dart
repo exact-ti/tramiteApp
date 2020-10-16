@@ -14,14 +14,13 @@ class ConsultaEnvioController {
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context, String paquete,
       String remitente, String destinatario, bool opcion) async {
-            _navigationService.showModal();
-
-    List<EnvioModel> turnos = await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
+    _navigationService.showModal();
+    List<EnvioModel> turnos =
+        await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
             paquete, remitente, destinatario, opcion);
-          _navigationService.goBack();
-
-    if (turnos == null) {
-      notificacion(context, "error", "EXACT", "No hay turnos asignados");
+    _navigationService.goBack();
+    if (turnos.isEmpty) {
+      notificacion(context, "error", "EXACT", "No hay envíos asignados");
     }
     return turnos;
   }

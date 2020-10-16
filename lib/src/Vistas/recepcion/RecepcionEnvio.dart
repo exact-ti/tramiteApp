@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'RecepcionController.dart';
@@ -54,7 +55,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
 
     Widget crearItem(EnvioModel entrega) {
       String codigopaquete = entrega.codigoPaquete;
@@ -151,14 +151,14 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                 : "Se recepcionó los envíos");
         _navigationService.showModal();
         listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
-         validados.clear();
+        validados.clear();
         listaEnviosModel.forEach((element) {
           String cod = element.codigoPaquete;
           validados["$cod"] = false;
         });
         _navigationService.goBack();
         setState(() {
-          validados=validados;
+          validados = validados;
           _bandejaController.text = "";
           listaEnviosModel = listaEnviosModel;
         });
@@ -200,7 +200,19 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     }
 
     final sendButton2 = Container(
+        child: ButtonTheme(
+      minWidth: 150.0,
+      height: 50.0,
       child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          onPressed: () async {
+            registrarLista();
+          },
+          color: Color(0xFF2C6983),
+          child: Text('Recepcionar', style: TextStyle(color: Colors.white))),
+    ) /* RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -210,8 +222,8 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
         color: Color(0xFF2C6983),
         child: Text('Recepcionar', style: TextStyle(color: Colors.white)),
-      ),
-    );
+      ), */
+        );
 
     Widget _crearListado(List<EnvioModel> listaEnv) {
       if (listaEnv.length == 0)
@@ -273,80 +285,65 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       ),
     ]);
 
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
+    mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  margin: const EdgeInsets.only(top: 30),
+                  alignment: Alignment.bottomLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
+                  width: double.infinity,
+                  child: principalcontroller.labeltext("Envío")),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  margin: const EdgeInsets.only(bottom: 30),
+                  alignment: Alignment.centerLeft,
+                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
+                  width: double.infinity,
+                  child: campodetextoandIconoBandeja),
+            ),
+            !respuestaBack
+                ? Expanded(
+                    child: Container(
+                        child: Center(
+                            child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: loadingGet(),
+                  ))))
+                : Expanded(
+                    child: Container(child: _crearListado(listaEnviosModel))),
+            validados.containsValue(true)
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        alignment: Alignment.center,
+                        height:
+                            screenHeightExcludingToolbar(context, dividedBy: 8),
+                        width: double.infinity,
+                        child: sendButton2),
+                  )
+                : Container()
           ],
-          title: Text('Confirmar envíos',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
         ),
-        drawer: crearMenu(context),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            width: double.infinity,
-                            child: principalcontroller.labeltext("Envío")),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(bottom: 30),
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 12),
-                            width: double.infinity,
-                            child: campodetextoandIconoBandeja),
-                      ),
-                      !respuestaBack
-                          ? Expanded(
-                              child: Container(
-                                  child: Center(
-                                      child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: loadingGet(),
-                            ))))
-                          : Expanded(
-                              child: Container(
-                                  child: _crearListado(listaEnviosModel))),
-                      validados.containsValue(true)
-                          ? Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                  margin: const EdgeInsets.only(bottom: 20),
-                                  alignment: Alignment.center,
-                                  height: screenHeightExcludingToolbar(context,
-                                      dividedBy: 8),
-                                  width: double.infinity,
-                                  child: sendButton2),
-                            )
-                          : Container()
-                    ],
-                  ),
-                ))));
+      );
+    }
+
+    return Scaffold(
+        appBar: CustomAppBar(
+          text: "Confirmar envíos",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
+        drawer: drawerIfPerfil(),
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 
   BoxDecoration myBoxDecoration() {

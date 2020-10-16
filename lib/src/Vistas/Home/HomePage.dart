@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';
@@ -11,30 +13,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
-
+  NotificacionController notificacionController = new NotificacionController();
   @override
   void initState() {
     super.initState();
-    cargarPreferences();
   }
-
 
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
     const LetraColor = const Color(0xFF68A1C8);
-
+ 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: PrimaryColor,
-        title: Text('Bienvenido',
-            style: TextStyle(
-                fontSize: 18,
-                decorationStyle: TextDecorationStyle.wavy,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.normal)),
-      ),
-      drawer: sd.crearMenu(context),
+      appBar: CustomAppBar(text: "Bienvenido"),
+      drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
@@ -53,9 +44,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  void cargarPreferences() async {
-    sharedPreferences = await SharedPreferences.getInstance();
   }
 }

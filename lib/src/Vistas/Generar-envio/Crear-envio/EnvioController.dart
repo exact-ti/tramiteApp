@@ -11,6 +11,7 @@ import 'package:tramiteapp/src/Providers/bandejas/impl/BandejaProvider.dart';
 import 'package:tramiteapp/src/Providers/envios/impl/EnvioProvider.dart';
 import 'package:tramiteapp/src/Providers/paquetes/impl/PaqueteProvider.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 
 class EnvioController {
@@ -39,6 +40,9 @@ class EnvioController {
         Menu menuu = new Menu();
         List<dynamic> menus = json.decode(_prefs.menus);
         List<Menu> listmenu = menuu.fromPreferencs(menus);
+        if(boolIfPerfil()){
+        navegarHomeExact(context);
+        }
         String inicial = "";
         for (Menu men in listmenu) {
           if (men.home) {

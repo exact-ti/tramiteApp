@@ -1,4 +1,3 @@
-import 'package:tramiteapp/src/ModelDto/palomarModel.dart';
 import 'package:tramiteapp/src/Providers/palomares/IPalomarProvider.dart';
 import 'PalomarInterface.dart';
 

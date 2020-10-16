@@ -1,7 +1,8 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 import 'ListarTurnosController.dart';
 
@@ -36,11 +37,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
 
     Widget informacionEntrega(EntregaModel entrega) {
       String recorrido = entrega.nombreTurno;
@@ -76,10 +73,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
     Widget crearItem(EntregaModel entrega) {
       if (booleancolor) {
-        colorwidget = colorplomo;
         booleancolor = false;
       } else {
-        colorwidget = colorblanco;
         booleancolor = true;
       }
       return Container(
@@ -113,7 +108,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
 
     Widget _crearListado() {
       booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
@@ -150,39 +144,23 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     final sendButton = Container(
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
+        child: ButtonTheme(
+        minWidth: 150.0,
+        height: 50.0,
+        child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            onPressed: ()  {
           Navigator.of(context).pushNamed('/entregas-pisos-propios');
-        },
-        color: Color(0xFF2C6983),
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white)),
-      ),
-    ));
 
-    const PrimaryColor = const Color(0xFF2C6983);
+            },
+            color: Color(0xFF2C6983),
+            child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white))),
+      ));
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas en sede',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: sd.crearMenu(context),
+        appBar:CustomAppBar(text: "Entregas en sede"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

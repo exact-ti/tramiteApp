@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Registrar-firma/RegistrarEntregaPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 
 class GenerarFirmaPage extends StatefulWidget {
   @override
@@ -109,7 +108,6 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                       ));
                 },
                 color: Color(0xFF2C6983),
-                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 child: Text('Guardar', style: TextStyle(color: Colors.white)),
               ),
             )),
@@ -133,7 +131,6 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                   debugPrint("cleared");
                 },
                 color: Color(0xFF858585),
-                //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 child: Text('Limpiar', style: TextStyle(color: Colors.white)),
               ),
             )),
@@ -141,7 +138,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
     ]);
 
     return Scaffold(
-        appBar: sd.crearTitulo('Entrega personalizada'),/* 
+        appBar:CustomAppBar(text: "Entrega personalizada"),/* 
         drawer: sd.crearMenu(context), */
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

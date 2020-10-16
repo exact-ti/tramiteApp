@@ -1,5 +1,5 @@
-class AccesoInterface {
+abstract class AccesoInterface {
 
-    Future<Map<String, dynamic>> login(String username, String password) async {}
+    Future<Map<String, dynamic>> login(String username, String password);
 
 }

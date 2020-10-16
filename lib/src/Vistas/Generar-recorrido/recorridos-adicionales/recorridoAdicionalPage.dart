@@ -4,6 +4,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-adicionales/recorridoAdicionalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class RecorridosAdicionalesPage extends StatefulWidget {
   @override
@@ -18,12 +20,10 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
   var listadestinatarios;
   String textdestinatario = "";
-
   var listadetinatario;
   var listadetinatarioDisplay;
   var colorletra = const Color(0xFFACADAD);
   var prueba;
-
   var nuevo = 0;
 
   @override
@@ -38,12 +38,6 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    var booleancolor = true;
-    var colorwidget = colorplomo;
-
     Widget informacionEntrega(RecorridoModel envio) {
       String recorrido = envio.nombre;
       String horario = envio.horaInicio + " - " + envio.horaFin;
@@ -51,27 +45,29 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
 
       return Container(
           height: 100,
-          child: ListView(shrinkWrap: true, 
-                    physics: const NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            Container(
-              height: 20,
-              child: ListTile(title: Text("$recorrido")),
-            ),
-            Container(
-                height: 20,
-                child: ListTile(
-                    title: Text("$horario", style: TextStyle(fontSize: 11)))),
-            Container(
-                height: 20,
-                child: ListTile(
-                  title: Text("$usuario"),
-                  leading: Icon(
-                    Icons.perm_identity,
-                    color: Color(0xffC7C7C7),
-                  ),
-                )),
-          ]));
+          child: ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                Container(
+                  height: 20,
+                  child: ListTile(title: Text("$recorrido")),
+                ),
+                Container(
+                    height: 20,
+                    child: ListTile(
+                        title:
+                            Text("$horario", style: TextStyle(fontSize: 11)))),
+                Container(
+                    height: 20,
+                    child: ListTile(
+                      title: Text("$usuario"),
+                      leading: Icon(
+                        Icons.perm_identity,
+                        color: Color(0xffC7C7C7),
+                      ),
+                    )),
+              ]));
     }
 
     Widget crearItem(RecorridoModel recorridoModel) {
@@ -110,18 +106,11 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
               )));
     }
 
-    Widget crearItemVacio() {
-      return Container();
-    }
-
     Widget _crearListadoporfiltro(String texto) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.recorridosController(texto),
           builder: (BuildContext context,
               AsyncSnapshot<List<RecorridoModel>> snapshot) {
-
             switch (snapshot.connectionState) {
               case ConnectionState.none:
                 return sinResultados("No hay conexión con el servidor");
@@ -136,7 +125,6 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                   return sinResultados("Ha surgido un problema");
                 } else {
                   if (snapshot.hasData) {
-                    booleancolor = true;
                     final entregas = snapshot.data;
                     if (entregas.length == 0) {
                       return sinResultados("No se han encontrado resultados");
@@ -154,8 +142,6 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
     }
 
     Widget _myListView(String buscador) {
-      List<Widget> list = new List<Widget>();
-      List<Map<String, dynamic>> listadestinataris;
       if (buscador == "") {
         return Container();
       } else {
@@ -192,29 +178,9 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
       ),
     );
 
-    final titulo = Row(children: <Widget>[
-      Text('Generar envío', style: TextStyle(fontSize: 10)),
-      SizedBox(width: 250, child: TextField()),
-    ]);
-
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Nueva entrega en sede',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Nueva entrega en sede"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

@@ -7,9 +7,6 @@ abstract class IEnvioProvider{
 
   Future<bool> crearEnvioProvider(EnvioModel envio);
 
-
-
-  //agencias
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario();  
 
   Future<List<EnvioModel>> listarEnviosActivosByUsuario(List<int> estadosids);  
@@ -24,5 +21,5 @@ abstract class IEnvioProvider{
 
   Future<List<EnvioModel>> listarEnviosHistoricosSalida(String fechaInicio,String fechaFin); 
 
-  Future<dynamic> retirarEnvioProvider(EnvioModel envioModel);
+  Future<dynamic> retirarEnvioProvider(EnvioModel envioModel,String motivo);
 }

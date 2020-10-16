@@ -4,7 +4,10 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'EntregaRegularController.dart';
 
 class EntregaRegularPage extends StatefulWidget {
@@ -23,16 +26,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   EntregaregularController envioController = new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  //final _sobreController = TextEditingController();
   EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaenvios2 = new List();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
   EntregaregularController principalcontroller = new EntregaregularController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
   String mensaje = "";
@@ -243,12 +243,25 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               context, recorridoUsuario.id, value);
           if (respuesta["status"] == "success") {
             listaenvios2 = envioModel.fromJsonValidar(respuesta["data"]);
+            if(listaenvios2.length==0){
+            setState(() {
+              listaenvios2 = [];
+              codigoBandeja = "";
+              _bandejaController.text = "";
+            });
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT","No tienes envíos para entregar a esta área");
+            if (respuestatrue) {
+              enfocarInputfx(context, f1);
+            }
+            }else{
             enfocarInputfx(context, f2);
             setState(() {
               listaenvios2 = listaenvios2;
               codigoBandeja = value;
               _bandejaController.text = value;
             });
+            }
           } else {
             setState(() {
               listaenvios2 = [];
@@ -257,7 +270,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             });
             bool respuestatrue = await notificacion(
                 context, "error", "EXACT", respuesta["message"]);
-            if (respuestatrue == null || respuestatrue == true) {
+            if (respuestatrue) {
               enfocarInputfx(context, f1);
             }
           }
@@ -397,6 +410,10 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       focusNode: f1,
       controller: _bandejaController,
       textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.sentences,
+      inputFormatters: [
+        UpperCaseTextFormatter(),
+      ],
       onFieldSubmitted: (value) {
         _validarBandejaText(value);
       },
@@ -513,22 +530,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     );
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entrega $numeroRecorrido en sede',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Entrega $numeroRecorrido en sede"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

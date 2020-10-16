@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'EntregaPersonalizadaController.dart';
 
 class EntregapersonalizadoPageDNI extends StatefulWidget {
@@ -62,7 +62,6 @@ class _EntregapersonalizadoPageDNIState
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
 
     void _validarSobreText(String value) async {
       if (value != "") {
@@ -77,14 +76,14 @@ class _EntregapersonalizadoPageDNIState
               codigoSobre = "";
               listacodigos = listacodigos;
             });
-            notifierAccion("Se registró la entrega", "38CE00");
+            notifierAccion("El envío $value fue entregado correctamente", "38CE00");
           } else {
             popuptoinput(
-                context, f2, "error", "EXACT", "Codigo de Sobre incorrecto");
+                context, f2, "error", "EXACT", "El código no existe, por favor intente nuevamente");
           }
         } else {
           popuptoinput(
-              context, f2, "error", "EXACT", "Codigo ya se encuentra validado");
+              context, f2, "error", "EXACT", "Código ya se encuentra validado");
         }
       } else {
         popuptoinput(
@@ -102,7 +101,7 @@ class _EntregapersonalizadoPageDNIState
     }
 
     final textDNI = Container(
-      child: Text("DNI"),
+      child: Text("Código"),
     );
 
     final textSobre = Container(
@@ -165,7 +164,7 @@ class _EntregapersonalizadoPageDNIState
       onFieldSubmitted: (value) {
         if (_dniController.text == "") {
           popuptoinput(context, f1, "error", "EXACT",
-              "el DNI es necesario para la entrega");
+              "Ingrese primero el DNI para asociar a la entrega personalizada");
         } else {
           _validarSobreText(value);
         }
@@ -243,23 +242,7 @@ class _EntregapersonalizadoPageDNIState
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entrega personalizada',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        /* 
-        drawer: crearMenu(context), */
+        appBar: CustomAppBar(text: "Entrega personalizada"),
         key: scaffoldkey,
         body: SingleChildScrollView(
             child: ConstrainedBox(

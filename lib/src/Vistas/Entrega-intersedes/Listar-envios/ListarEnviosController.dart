@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';

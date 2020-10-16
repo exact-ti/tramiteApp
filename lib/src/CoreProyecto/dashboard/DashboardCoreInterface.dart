@@ -1,6 +1,6 @@
 
-class DashboardCoreInterface {
+abstract class DashboardCoreInterface {
   
-  Future<dynamic> consultarItems(){}
+  Future<dynamic> consultarItems();
 
 }

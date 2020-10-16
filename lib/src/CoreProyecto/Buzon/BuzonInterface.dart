@@ -1,9 +1,9 @@
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 
-class BuzonInterface {
+abstract class BuzonInterface {
   
-  Future<List<BuzonModel>> listarBuzonesPorIds(List<int> ids){}
+  Future<List<BuzonModel>> listarBuzonesPorIds(List<int> ids);
 
-  Future<List<BuzonModel>> listarBuzones(){}
+  Future<List<BuzonModel>> listarBuzones();
 
 }

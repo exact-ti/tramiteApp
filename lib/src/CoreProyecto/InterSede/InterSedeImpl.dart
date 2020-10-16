@@ -1,8 +1,5 @@
-import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
-import 'package:tramiteapp/src/Providers/entregas/IEntregaProvider.dart';
 import 'package:tramiteapp/src/Providers/intersedes/IInterSedeProvider.dart';
 import 'InterSedeInterface.dart';
 

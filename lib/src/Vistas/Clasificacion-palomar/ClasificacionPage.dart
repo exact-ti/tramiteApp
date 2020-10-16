@@ -1,10 +1,10 @@
 
 import 'package:tramiteapp/src/ModelDto/palomarModel.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'ClasificacionController.dart';
 
 class ClasificacionPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   ClasificacionController principalcontroller = new ClasificacionController();
   EnvioController envioController = new EnvioController();
   //TextEditingController _rutController = TextEditingController();
-  String qrsobre, qrbarra, _label, valuess = "";
+  String qrsobre, qrbarra,valuess = "";
   String codigoValidar = "";
   final _sobreController = TextEditingController();
   var listadestinatarios;
@@ -131,7 +131,6 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         ],
       ));
     }
-    const PrimaryColor = const Color(0xFF2C6983);
     var sobre = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
@@ -196,16 +195,8 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          title: Text('Clasificar envios',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: sd.crearMenu(context),
+        appBar: CustomAppBar(text: "Clasificar envios"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

@@ -17,27 +17,25 @@ class ConsultaEnvioController {
   ConsultaInterface consultaCore = new ConsultaImpl(new ConsultaProvider());
   final NavigationService _navigationService = locator<NavigationService>();
 
-    EnvioInterface envioCore = new EnvioImpl(
+  EnvioInterface envioCore = new EnvioImpl(
       new EnvioProvider(), new PaqueteProvider(), new BandejaProvider());
 
   Future<List<EnvioModel>> listarEnvios(BuildContext context, String paquete,
       String remitente, String destinatario, bool opcion) async {
-            _navigationService.showModal();
-
-    List<EnvioModel> turnos = await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
+    _navigationService.showModal();
+    List<EnvioModel> enviosAsociados =
+        await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
             paquete, remitente, destinatario, opcion);
-          _navigationService.goBack();
+    _navigationService.goBack();
+    
+    if (enviosAsociados.isEmpty)
+      notificacion(context, "error", "EXACT", "No hay envíos asignados");
 
-    if (turnos == null) {
-      notificacion(context, "error", "EXACT", "No hay turnos asignados");
-    }
-    return turnos;
+    return enviosAsociados;
   }
 
-    Future<dynamic> retirarEnvio(EnvioModel envio) async {
-     dynamic repuesta = await envioCore.retirarEnvio(envio);
-     return repuesta;
+  Future<dynamic> retirarEnvio(EnvioModel envio, String motivo) async {
+    dynamic repuesta = await envioCore.retirarEnvio(envio, motivo);
+    return repuesta;
   }
-
-
 }

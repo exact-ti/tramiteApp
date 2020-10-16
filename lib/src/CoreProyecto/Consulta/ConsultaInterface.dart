@@ -1,7 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 
-class ConsultaInterface {
+abstract class ConsultaInterface {
   
-  Future<List<EnvioModel>> consultarByPaqueteAndDestinatarioAndRemitente(String paquete,String remitente,String destinatario,bool opcion){}
+  Future<List<EnvioModel>> consultarByPaqueteAndDestinatarioAndRemitente(String paquete,String remitente,String destinatario,bool opcion);
 
 }

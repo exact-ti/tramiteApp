@@ -4,6 +4,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-propios/recorridoPropioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class RecorridosPropiosPage extends StatefulWidget {
   @override
@@ -38,11 +40,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
 
     Widget informacionEntrega(RecorridoModel envio) {
       String recorrido = envio.nombre;
@@ -76,10 +74,8 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
 
     Widget crearItem(RecorridoModel entrega) {
       if (booleancolor) {
-        colorwidget = colorplomo;
         booleancolor = false;
       } else {
-        colorwidget = colorblanco;
         booleancolor = true;
       }
       return Container(
@@ -171,25 +167,9 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
             ),
           )),
     ]);
-
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Recorridos programados',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar:CustomAppBar(text: "Recorridos programados"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

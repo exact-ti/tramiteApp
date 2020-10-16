@@ -9,13 +9,14 @@ import 'package:tramiteapp/src/Providers/Logeo/LogeoInterface.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/configuraciones/IConfiguracionProvider.dart';
 import 'package:tramiteapp/src/Providers/menus/IMenuProvider.dart';
+import 'package:tramiteapp/src/Providers/notificacionProvider/INotificacionProvider.dart';
+import 'package:tramiteapp/src/Providers/perfiles/IPerfilProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/IUtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'AccesoInterface.dart';
 
 class AccesoImpl implements AccesoInterface {
-  //TipoBuzonEnum tipoBuzonEnum;
   final _prefs = new PreferenciasUsuario();
 
   LogeoInterface logeo;
@@ -23,33 +24,30 @@ class AccesoImpl implements AccesoInterface {
   IMenuProvider menuProvider;
   IConfiguracionProvider configuracionProvider;
   IUtdProvider utdProvider;
-
+  INotificacionProvider notificacionProvider;
+  IPerfilProvider perfilProvider;
   AccesoImpl(LogeoInterface logeo, IBuzonProvider buzon, IMenuProvider menu,
-      IConfiguracionProvider configuracion, IUtdProvider utdProvider) {
+      IConfiguracionProvider configuracion, IUtdProvider utdProvider,INotificacionProvider notificacionProvider,IPerfilProvider perfilProvider) {
     this.logeo = logeo;
     this.menuProvider = menu;
     this.buzonProvider = buzon;
     this.configuracionProvider = configuracion;
     this.utdProvider = utdProvider;
+    this.notificacionProvider=notificacionProvider;
+    this.perfilProvider = perfilProvider;
   }
 
   @override
   Future<Map<String, dynamic>> login(String username, String password) async {
-    Map<String, dynamic> interfaceLogear =
-        await logeo.login(username, password);
-    if (interfaceLogear == null) {
-      return null;
-    }
-
-    if (!interfaceLogear.containsKey("error")) {
-      _prefs.token = interfaceLogear['access_token'];
-      _prefs.refreshToken = interfaceLogear['refresh_token'];
-      _prefs.perfil = interfaceLogear['perfilId'].toString();
-
-/*       if (tipoPerfil(interfaceLogear['perfilId'].toString()) == cliente) {
- */
-      List<BuzonModel> buzones =
-          await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+    dynamic authResponse =await logeo.login(username, password);
+    if (authResponse["status"] == "success") {
+      dynamic authData = authResponse["data"];
+      _prefs.token = authData['access_token'];
+      _prefs.refreshToken = authData['refresh_token'];
+      _prefs.perfil = authData['perfilId'].toString();
+      dynamic tipoPerfil= await perfilProvider.listarTipoPerfilByPerfil();
+      _prefs.tipoperfil = tipoPerfil['id'];
+      List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
       _prefs.buzones = buzones;
       for (BuzonModel buzon in buzones) {
         if (buzon.tipoBuzon.id == personal) {
@@ -59,10 +57,7 @@ class AccesoImpl implements AccesoInterface {
           _prefs.buzon = buzonhash;
         }
       }
-/*         if( _prefs.buzon==null){
-          return null;
-        }
-      } else { */
+
       List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
       _prefs.utds = utds;
       for (UtdModel utd in utds) {
@@ -74,12 +69,8 @@ class AccesoImpl implements AccesoInterface {
           _prefs.utd = utdhash;
         }
       }
-/*         if( _prefs.utd==null){
-          return null;
-        }
-      } */
 
-      if (tipoPerfil(interfaceLogear['perfilId'].toString()) == cliente) {
+      if (_prefs.tipoperfil == cliente) {
         if (_prefs.buzon == null) {
           deletepreferencesWithoutContext();
           return {
@@ -88,7 +79,7 @@ class AccesoImpl implements AccesoInterface {
           };
         }
       } else {
-        if (_prefs.buzon == null && _prefs.utd == null) {
+        if (_prefs.utd == null) {
           deletepreferencesWithoutContext();
           return {
             "error":"error",
@@ -104,9 +95,9 @@ class AccesoImpl implements AccesoInterface {
           await configuracionProvider.listarConfiguraciones();
       _prefs.configuraciones = configuraciones;
 
-      return interfaceLogear;
+      return authResponse;
     } else {
-      return null;
+      return authResponse;
     }
   }
 }

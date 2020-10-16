@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'RetirarEnvioController.dart';
 
 class RetirarEnvioPage extends StatefulWidget {
@@ -16,10 +17,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   final _paqueteController = TextEditingController();
   final _remitenteController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
-  List<TurnoModel> listaTurnos = new List();
-  List<EnvioModel> listaEnviosVacios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
-  List<EnvioModel> listaEnviosNoValidados = new List();
   ConsultaEnvioController principalcontroller = new ConsultaEnvioController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
@@ -44,23 +41,19 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       if (_focusNode.hasFocus) _paqueteController.clear();
     });
     super.initState();
-    listaEnviosVacios = [];
-    listaTurnos = [];
   }
 
-  var colorplomos = const Color(0xFFEAEFF2);
   void listarEnvios(String paquete, String remitente, String destinatario,
       bool opcion) async {
     listaEnvios = await principalcontroller.listarEnvios(
         context, paquete, remitente, destinatario, opcion);
-    if (listaEnvios != null) {
+    if (listaEnvios.isNotEmpty) {
       setState(() {
         listaEnvios = listaEnvios;
       });
     } else {
-      listaEnvios = [];
       setState(() {
-        listaEnvios = listaEnvios;
+        listaEnvios = [];
       });
     }
   }
@@ -83,23 +76,18 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
   }
 
-  Future<bool> retirarEnvioController(EnvioModel envioModel) async {
-    dynamic respuesta = await principalcontroller.retirarEnvio(envioModel);
-/*     if (respuesta.containsValue("success")) {
+  Future<bool> retirarEnvioController(
+      EnvioModel envioModel, String motivo) async {
+    dynamic respuesta =
+        await principalcontroller.retirarEnvio(envioModel, motivo);
+    desenfocarInputfx(context);
+    if (respuesta.containsValue("success")) {
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
       await notificacion(context, "success", "Exact", "Se retiró el envío");
       return true;
     } else {
       await notificacion(context, "Error", "Exact", respuesta["message"]);
-      return false;
-    } */
-    desenfocarInputfx(context);
-    if (respuesta) {
-      await notificacion(context, "success", "Exact", "Se retiró el envío");
-      return true;
-    } else {
-      await notificacion(context, "Error", "Exact", "No se retiró el envío");
       return false;
     }
   }
@@ -134,7 +122,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             : Colors.red[200]),
                   ),
                 )),
-            content: StatefulBuilder(
+            content: SingleChildScrollView(
+                child: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return new Column(mainAxisSize: MainAxisSize.min, children: <
                   Widget>[
@@ -176,8 +165,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           mensajeError = "El mótivo del retiro es obligatorio";
                         });
                       } else {
-                        bool respuesta =
-                            await retirarEnvioController(envioModel);
+                        bool respuesta = await retirarEnvioController(
+                            envioModel, _observacionController.text);
                         if (respuesta) {
                           Navigator.pop(context, true);
                         }
@@ -217,8 +206,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                       "El mótivo del retiro es obligatorio";
                                 });
                               } else {
-                                bool respuesta =
-                                    await retirarEnvioController(envioModel);
+                                bool respuesta = await retirarEnvioController(
+                                    envioModel, _observacionController.text);
                                 if (respuesta) {
                                   Navigator.pop(context, true);
                                 }
@@ -276,7 +265,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                       ],
                     ))
               ]);
-            }),
+            })),
             contentPadding: EdgeInsets.all(0),
           );
         });
@@ -351,7 +340,12 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                     envio);
                 if (respuestamodal) {
                   desenfocarInputfx(context);
-                  buscarEnvios();
+                  setState(() {
+                    _paqueteController.text = "";
+                    _remitenteController.text = "";
+                    _destinatarioController.text = "";
+                    listaEnvios = [];
+                  });
                 }
               },
               child: Column(
@@ -363,7 +357,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                               margin:
-                                  const EdgeInsets.only(right: 20, left: 20),
+                                  const EdgeInsets.only(right: 20, left: 10),
                               alignment: Alignment.centerLeft,
                               child: Text('De',
                                   style: TextStyle(
@@ -372,7 +366,10 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             flex: 1,
                           ),
                           Expanded(
-                            child: Text(envio.remitente,
+                            child: Text(
+                                envio.remitente == null
+                                    ? "Envío importado"
+                                    : envio.remitente,
                                 style: TextStyle(color: Colors.black)),
                             flex: 5,
                           ),
@@ -384,7 +381,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         children: <Widget>[
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(left: 20),
+                              margin: const EdgeInsets.only(left: 10),
                               alignment: Alignment.centerLeft,
                               child: Text('para',
                                   style: TextStyle(
@@ -406,7 +403,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                                 margin:
-                                    const EdgeInsets.only(left: 20, bottom: 10),
+                                    const EdgeInsets.only(left: 10, bottom: 10),
                                 alignment: Alignment.centerLeft,
                                 child: new GestureDetector(
                                   onTap: () {
@@ -421,8 +418,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                               margin: const EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                  "En custodia en UTD " + envio.codigoUbicacion,
+                              child: Text(envio.observacion,
                                   style: TextStyle(color: Colors.black)),
                             ),
                             flex: 6,
@@ -540,7 +536,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       if (lista.length == 0) {
         return Container();
       }
-
       return ListView.builder(
           itemCount: lista.length,
           itemBuilder: (context, i) => crearItem(lista[i], 1));
@@ -683,8 +678,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Retirar envío"),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Retirar envío"),
+        drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }
 }

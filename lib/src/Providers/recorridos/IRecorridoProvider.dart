@@ -1,22 +1,22 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/TipoEntregaPersonalizadaModel.dart';
 
+abstract class IRecorridoProvider {
+  Future<dynamic> enviosEntregaProvider(String codigo, int recorridoId);
 
-abstract class IRecorridoProvider{
+  Future<List<EnvioModel>> enviosRecojoProvider(String codigo, int recorridoId);
 
+  Future<dynamic> registrarEntregaProvider(
+      String codigo, int recorridoId, String codigopaquete);
 
-  Future<dynamic> enviosEntregaProvider(String codigo,int recorridoId);  
+  Future<dynamic> registrarRecojoProvider(
+      String codigo, int recorridoId, String codigopaquete);
 
-  Future<List<EnvioModel>> enviosRecojoProvider(String codigo,int recorridoId);  
+  Future<bool> registrarEntregaPersonalizadaProvider(
+      String dni, String codigopaquete);
 
-  Future<dynamic> registrarEntregaProvider(String codigo,int recorridoId, String codigopaquete);  
-
-  Future<dynamic> registrarRecojoProvider(String codigo,int recorridoId, String codigopaquete);  
-
-  Future<bool> registrarEntregaPersonalizadaProvider(String dni, String codigopaquete);  
-
-  Future<dynamic> registrarEntregaPersonalizadaFirmaProvider(String firma, String codigopaquete);  
-
+  Future<dynamic> registrarEntregaPersonalizadaFirmaProvider(
+      String firma, String codigopaquete);
 
   Future<List<TipoEntregaPersonalizadaModel>> listarTipoPersonalizada();
 }

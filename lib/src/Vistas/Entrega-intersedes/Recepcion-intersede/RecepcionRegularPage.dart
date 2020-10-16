@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
+import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'RecepcionRegularController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
@@ -52,7 +55,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   var validarSobre = false;
   var validarBandeja = false;
   bool confirmaciondeenvio = false;
-  String _name = '';
   int indice = 0;
   int indicebandeja = 0;
 
@@ -94,9 +96,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
         child: ButtonTheme(
@@ -142,7 +141,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               }
             },
             color: Color(0xFF2C6983),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text('Terminar', style: TextStyle(color: Colors.white)),
           ),
         ));
@@ -182,19 +180,26 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
           enfocarInputfx(context, f2);
         } else {
-          dynamic respuestaValidar = await principalcontroller.recogerdocumento(
-              context, _bandejaController.text, value, true);
-          if (respuestaValidar["status"] != "success") {
-            setState(() {
-              mensajeconfirmation = "No es posible procesar el código";
-              _sobreController.text = value;
-            });
-            enfocarInputfx(context, f2);
+          bool respuestaPopUp = await confirmacion(
+              context, "success", "EXACT", "El código $value no se encuentra en la lista. ¿Desea continuar?");
+          if (respuestaPopUp) {
+            dynamic respuestaValidar =
+                await principalcontroller.recogerdocumento(
+                    context, _bandejaController.text, value, true);
+            if (respuestaValidar["status"] != "success") {
+              setState(() {
+                mensajeconfirmation = "No es posible procesar el código";
+                _sobreController.text = value;
+              });
+              enfocarInputfx(context, f2);
+            } else {
+              setState(() {
+                mensajeconfirmation = "El sobre $value fue recepcionado";
+                _sobreController.text = value;
+              });
+              enfocarInputfx(context, f2);
+            }
           } else {
-            setState(() {
-              mensajeconfirmation = "El sobre $value fue recepcionado";
-              _sobreController.text = value;
-            });
             enfocarInputfx(context, f2);
           }
         }
@@ -220,9 +225,9 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           popuptoinput(context, f1, "error", "EXACT",
               "No es posible procesar el código");
         }
-      }else{
-          popuptoinput(context, f1, "error", "EXACT",
-              "El código del lote es obligatorio");        
+      } else {
+        popuptoinput(
+            context, f1, "error", "EXACT", "El código del lote es obligatorio");
       }
     }
 
@@ -390,22 +395,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Recibir Valijas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Recibir Valijas"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

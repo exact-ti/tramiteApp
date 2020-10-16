@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'NuevaEntregaExternaController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
@@ -45,13 +46,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-    const SecondColor = const Color(0xFF6698AE);
-
     listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
           listaEnviosValidados.add(envio);
@@ -62,44 +57,43 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     final sendButton = Container(
-        margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
+        margin: const EdgeInsets.only(top: 10),
+        child: ButtonTheme(
+          minWidth: 150.0,
+          height: 50.0,
           child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () async {
-              listarNovalidados();
-              if (listaEnviosNoValidados.length == 0) {
-                principalcontroller.confirmacionDocumentosValidadosEntrega(
-                    listaEnviosValidados, context, codigoBandeja);
-              } else {
-                bool respuestaarray = await confirmarArray(
-                    context,
-                    "success",
-                    "EXACT",
-                    "Te faltan asociar estos documentos",
-                    listaEnviosNoValidados);
-                if (respuestaarray == null) {
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                  Navigator.of(context).pop();
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              onPressed: () async {
+                listarNovalidados();
+                if (listaCodigosValidados.isEmpty) {
+                  popuptoinput(context, f2, "error", "EXACT",
+                      "No hay ningún envío validado");
                 } else {
-                  if (respuestaarray) {
+                  if (listaEnviosNoValidados.length == 0) {
                     principalcontroller.confirmacionDocumentosValidadosEntrega(
                         listaEnviosValidados, context, codigoBandeja);
                   } else {
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                    Navigator.of(context).pop();
+                    bool respuestaarray = await confirmarArray(
+                        context,
+                        "success",
+                        "EXACT",
+                        "Te faltan asociar estos documentos",
+                        listaEnviosNoValidados);
+                    if (respuestaarray) {
+                      principalcontroller
+                          .confirmacionDocumentosValidadosEntrega(
+                              listaEnviosValidados, context, codigoBandeja);
+                    } else {
+                      listaEnviosNoValidados.clear();
+                      listaEnviosValidados.clear();
+                    }
                   }
                 }
-              }
-            },
-            color: Color(0xFF2C6983),
-            child: Text('Registrar', style: TextStyle(color: Colors.white)),
-          ),
+              },
+              color: Color(0xFF2C6983),
+              child: Text('Registrar', style: TextStyle(color: Colors.white))),
         ));
 
     void _validarSobreText(String value) async {
@@ -140,12 +134,14 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
     void validarLista(String codigo) async {
       EnvioModel envioModel = new EnvioModel();
+      String dataString = "";
       dynamic respuestalist =
           await principalcontroller.listarEnviosEntrega(context, codigo);
       if (respuestalist["status"] == "success") {
         dynamic datapalomar = respuestalist["data"];
         listaEnvios = envioModel.fromJsonValidar(datapalomar);
       } else {
+        dataString = respuestalist["message"];
         listaEnvios = [];
       }
       if (listaEnvios.length != 0) {
@@ -167,7 +163,14 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           codigoBandeja = codigo;
           _bandejaController.text = codigo;
         });
-        popuptoinput(context, f1, "error", "EXACT", respuestalist["message"]);
+        popuptoinput(
+            context,
+            f1,
+            "error",
+            "EXACT",
+            dataString.length == 0
+                ? "No cuenta con envíos asociados"
+                : dataString);
       }
     }
 
@@ -197,7 +200,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     );
 
     void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
       if (listaEnvios.length == 0) {
         listaEnvios.add(envio);
       } else {
@@ -208,7 +210,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados, int i) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {
@@ -223,7 +224,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       }
       if (estado) {
         return Container(
-            decoration: myBoxDecoration(),
+            decoration: myBoxDecoration(colorletra),
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
@@ -236,7 +237,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             ));
       } else {
         return Container(
-            decoration: myBoxDecoration(),
+            decoration: myBoxDecoration(colorletra),
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
@@ -334,7 +335,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       ),
     );
 
-
     Widget _validarListado(List<String> validados, List<EnvioModel> envios) {
       return _crearListadoinMemoria(validados, envios);
     }
@@ -371,111 +371,82 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       ),
     ]);
 
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas externas',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 50),
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            width: double.infinity,
-                            child: textBandeja),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 12),
-                            width: double.infinity,
-                            child: campodetextoandIconoBandeja),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            //width: double.infinity,
-                            child: textSobre),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
+    Widget mainscaffold() {
+      return SingleChildScrollView(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height -
+                      MediaQuery.of(context).padding.top),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          width: double.infinity,
+                          child: textBandeja),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
                           alignment: Alignment.centerLeft,
                           height: screenHeightExcludingToolbar(context,
                               dividedBy: 12),
                           width: double.infinity,
-                          child: campodetextoandIconoSobre,
-                          margin: const EdgeInsets.only(bottom: 30),
-                        ),
+                          child: campodetextoandIconoBandeja),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          //width: double.infinity,
+                          child: textSobre),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: screenHeightExcludingToolbar(context,
+                            dividedBy: 12),
+                        width: double.infinity,
+                        child: campodetextoandIconoSobre,
+                        margin: const EdgeInsets.only(bottom: 30),
                       ),
-                      Expanded(
-                          child: codigoBandeja == ""
-                              ? Container()
-                              : Container(
-                                  child: _validarListado(
-                                      listaCodigosValidados, listaEnvios))),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
+                    ),
+                    Expanded(
+                        child: codigoBandeja == ""
+                            ? Container()
+                            : Container(
+                                child: _validarListado(
+                                    listaCodigosValidados, listaEnvios))),
+                    listaEnvios.isNotEmpty
+                        ? Align(
                             alignment: Alignment.center,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 5),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
-                    ],
-                  ),
-                ))));
-  }
+                            child: Container(
+                                alignment: Alignment.center,
+                                height: screenHeightExcludingToolbar(context,
+                                    dividedBy: 5),
+                                width: double.infinity,
+                                child: sendButton),
+                          )
+                        : Container(),
+                  ],
+                ),
+              )));
+    }
 
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+    return Scaffold(
+        appBar: CustomAppBar(text: "Entregas externas"),
+        drawer: DrawerPage(),
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

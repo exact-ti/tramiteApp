@@ -1,13 +1,13 @@
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Util/modals/information.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'ListarEnviosController.dart';
 
 class ListarEnviosPage extends StatefulWidget {
@@ -44,14 +44,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    const othercolor = const Color(0xFF6F7375);
-
-    var booleancolor = true;
-    var colorwidget = colorplomo;
-
     Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
       String destino = entrega.destino;
       int numdocumentos = entrega.numdocumentos;
@@ -125,11 +117,12 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       return Container(
           height: 70,
           child: entrega.estadoEnvio.id == creado
-              ? Center(child: FaIcon(
+              ? Center(
+                  child: FaIcon(
                   FontAwesomeIcons.locationArrow,
                   color: Color(0xffC7C7C7),
                   size: 25,
-                )) 
+                ))
               : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
@@ -192,7 +185,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
               principalcontroller.listarentregasInterSedeController(switched),
           builder: (BuildContext context,
               AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
-                            switch (snapshot.connectionState) {
+            switch (snapshot.connectionState) {
               case ConnectionState.none:
                 return sinResultados("No hay conexión con el servidor");
               case ConnectionState.waiting:
@@ -206,14 +199,14 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                   return sinResultados("Ha surgido un problema");
                 } else {
                   if (snapshot.hasData) {
-                    booleancolor = true;
                     final envios = snapshot.data;
                     if (envios.length == 0) {
                       return sinResultados("No se han encontrado resultados");
                     } else {
                       return ListView.builder(
                           itemCount: envios.length,
-                          itemBuilder: (context, i) => crearItem(envios[i], switched));
+                          itemBuilder: (context, i) =>
+                              crearItem(envios[i], switched));
                     }
                   } else {
                     return sinResultados("No se han encontrado resultados");
@@ -307,24 +300,9 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       isSelected: isSelected,
     );
 
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entregas InterUTD',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: sd.crearMenu(context),
+        appBar: CustomAppBar(text: "Entregas InterUTD"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

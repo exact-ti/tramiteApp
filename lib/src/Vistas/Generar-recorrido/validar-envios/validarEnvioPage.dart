@@ -1,4 +1,3 @@
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -57,11 +58,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    const colorborde = const Color(0xFFD5DCDF);
-    var booleancolor = true;
-    var colorwidget = colorplomo;
 
     void _validarText(String value) {
       desenfocarInputfx(context);
@@ -100,9 +96,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     listarNovalidados() {
-      bool esvalidado = false;
-      List<dynamic> as = listaEnvios;
-      List<dynamic> ads = listaCodigosValidados;
       for (EnvioModel envio in listaEnvios) {
         if (listaCodigosValidados.contains(envio.codigoPaquete)) {
           listaEnviosValidados.add(envio);
@@ -151,7 +144,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
               }
             },
             color: Color(0xFF2C6983),
-            //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             child: Text(
                 listaEnvios.length == 0
                     ? 'Crear solo recojo'
@@ -208,7 +200,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget crearItem(EnvioModel envio, List<String> validados) {
-      int id = envio.id;
       String codigopaquete = envio.codigoPaquete;
       bool estado = false;
       if (validados.length != 0) {
@@ -246,8 +237,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget _crearListado(List<String> validados) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller
               .validacionEnviosController(recorridoUsuario.id),
@@ -285,8 +274,6 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
 
     Widget _crearListadoinMemoria(List<String> validados) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return ListView.builder(
           itemCount: listaEnvios.length,
           itemBuilder: (context, i) => crearItem(listaEnvios[i], validados));
@@ -294,16 +281,12 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
     Widget _crearListadoAgregar(
         List<String> validados, String codigoporValidar) {
-      booleancolor = true;
-      colorwidget = colorplomo;
       return FutureBuilder(
           future: principalcontroller.validarCodigo(
               codigoporValidar, recorridoUsuario.id, context),
           builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
             codigoValidar = "";
             if (snapshot.hasData) {
-              booleancolor = true;
-              colorwidget = colorplomo;
               final envio = snapshot.data;
               listaEnvios.add(envio);
               validados.add(envio.codigoPaquete);
@@ -355,24 +338,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
       ),
     ]);
 
-    const PrimaryColor = const Color(0xFF2C6983);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Validación de documentos',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar:CustomAppBar(text: "Validación de documentos"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(

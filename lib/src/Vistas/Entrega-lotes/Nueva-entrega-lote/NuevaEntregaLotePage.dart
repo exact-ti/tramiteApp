@@ -5,6 +5,8 @@ import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 
 import 'NuevaEntregaLoteController.dart';
 
@@ -19,8 +21,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   List<EnvioModel> listaEnvios = new List();
   List<TurnoModel> listaTurnos = new List();
   List<EnvioModel> listaEnviosVacios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
-  List<EnvioModel> listaEnviosNoValidados = new List();
   NuevoEntregaLotePageController principalcontroller =
       new NuevoEntregaLotePageController();
   String qrsobre, qrbarra, valuess = "";
@@ -32,7 +32,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
-  List<String> listaCodigosValidados = new List();
   bool inicio = true;
   var colorletra = const Color(0xFFACADAD);
   void initState() {
@@ -48,17 +47,16 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF2C6983);
-
     final sendButton = Container(
         margin: const EdgeInsets.only(top: 40),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 120, vertical: 10),
+        child: ButtonTheme(
+          minWidth: 130.0,
+          height: 40.0,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
+            onPressed: () async {
               if (_bandejaController.text == "") {
                 notificacion(context, "error", "EXACT",
                     "Debe ingresar el codigo de lote");
@@ -122,7 +120,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
 
     void _validarSobreText(String value) async {
-        desenfocarInputfx(context);
+      desenfocarInputfx(context);
       if (value == "") {
         popuptoinput(context, f2, "error", "EXACT",
             "el código de valija es obligatorio");
@@ -146,12 +144,12 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                 listaEnviosVacios = listaEnviosVacios;
               });
             } else {
-            popuptoinput(context, f2, "error", "EXACT",
-              "La valija ya fue agregada al lote");
+              popuptoinput(context, f2, "error", "EXACT",
+                  "La valija ya fue agregada al lote");
             }
           }
-        }else{        
-            popuptoinput(context, f2, "error", "EXACT",
+        } else {
+          popuptoinput(context, f2, "error", "EXACT",
               "No es posible procesar el código");
         }
       }
@@ -376,22 +374,8 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     ]);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: PrimaryColor,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            )
-          ],
-          title: Text('Entrega de lotes',
-              style: TextStyle(
-                  fontSize: 18,
-                  decorationStyle: TextDecorationStyle.wavy,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal)),
-        ),
-        drawer: crearMenu(context),
+        appBar: CustomAppBar(text: "Entrega de lotes"),
+        drawer: DrawerPage(),
         body: SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -462,14 +446,10 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                         ),
                       ),
                       Expanded(
-                          child:
-                              /*codigoSobre == ""
-                      ? Container()
-                      :*/
-                              Container(
+                          child:Container(
                                   child:
                                       _crearListadoAgregar(listaEnviosVacios))),
-                      Align(
+                      listaEnviosVacios.length!=0? Align(
                         alignment: Alignment.center,
                         child: Container(
                             alignment: Alignment.center,
@@ -477,7 +457,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                                 dividedBy: 5),
                             width: double.infinity,
                             child: sendButton),
-                      ),
+                      ):Container(),
                     ],
                   ),
                 ))));

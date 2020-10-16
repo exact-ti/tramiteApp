@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
+import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'ListarEnviosActivosController.dart';
 import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
@@ -39,7 +40,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   @override
   void initState() {
     isSelected = [true, false];
-
     if (objetoModo == null) {
       estadosIds = [];
       isSelected = [true, false];
@@ -113,11 +113,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
     Widget listTagSave(List<int> idsparam) {
       List<EstadoEnvio> listaparam = new List();
-      estadosSave.forEach((element) {
-        if (element.estado) {
-          listaparam.add(element);
-        }
-      });
+      listaparam= estadosSave.where((element) => idsparam.contains(element.id)).toList();
       return Container(
           child: Tags(
         itemCount: listaparam.length,
@@ -475,8 +471,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     return Scaffold(
-        appBar: crearTitulo("Envios activos"),
-        drawer: crearMenu(context),
-        body: scaffoldbody(mainscaffold(), context));
+        appBar: CustomAppBar(text: "Envios activos",leadingbool: boolIfPerfil()?false:true,),
+        drawer: drawerIfPerfil(),
+        body: mainscaffold());
   }
 }

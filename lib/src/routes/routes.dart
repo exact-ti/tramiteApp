@@ -19,11 +19,15 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-propios/recor
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
+import 'package:tramiteapp/src/Vistas/Home/MyHomePage.dart';
+import 'package:tramiteapp/src/Vistas/Home/SecondPage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
+import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
 
@@ -64,5 +68,10 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/entrega-regular': (BuildContext context) => EntregaRegularPage(),
     '/entrega-personalizada': (BuildContext context) => ListarTipoPersonalizadaPage(),
     '/nueva-entrega-intersede' :  (BuildContext context) => NuevoIntersedePage(),
-  };
+    '/notificaciones' :  (BuildContext context) => NotificacionesPage(),
+    '/menuBottom' :  (BuildContext context) => TopLevelWidget(),
+    '/myHome' :  (BuildContext context) => MyHomePage(),
+    '/second' :  (BuildContext context) => SecondPage(),
+/*     '/menuDrawer' :  (BuildContext context) => MenuDrawerPage(),
+ */  };
 }

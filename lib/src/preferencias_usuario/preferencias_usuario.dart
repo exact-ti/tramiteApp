@@ -1,23 +1,14 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Entity/Buzon.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 
-/*
-  Recordar instalar el paquete de:
-    shared_preferences:
-  Inicializar en el mai
-    final prefs = new PreferenciasUsuario();
-    prefs.initPrefs();
-*/
-
 class PreferenciasUsuario {
-
-  static final PreferenciasUsuario _instancia = new PreferenciasUsuario._internal();
+  static final PreferenciasUsuario _instancia =
+      new PreferenciasUsuario._internal();
 
   factory PreferenciasUsuario() {
     return _instancia;
@@ -36,7 +27,7 @@ class PreferenciasUsuario {
     return _prefs.getString('token') ?? '';
   }
 
-  set token( String value ) {
+  set token(String value) {
     _prefs.setString('token', value);
   }
 
@@ -47,20 +38,28 @@ class PreferenciasUsuario {
   set refreshToken(String value) {
     _prefs.setString('refresh_token', value);
   }
-
+    
   get perfil {
     return _prefs.getString('perfil') ?? '';
   }
 
-  set perfil( String value ) {
+  set perfil(String value) {
     _prefs.setString('perfil', value);
   }
-  
+
+  get tipoperfil {
+    return _prefs.getInt('tipoperfil') ?? 0;
+  }
+
+  set tipoperfil(int value) {
+    _prefs.setInt('tipoperfil', value);
+  }
+
   get buzon {
     return _prefs.getString("buzon");
   }
 
-  set buzon (HashMap<String,dynamic> buzon) {
+  set buzon(HashMap<String, dynamic> buzon) {
     _prefs.setString("buzon", json.encode(buzon));
   }
 
@@ -68,7 +67,7 @@ class PreferenciasUsuario {
     return _prefs.getString("utd");
   }
 
-  set utd (HashMap<String,dynamic> utd) {
+  set utd(HashMap<String, dynamic> utd) {
     _prefs.setString("utd", json.encode(utd));
   }
 
@@ -95,7 +94,7 @@ class PreferenciasUsuario {
   set menus(List<Menu> menus) {
     _prefs.setString("menus", json.encode(menus));
   }
-  
+
   get configuraciones {
     return _prefs.getString("configuraciones");
   }
@@ -109,9 +108,7 @@ class PreferenciasUsuario {
     return _prefs.getString('ultimaPagina') ?? 'login';
   }
 
-  set ultimaPagina( String value ) {
+  set ultimaPagina(String value) {
     _prefs.setString('ultimaPagina', value);
   }
-
 }
-
