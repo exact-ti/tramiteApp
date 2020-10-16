@@ -192,7 +192,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             initialDate: DateTime.now(),
             firstDate: DateTime(1900),
             lastDate: DateTime(2100),
-            fieldLabelText: "Ingregar fecha",
+            fieldLabelText: "Ingresar fecha",
             errorFormatText: "Formato inválido",
           );
           if (date != null) {
@@ -242,7 +242,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             initialDate: DateTime.now(),
             firstDate: DateTime(1900),
             lastDate: DateTime(2100),
-            fieldLabelText: "Ingregar fecha",
+            fieldLabelText: "Ingresar fecha",
             errorFormatText: "Formato inválido",
           );
           if (date != null) {

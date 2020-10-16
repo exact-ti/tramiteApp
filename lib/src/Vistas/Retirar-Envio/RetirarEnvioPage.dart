@@ -43,19 +43,17 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     super.initState();
   }
 
-  var colorplomos = const Color(0xFFEAEFF2);
   void listarEnvios(String paquete, String remitente, String destinatario,
       bool opcion) async {
     listaEnvios = await principalcontroller.listarEnvios(
         context, paquete, remitente, destinatario, opcion);
-    if (listaEnvios != null) {
+    if (listaEnvios.isNotEmpty) {
       setState(() {
         listaEnvios = listaEnvios;
       });
     } else {
-      listaEnvios = [];
       setState(() {
-        listaEnvios = listaEnvios;
+        listaEnvios = [];
       });
     }
   }
@@ -124,7 +122,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             : Colors.red[200]),
                   ),
                 )),
-            content: StatefulBuilder(
+            content: SingleChildScrollView(
+                child: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return new Column(mainAxisSize: MainAxisSize.min, children: <
                   Widget>[
@@ -170,7 +169,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             envioModel, _observacionController.text);
                         if (respuesta) {
                           Navigator.pop(context, true);
-                          Navigator.pop(context, true);
                         }
                       }
                     },
@@ -211,7 +209,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                 bool respuesta = await retirarEnvioController(
                                     envioModel, _observacionController.text);
                                 if (respuesta) {
-                                  Navigator.pop(context, true);
                                   Navigator.pop(context, true);
                                 }
                               }
@@ -268,7 +265,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                       ],
                     ))
               ]);
-            }),
+            })),
             contentPadding: EdgeInsets.all(0),
           );
         });
@@ -360,7 +357,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                               margin:
-                                  const EdgeInsets.only(right: 20, left: 20),
+                                  const EdgeInsets.only(right: 20, left: 10),
                               alignment: Alignment.centerLeft,
                               child: Text('De',
                                   style: TextStyle(
@@ -369,7 +366,10 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             flex: 1,
                           ),
                           Expanded(
-                            child: Text(envio.remitente,
+                            child: Text(
+                                envio.remitente == null
+                                    ? "Envío importado"
+                                    : envio.remitente,
                                 style: TextStyle(color: Colors.black)),
                             flex: 5,
                           ),
@@ -381,7 +381,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         children: <Widget>[
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(left: 20),
+                              margin: const EdgeInsets.only(left: 10),
                               alignment: Alignment.centerLeft,
                               child: Text('para',
                                   style: TextStyle(
@@ -403,7 +403,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                           Expanded(
                             child: Container(
                                 margin:
-                                    const EdgeInsets.only(left: 20, bottom: 10),
+                                    const EdgeInsets.only(left: 10, bottom: 10),
                                 alignment: Alignment.centerLeft,
                                 child: new GestureDetector(
                                   onTap: () {
@@ -536,7 +536,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       if (lista.length == 0) {
         return Container();
       }
-
       return ListView.builder(
           itemCount: lista.length,
           itemBuilder: (context, i) => crearItem(lista[i], 1));

@@ -38,7 +38,7 @@ class PreferenciasUsuario {
   set refreshToken(String value) {
     _prefs.setString('refresh_token', value);
   }
-
+    
   get perfil {
     return _prefs.getString('perfil') ?? '';
   }

@@ -78,6 +78,7 @@ flutter:
     - data/chequeras.xlsx
     - assets/logoExact.PNG
     - assets/images/logoprincipal.PNG
+    - assets/images/logo-header.PNG
 
   # To add assets to your application, add an assets section, like this:
   # assets:

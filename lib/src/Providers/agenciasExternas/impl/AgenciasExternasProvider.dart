@@ -27,29 +27,8 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     List<EnvioInterSedeModel> listEnvio =
         sedeModel.fromJsonlistarEntregas(envios);
     return listEnvio;
-
-    /*List<EnvioInterSedeModel> listEnvio = await listarfake();
-    return listEnvio;*/
   }
 
-  Future<List<EnvioInterSedeModel>> listarfake() async {
-    List<EnvioInterSedeModel> listarenvios = new List();
-    EnvioInterSedeModel envio1 = new EnvioInterSedeModel();
-    EnvioInterSedeModel envio2 = new EnvioInterSedeModel();
-    envio1.destino = "San Isidro";
-    envio1.numdocumentos = 20;
-    envio1.numvalijas = 30;
-    envio1.codigo = "123456";
-    envio2.destino = "La Molina";
-    envio2.numdocumentos = 20;
-    envio2.numvalijas = 4;
-    envio2.codigo = "123457";
-    listarenvios.add(envio1);
-    listarenvios.add(envio2);
-    return Future.delayed(new Duration(seconds: 1), () {
-      return listarenvios;
-    });
-  }
 
   @override
   Future<dynamic> listarEnviosAgenciaByCodigo(String codigo) async {
@@ -59,7 +38,6 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     Response resp = await req.get(
         '/servicio-tramite/utds/$id/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
     dynamic envios = resp.data;
-    //List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
     return envios;
   }
 

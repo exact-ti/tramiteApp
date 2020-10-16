@@ -1,7 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 
 abstract class RecepcionInterface {
-  Future<List<EnvioModel>> enviosCore(String codigo);
+  Future<dynamic> listarEnviosByLote(String codigo);
 
   Future<List<EnvioModel>> listarEnviosCore();
 

@@ -34,6 +34,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
   @override
   void initState() {
     listarMenuBottomNavBar();
+    validarIngreso();
     super.initState();
   }
 
@@ -49,8 +50,9 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         int ordenprueba = listMenu
             .where((element) => element.link == rutaname)
             .map((e) => e.orden - 1)
-            .toList().first;
-        setState(() {
+            .toList()
+            .first;
+        setState(() { 
           currentIndex = ordenprueba;
         });
       }
@@ -68,7 +70,8 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         menuinicio = listmenu
             .where((element) => element.home)
             .map((e) => e.link)
-            .toList().first;
+            .toList()
+            .first;
         listMenu = listmenu;
       });
     }
@@ -101,7 +104,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
     Widget _buildBody() => MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
-                localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
         supportedLocales: [const Locale('en'), const Locale('es')],
         onGenerateRoute: (route) {
           return pagesRouteFactories[route.name]();
@@ -133,11 +136,17 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           String nombre = listMenu
               .where((element) => element.orden == routeIndex + 1)
               .map((e) => e.link)
-              .toList().first;
+              .toList()
+              .first;
+          int routepasada = currentIndex;
           setState(() {
             currentIndex = routeIndex;
           });
-          navigatorKey.currentState.pushNamed(nombre);
+          navigatorKey.currentState.pushNamed(nombre).whenComplete(() {
+            setState(() {
+              currentIndex = routepasada;
+            });
+          });
         });
 
     return Scaffold(

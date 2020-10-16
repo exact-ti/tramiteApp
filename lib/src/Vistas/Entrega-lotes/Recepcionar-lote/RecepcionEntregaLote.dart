@@ -28,6 +28,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   RecepcionControllerLote principalcontroller = new RecepcionControllerLote();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
+  EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaEnvios = new List();
   String qrsobre, qrbarra = "";
   String codigoBandeja = "";
@@ -55,10 +56,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   }
 
   void iniciarlistaEnvios() async {
-    listaEnvios =
-        await principalcontroller.listarEnviosLotes(context, codigoBandeja);
+    dynamic respuesta =
+        await principalcontroller.listarEnviosLotes(codigoBandeja);
     setState(() {
-      listaEnvios = listaEnvios;
+      listaEnvios = envioModel.fromJsonValidar(respuesta["data"]);
     });
   }
 
@@ -139,21 +140,29 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     void _validarBandejaText(String value) async {
       desenfocarInputfx(context);
       if (value != "") {
-        listaEnvios =
-            await principalcontroller.listarEnviosLotes(context, value);
-        if (listaEnvios != null) {
+        dynamic respuesta = await principalcontroller.listarEnviosLotes(value);
+        if (respuesta["status"] != "fail") {
+          listaEnvios = envioModel.fromJsonValidar(respuesta["data"]);
+          if(listaEnvios.isNotEmpty){
           setState(() {
             codigoBandeja = value;
             _bandejaController.text = value;
             listaEnvios = listaEnvios;
           });
           enfocarInputfx(context, f2);
+          }else{
+          setState(() {
+            listaEnvios = [];
+            _bandejaController.text = value;
+          });
+          popuptoinput(context, f1, "error", "EXACT", "No contiene envíos para recepcionar");
+          }
         } else {
           setState(() {
             listaEnvios = [];
             _bandejaController.text = value;
           });
-          popuptoinput(context, f1, "error", "EXACT", "No contiene envíos");
+          popuptoinput(context, f1, "error", "EXACT", respuesta["message"]);
         }
       } else {
         setState(() {

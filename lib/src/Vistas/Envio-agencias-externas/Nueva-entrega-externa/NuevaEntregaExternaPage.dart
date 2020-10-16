@@ -57,7 +57,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
 
     final sendButton = Container(
-        margin: const EdgeInsets.only(top: 40),
+        margin: const EdgeInsets.only(top: 10),
         child: ButtonTheme(
           minWidth: 150.0,
           height: 50.0,
@@ -67,21 +67,20 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
               ),
               onPressed: () async {
                 listarNovalidados();
-                if (listaEnviosNoValidados.length == 0) {
-                  principalcontroller.confirmacionDocumentosValidadosEntrega(
-                      listaEnviosValidados, context, codigoBandeja);
+                if (listaCodigosValidados.isEmpty) {
+                  popuptoinput(context, f2, "error", "EXACT",
+                      "No hay ningún envío validado");
                 } else {
-                  bool respuestaarray = await confirmarArray(
-                      context,
-                      "success",
-                      "EXACT",
-                      "Te faltan asociar estos documentos",
-                      listaEnviosNoValidados);
-                  if (respuestaarray == null) {
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                    Navigator.of(context).pop();
+                  if (listaEnviosNoValidados.length == 0) {
+                    principalcontroller.confirmacionDocumentosValidadosEntrega(
+                        listaEnviosValidados, context, codigoBandeja);
                   } else {
+                    bool respuestaarray = await confirmarArray(
+                        context,
+                        "success",
+                        "EXACT",
+                        "Te faltan asociar estos documentos",
+                        listaEnviosNoValidados);
                     if (respuestaarray) {
                       principalcontroller
                           .confirmacionDocumentosValidadosEntrega(
@@ -89,7 +88,6 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                     } else {
                       listaEnviosNoValidados.clear();
                       listaEnviosValidados.clear();
-                      Navigator.of(context).pop();
                     }
                   }
                 }
@@ -226,7 +224,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       }
       if (estado) {
         return Container(
-            decoration: myBoxDecoration(),
+            decoration: myBoxDecoration(colorletra),
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
@@ -239,7 +237,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             ));
       } else {
         return Container(
-            decoration: myBoxDecoration(),
+            decoration: myBoxDecoration(colorletra),
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
               title: Text("$codigopaquete"),
@@ -373,97 +371,82 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
       ),
     ]);
 
-    return Scaffold(
-        appBar: CustomAppBar(text: "Entregas externas"),
-        drawer: DrawerPage(),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 50),
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            width: double.infinity,
-                            child: textBandeja),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 12),
-                            width: double.infinity,
-                            child: campodetextoandIconoBandeja),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            //width: double.infinity,
-                            child: textSobre),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
+    Widget mainscaffold() {
+      return SingleChildScrollView(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height -
+                      MediaQuery.of(context).padding.top),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          width: double.infinity,
+                          child: textBandeja),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
                           alignment: Alignment.centerLeft,
                           height: screenHeightExcludingToolbar(context,
                               dividedBy: 12),
                           width: double.infinity,
-                          child: campodetextoandIconoSobre,
-                          margin: const EdgeInsets.only(bottom: 30),
-                        ),
+                          child: campodetextoandIconoBandeja),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                          alignment: Alignment.bottomLeft,
+                          height: screenHeightExcludingToolbar(context,
+                              dividedBy: 30),
+                          //width: double.infinity,
+                          child: textSobre),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: screenHeightExcludingToolbar(context,
+                            dividedBy: 12),
+                        width: double.infinity,
+                        child: campodetextoandIconoSobre,
+                        margin: const EdgeInsets.only(bottom: 30),
                       ),
-                      Expanded(
-                          child: codigoBandeja == ""
-                              ? Container()
-                              : Container(
-                                  child: _validarListado(
-                                      listaCodigosValidados, listaEnvios))),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
+                    ),
+                    Expanded(
+                        child: codigoBandeja == ""
+                            ? Container()
+                            : Container(
+                                child: _validarListado(
+                                    listaCodigosValidados, listaEnvios))),
+                    listaEnvios.isNotEmpty
+                        ? Align(
                             alignment: Alignment.center,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 5),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
-                    ],
-                  ),
-                ))));
-  }
+                            child: Container(
+                                alignment: Alignment.center,
+                                height: screenHeightExcludingToolbar(context,
+                                    dividedBy: 5),
+                                width: double.infinity,
+                                child: sendButton),
+                          )
+                        : Container(),
+                  ],
+                ),
+              )));
+    }
 
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
+    return Scaffold(
+        appBar: CustomAppBar(text: "Entregas externas"),
+        drawer: DrawerPage(),
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

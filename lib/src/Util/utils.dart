@@ -137,9 +137,9 @@ void popuptoinput(BuildContext context, FocusNode fx, String tipo,
   }
 }
 
-BoxDecoration myBoxDecoration(Color colorletra) {
+BoxDecoration myBoxDecoration(Color colorparam) {
   return BoxDecoration(
-      border: Border.all(color: colorletra),
+      border: Border.all(color: colorparam),
       borderRadius: BorderRadius.circular(5));
 }
 
@@ -275,6 +275,19 @@ void navegarHomeExact(BuildContext context) {
       }
     }
   }
+}
+
+
+void navegarNotificaciones(BuildContext context) {
+        if (_prefs.tipoperfil== cliente) {
+          Navigator.of(context, rootNavigator: true).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) =>
+                      new TopLevelWidget(rutaPage: "/notificaciones")));
+        } else {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              "/notificaciones", (Route<dynamic> route) => false);
+        }
 }
 
 String validateEmail(String value) {

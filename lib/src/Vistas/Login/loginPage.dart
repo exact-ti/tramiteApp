@@ -50,13 +50,16 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     LoginController logincontroller = new LoginController();
 
-    final logo = Hero(
+/*     final logo = Hero(
         tag: 'hero',
         child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: 90.0,
-          child: Image.asset('assets/usuariologin.png'),
-        ));
+          backgroundColor: primaryColor,
+          radius: 150.0,
+          child: Image.asset('assets/images/logo-header.PNG',width: 250.0,),
+        ));  */
+
+     final logo = Image.asset('assets/images/logo-header.PNG',width: 250.0,); 
+
 
     void enfocarcodigocontrasena() {
       FocusScope.of(context).unfocus();
@@ -241,8 +244,8 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           Container(
             width: double.infinity,
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(bottom: 10),
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 60),
             height: screenHeightExcludingToolbar(context, dividedBy: 2),
             decoration: BoxDecoration(
                 color: Colors.grey[100],
@@ -250,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                     bottomLeft: Radius.circular(60),
                     bottomRight: Radius.circular(60))),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 FadeAnimation(1.7, titulo),

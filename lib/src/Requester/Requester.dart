@@ -47,19 +47,14 @@ class Requester {
     }
   }
 
-  Future<Response> refreshToken(String path, dynamic data) async {
-    String basic = properties['CLIENT_ID'] + ":" + properties['CLIENT_SECRET'];
-    var basic8 = utf8.encode(basic);
-    String basic64 = base64.encode(basic8);
+  Future<Response> refreshToken(String path, dynamic refreshToken) async {
     Map<String, dynamic> header = {
-      'Authorization': 'Basic $basic64',
-      "content-type": "application/x-www-form-urlencoded",
-      "Accept": "application/json",
+      'Authorization': 'Bearer  $refreshToken',
+      "content-type": "application/json",
     };
-
     try {
-      Response refreshtoken = await Dio().post(properties['API'] + path,
-          data: data, options: Options(headers: header));
+      Response refreshtoken = await Dio()
+          .post(properties['API'] + path, options: Options(headers: header));
       return refreshtoken;
     } on DioError catch (e) {
       return e.response;
@@ -151,17 +146,16 @@ class Requester {
   }
 
   dynamic errorInterceptor(DioError dioError) async {
-    if (dioError.response?.statusCode == 401) {
+    dynamic data = dioError.response.data;
+    if (data!=null) {
       Response response;
-      FormData formData = FormData.fromMap({
-        'refresh_token': _prefs.refreshToken,
-        'grant_type': 'refresh_token'
-      });
-      final resp = await refreshToken("/servicio-oauth/oauth/token", formData);
+      final resp = await refreshToken(
+          "/servicio-auth/auth/refresh", _prefs.refreshToken);
       if (resp.statusCode == 200) {
-        Map<String, dynamic> refreshdata = resp.data;
-        _prefs.token = refreshdata['access_token'];
-        _prefs.refreshToken = refreshdata['refresh_token'];
+        dynamic refreshdata = resp.data;
+        dynamic dataCore = refreshdata["data"]; 
+        _prefs.token = dataCore['access_token'];
+        _prefs.refreshToken = dataCore['refresh_token'];
         RequestOptions request = dioError.request;
         switch (request.method) {
           case "GET":

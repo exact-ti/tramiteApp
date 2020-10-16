@@ -19,15 +19,8 @@ class RecepcionControllerLote {
     );
   }
 
-  Future<List<EnvioModel>> listarEnviosLotes(
-      BuildContext context, String codigo) async {
-    if (codigo == "") {
-      return null;
-    }
-
-    List<EnvioModel> recorridos = await recepcionInterface.enviosCore(codigo);
-
-    return recorridos;
+  Future listarEnviosLotes(String codigo) async {
+    return await recepcionInterface.listarEnviosByLote(codigo);
   }
 
   Future<bool> recogerdocumentoLote(

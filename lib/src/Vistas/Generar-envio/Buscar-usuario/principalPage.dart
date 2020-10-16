@@ -42,8 +42,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
     const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
     var colorwidget = colorplomo;
@@ -82,7 +80,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
     dynamic retonarFuncion(String texto) {
       final futureVar = principalcontroller.listarUsuariosporFiltro(texto);
       return futureVar;
-    } //calling the function here instead and storing its future in a variable
+    }
 
     Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
@@ -163,33 +161,29 @@ class _PrincipalPageState extends State<PrincipalPage> {
     );
     mainscaffold() {
       return Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                                alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top:20),
-/*                                 height: screenHeightExcludingToolbar(context,
-                                    dividedBy: 10), */
-                                width: double.infinity,
-                                child: destinatario),
-                          ),
-                          Row(
-                            children: <Widget>[
-                              textdestinatario != "" ? Container() : prueba
-                            ],
-                          ),
-                          Expanded(
-                            child: Container(
-                                alignment: Alignment.bottomCenter,
-                                child: _myListView(textdestinatario)),
-                          )
-                        ],
-                      ),
-                    );
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.only(top: 20, bottom: 10),
+                  width: double.infinity,
+                  child: destinatario),
+            ),
+            Row(
+              children: <Widget>[textdestinatario != "" ? Container() : prueba],
+            ),
+            Expanded(
+              child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: _myListView(textdestinatario)),
+            )
+          ],
+        ),
+      );
     }
 
     return Scaffold(
@@ -200,6 +194,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
         drawer: drawerIfPerfil(),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        body:mainscaffold());
+        body: mainscaffold());
   }
 }

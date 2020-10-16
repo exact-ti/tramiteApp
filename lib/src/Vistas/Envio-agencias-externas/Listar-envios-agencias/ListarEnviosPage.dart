@@ -280,18 +280,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             },
             color: Color(0xFF2C6983),
             child: Text('Enviar', style: TextStyle(color: Colors.white))),
-      ) /* RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          registrarlista();
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Enviar', style: TextStyle(color: Colors.white)),
-      ) */
-      ,
+      )
     );
 
     Widget mainscaffold() {

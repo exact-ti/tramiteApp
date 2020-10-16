@@ -22,18 +22,9 @@ class RecepcionProvider implements IRecepcionProvider {
   ConfiguracionModel configuracionModel = new ConfiguracionModel();
   BuzonModel buzonModel = new BuzonModel();
   @override
-  Future<List<EnvioModel>> recepcionJumboProvider(String codigo) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/lotes/$codigo/recepcion');
-    if (resp.data == "") {
-      return null;
-    }
-    List<dynamic> envio = resp.data;
-    List<EnvioModel> enviosMode = envioModel.fromJsonValidar(envio);
-    return enviosMode;
+  Future recepcionJumboProvider(String codigo,int buzonId) async {
+    Response resp = await req.get('/servicio-tramite/utds/$buzonId/lotes/$codigo/recepcion');
+    return resp.data;
   }
 
   @override

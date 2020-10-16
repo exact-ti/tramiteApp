@@ -181,7 +181,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
         if (paqueteExternoList.length == 0) {
           bool respuestabool = await notificacion(context, "success", "EXACT",
-              description + ". vuelva a adjuntar el archivo");
+              description + ". Vuelva a adjuntar el archivo");
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;

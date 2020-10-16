@@ -14,7 +14,6 @@ class ConsultaImpl implements ConsultaInterface {
 
   @override
   Future<List<EnvioModel>> consultarByPaqueteAndDestinatarioAndRemitente(String paquete, String remitente, String destinatario,bool opcion) async {
-    List<EnvioModel> envios = await consultaProvider.listarByPaqueteAndDestinatarioAndRemitente(paquete, destinatario, remitente,opcion);
-    return envios;
+    return await consultaProvider.listarByPaqueteAndDestinatarioAndRemitente(paquete, destinatario, remitente,opcion);
   }
 }

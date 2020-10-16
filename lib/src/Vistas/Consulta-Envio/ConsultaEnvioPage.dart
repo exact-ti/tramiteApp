@@ -152,7 +152,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                         flex: 1,
                       ),
                       Expanded(
-                        child: Text(envio.remitente==null?"envío importado": envio.remitente,
+                        child: Text(envio.remitente==null?"Envío importado": envio.remitente,
                             style: TextStyle(color: Colors.black)),
                         flex: 5,
                       ),
