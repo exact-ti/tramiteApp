@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recepcion/RecepcionImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Recepcion/RecepcionInterface.dart';
-import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/recepciones/impl/RecepcionProvider.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';

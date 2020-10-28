@@ -6,9 +6,9 @@ import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class NuevoEntregaLotePageController {
   EntregaInterface entregaCore = new EntregaImpl(new EntregaProvider());
@@ -16,7 +16,6 @@ class NuevoEntregaLotePageController {
   final NavigationService _navigationService = locator<NavigationService>();
 
   Future<dynamic> listarturnos(BuildContext context, String codigo) async {
-    List<TurnoModel> listEnvio = new List();
     if (codigo == "") {
       return null;
     }

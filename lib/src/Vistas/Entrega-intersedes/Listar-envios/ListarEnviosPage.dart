@@ -1,13 +1,14 @@
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosController.dart';
 
 class ListarEnviosPage extends StatefulWidget {
@@ -17,37 +18,46 @@ class ListarEnviosPage extends StatefulWidget {
 
 class _ListarEnviosPageState extends State<ListarEnviosPage> {
   ListarEnviosController principalcontroller = new ListarEnviosController();
-  EnvioController envioController = new EnvioController();
-  List<EnvioInterSedeModel> envios = new List();
-  //TextEditingController _rutController = TextEditingController();
-  var listadestinatarios;
-  String textdestinatario = "";
   List<bool> isSelected;
   int indexSwitch = 0;
   int numvalijas = 0;
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
   String codigo = "";
-
-  var nuevo = 0;
 
   @override
   void initState() {
     isSelected = [true, false];
-    setState(() {
-      textdestinatario = "";
-    });
     super.initState();
+  }
+
+  void iniciarEnvio(EnvioInterSedeModel entrega) async {
+    bool respuesta =
+        await principalcontroller.onSearchButtonPressed(context, entrega);
+    if (respuesta) {
+      notificacion(
+          context, "success", "EXACT", "Se ha iniciado el envío correctamente");
+      setState(() {
+        indexSwitch = indexSwitch;
+      });
+    } else {
+      notificacion(context, "error", "EXACT", "No se pudo iniciar la entrega");
+    }
+  }
+
+  void actionButtonNuevo() {
+    Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+  }
+
+  void actionButtonRecepcionar() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RecepcionInterPage(recorridopage: null),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
-      String destino = entrega.destino;
-      int numdocumentos = entrega.numdocumentos;
-
       if (switched == 0) {
         numvalijas = entrega.numvalijas;
       } else {
@@ -67,7 +77,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text("$destino",
+                        Text("${entrega.destino}",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold)),
                         Container(
@@ -82,24 +92,9 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                 Container(
                     padding: const EdgeInsets.only(left: 20, top: 10),
                     height: 35,
-                    child: Text("$numdocumentos envíos",
+                    child: Text("${entrega.numdocumentos} envíos",
                         style: TextStyle(fontSize: 12))),
               ]));
-    }
-
-    void iniciarEnvio(EnvioInterSedeModel entrega) async {
-      bool respuesta =
-          await principalcontroller.onSearchButtonPressed(context, entrega);
-      if (respuesta) {
-        notificacion(context, "success", "EXACT",
-            "Se ha iniciado el envío correctamente");
-        setState(() {
-          indexSwitch = indexSwitch;
-        });
-      } else {
-        notificacion(
-            context, "error", "EXACT", "No se pudo iniciar la entrega");
-      }
     }
 
     Widget iconoRecepcion(EnvioInterSedeModel entrega, BuildContext context) {
@@ -134,7 +129,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
     Widget crearItem(EnvioInterSedeModel entrega, int switched) {
       return Container(
-          decoration: myBoxDecoration(),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () {
@@ -148,7 +143,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                             RecepcionInterPage(recorridopage: entrega),
                       ));
                 }
-              }, // handle your onTap here
+              },
               child: Container(
                 child: Row(children: <Widget>[
                   Expanded(
@@ -179,7 +174,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
     }
 
     Widget _crearListado(int switched) {
-      envios.clear();
       return FutureBuilder(
           future:
               principalcontroller.listarentregasInterSedeController(switched),
@@ -216,61 +210,32 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
           });
     }
 
-    final sendRecepcion = Container(
-        margin: const EdgeInsets.only(left: 5),
-        child: ButtonTheme(
-          minWidth: 130.0,
-          height: 40.0,
-          child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          RecepcionInterPage(recorridopage: null),
-                    ));
-              },
-              color: Colors.grey,
-              child:
-                  Text('Recepcionar', style: TextStyle(color: Colors.white))),
-        ));
-
-    final sendButton = Container(
-        margin: const EdgeInsets.only(right: 5),
-        child: ButtonTheme(
-          minWidth: 130.0,
-          height: 40.0,
-          child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () async {
-                Navigator.of(context).pushNamed('/nueva-entrega-intersede');
-              },
-              color: Color(0xFF2C6983),
-              child: Text('Nuevo', style: TextStyle(color: Colors.white))),
-        ));
-
     final filaBotones = Container(
       child: Row(
         children: <Widget>[
-          Expanded(flex: 5, child: sendButton),
           Expanded(
-            child: sendRecepcion,
-            flex: 5,
-          )
+              flex: 5,
+              child: CustomButton(
+                  onPressed: actionButtonNuevo,
+                  colorParam: StylesThemeData.PRIMARYCOLOR,
+                  texto: "Nuevo")),
+          Expanded(
+              flex: 5,
+              child: Container(
+                  margin: const EdgeInsets.only(left: 5),
+                  child: CustomButton(
+                      onPressed: actionButtonRecepcionar,
+                      colorParam: Colors.grey,
+                      texto: "Recepcionar"))),
         ],
       ),
     );
 
     final tabs = ToggleButtons(
-      borderColor: colorletra,
-      fillColor: colorletra,
+      borderColor: StylesThemeData.LETTERCOLOR,
+      fillColor: StylesThemeData.LETTERCOLOR,
       borderWidth: 1,
-      selectedBorderColor: colorletra,
+      selectedBorderColor: StylesThemeData.LETTERCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -300,65 +265,34 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       isSelected: isSelected,
     );
 
+    Widget mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(top: 20, bottom: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[filaBotones],
+                )),
+            Container(child: tabs),
+            Expanded(
+              child: Container(
+                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+                  child: _crearListado(indexSwitch)),
+            )
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-        appBar: CustomAppBar(text: "Entregas InterUTD"),
+        appBar: CustomAppBar(text: "Entregas interUTD"),
         drawer: DrawerPage(),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                          alignment: Alignment.center,
-                          height: screenHeightExcludingToolbar(context,
-                              dividedBy: 8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[filaBotones],
-                          )),
-                      Container(
-                          height: screenHeightExcludingToolbar(context,
-                              dividedBy: 20),
-                          child: tabs),
-                      Expanded(
-                        child: Container(
-                            decoration: myBoxDecoration(),
-                            padding: const EdgeInsets.only(
-                                left: 5, right: 5, top: 5, bottom: 5),
-                            alignment: Alignment.bottomCenter,
-                            child: _crearListado(indexSwitch)),
-                      )
-                    ],
-                  ),
-                ))));
-  }
-
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

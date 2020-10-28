@@ -13,42 +13,34 @@ class RecorridoImpl implements RecorridoInterface {
   @override
   Future<List<EnvioModel>> enviosCoreRecojo(
       String codigo, int recorridoId) async {
-    List<EnvioModel> envios = new List();
-      envios = await recorrido.enviosRecojoProvider(codigo, recorridoId);
-    return envios;
+    return await recorrido.enviosRecojoProvider(codigo, recorridoId);
   }
 
   @override
   Future<dynamic> enviosCoreEntrega(
       String codigo, int recorridoId) async {
-      dynamic envios = await recorrido.enviosEntregaProvider(codigo, recorridoId);
-    return envios;
+    return await recorrido.enviosEntregaProvider(codigo, recorridoId);
   }
 
 
     @override
   Future<dynamic> registrarRecorridoEntregaCore(String codigoArea, int recorridoId, String codigoPaquete, bool opcion) async {
-    dynamic respuesta = await recorrido.registrarEntregaProvider(
-          codigoArea, recorridoId, codigoPaquete);
-    return respuesta;      
+    return await recorrido.registrarEntregaProvider(
+          codigoArea, recorridoId, codigoPaquete);     
   }
 
   @override
   Future<dynamic> registrarRecorridoRecojoCore(String codigoArea, int recorridoId,
       String codigoPaquete, bool opcion) async {
-    
-      dynamic respuesta = await recorrido.registrarRecojoProvider(
+    return await recorrido.registrarRecojoProvider(
           codigoArea, recorridoId, codigoPaquete);
-
-    return respuesta;
   }
 
   @override
   Future<bool> registrarEntregaPersonalizadaProvider(
       String dni, String codigopaquete) async {
-    bool respuesta = await recorrido.registrarEntregaPersonalizadaProvider(
+    return await recorrido.registrarEntregaPersonalizadaProvider(
         dni, codigopaquete);
-    return respuesta;
   }
 
   @override
@@ -58,9 +50,8 @@ class RecorridoImpl implements RecorridoInterface {
 
   @override
   Future<dynamic> registrarEntregaPersonalizadaFirmaProvider(firma, String codigopaquete) async {
-       dynamic respuesta = await recorrido.registrarEntregaPersonalizadaFirmaProvider(
+    return await recorrido.registrarEntregaPersonalizadaFirmaProvider(
         firma, codigopaquete);
-    return respuesta;
   }
 
 

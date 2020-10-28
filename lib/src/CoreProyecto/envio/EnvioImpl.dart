@@ -32,31 +32,26 @@ class EnvioImpl implements EnvioInterface {
 
   @override
   Future<bool> validarCodigo(String texto) async {
-    bool respuestaValidar =  await paquete.validarPaqueteSobrePorCodigo(texto);
-    return respuestaValidar;
+    return await paquete.validarPaqueteSobrePorCodigo(texto);
   }
 
   @override
   Future<bool> validarBandejaCodigo(String texto) async {
-    bool respuestaValidarBandeja =  await bandeja.validarBandejaSobrePorCodigo(texto);
-    return respuestaValidarBandeja;
+    return await bandeja.validarBandejaSobrePorCodigo(texto);
   }
 
   @override
   Future<List<EnvioInterSedeModel>> listarAgenciasUsuario()async {
-     List<EnvioInterSedeModel> envios = await envio.listarEnvioAgenciasByUsuario();
-      return envios;
+      return await envio.listarEnvioAgenciasByUsuario();
   }
 
   @override
   Future<List<EnvioModel>> listarActivos(int switched,List<int> estadosids) async{
-    List<EnvioModel> envios;
       if(switched==0){
-      envios = await envio.listarEnviosActivosByUsuario(estadosids);
+      return await envio.listarEnviosActivosByUsuario(estadosids);
       }else{
-       envios = await envio.listarRecepcionesActivas(estadosids);       
+       return await envio.listarRecepcionesActivas(estadosids);       
       }
-      return envios;
   }
 
   @override
@@ -72,18 +67,16 @@ class EnvioImpl implements EnvioInterface {
 
   @override
   Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio, String fechaFin, int opcion) async {
-    List<EnvioModel> envios;
       if(opcion==0){
-      envios = await envio.listarEnviosHistoricosEntrada(fechaInicio,fechaFin);
+      return await envio.listarEnviosHistoricosEntrada(fechaInicio,fechaFin);
       }else{
-       envios = await envio.listarEnviosHistoricosSalida(fechaInicio,fechaFin);       
+       return await envio.listarEnviosHistoricosSalida(fechaInicio,fechaFin);       
       }
-      return envios;
   }
 
   @override
-  Future retirarEnvio(EnvioModel envioModel,String motivo) {
-    return envio.retirarEnvioProvider(envioModel,motivo);
+  Future retirarEnvio(EnvioModel envioModel,String motivo) async {
+    return await envio.retirarEnvioProvider(envioModel,motivo);
   }
 
 

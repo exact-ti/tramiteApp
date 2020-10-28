@@ -165,7 +165,7 @@ class _EnvioPageState extends State<EnvioPage> {
     }
 
     Future _traerdatosescanerbandeja() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       setState(() {
         _bandejaController.text = qrbarra;
       });
@@ -244,7 +244,7 @@ class _EnvioPageState extends State<EnvioPage> {
     }
 
     Future _traerdatosescanersobre() async {
-      qrsobre = await getDataFromCamera();
+      qrsobre = await getDataFromCamera(context);
       setState(() {
         _sobreController.text = qrsobre;
       });

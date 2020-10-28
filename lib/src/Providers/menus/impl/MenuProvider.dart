@@ -14,9 +14,7 @@ class MenuProvider implements IMenuProvider {
   Future<List<Menu>> listarMenusDelUsuarioAutenticado() async {
     int id = 1;
     Response resp = await req.get('/servicio-menu/menus?tipoClienteId=$id');
-    List<dynamic> menus = resp.data;
-    List<Menu> listmenu = menuclase.fromJson(menus);
-    return listmenu;
+    return menuclase.fromJson(resp.data);
   }
 
 }

@@ -16,39 +16,33 @@ class AgenciasExternasImpl implements IAgenciasExternasInterface {
 
   @override
   Future<List<EnvioInterSedeModel>> listarEnviosAgenciasUsuario() async {
-    List<EnvioInterSedeModel> envios= await agenciaExterna.listarEnvioAgenciaByUsuario();
-      return envios;
+      return await agenciaExterna.listarEnvioAgenciaByUsuario();
   }
 
   @override
   Future<dynamic> listarEnviosAgenciasByCodigo(String codigo) async{
-     dynamic envios = await agenciaExterna.listarEnviosAgenciaByCodigo(codigo);
-      return envios; 
+      return await agenciaExterna.listarEnviosAgenciaByCodigo(codigo);
   }
 
 
   @override
   Future<EnvioModel> validarCodigoAgencia(String bandeja,String codigo) async{
-     EnvioModel envio = await agenciaExterna.validarCodigoAgenciaProvider(bandeja,codigo);
-    return envio;
+    return await agenciaExterna.validarCodigoAgenciaProvider(bandeja,codigo);
   }
 
   @override
   Future<int>  listarEnviosAgenciasValidados(List<EnvioModel> envios,String codigo) async{
-    int i = await agenciaExterna.listarEnviosAgenciaValidadosInterSede(envios, codigo);
-    return i;
+    return await agenciaExterna.listarEnviosAgenciaValidadosInterSede(envios, codigo);
   }
 
   @override
   Future<bool> iniciarEntregaAgencia(EnvioInterSedeModel envio) async{
-    bool i = await agenciaExterna.iniciarEntregaExternaIntersede(envio);
-    return i;
+    return await agenciaExterna.iniciarEntregaExternaIntersede(envio);
   }
 
   @override
   Future<bool> iniciarEntregaListaAgencia(List<String> listaCodigos) async {
-    bool i = await agenciaExterna.iniciarListaEntregaExternaIntersede(listaCodigos);
-    return i;
+    return await agenciaExterna.iniciarListaEntregaExternaIntersede(listaCodigos);
   }
 
 

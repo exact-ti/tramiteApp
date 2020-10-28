@@ -1,13 +1,13 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class MenuController {
 
@@ -51,7 +51,7 @@ class MenuController {
 
     for (dynamic opcion in opciones) {
       listadecodigos.add(Container(
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 5),
           padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
@@ -65,15 +65,13 @@ class MenuController {
                     child: Center(
                       child: Text(
                         opcion.nombre,
-                        style: TextStyle(color: colorletra, fontSize: 12),
+                        style: TextStyle(color: StylesThemeData.LETTERCOLOR, fontSize: 12),
                       ),
                     )),
                 onTap: () async {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continua?");
-                  if (respuestabool != null) {
                     if (respuestabool) {
-                      /*       eventNotifier.value += 1; */
                       if (tipo == cliente) {
                         HashMap<String, dynamic> buzonhash = new HashMap();
                         buzonhash['id'] = opcion.id;
@@ -87,7 +85,6 @@ class MenuController {
                       }
                       Navigator.of(context).pushNamed('/principal-admin');
                     }
-                  }
                 },
               )
             ],

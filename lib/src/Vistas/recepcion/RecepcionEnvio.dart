@@ -1,13 +1,13 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'RecepcionController.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class RecepcionEnvioPage extends StatefulWidget {
   @override
@@ -55,7 +55,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
-
     Widget crearItem(EnvioModel entrega) {
       String codigopaquete = entrega.codigoPaquete;
       String destinatario = entrega.usuario;
@@ -92,7 +91,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                     height: 35,
                     child: RichText(
                       text: TextSpan(
-                        /*defining default style is optional */
                         children: <TextSpan>[
                           TextSpan(
                               text: 'De',
@@ -187,7 +185,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
 
     Future _traerdatosescanerBandeja() async {
       if (!validados.containsValue(true)) {
-        qrbarra = await getDataFromCamera();
+        qrbarra = await getDataFromCamera(context);
         _validarBandejaText(qrbarra);
       }
     }
@@ -212,18 +210,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
           },
           color: Color(0xFF2C6983),
           child: Text('Recepcionar', style: TextStyle(color: Colors.white))),
-    ) /* RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          registrarLista();
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Recepcionar', style: TextStyle(color: Colors.white)),
-      ), */
-        );
+    ));
 
     Widget _crearListado(List<EnvioModel> listaEnv) {
       if (listaEnv.length == 0)
@@ -238,8 +225,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     var bandeja = TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
-/*       focusNode: f1,
- */
       controller: _bandejaController,
       textInputAction: TextInputAction.done,
       onFieldSubmitted: (value) {

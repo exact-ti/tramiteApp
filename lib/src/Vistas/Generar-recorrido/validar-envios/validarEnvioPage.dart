@@ -1,13 +1,17 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
-import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -23,382 +27,140 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   _ValidacionEnvioPageState(this.recorridoUsuario);
   final _sobreController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
-  List<EnvioModel> listaEnviosValidados = new List();
-  List<EnvioModel> listaEnviosNoValidados = new List();
-  ValidacionController principalcontroller = new ValidacionController();
-  EnvioController envioController = new EnvioController();
-  String qrsobre, qrbarra, valuess = "";
-  var listadestinatarios;
-  String codigoValidar = "";
-  String textdestinatario = "";
-  List<String> listaCodigosValidados = new List();
-  FocusNode _focusNode;
+  ValidacionController validacionController = new ValidacionController();
   FocusNode f1 = FocusNode();
-  bool inicio = true;
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  var nuevo = 0;
 
   @override
   void initState() {
-    prueba = Text("Usuarios frecuentes",
-        style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _sobreController.clear();
-    });
-    setState(() {
-      codigoValidar = "";
-      textdestinatario = "";
-    });
+    listarEnviosToValidar();
     super.initState();
+  }
+
+  void listarEnviosToValidar() async {
+    listaEnvios = await validacionController
+        .validacionEnviosController(this.recorridoUsuario.id);
+    if (this.mounted) {
+      setState(() {
+        listaEnvios = listaEnvios;
+      });
+    }
+  }
+
+  void _validarText() async {
+    String value = _sobreController.text;
+    desenfocarInputfx(context);
+    if (value != "") {
+      bool perteneceLista = listaEnvios
+          .where((envio) => envio.codigoPaquete == value)
+          .toList()
+          .isNotEmpty;
+      if (perteneceLista) {
+        setState(() {
+          listaEnvios.forEach((envio) {
+            if (envio.codigoPaquete == value) {
+              envio.estado = true;
+            }
+          });
+        });
+      } else {
+        EnvioModel envioModel = await validacionController.validarCodigo(
+            value, recorridoUsuario.id, context);
+        if (envioModel != null) {
+          envioModel.estado = true;
+          setState(() {
+            listaEnvios.add(envioModel);
+          });
+          await notificacion(
+              context, "success", "EXACT", "El envío $value fue agregado");
+        } else {
+          await notificacion(context, "success", "EXACT",
+              "El envío $value no pertenece al recorrido");
+        }
+      }
+      setState(() {
+        _sobreController.text = "";
+      });
+      if (listaEnvios.where((envio) => !envio.estado).toList().isNotEmpty) {
+        enfocarInputfx(context, f1);
+      }
+    } else {
+      popuptoinput(context, f1, "error", "EXACT",
+          "Es necesario ingresar el código del documento");
+    }
+  }
+
+  Future _traerdatosescanerbandeja() async {
+    _sobreController.text = await getDataFromCamera(context);
+    setState(() {
+      _sobreController.text;
+    });
+    _validarText();
+  }
+
+  void onPressed() async {
+    if (listaEnvios.where((envio) => !envio.estado).toList().isEmpty) {
+      validacionController.confirmacionDocumentosValidados(
+          listaEnvios, context, recorridoUsuario.id);
+    } else {
+      bool respuestaarray = await confirmarArray(
+          context,
+          "success",
+          "EXACT",
+          "Te faltan asociar estos documentos",
+          listaEnvios.where((envio) => !envio.estado).toList());
+      if (respuestaarray) {
+        validacionController.confirmacionDocumentosValidados(
+            listaEnvios.where((envio) => envio.estado).toList(),
+            context,
+            recorridoUsuario.id);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    void _validarText(String value) {
-      desenfocarInputfx(context);
-      if (value != "") {
-        bool perteneceLista = false;
-        for (EnvioModel envio in listaEnvios) {
-          if (envio.codigoPaquete == value) {
-            perteneceLista = true;
-          }
-        }
-        if (perteneceLista) {
-          setState(() {
-            _sobreController.text = "";
-            listaCodigosValidados.add(value);
-            inicio = false;
-          });
-          if (listaEnvios.length != listaCodigosValidados.length) {
-            enfocarInputfx(context, f1);
-          }
-        } else {
-          setState(() {
-            _sobreController.text = "";
-            codigoValidar = value;
-            inicio = false;
-          });
-        }
-      } else {
-        popuptoinput(context, f1, "error", "EXACT",
-            "Es necesario ingresar el código del documento");
-      }
-    }
-
-    Future _traerdatosescanerbandeja() async {
-      qrbarra = await getDataFromCamera();
-      _validarText(qrbarra);
-    }
-
-    listarNovalidados() {
-      for (EnvioModel envio in listaEnvios) {
-        if (listaCodigosValidados.contains(envio.codigoPaquete)) {
-          listaEnviosValidados.add(envio);
-        } else {
-          listaEnviosNoValidados.add(envio);
-        }
-      }
-    }
-
-    Widget sendButton = Container(
-        margin: const EdgeInsets.only(top: 40),
-        child: ButtonTheme(
-          minWidth: 130.0,
-          height: 40.0,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
+    Widget mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(top: 30, bottom: 20),
+                width: double.infinity,
+                child: InputCamera(
+                    iconData: Icons.camera_alt,
+                    onPressed: _traerdatosescanerbandeja,
+                    inputParam: InputForm(
+                      onPressed: _validarText,
+                      controller: _sobreController,
+                      fx: f1,
+                      hinttext: "",
+                    ))),
+            Expanded(
+              child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: ListCod(enviosModel: listaEnvios)),
             ),
-            onPressed: () async {
-              listarNovalidados();
-              if (listaEnviosNoValidados.length == 0) {
-                principalcontroller.confirmacionDocumentosValidados(
-                    listaEnviosValidados, context, recorridoUsuario.id);
-              } else {
-                bool respuestaarray = await confirmarArray(
-                    context,
-                    "success",
-                    "EXACT",
-                    "Te faltan asociar estos documentos",
-                    listaEnviosNoValidados);
-                if (respuestaarray == null) {
-                  listaEnviosNoValidados.clear();
-                  listaEnviosValidados.clear();
-                } else {
-                  if (respuestaarray) {
-                    listaEnviosNoValidados.clear();
-                    principalcontroller.confirmacionDocumentosValidados(
-                        listaEnviosValidados, context, recorridoUsuario.id);
-                    listaEnviosValidados.clear();
-                    listaEnvios.clear();
-                  } else {
-                    listaEnviosNoValidados.clear();
-                    listaEnviosValidados.clear();
-                  }
-                }
-              }
-            },
-            color: Color(0xFF2C6983),
-            child: Text(
-                listaEnvios.length == 0
-                    ? 'Crear solo recojo'
-                    : 'Crear recorrido',
-                style: TextStyle(color: Colors.white)),
-          ),
-        ));
-
-    var sobre = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: _sobreController,
-      textInputAction: TextInputAction.done,
-      focusNode: f1,
-      onFieldSubmitted: (value) {
-        _validarText(value);
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
+            Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                margin: EdgeInsets.only(bottom: 40),
+                child: CustomButton(
+                    onPressed: onPressed,
+                    colorParam: StylesThemeData.PRIMARYCOLOR,
+                    texto: listaEnvios.length == 0
+                        ? 'Crear solo recojo'
+                        : 'Crear recorrido'))
+          ],
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    void agregaralista(EnvioModel envio) {
-      bool pertenece = false;
-      if (listaEnvios.length == 0) {
-        listaEnvios.add(envio);
-      } else {
-        for (EnvioModel envioModel in listaEnvios) {
-          if (envioModel.id == envio.id) {
-            pertenece = true;
-          }
-        }
-        if (!pertenece) {
-          //setState(() {
-          listaEnvios.add(envio);
-          //});
-        }
-      }
+      );
     }
-
-    Widget crearItem(EnvioModel envio, List<String> validados) {
-      String codigopaquete = envio.codigoPaquete;
-      bool estado = false;
-      if (validados.length != 0) {
-        for (String codigovalidado in validados) {
-          if (codigovalidado == envio.codigoPaquete) {
-            estado = true;
-          }
-        }
-      }
-      agregaralista(envio);
-      if (estado) {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading:
-                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-              trailing: Icon(
-                Icons.check,
-                color: Color(0xffC7C7C7),
-              ),
-            ));
-      } else {
-        return Container(
-            decoration: myBoxDecoration(),
-            margin: EdgeInsets.only(bottom: 5),
-            child: ListTile(
-              title: Text("$codigopaquete"),
-              leading:
-                  FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-              trailing: Text(""),
-            ));
-      }
-    }
-
-    Widget _crearListado(List<String> validados) {
-      return FutureBuilder(
-          future: principalcontroller
-              .validacionEnviosController(recorridoUsuario.id),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    final envios = snapshot.data;
-                    if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(envios[i], validados));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
-    }
-
-    Widget _crearListadoinMemoria(List<String> validados) {
-      return ListView.builder(
-          itemCount: listaEnvios.length,
-          itemBuilder: (context, i) => crearItem(listaEnvios[i], validados));
-    }
-
-    Widget _crearListadoAgregar(
-        List<String> validados, String codigoporValidar) {
-      return FutureBuilder(
-          future: principalcontroller.validarCodigo(
-              codigoporValidar, recorridoUsuario.id, context),
-          builder: (BuildContext context, AsyncSnapshot<EnvioModel> snapshot) {
-            codigoValidar = "";
-            if (snapshot.hasData) {
-              final envio = snapshot.data;
-              listaEnvios.add(envio);
-              validados.add(envio.codigoPaquete);
-              enfocarInputfx(context, f1);
-              return ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) =>
-                      crearItem(listaEnvios[i], validados));
-            } else {
-              enfocarInputfx(context, f1);
-              if (listaEnvios.length != 0) {
-                return ListView.builder(
-                    itemCount: listaEnvios.length,
-                    itemBuilder: (context, i) =>
-                        crearItem(listaEnvios[i], validados));
-              } else {
-                return Container();
-              }
-            }
-          });
-    }
-
-    Widget _validarListado(List<String> codigos, String codigo) {
-      if (codigo == "") {
-        if (inicio) {
-          return _crearListado(codigos);
-        } else {
-          return _crearListadoinMemoria(codigos);
-        }
-      } else {
-        Widget agregado = _crearListadoAgregar(codigos, codigo);
-        return agregado;
-      }
-    }
-
-    final campodetextoandIcono = Row(children: <Widget>[
-      Expanded(
-        child: sobre,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerbandeja),
-        ),
-      ),
-    ]);
 
     return Scaffold(
-        appBar:CustomAppBar(text: "Validación de documentos"),
+        appBar: CustomAppBar(text: "Validación de documentos"),
         drawer: DrawerPage(),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 6),
-                            width: double.infinity,
-                            child: campodetextoandIcono),
-                      ),
-                      Expanded(
-                        child: Container(
-                            alignment: Alignment.bottomCenter,
-                            child: _validarListado(
-                                listaCodigosValidados, codigoValidar)),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 5),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
-                    ],
-                  ),
-                ))));
-  }
-
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEstadoEnum.dart';
 import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
@@ -13,10 +12,8 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  SharedPreferences sharedPreferences;
   DashboardController dashboardController = new DashboardController();
   Indicador indicadorModel = new Indicador();
-  dynamic datacontroller;
   @override
   void initState() {
     super.initState();
@@ -49,7 +46,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
                         child: ClipOval(
                           child: Material(
-                            color: Colors.blue, // button color
+                            color: Colors.blue, 
                             child: SizedBox(width: 35, height: 35),
                           ),
                         ),
@@ -95,23 +92,18 @@ class _DashboardPageState extends State<DashboardPage> {
             case ConnectionState.none:
               return Center(
                   child: new Text(
-                      'No hay conexión con el servidor')); // error output
+                      'No hay conexión con el servidor')); 
             case ConnectionState.waiting:
               return Center(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: loadingGet(), // waiting indicator
+                child: loadingGet(), 
               ));
             default:
               if (snapshot.hasError)
                 return Center(child: new Text('Ha surgido un problema'));
               return futurowidget(snapshot.data);
           }
-/*           if (snapshot.hasData) {
-            return futurowidget(snapshot.data);
-          } else {
-            return Container();
-          } */
         });
   }
 

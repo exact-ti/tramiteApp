@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
       child:MaterialApp(
         title: 'Componentes App',
         debugShowCheckedModeBanner: false,
-        /* home: TopLevelWidget(), */
         initialRoute: '/login',
         routes: getAplicationRoutes(),
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],

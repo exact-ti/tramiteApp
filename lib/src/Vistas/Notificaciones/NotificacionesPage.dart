@@ -2,12 +2,13 @@ import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'NotificacionesController.dart';
 
 class NotificacionesPage extends StatefulWidget {
@@ -73,7 +74,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
               padding:
                   const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               decoration: BoxDecoration(
-                color: /* notificacionModel.notificacionEstadoModel.id!=visitado?colorplomo: */ Colors
+                color:  Colors
                     .white,
                 border: new Border(bottom: BorderSide(color: Colors.grey[300])),
               ),
@@ -149,7 +150,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARYCOLOR,
             title: Text("Notificaciones",
                 style: TextStyle(
                     fontSize: 18,

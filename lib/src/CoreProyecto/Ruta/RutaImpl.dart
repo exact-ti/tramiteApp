@@ -15,31 +15,25 @@ class RutaImpl implements RutaInterface {
 
   @override
   Future<List<RutaModel>> listarMiruta(int recorridoId) async {
-    List<RutaModel> rutaModel = await ruta.listarMiRuta(recorridoId);
-    return rutaModel;
+    return await ruta.listarMiRuta(recorridoId);
   }
 
   @override
   Future<bool> opcionRecorrido(RecorridoModel recorrido) async {
-    bool respuesta;
     if (recorrido.indicepagina == 1) {
-      respuesta = await ruta.iniciarRecorrido(recorrido.id);
+      return await ruta.iniciarRecorrido(recorrido.id);
     } else {
-      respuesta = await ruta.terminarRecorrido(recorrido.id);
+      return await ruta.terminarRecorrido(recorrido.id);
     }
-
-    return respuesta;
   }
 
   @override
   Future<List<DetalleRutaModel>> listarDetalleMiRuta(
       int modo, String areaId, int recorridoId) async {
-    List<DetalleRutaModel> listdetalleruta;
     if (modo == 0) {
-      listdetalleruta = await ruta.listarDetalleMiRutaEntrega(areaId,recorridoId);
+      return await ruta.listarDetalleMiRutaEntrega(areaId,recorridoId);
     } else {
-      listdetalleruta = await ruta.listarDetalleMiRutaRecojo(areaId,recorridoId);
+      return await ruta.listarDetalleMiRutaRecojo(areaId,recorridoId);
     }
-    return listdetalleruta;
   }
 }

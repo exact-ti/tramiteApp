@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'dart:math';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class ColorLoader3 extends StatefulWidget {
   final double radius;
@@ -79,13 +79,11 @@ class _ColorLoader3State extends State<ColorLoader3>
     return Container(
       width: 100.0,
       height: 100.0,
-      //color: Colors.black12,
       child: new Center(
         child: new RotationTransition(
           
           turns: animation_rotation,
           child: new Container(
-            //color: Colors.limeAccent,
             child: new Center(
               child: Stack(
                 children: <Widget>[
@@ -93,13 +91,13 @@ class _ColorLoader3State extends State<ColorLoader3>
                     offset: Offset(0.0, 0.0),
                     child: Dot(
                       radius: radius,
-                      color: primaryColor,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                   ),
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: colorplomo,
+                      color: StylesThemeData.INPUTCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0),
@@ -109,7 +107,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: primaryColor,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 1 * pi / 4),
@@ -119,7 +117,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: colorplomo,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 2 * pi / 4),
@@ -129,7 +127,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: primaryColor,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 3 * pi / 4),
@@ -139,7 +137,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: colorplomo,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 4 * pi / 4),
@@ -149,7 +147,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: primaryColor,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 5 * pi / 4),
@@ -159,7 +157,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: colorplomo,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 6 * pi / 4),
@@ -169,7 +167,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: primaryColor,
+                      color: StylesThemeData.PRIMARYCOLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 7 * pi / 4),

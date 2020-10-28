@@ -14,14 +14,12 @@ class UsuarioImpl implements UsuarioInterface {
 
   @override
   Future<List<UsuarioFrecuente>> listarUsuariosFrecuentes() async {
-     List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuarioFrecuenteDelUsuarioAutenticado();
-        return usuariosfrecuentes;
+        return await usuario.listarUsuarioFrecuenteDelUsuarioAutenticado();
   }
 
   @override
   Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async {
-     List<UsuarioFrecuente> usuariosfrecuentes = await usuario.listarUsuariosporFiltro(texto);
-      return usuariosfrecuentes;
+      return await usuario.listarUsuariosporFiltro(texto);
   }
   
 }

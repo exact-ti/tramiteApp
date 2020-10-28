@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class CambiarPasswordPage extends StatefulWidget {
   @override
@@ -166,7 +167,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
           child: Icon(
             !passwordVisible1 ? Icons.visibility_off : Icons.visibility,
             size: 18,
-            color: primaryColor,
+            color: StylesThemeData.PRIMARYCOLOR,
           ),
         ),
       ),
@@ -225,7 +226,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
           child: Icon(
             !passwordVisible2 ? Icons.visibility_off : Icons.visibility,
             size: 18,
-            color: primaryColor,
+            color: StylesThemeData.PRIMARYCOLOR,
           ),
         ),
       ),
@@ -284,7 +285,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
           child: Icon(
             !passwordVisible3 ? Icons.visibility_off : Icons.visibility,
             size: 18,
-            color: primaryColor,
+            color: StylesThemeData.PRIMARYCOLOR,
           ),
         ),
       ),
@@ -372,7 +373,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARYCOLOR,
             title: Text("Cambiar contraseña",
                 style: TextStyle(
                     fontSize: 18,

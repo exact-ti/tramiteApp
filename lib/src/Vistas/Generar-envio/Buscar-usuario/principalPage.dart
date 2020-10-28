@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalCont
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class PrincipalPage extends StatefulWidget {
   final double bottomHeight;
@@ -44,14 +45,14 @@ class _PrincipalPageState extends State<PrincipalPage> {
   Widget build(BuildContext context) {
     const colorborde = const Color(0xFFD5DCDF);
     var booleancolor = true;
-    var colorwidget = colorplomo;
+    var colorwidget = StylesThemeData.INPUTCOLOR;
 
     Widget crearItem(UsuarioFrecuente usuario) {
       if (booleancolor) {
-        colorwidget = colorplomo;
+        colorwidget = StylesThemeData.INPUTCOLOR;
         booleancolor = false;
       } else {
-        colorwidget = colorblanco;
+        colorwidget = Colors.white;
         booleancolor = true;
       }
       return Container(
@@ -84,7 +85,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
     Widget _crearListadoporfiltro(String texto) {
       booleancolor = true;
-      colorwidget = colorplomo;
+      colorwidget = StylesThemeData.INPUTCOLOR;
       List<UsuarioFrecuente> usuarios = [];
       if (this.cantidad > texto.length && texto.length > 0) {
         return Container();

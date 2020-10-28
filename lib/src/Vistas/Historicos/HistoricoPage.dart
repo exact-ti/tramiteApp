@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'HistoricoController.dart';
 
 class HistoricoPage extends StatefulWidget {
@@ -101,7 +102,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
     Widget crearItem(EnvioModel envio) {
       return Container(
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.INPUTCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -290,7 +291,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
       }
       if (listaEnvios.length == 0) {
         return Container(
-          decoration: myBigBoxDecoration(colorletra),
+          decoration: myBigBoxDecoration(StylesThemeData.INPUTCOLOR),
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
           alignment: Alignment.center,
           child: Center(child: sinResultados("No se encontraron resultados")),
@@ -303,10 +304,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: colorletra,
-      fillColor: colorletra,
+      borderColor: StylesThemeData.INPUTCOLOR,
+      fillColor: StylesThemeData.INPUTCOLOR,
       borderWidth: 1,
-      selectedBorderColor: colorletra,
+      selectedBorderColor: StylesThemeData.INPUTCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[

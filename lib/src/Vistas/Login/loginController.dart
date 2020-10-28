@@ -19,13 +19,13 @@ import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionP
 import 'package:tramiteapp/src/Providers/perfiles/impl/PerfilProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'dart:convert';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class LoginController {
   AccesoInterface accesoInterface = new AccesoImpl(

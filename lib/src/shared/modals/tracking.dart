@@ -6,8 +6,8 @@ import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
 import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
-import 'package:tramiteapp/src/Util/modals/trackingCargo.dart';
-import 'package:tramiteapp/src/Util/utils.dart';
+import 'package:tramiteapp/src/shared/modals/trackingCargo.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 Widget cargoOrdni(
     BuildContext context, CargoModel cargo, TrackingModel trackingModel) {
@@ -144,7 +144,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.codigo,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],
@@ -165,7 +165,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.remitente,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],
@@ -186,7 +186,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.origen,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],
@@ -207,7 +207,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.destinatario,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],
@@ -228,7 +228,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.destino,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],
@@ -249,7 +249,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(observacion,
-                                style: TextStyle(color: colorletra)),
+                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),
                         ],

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/CargoModel.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
-import '../utils.dart';
 
 Future<bool> informacionCargo(BuildContext context, String titulo,
     CargoModel cargo, TrackingModel trackingModel) async {
@@ -45,7 +45,7 @@ Future<bool> informacionCargo(BuildContext context, String titulo,
                     ),
                     Expanded(
                       child: Text("$tipoCargo",
-                          style: TextStyle(color: colorletra)),
+                          style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                       flex: 3,
                     ),
                   ],
@@ -66,7 +66,7 @@ Future<bool> informacionCargo(BuildContext context, String titulo,
                     ),
                     Expanded(
                       child: Text(trackingModel.codigo,
-                          style: TextStyle(color: colorletra)),
+                          style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                       flex: 3,
                     ),
                   ],
@@ -88,7 +88,7 @@ Future<bool> informacionCargo(BuildContext context, String titulo,
                     ),
                     Expanded(
                       child: Text(trackingModel.destinatario,
-                          style: TextStyle(color: colorletra)),
+                          style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                       flex: 3,
                     ),
                   ],

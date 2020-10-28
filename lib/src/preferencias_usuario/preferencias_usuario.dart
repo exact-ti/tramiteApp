@@ -22,7 +22,6 @@ class PreferenciasUsuario {
     this._prefs = await SharedPreferences.getInstance();
   }
 
-  // GET y SET de la última página
   get token {
     return _prefs.getString('token') ?? '';
   }
@@ -103,7 +102,6 @@ class PreferenciasUsuario {
     _prefs.setString("configuraciones", json.encode(configuraciones));
   }
 
-  // GET y SET de la última página
   get ultimaPagina {
     return _prefs.getString('ultimaPagina') ?? 'login';
   }

@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/Importa
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class PaqueteExternoPage extends StatefulWidget {
   @override
@@ -17,9 +18,9 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
   PaqueteExternoController paqueteExternoController =
       new PaqueteExternoController();
 
-  final subtituloStyle = TextStyle(color: sd.colorletra);
+  final subtituloStyle = TextStyle(color: StylesThemeData.LETTERCOLOR);
   var booleancolor = true;
-  var colorwidget = sd.colorplomo;
+  var colorwidget = StylesThemeData.INPUTCOLOR;
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +121,10 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
 
   Widget _crearItem(TipoPaqueteModel item) {
     if (booleancolor) {
-      colorwidget = sd.colorplomo;
+      colorwidget =  StylesThemeData.INPUTCOLOR;
       booleancolor = false;
     } else {
-      colorwidget = sd.colorblanco;
+      colorwidget = Colors.white;
       booleancolor = true;
     }
     return Container(
@@ -132,7 +133,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         child: InkWell(
             onTap: () {
               _onSearchButtonPressed(item);
-            }, // handle your onTap here
+            }, 
             child: Container(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,7 +182,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
-      border: Border.all(color: sd.colorletra),
+      border: Border.all(color: StylesThemeData.LETTERCOLOR),
     );
   }
 }

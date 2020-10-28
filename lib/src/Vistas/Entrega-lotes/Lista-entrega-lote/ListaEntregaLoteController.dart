@@ -24,11 +24,6 @@ class ListaEntregaLoteController {
       BuildContext context, EntregaLoteModel enviomodel) async {
     bool respuesta =
         await entregaLote.iniciarEntregaLote(enviomodel.utdId);
-    /*if(respuesta){
-        confirmarAlerta(context, "Se ha iniciado el envío correctamente", "Inicio Correcto");
-    }else{
-      mostrarAlerta( context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    }*/
     return respuesta;
   }
 

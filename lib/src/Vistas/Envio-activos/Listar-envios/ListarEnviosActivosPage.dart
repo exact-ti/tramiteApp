@@ -5,8 +5,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'ListarEnviosActivosController.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class ListarEnviosActivosPage extends StatefulWidget {
   final dynamic objetoModo;

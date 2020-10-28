@@ -3,156 +3,89 @@ import 'package:tramiteapp/src/Enumerator/TipoEntregaEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPaqueteEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'dart:convert';
 import '../IInterSedeProvider.dart';
 
 class InterSedeProvider implements IInterSedeProvider {
   Requester req = Requester();
-  final _prefs = new PreferenciasUsuario();
   EnvioInterSedeModel sedeModel = new EnvioInterSedeModel();
   EnvioModel envioModel = new EnvioModel();
-  UtdModel utdModel = new UtdModel();
 
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioByUsuario() async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    print("sadsa");
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/utdsparaentrega');
-    List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonValidar(envios);
-    return listEnvio;
+    int utdId = obtenerUTDid();
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
+    return sedeModel.fromJsonValidar(resp.data);
   }
 
   @override
   Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario() async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp = await req.get('/servicio-tramite/utds/$id/tiposentregas/$entregaValijaId/entregas/recepcion');
-    List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio =
-        sedeModel.fromJsonValidarRecepcion(envios);
-    return listEnvio;
-  }
-
-  @override
-  Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario2() async {
-    List<EnvioInterSedeModel> listEnvio = await listarfake();
-    return listEnvio;
-  }
-
-  Future<List<EnvioInterSedeModel>> listarfake() async {
-    List<EnvioInterSedeModel> envios = new List();
-    EnvioInterSedeModel envio = new EnvioInterSedeModel();
-    EnvioInterSedeModel envio2 = new EnvioInterSedeModel();
-    envio.utdId = 1;
-    envio.numdocumentos = 2;
-    envio.codigo = "UTD0005";
-    envio.destino = "Brasil";
-    envio2.utdId = 2;
-    envio2.numdocumentos = 3;
-    envio2.codigo = "abcd";
-    envio2.destino = "Perú";
-    envios.add(envio);
-    envios.add(envio2);
-
-    return Future.delayed(new Duration(seconds: 1), () {
-      return envios;
-    });
+    int utdId = obtenerUTDid();
+    Response resp = await req.get(
+        '/servicio-tramite/utds/$utdId/tiposentregas/$entregaValijaId/entregas/recepcion');
+    return sedeModel.fromJsonValidarRecepcion(resp.data);
   }
 
   @override
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp =await req.get('/servicio-tramite/utds/$id/tipospaquetes/$valijaId/paquetes/$codigo/envios');
-    if (resp.data == "") {
-      return null;
-    }
-    List<dynamic> envios = resp.data;
-    List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
-    return listEnvio;
+    int utdId = obtenerUTDid();
+    Response resp = await req.get(
+        '/servicio-tramite/utds/$utdId/tipospaquetes/$valijaId/paquetes/$codigo/envios');
+    if (resp.data == "") return null;
+    return envioModel.fromJsonValidar(resp.data);
   }
 
   @override
   Future<EnvioModel> validarCodigoProvider(
       String codigo, String codigobandeja) async {
-    try {
-      Response resp = await req.get(
-          '/servicio-tramite/tipospaquetes/valijas/$codigobandeja/paquetes/$codigo');
-      if (resp.data == "") {
-        return null;
-      }
-      dynamic envio = resp.data;
-      EnvioModel envioMode = envioModel.fromOneJson(envio);
-      return envioMode;
-    } catch (e) {
-      return null;
-    }
+    Response resp = await req.get(
+        '/servicio-tramite/tipospaquetes/valijas/$codigobandeja/paquetes/$codigo');
+    if (resp.data == "") return null;
+    return envioModel.fromOneJson(resp.data);
   }
 
   @override
   Future<dynamic> listarEnviosValidadosInterSede(
       List<EnvioModel> enviosvalidados, String codigo) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    List<int> ids = new List();
-    for (EnvioModel envio in enviosvalidados) {
-      ids.add(envio.id);
-    }
+    int utdId = obtenerUTDid();
+    List<int> ids = enviosvalidados.map((envio) => envio.id).toList();
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/valijas/$codigo/tiposentregas/$entregaValijaId/entregas', listaIds, null);
-    dynamic idresp = resp.data;
-    return idresp;
+        '/servicio-tramite/utds/$utdId/valijas/$codigo/tiposentregas/$entregaValijaId/entregas',
+        listaIds,
+        null);
+    return resp.data;
   }
 
   @override
   Future<bool> iniciarEntregaIntersede(int utdDestino) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
+    int utdId = obtenerUTDid();
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/utdsdestinos/$utdDestino/iniciar',
+        '/servicio-tramite/utds/$utdId/utdsdestinos/$utdDestino/iniciar',
         null,
         null);
-    if (resp.data) {
-      return true;
-    }
-    return false;
+    return resp.data ? true : false;
   }
 
   @override
   Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
-    Response resp =
-        await req.get('/servicio-tramite/utds/$id/entregas/$codigo/recepcion');
-        if(resp.data==""){
-          return [];
-        }
-    List<dynamic> envios = resp.data;
-    List<EnvioModel> listEnvio = envioModel.fromJsonValidar(envios);
-    return listEnvio;
+    int utdId = obtenerUTDid();
+    Response resp = await req
+        .get('/servicio-tramite/utds/$utdId/entregas/$codigo/recepcion');
+    if (resp.data == "") return [];
+    return envioModel.fromJsonValidar(resp.data);
   }
 
   @override
   Future<dynamic> registrarRecojoIntersedeProvider(
       String codigo, String codigopaquete) async {
-    Map<String, dynamic> utd = json.decode(_prefs.utd);
-    UtdModel umodel = utdModel.fromPreferencs(utd);
-    int id = umodel.id;
+    int utdId = obtenerUTDid();
     Response resp = await req.post(
-        '/servicio-tramite/utds/$id/paquetes/$codigopaquete/custodia',
+        '/servicio-tramite/utds/$utdId/paquetes/$codigopaquete/custodia',
         null,
         null);
-    return resp.data;}
+    return resp.data;
+  }
 }

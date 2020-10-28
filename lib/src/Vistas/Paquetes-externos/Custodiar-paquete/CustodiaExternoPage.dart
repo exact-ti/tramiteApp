@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoController.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class CustodiaExternoPage extends StatefulWidget {
   @override
@@ -16,13 +17,13 @@ class CustodiaExternoPage extends StatefulWidget {
 class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   CustodiaController custodiaController = new CustodiaController();
 
-  final subtituloStyle = TextStyle(color: sd.colorletra);
+  final subtituloStyle = TextStyle(color: StylesThemeData.LETTERCOLOR);
 
   final tituloMensaje = 'Custodiar envíos';
 
   var booleancolor = true;
 
-  var colorwidget = sd.colorplomo;
+  var colorwidget = StylesThemeData.INPUTCOLOR;
 
   var contenido;
 
@@ -39,7 +40,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   var colorletra = const Color(0xFFACADAD);
 
   String txtcodigo = "";
-  FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
 
@@ -100,21 +100,15 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     return TextFormField(
       keyboardType: TextInputType.text,
       autofocus: false,
-/*       focusNode: f1,
- */      controller: _codigoController,
+      controller: _codigoController,
       onFieldSubmitted: (text) {
-        // if (text.length > 5){
-
         setState(() {
           this.codigoPaquete = text;
           _codigoController.text = text;
         });
         _custodiarPaquete();
-
-        // }
       },
       decoration: InputDecoration(
-        // prefixIcon: Icon(Icons.description),
         contentPadding:
             new EdgeInsets.symmetric(vertical: 11.0, horizontal: 10.0),
         filled: true,
@@ -128,7 +122,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
           borderRadius: BorderRadius.circular(10.0),
           borderSide: BorderSide(color: Colors.grey),
         ),
-        // hintText: 'Código de documento'
       ),
     );
   }
@@ -141,34 +134,35 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
             future: _listarCreados(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<PaqueteExterno>> snapshot) {
-                              switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    booleancolor = true;
-                    this.creados = snapshot.data;
-                    if (this.creados.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: this.creados.length,
-                          itemBuilder: (context, i) => _crearItem(this.creados[i]));
-                    }
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return sinResultados("No hay conexión con el servidor");
+                case ConnectionState.waiting:
+                  return Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: loadingGet(),
+                  ));
+                default:
+                  if (snapshot.hasError) {
+                    return sinResultados("Ha surgido un problema");
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    if (snapshot.hasData) {
+                      booleancolor = true;
+                      this.creados = snapshot.data;
+                      if (this.creados.length == 0) {
+                        return sinResultados("No se han encontrado resultados");
+                      } else {
+                        return ListView.builder(
+                            itemCount: this.creados.length,
+                            itemBuilder: (context, i) =>
+                                _crearItem(this.creados[i]));
+                      }
+                    } else {
+                      return sinResultados("No se han encontrado resultados");
+                    }
                   }
-                }
-            }
+              }
             }),
       ),
     );
@@ -188,7 +182,9 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                   FontAwesomeIcons.qrcode,
                   color: Colors.grey,
                 ),
-                onPressed: sd.getDataFromCamera),
+                onPressed: () {
+                  getDataFromCamera(context);
+                }),
           ),
         ),
         Expanded(
@@ -235,9 +231,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
           context, "error", "EXACT", 'No existen envíos para custodiar');
       return;
     }
-
-    //validar
-
     bool existeEnvio = _validarCodigo(codigo);
 
     if (existeEnvio == false) {
@@ -245,8 +238,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
           "El código ingresado no se encuentra en la lista de envíos por custodiar");
       return;
     }
-
-    //custodiar
     PaqueteExterno paq = new PaqueteExterno();
     paq.paqueteId = codigo;
     bool resp = await custodiaController.custodiarPaquete(paq);
@@ -264,7 +255,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     }
 
     this.codigoPaquete = "";
-    //listar
   }
 
   bool _validarCodigo(String codigo) {
@@ -279,7 +269,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   }
 
   void _custodiarConCamara() async {
-    var codigo = await sd.getDataFromCamera();
+    var codigo = await sd.getDataFromCamera(context);
 
     this.codigoPaqueteCamara = codigo;
 

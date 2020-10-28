@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'RecepcionController.dart';
 
 class RecepcionEntregaLotePage extends StatefulWidget {
@@ -184,9 +184,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           }
         }
         if (!pertenece) {
-          //setState(() {
           listaEnvios.add(envio);
-          //});
         }
       }
     }
@@ -206,7 +204,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       if (codigoBandeja == "") {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT",
@@ -217,7 +215,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       _validarBandejaText(qrbarra);
     }
 
@@ -400,7 +398,6 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                             alignment: Alignment.bottomLeft,
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
-                            //width: double.infinity,
                             child: principalcontroller
                                 .labeltext("Código de valija")),
                       ),

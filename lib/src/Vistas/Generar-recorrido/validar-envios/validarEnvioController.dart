@@ -5,8 +5,8 @@ import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class ValidacionController {
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());
@@ -24,14 +24,12 @@ class ValidacionController {
     recorrido.indicepagina = 1;
     bool respuestatrue = await notificacion(
         context, "success", "EXACT", "Se ha creado el recorrido correctamente");
-    if (respuestatrue != null) {
-      if (respuestatrue) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => GenerarRutaPage(recorridopage: recorrido),
-            ),
-            ModalRoute.withName('/recorridos'));
-      }
+    if (respuestatrue) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => GenerarRutaPage(recorridopage: recorrido),
+          ),
+          ModalRoute.withName('/recorridos'));
     }
   }
 

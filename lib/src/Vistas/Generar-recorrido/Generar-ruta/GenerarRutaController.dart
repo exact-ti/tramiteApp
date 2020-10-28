@@ -5,9 +5,9 @@ import 'package:tramiteapp/src/CoreProyecto/Ruta/RutaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Providers/rutas/impl/RutaProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Listar-turnos/ListarTurnosPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class GenerarRutaController {
   RutaInterface rutaInterface = new RutaImpl(new RutaProvider());

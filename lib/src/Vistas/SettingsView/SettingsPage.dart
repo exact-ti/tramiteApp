@@ -3,11 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Gestion-password/CambiarPassworPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'CountChangePage.dart';
 import 'SettingsController.dart';
 
@@ -94,7 +95,7 @@ class _SettingPageState extends State<SettingPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARYCOLOR,
             title: Text("Cuenta",
                 style: TextStyle(
                     fontSize: 18,

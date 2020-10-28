@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/ModelDto/TipoEntregaPersonalizadaModel.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-DNI/EntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Generar-Firma/GenerarFirmaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 import 'ListarTipoPersonalizadaController.dart';
  
@@ -24,9 +24,9 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
  
 
-  final subtituloStyle = TextStyle(color: sd.colorletra);
+  final subtituloStyle = TextStyle(color: StylesThemeData.LETTERCOLOR);
   var booleancolor = true;
-  var colorwidget = sd.colorplomo;
+  var colorwidget = StylesThemeData.INPUTCOLOR;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
       child: InkWell(
               onTap: () {
                 _onSearchButtonPressed(item);
-              }, // handle your onTap here
+              }, 
               child: Container(child:Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -188,7 +188,7 @@ class _ListarTipoPersonalizadaPageState extends State<ListarTipoPersonalizadaPag
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
-      border: Border.all(color: sd.colorletra),
+      border: Border.all(color: StylesThemeData.LETTERCOLOR),
     );
   }
   

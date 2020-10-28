@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'RecepcionRegularController.dart';
-import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 
 class RecepcionInterPage extends StatefulWidget {
   final EnvioInterSedeModel recorridopage;
@@ -26,14 +26,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   _RecepcionInterPageState(this.recorridoUsuario);
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
-  //final _sobreController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   List<EnvioModel> listaEnviosValidados = new List();
   List<EnvioModel> listaEnviosNoValidados = new List();
   EntregaregularController entregaController = new EntregaregularController();
   RecepcionInterController principalcontroller = new RecepcionInterController();
-  //EnvioController envioController = new EnvioController();
-  //TextEditingController _rutController = TextEditingController();
   String qrsobre, qrbarra, valuess = "";
   var listadestinatarios;
   String codigoValidar = "";
@@ -252,9 +249,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           }
         }
         if (!pertenece) {
-          //setState(() {
           listaEnvios.add(envio);
-          //});
         }
       }
     }
@@ -273,7 +268,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       if (_bandejaController.text == "" || listaEnvios.length == 0) {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT",
@@ -284,7 +279,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       _validarBandejaText(qrbarra);
     }
 
@@ -433,7 +428,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                             alignment: Alignment.bottomLeft,
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
-                            //width: double.infinity,
                             child: textSobre),
                       ),
                       Align(

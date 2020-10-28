@@ -11,7 +11,6 @@ class PerfilCore implements IPerfilCore {
 
   @override
   Future listarTipoPerfil() async {
-    dynamic resp = await perfilProvider.listarTipoPerfilByPerfil();
-    return resp;
+    return await perfilProvider.listarTipoPerfilByPerfil();
   }
 }

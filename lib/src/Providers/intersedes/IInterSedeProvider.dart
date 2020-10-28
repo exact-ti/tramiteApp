@@ -6,7 +6,6 @@ abstract class IInterSedeProvider {
 
   Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario();
 
-  Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario2();
 
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo);
 

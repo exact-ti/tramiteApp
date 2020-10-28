@@ -10,9 +10,9 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Providers/bandejas/impl/BandejaProvider.dart';
 import 'package:tramiteapp/src/Providers/envios/impl/EnvioProvider.dart';
 import 'package:tramiteapp/src/Providers/paquetes/impl/PaqueteProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class EnvioController {
   UsuarioFrecuente usuario;

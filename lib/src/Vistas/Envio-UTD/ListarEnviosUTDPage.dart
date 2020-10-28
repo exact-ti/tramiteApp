@@ -3,8 +3,9 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosUTDController.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class ListarEnviosUTDPage extends StatefulWidget {
   @override
@@ -28,7 +29,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[

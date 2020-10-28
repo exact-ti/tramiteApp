@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 import 'NuevaEntregaLoteController.dart';
 
@@ -183,7 +183,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       if (_bandejaController.text == "") {
         _sobreController.text = "";
         popuptoinput(context, f1, "error", "EXACT",
@@ -194,9 +194,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra = await getDataFromCamera();
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
+      qrbarra = await getDataFromCamera(context);
       _validarBandejaText(qrbarra);
     }
 
@@ -305,9 +303,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                             child: Center(
                               child: fc.id.toString() == selectedFc
                                   ? Container(
-                                      /* decoration: BoxDecoration(
-                                            color: Color(0xFFEAEFF2),
-                                          ),*/
                                       child: Text(DateFormat('HH:mm:ss')
                                               .format(fc.horaInicio) +
                                           "-" +
@@ -431,7 +426,6 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                             alignment: Alignment.bottomLeft,
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
-                            //width: double.infinity,
                             child: textSobre),
                       ),
                       Align(

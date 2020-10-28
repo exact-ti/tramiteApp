@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarTurnosController.dart';
 
 class ListarTurnosPage extends StatefulWidget {
@@ -13,37 +14,19 @@ class ListarTurnosPage extends StatefulWidget {
 
 class _ListarTurnosPageState extends State<ListarTurnosPage> {
   ListarTurnosController principalcontroller = new ListarTurnosController();
-  //TextEditingController _rutController = TextEditingController();
-  var listadestinatarios;
-  String textdestinatario = "";
-
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-
-  var nuevo = 0;
 
   @override
   void initState() {
-    prueba = Text("Usuarios frecuentes",
-        style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
-    setState(() {
-      textdestinatario = "";
-    });
     super.initState();
+  }
+
+  void redirectButtom() {
+    Navigator.of(context).pushNamed('/entregas-pisos-propios');
   }
 
   @override
   Widget build(BuildContext context) {
-    var booleancolor = true;
-
     Widget informacionEntrega(EntregaModel entrega) {
-      String recorrido = entrega.nombreTurno;
-      String estado = entrega.estado.nombreEstado;
-      String usuario = entrega.usuario;
-
       return Container(
           height: 100,
           child: ListView(
@@ -52,17 +35,17 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
               children: <Widget>[
                 Container(
                   height: 20,
-                  child: ListTile(title: Text("$recorrido")),
+                  child: ListTile(title: Text("${entrega.nombreTurno}")),
                 ),
                 Container(
                     height: 20,
                     child: ListTile(
-                        title:
-                            Text("$estado", style: TextStyle(fontSize: 11)))),
+                        title: Text("${entrega.estado.nombreEstado}",
+                            style: TextStyle(fontSize: 11)))),
                 Container(
                     height: 20,
                     child: ListTile(
-                      title: Text("$usuario"),
+                      title: Text("${entrega.usuario}"),
                       leading: Icon(
                         Icons.perm_identity,
                         color: Color(0xffC7C7C7),
@@ -72,13 +55,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     Widget crearItem(EntregaModel entrega) {
-      if (booleancolor) {
-        booleancolor = false;
-      } else {
-        booleancolor = true;
-      }
       return Container(
-          decoration: myBoxDecoration(),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () {
@@ -107,7 +85,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     Widget _crearListado() {
-      booleancolor = true;
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
           builder: (BuildContext context,
@@ -126,7 +103,6 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                   return sinResultados("Ha surgido un problema");
                 } else {
                   if (snapshot.hasData) {
-                    booleancolor = true;
                     final entregas = snapshot.data;
                     if (entregas.length == 0) {
                       return sinResultados("No se han encontrado resultados");
@@ -143,72 +119,32 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
           });
     }
 
-    final sendButton = Container(
-        child: ButtonTheme(
-        minWidth: 150.0,
-        height: 50.0,
-        child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: ()  {
-          Navigator.of(context).pushNamed('/entregas-pisos-propios');
+    Widget mainscaffold() {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+                margin: const EdgeInsets.only(top: 20, bottom: 20),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: CustomButton(
+                    onPressed: redirectButtom,
+                    colorParam: StylesThemeData.PRIMARYCOLOR,
+                    texto: "Nuevo Recorrido")),
+            Expanded(
+              child: Container(
+                  alignment: Alignment.bottomCenter, child: _crearListado()),
+            )
+          ],
+        ),
+      );
+    }
 
-            },
-            color: Color(0xFF2C6983),
-            child: Text('Nuevo Recorrido', style: TextStyle(color: Colors.white))),
-      ));
     return Scaffold(
-        appBar:CustomAppBar(text: "Entregas en sede"),
+        appBar: CustomAppBar(text: "Consultas"),
         drawer: DrawerPage(),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 6),
-                            width: double.infinity,
-                            child: sendButton),
-                      ),
-                      Expanded(
-                        child: Container(
-                            alignment: Alignment.bottomCenter,
-                            child: _crearListado()),
-                      )
-                    ],
-                  ),
-                ))));
-  }
-
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

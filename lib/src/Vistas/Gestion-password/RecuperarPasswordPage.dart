@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class RecuperarPasswordPage extends StatefulWidget {
   @override
@@ -137,7 +138,7 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARYCOLOR,
             title: Text("Recupera tu cuenta",
                 style: TextStyle(
                     fontSize: 18,

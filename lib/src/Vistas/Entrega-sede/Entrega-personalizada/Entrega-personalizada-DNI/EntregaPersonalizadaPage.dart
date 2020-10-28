@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'EntregaPersonalizadaController.dart';
 
 class EntregapersonalizadoPageDNI extends StatefulWidget {
@@ -54,7 +55,7 @@ class _EntregapersonalizadoPageDNIState
   void notifierAccion(String mensaje, String color) {
     final snack = new SnackBar(
       content: new Text("Se registró el envío"),
-      backgroundColor: primaryColor,
+      backgroundColor: StylesThemeData.PRIMARYCOLOR,
     );
     scaffoldkey.currentState.showSnackBar(snack);
   }
@@ -109,7 +110,7 @@ class _EntregapersonalizadoPageDNIState
     );
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       if (_dniController.text == "") {
         _sobreController.text = "";
         notificacion(context, "error", "EXACT", "Primero debe ingresar el DNI");
@@ -119,7 +120,7 @@ class _EntregapersonalizadoPageDNIState
     }
 
     Future _traerdatosescanerDNI() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       _validarDNIText(qrbarra);
     }
 

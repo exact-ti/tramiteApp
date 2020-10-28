@@ -25,11 +25,6 @@ class ListarEnviosController {
         await intersedeInterface.iniciarEntregaIntersede(enviomodel.utdId);
             _navigationService.goBack();
 
-    /*if(respuesta){
-        confirmarAlerta(context, "Se ha iniciado el envío correctamente", "Inicio Correcto");
-    }else{
-      mostrarAlerta( context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    }*/
     return respuesta;
   }
 

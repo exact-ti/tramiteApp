@@ -13,14 +13,12 @@ class BuzonImpl implements BuzonInterface {
   
   @override
   Future<List<BuzonModel>> listarBuzonesPorIds(List<int> ids) async {
-    List<BuzonModel> buzonModelList = await buzonProvider.listarBuzonesPorIds(ids);
-    return buzonModelList;
+    return await buzonProvider.listarBuzonesPorIds(ids);
   }
 
   @override
   Future<List<BuzonModel>> listarBuzones() async {
-  List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
-    return buzones;
+    return await buzonProvider.listarBuzonesDelUsuarioAutenticado();
   }
 
 }

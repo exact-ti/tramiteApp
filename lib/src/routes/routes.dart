@@ -72,6 +72,5 @@ Map<String, WidgetBuilder> getAplicationRoutes() {
     '/menuBottom' :  (BuildContext context) => TopLevelWidget(),
     '/myHome' :  (BuildContext context) => MyHomePage(),
     '/second' :  (BuildContext context) => SecondPage(),
-/*     '/menuDrawer' :  (BuildContext context) => MenuDrawerPage(),
- */  };
+  };
 }

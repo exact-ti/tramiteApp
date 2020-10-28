@@ -21,7 +21,7 @@ class EnvioModel {
       this.codigoUbicacion = '',
       this.codigoPaquete = '',
       this.observacion = '',
-      this.estado = true});
+      this.estado = false});
 
   List<EnvioModel> fromJsonValidar(List<dynamic> jsons) {
     List<EnvioModel> envios = [];

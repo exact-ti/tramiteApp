@@ -68,25 +68,6 @@ class Requester {
     return respuestaGet;
   }
 
-/*   Stream<dynamic> sse2(String url) async* {
-    var token = _prefs.token;
-    var request = http.Request("GET", Uri.parse(properties['API'] + url));
-    request.headers["Authorization"] = token;
-    http.StreamedResponse response = await _client.send(request);
-    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
-      try {
-        print(data);
-        json.decode(data);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }).map((data) => jsonDecode(data));
-    await for (final item in nuevoStream) {
-      yield item;
-    }
-  } */
-
   Future<EventSource> sseventSource(String url) async {
     var token = _prefs.token;
     Map<String, dynamic> header = {

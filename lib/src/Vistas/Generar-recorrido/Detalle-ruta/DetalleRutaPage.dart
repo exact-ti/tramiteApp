@@ -3,9 +3,10 @@ import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'DetalleRutaController.dart';
 
 class DetalleRutaPage extends StatefulWidget {
@@ -23,29 +24,15 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   RutaModel rutaModel;
   _DetalleRutaPagePageState(this.objetoModo);
   DetalleRutaController principalcontroller = new DetalleRutaController();
-  List<EstadoEnvio> estadosSave = new List();
   List<DetalleRutaModel> detallesRuta = new List();
-  List<int> estadosIds = new List();
-  var listadestinatarios;
-  String textdestinatario = "";
   List<bool> isSelected;
   int indexSwitch = 0;
-  int numvalijas = 0;
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  String codigo = "";
-  var nuevo = 0;
 
   @override
   void initState() {
     isSelected = [true, false];
     this.recorridoID = objetoModo["recorridoId"];
     this.rutaModel = objetoModo["ruta"];
-    setState(() {
-      textdestinatario = "";
-    });
     super.initState();
   }
 
@@ -58,7 +45,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -132,7 +119,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight:
-                                  FontWeight.bold /* , fontSize: 15 */)),
+                                  FontWeight.bold)),
                     ),
                     flex: 2,
                   ),
@@ -185,10 +172,10 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: colorletra,
-      fillColor: colorletra,
+      borderColor: StylesThemeData.LETTERCOLOR,
+      fillColor: StylesThemeData.LETTERCOLOR,
       borderWidth: 1,
-      selectedBorderColor: colorletra,
+      selectedBorderColor: StylesThemeData.LETTERCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -239,7 +226,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                 child: tabs),
             Expanded(
               child: Container(
-                  decoration: myBoxDecoration(colorletra),
+                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
                   alignment: Alignment.bottomCenter,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'loginController.dart';
 
 class LoginPage extends StatefulWidget {
@@ -50,16 +51,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     LoginController logincontroller = new LoginController();
 
-/*     final logo = Hero(
-        tag: 'hero',
-        child: CircleAvatar(
-          backgroundColor: primaryColor,
-          radius: 150.0,
-          child: Image.asset('assets/images/logo-header.PNG',width: 250.0,),
-        ));  */
-
-     final logo = Image.asset('assets/images/logo-header.PNG',width: 250.0,); 
-
+    final logo = Image.asset(
+      'assets/images/logo-header.PNG',
+      width: 250.0,
+    );
 
     void enfocarcodigocontrasena() {
       FocusScope.of(context).unfocus();
@@ -67,14 +62,12 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     var email = TextFormField(
-/*       onChanged: onChanged,
- */
       controller: _usernameController,
       obscureText: false,
       focusNode: f1,
-      cursorColor: primaryColor,
+      cursorColor: StylesThemeData.PRIMARYCOLOR,
       style: TextStyle(
-        color: primaryColor,
+        color: StylesThemeData.PRIMARYCOLOR,
         fontSize: 20.0,
       ),
       textInputAction: TextInputAction.next,
@@ -83,8 +76,8 @@ class _LoginPageState extends State<LoginPage> {
         enfocarcodigocontrasena();
       },
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: primaryColor),
-        focusColor: primaryColor,
+        labelStyle: TextStyle(color: StylesThemeData.PRIMARYCOLOR),
+        focusColor: StylesThemeData.PRIMARYCOLOR,
         filled: true,
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -92,13 +85,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color: StylesThemeData.PRIMARYCOLOR),
         ),
         labelText: "Usuario",
         prefixIcon: Icon(
           Icons.account_circle,
           size: 20,
-          color: primaryColor,
+          color: StylesThemeData.PRIMARYCOLOR,
         ),
       ),
     );
@@ -133,9 +126,9 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: passwordVisible,
       controller: _passwordController,
       focusNode: f2,
-      cursorColor: primaryColor,
+      cursorColor: StylesThemeData.PRIMARYCOLOR,
       style: TextStyle(
-        color: primaryColor,
+        color: StylesThemeData.PRIMARYCOLOR,
         fontSize: 20.0,
       ),
       onFieldSubmitted: (value) async {
@@ -143,8 +136,8 @@ class _LoginPageState extends State<LoginPage> {
       },
       textInputAction: TextInputAction.send,
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: primaryColor),
-        focusColor: primaryColor,
+        labelStyle: TextStyle(color: StylesThemeData.PRIMARYCOLOR),
+        focusColor: StylesThemeData.PRIMARYCOLOR,
         filled: true,
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -152,13 +145,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color: StylesThemeData.PRIMARYCOLOR),
         ),
         labelText: "Contraseña",
         prefixIcon: Icon(
           Icons.lock,
           size: 20,
-          color: primaryColor,
+          color: StylesThemeData.PRIMARYCOLOR,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -169,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Icon(
             !passwordVisible ? Icons.visibility_off : Icons.visibility,
             size: 20,
-            color: primaryColor,
+            color: StylesThemeData.PRIMARYCOLOR,
           ),
         ),
       ),
@@ -178,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = Material(
       child: Ink(
         decoration: BoxDecoration(
-          color: primaryColor,
+          color: StylesThemeData.PRIMARYCOLOR,
           borderRadius: BorderRadius.circular(10),
           border: Border.fromBorderSide(BorderSide.none),
         ),
@@ -214,14 +207,14 @@ class _LoginPageState extends State<LoginPage> {
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: primaryColor),
+          fontWeight: FontWeight.bold, fontSize: 30, color: StylesThemeData.PRIMARYCOLOR),
     );
 
     final enlace = InkWell(
       child: Text(
         '¿Olvidaste tu contraseña?',
         style: TextStyle(
-          color: primaryColor,
+          color: StylesThemeData.PRIMARYCOLOR,
           fontWeight: FontWeight.w600,
           fontSize: 16.0,
         ),

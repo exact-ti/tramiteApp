@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
@@ -10,6 +9,8 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosAgenciasController.dart';
 
 final NavigationService _navigationService = locator<NavigationService>();
@@ -336,7 +337,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
   BoxDecoration myBoxDecoration(bool seleccionado) {
     return BoxDecoration(
-      border: Border.all(color: colorletra),
+      border: Border.all(color: StylesThemeData.LETTERCOLOR),
       color: seleccionado == null || seleccionado == false
           ? Colors.white
           : colorseleccion,

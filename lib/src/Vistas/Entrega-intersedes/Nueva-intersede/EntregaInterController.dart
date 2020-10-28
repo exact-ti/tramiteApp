@@ -7,9 +7,9 @@ import 'package:tramiteapp/src/CoreProyecto/Recorrido/RecorridoInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
 import 'package:tramiteapp/src/Providers/recorridos/impl/RecorridoProvider.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());

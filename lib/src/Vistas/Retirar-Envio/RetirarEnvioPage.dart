@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'RetirarEnvioController.dart';
 
 class RetirarEnvioPage extends StatefulWidget {
@@ -430,7 +430,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
 
     Future _traerdatosescanerPaquete() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       FocusScope.of(context).unfocus();
       new TextEditingController().clear();
       _validarPaqueteText(qrbarra);
@@ -647,7 +647,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
               child: Container(
                   alignment: Alignment.bottomLeft,
                   height: screenHeightExcludingToolbar(context, dividedBy: 30),
-                  //width: double.infinity,
                   child: textDestinatario),
             ),
             Align(

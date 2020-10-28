@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/Providers/notificacionProvider/INotificacionProvi
 import 'NotificacionInterface.dart';
 
 class NotificacionImpl implements NotificacionInterface {
+  
   INotificacionProvider notificacionProvider;
 
   NotificacionImpl(INotificacionProvider notificacionProvider) {
@@ -11,23 +12,16 @@ class NotificacionImpl implements NotificacionInterface {
 
   @override
   Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
-    List<NotificacionModel> notificaciones =
-        await notificacionProvider.listarNotificacionesPendientes();
-    return notificaciones;
+    return await notificacionProvider.listarNotificacionesPendientes();
   }
 
   @override
   Future revisarNotificacion(int notificacionId) async {
-    dynamic notificacionApi =
-        await notificacionProvider.modificarNotificacionesRevisadas(notificacionId);
-    return notificacionApi;
+    return await notificacionProvider.modificarNotificacionesRevisadas(notificacionId);
   }
 
   @override
   Future verNotificaciones() async{
-    dynamic notificacionApi =
-        await notificacionProvider.modificarNotificacionesVistas();
-        
-    return notificacionApi;
+    return await notificacionProvider.modificarNotificacionesVistas();
   }
 }

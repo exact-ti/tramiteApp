@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'RegistrarEntregaPersonalizadaController.dart';
 
 class RegistrarEntregapersonalizadoPage extends StatefulWidget {
@@ -85,13 +86,12 @@ class _RegistrarEntregapersonalizadoPageState
               codigoSobre = "";
               listacodigos = listacodigos;
             });
-            notifierAccion("Se registró la entrega", primaryColor);
+            notifierAccion("Se registró la entrega", StylesThemeData.PRIMARYCOLOR);
           } else {
             setState(() {
               _sobreController.text = "";
               listacodigos = listacodigos;
             });
-            /* enfocarInputfx(context, f2); */
             notifierAccion(respuesta["message"], Colors.red);
           }
         } else {
@@ -99,15 +99,6 @@ class _RegistrarEntregapersonalizadoPageState
         }
       } else {
         notifierAccion("el código de sobre es obligatorio", Colors.red);
-      }
-    }
-
-    void _validarFIRMAText(String value) {
-      if (value != "") {
-        setState(() {
-          codigoFIRMA = value;
-          _firmaController.text = value;
-        });
       }
     }
 
@@ -122,13 +113,8 @@ class _RegistrarEntregapersonalizadoPageState
     );
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       _validarSobreText(qrbarra);
-    }
-
-    Future _traerdatosescanerFIRMA() async {
-      qrbarra = await getDataFromCamera();
-      _validarFIRMAText(qrbarra);
     }
 
     var sobre = TextFormField(
@@ -167,9 +153,7 @@ class _RegistrarEntregapersonalizadoPageState
     );
 
     final campodetextoandIconoFIRMA = Container(
-      child: /* imagenFirma.length == 0
-          ? Container()
-          : */ LimitedBox(
+      child:  LimitedBox(
               maxHeight: screenHeightExcludingToolbar(context, dividedBy: 5),
               child: Container(
                   child: RotationTransition(
@@ -217,8 +201,6 @@ class _RegistrarEntregapersonalizadoPageState
 
     return Scaffold(
         appBar:CustomAppBar(text: "Entrega personalizada"),
-        /* 
-        drawer: crearMenu(context), */
         key: scaffoldkey,
         body: SingleChildScrollView(
             child: ConstrainedBox(
@@ -273,20 +255,6 @@ class _RegistrarEntregapersonalizadoPageState
                             alignment: Alignment.bottomCenter,
                             child: _crearListadoinMemoria(listacodigos)),
                       ),
-/*                       Align(
-                        alignment: Alignment.center,
-                        child: respuestaBack.length == 0
-                            ? Container()
-                            : Container(
-                                alignment: Alignment.center,
-                                color:
-                                    colorRespuesta ? SecondColor : Colors.grey,
-                                child: Center(
-                                    child: Text("$respuestaBack",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20)))),
-                      ), */
                     ],
                   ),
                 ))));

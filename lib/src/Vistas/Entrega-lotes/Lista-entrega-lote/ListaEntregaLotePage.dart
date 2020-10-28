@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
@@ -10,6 +9,8 @@ import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntr
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 
 class ListaEntregaLotePage extends StatefulWidget {
@@ -26,7 +27,6 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
   List<bool> isSelected;
   int indexSwitch = 0;
   List<EntregaLoteModel> entregas = new List();
-  // int numvalijas = 0;
 
   @override
   void initState() {
@@ -90,21 +90,6 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           ]));
     }
 
-    // void iniciarEnvio(EnvioInterSedeModel entrega) async {
-    //   bool respuesta =
-    //       await principalcontroller.onSearchButtonPressed(context, entrega);
-    //   if (respuesta) {
-    //     principalcontroller.confirmarAlerta(context,
-    //         "Se ha iniciado el envío correctamente", "Inicio Correcto");
-    //     setState(() {
-    //       indexSwitch = indexSwitch;
-    //     });
-    //   } else {
-    //     principalcontroller.confirmarAlerta(
-    //         context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    //   }
-    // }
-
     Widget iconoRecepcion(EntregaLoteModel entregaLote, BuildContext context) {
       return Container(
           height: 70,
@@ -154,7 +139,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
 
     Widget crearItem(EntregaLoteModel entrega, int switched) {
       return Container(
-          decoration: sd.myBoxDecoration(sd.colorletra),
+          decoration: sd.myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () {
@@ -168,7 +153,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                             RecepcionEntregaLotePage(entregaLotepage: entrega),
                       ));
                 }
-              }, // handle your onTap here
+              }, 
               child: Container(
                 child: Row(children: <Widget>[
                   Expanded(
@@ -292,10 +277,10 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
     );
 
     final tabs = ToggleButtons(
-      borderColor: sd.colorletra,
-      fillColor: sd.colorletra,
+      borderColor: StylesThemeData.LETTERCOLOR,
+      fillColor: StylesThemeData.LETTERCOLOR,
       borderWidth: 1,
-      selectedBorderColor: sd.colorletra,
+      selectedBorderColor: StylesThemeData.LETTERCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -344,7 +329,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                 child: tabs),
             Expanded(
               child: Container(
-                  decoration: sd.myBoxDecoration(sd.colorletra),
+                  decoration: sd.myBoxDecoration(StylesThemeData.LETTERCOLOR),
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
                   alignment: Alignment.bottomCenter,

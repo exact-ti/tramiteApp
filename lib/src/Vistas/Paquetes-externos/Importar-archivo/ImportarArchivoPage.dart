@@ -7,8 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
 import 'package:tramiteapp/src/ModelDto/PaqueteExternoBuzonModel.dart';
@@ -17,6 +15,9 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class ImportarArchivoPage extends StatefulWidget {
   @override
@@ -84,7 +85,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   onPressed: () async {
                     contenido = _adjuntarArchivo(context);
                   },
-                  color: sd.primaryColor,
+                  color:  StylesThemeData.PRIMARYCOLOR,
                   child:
                       Text('Adjuntar', style: TextStyle(color: Colors.white))),
             )),
@@ -112,7 +113,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                     _importarRegistros(context);
                     setState(() {});
                   },
-                  color: sd.primaryColor,
+                  color: StylesThemeData.PRIMARYCOLOR,
                   child:
                       Text('Importar', style: TextStyle(color: Colors.white))),
             )),

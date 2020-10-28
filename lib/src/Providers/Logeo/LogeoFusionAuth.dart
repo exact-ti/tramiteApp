@@ -7,7 +7,6 @@ class LogeoFusionAuth implements LogeoInterface {
   Future<Map<String, dynamic>> login(String username, String password) async {
     Requester req = Requester();
     final resp = await req.login("/servicio-auth/auth", username,password);
-    Map<String, dynamic> decodedResp = resp.data;
-    return decodedResp;
+    return resp.data;
   }
 }

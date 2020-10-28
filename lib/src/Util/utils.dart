@@ -15,35 +15,16 @@ import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'dart:convert';
 import 'loader.dart';
-import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
 Menu menu = new Menu();
 final _prefs = new PreferenciasUsuario();
 
-final primaryColor = Color(0xFF2C6983);
-final colorletra = Color(0xFFACADAD);
-final colorplomo = Color(0xFFEAEFF2);
-final colorblanco = Color(0xFFFFFFFF);
 
-/* int tipoPerfil(String perfilId) {
-  switch (perfilId) {
-    case "1":
-      return exact;
-      break;
-    case "2":
-      return exact;
-    case "3":
-      return exact;
-      break;
-    case "4":
-      return cliente;
-    default:
-      return exact;
-  }
-} */
 
 String titulosPage(int pos) {
   switch (pos) {
@@ -111,7 +92,8 @@ double screenHeightExcludingToolbar(BuildContext context,
   return screenHeight(context, dividedBy: dividedBy, reducedBy: kToolbarHeight);
 }
 
-Future<String> getDataFromCamera() async {
+Future<String> getDataFromCamera(BuildContext context) async {
+  desenfocarInputfx(context);
   var scanResult = await BarcodeScanner.scan();
   String qrbarra = scanResult;
   return qrbarra;
@@ -125,7 +107,7 @@ void enfocarInputfx(BuildContext context, FocusNode fx) {
 
 void desenfocarInputfx(BuildContext context) {
   FocusScope.of(context).unfocus();
-  FocusScope.of(context).requestFocus(new FocusNode()); //remove focus
+  FocusScope.of(context).requestFocus(new FocusNode()); 
   new TextEditingController().clear();
 }
 
@@ -153,7 +135,7 @@ Widget sinResultados(String mensaje) {
   return Center(
       child: Text(mensaje,
           style: TextStyle(
-              color: colorletra, fontSize: 20, fontWeight: FontWeight.bold)));
+              color: StylesThemeData.LETTERCOLOR, fontSize: 20, fontWeight: FontWeight.bold)));
 }
 
 Widget loadingGet() {
@@ -172,7 +154,7 @@ Widget loadingGet() {
           margin: EdgeInsets.only(top: 5),
           child: FadingText(
             "Loading",
-            style: TextStyle(fontSize: 20, color: colorletra),
+            style: TextStyle(fontSize: 20, color: StylesThemeData.LETTERCOLOR),
           )),
     ],
   );

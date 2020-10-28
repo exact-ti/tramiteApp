@@ -16,49 +16,41 @@ class InterSedeImpl implements InterSedeInterface {
 
   @override
   Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(int switched) async {
-    List<EnvioInterSedeModel> envios;
       if(switched==0){
-      envios = await intersede.listarEnvioByUsuario();
+      return await intersede.listarEnvioByUsuario();
       }else{
-       envios = await intersede.listarRecepcionByUsuario();       
+       return await intersede.listarRecepcionByUsuario();       
       }
-      return envios;
   }
 
   @override
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo) async{
-     List<EnvioModel> envios = await intersede.listarEnviosByCodigo( codigo);
-      return envios; 
+      return await intersede.listarEnviosByCodigo( codigo);
   }
 
   @override
   Future<List<EnvioModel>> listarRecepcionesByCodigo(String codigo) async{
-     List<EnvioModel> envios = await intersede.listarRecepcionByCodigo(codigo);
-      return envios; 
+      return await intersede.listarRecepcionByCodigo(codigo);
   }
 
   @override
   Future<EnvioModel> validarCodigo(String codigo,String codigobandeja) async{
-     EnvioModel envio = await intersede.validarCodigoProvider(codigo,codigobandeja);
-    return envio;
+    return await intersede.validarCodigoProvider(codigo,codigobandeja);
   }
 
   @override
   Future<dynamic>  listarEnviosValidadosInterSede(List<EnvioModel> envios,String codigo) async{
-    dynamic i = await intersede.listarEnviosValidadosInterSede(envios, codigo);
-    return i;
+    return await intersede.listarEnviosValidadosInterSede(envios, codigo);
   }
 
   @override
   Future<bool> iniciarEntregaIntersede(int utdDestino) async{
-    bool i = await intersede.iniciarEntregaIntersede(utdDestino);
-    return i;
+    return await intersede.iniciarEntregaIntersede(utdDestino);
   }
 
   @override
   Future<dynamic> registrarRecojoIntersedeProvider(String codigo, String codigopaquete)async {
-    dynamic i = await intersede.registrarRecojoIntersedeProvider(codigo, codigopaquete);
-    return i;
+    return await intersede.registrarRecojoIntersedeProvider(codigo, codigopaquete);
   }
 
 }

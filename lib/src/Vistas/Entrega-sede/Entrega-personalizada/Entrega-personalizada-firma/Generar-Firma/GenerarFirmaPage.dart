@@ -36,7 +36,6 @@ class _WatermarkPaint extends CustomPainter {
   Future<void> paint(ui.Canvas canvas, ui.Size size) async {
     double x = 100.0;
     double y = 100.0;
-    //canvas.drawCircle(Offset(size.width / 2, size.height / 2), 10.8, Paint()..color = Colors.blue);
     ui.Paint paint = new ui.Paint()
       ..color = new ui.Color.fromARGB(0xff, 0xff, 0xff, 0xff);
     ui.Offset point = new ui.Offset(x, y);
@@ -88,11 +87,9 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                 onPressed: () async {
 
                   final sign = _sign.currentState;
-                  //retrieve image data, do whatever you want with it (send to server, save locally...)
                   final image = await sign.getData();
                   var data =
                       await image.toByteData(format: ui.ImageByteFormat.png);
-                     /*  File f = File('images/myImage.jpg'); */
 
                   sign.clear();
 
@@ -138,8 +135,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
     ]);
 
     return Scaffold(
-        appBar:CustomAppBar(text: "Entrega personalizada"),/* 
-        drawer: sd.crearMenu(context), */
+        appBar:CustomAppBar(text: "Entrega personalizada"),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
             child: ConstrainedBox(
@@ -161,12 +157,6 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
-/*                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RecepcionInterPage(recorridopage: entrega),
-                        )); */
                             }),
                       ),
                       Expanded(

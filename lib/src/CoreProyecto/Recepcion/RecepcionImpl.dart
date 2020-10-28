@@ -12,8 +12,8 @@ class RecepcionImpl implements RecepcionInterface {
 
   @override
   Future listarEnviosByLote(String codigo) async {
-    int buzonId = obtenerUTDid();
-    return await recepcion.recepcionJumboProvider(codigo, buzonId);
+    int utdId = obtenerUTDid();
+    return await recepcion.recepcionJumboProvider(codigo, utdId);
   }
 
   @override
@@ -35,11 +35,6 @@ class RecepcionImpl implements RecepcionInterface {
   @override
   Future<List<EnvioModel>> listarEnviosPrincipalCore() async {
     return await recepcion.listarenviosPrincipal();
-  }
-
-  @override
-  Future<bool> registrarEnvioPrincipalCore(String codigoPaquete) async {
-    return await recepcion.registrarEnvioPrincipalProvider(codigoPaquete);
   }
 
   @override

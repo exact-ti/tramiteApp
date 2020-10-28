@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tramiteapp/src/Util/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -126,9 +126,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
           enfocarInputfx(context, f2);
         } else {
-/*           bool respuestaPopUp = await confirmacion(
-              context, "success", "EXACT", "¿Desea custodiar el envío $value");
-          if (respuestaPopUp) { */
             EnvioModel enviocontroller = await principalcontroller
                 .validarCodigoEntrega(_bandejaController.text, value, context);
             if (enviocontroller != null) {
@@ -151,9 +148,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                 enfocarInputfx(context, f2);
               }
             }
-/*           } else {
-            enfocarInputfx(context, f2);
-          } */
         }
       } else {
         bool respuestatrue = await notificacion(
@@ -266,7 +260,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       if (_bandejaController.text == "") {
         _sobreController.text = "";
         bool respuestatrue = await notificacion(context, "error", "EXACT",
@@ -280,7 +274,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Future _traerdatosescanerBandeja() async {
-      qrbarra = await getDataFromCamera();
+      qrbarra = await getDataFromCamera(context);
       _validarBandejaText(qrbarra);
     }
 
@@ -437,7 +431,6 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                             alignment: Alignment.bottomLeft,
                             height: screenHeightExcludingToolbar(context,
                                 dividedBy: 30),
-                            //width: double.infinity,
                             child: textSobre),
                       ),
                       Align(
