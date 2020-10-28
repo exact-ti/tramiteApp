@@ -1,5 +1,4 @@
 import 'package:tramiteapp/src/ModelDto/DetalleRuta.dart';
-import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +38,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   @override
   Widget build(BuildContext context) {
     Widget crearItem(DetalleRutaModel detalleRutaModel, int switched) {
-      String codigopaquete = detalleRutaModel.paqueteId;
-      String destinatario = detalleRutaModel.destinatario;
-
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
@@ -55,7 +51,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("$destinatario"),
+                    child: Text("${detalleRutaModel.destinatario}"),
                   )
                 ],
               ))),
@@ -66,7 +62,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                   Container(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        child: Text("$codigopaquete",
+                        child: Text("${detalleRutaModel.paqueteId}",
                             style: TextStyle(color: Colors.blue)),
                         onTap: () {
                           trackingPopUp(context, detalleRutaModel.id);
@@ -118,8 +114,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                       child: Text('Ubicación:',
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight:
-                                  FontWeight.bold)),
+                              fontWeight: FontWeight.bold)),
                     ),
                     flex: 2,
                   ),
@@ -216,13 +211,11 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
               child: Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 10),
                   width: double.infinity,
                   child: informacionArea()),
             ),
             Container(
                 margin: const EdgeInsets.only(top: 10),
-                height: screenHeightExcludingToolbar(context, dividedBy: 20),
                 child: tabs),
             Expanded(
               child: Container(

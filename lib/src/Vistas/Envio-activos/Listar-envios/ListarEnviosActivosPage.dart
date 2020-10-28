@@ -113,7 +113,9 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
     Widget listTagSave(List<int> idsparam) {
       List<EstadoEnvio> listaparam = new List();
-      listaparam= estadosSave.where((element) => idsparam.contains(element.id)).toList();
+      listaparam = estadosSave
+          .where((element) => idsparam.contains(element.id))
+          .toList();
       return Container(
           child: Tags(
         itemCount: listaparam.length,
@@ -192,7 +194,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                   }
                 }
             }
-
           });
     }
 
@@ -212,8 +213,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               principalcontroller.listarActivosController(switched, estadosIds),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-
-                            switch (snapshot.connectionState) {
+            switch (snapshot.connectionState) {
               case ConnectionState.none:
                 return sinResultados("No hay conexión con el servidor");
               case ConnectionState.waiting:
@@ -233,7 +233,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                     } else {
                       return ListView.builder(
                           itemCount: envios.length,
-                          itemBuilder: (context, i) => crearItem(envios[i], switched));
+                          itemBuilder: (context, i) =>
+                              crearItem(envios[i], switched));
                     }
                   } else {
                     return sinResultados("No se han encontrado resultados");
@@ -471,7 +472,10 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Envios activos",leadingbool: boolIfPerfil()?false:true,),
+        appBar: CustomAppBar(
+          text: "Envios activos",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
         drawer: drawerIfPerfil(),
         body: mainscaffold());
   }

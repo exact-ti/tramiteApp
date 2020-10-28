@@ -20,8 +20,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   ListarEnviosController principalcontroller = new ListarEnviosController();
   List<bool> isSelected;
   int indexSwitch = 0;
-  int numvalijas = 0;
-  String codigo = "";
 
   @override
   void initState() {
@@ -30,8 +28,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   }
 
   void iniciarEnvio(EnvioInterSedeModel entrega) async {
-    bool respuesta =
-        await principalcontroller.onSearchButtonPressed(context, entrega);
+    bool respuesta = await principalcontroller.onSearchButtonPressed(context, entrega);
     if (respuesta) {
       notificacion(
           context, "success", "EXACT", "Se ha iniciado el envío correctamente");
@@ -58,12 +55,6 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   @override
   Widget build(BuildContext context) {
     Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
-      if (switched == 0) {
-        numvalijas = entrega.numvalijas;
-      } else {
-        codigo = entrega.codigo;
-      }
-
       return Container(
           height: 70,
           child: ListView(
@@ -83,9 +74,9 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                         Container(
                           padding: const EdgeInsets.only(left: 30),
                           child: switched == 0
-                              ? Text("$numvalijas valijas",
+                              ? Text("${entrega.numvalijas} valijas",
                                   style: TextStyle(fontSize: 12))
-                              : Text("$codigo", style: TextStyle(fontSize: 12)),
+                              : Text("${entrega.codigo}", style: TextStyle(fontSize: 12)),
                         ),
                       ]),
                 ),

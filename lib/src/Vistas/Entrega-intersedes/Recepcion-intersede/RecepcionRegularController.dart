@@ -18,8 +18,7 @@ class RecepcionInterController {
 
   Future<List<EnvioModel>> listarEnvios(
       BuildContext context, String codigo) async {
-    List<EnvioModel> recorridos =
-        await intersedeInterface.listarRecepcionesByCodigo(codigo);
+    List<EnvioModel> recorridos = await intersedeInterface.listarRecepcionesByCodigo(codigo);
     return recorridos;
   }
 
@@ -27,8 +26,7 @@ class RecepcionInterController {
       BuildContext context, String codigo, String paquete, bool opcion) async {
     _navigationService.showModal();
 
-    dynamic respuesta = await intersedeInterface
-        .registrarRecojoIntersedeProvider(codigo, paquete);
+    dynamic respuesta = await intersedeInterface.registrarRecojoIntersedeProvider(codigo, paquete);
     _navigationService.goBack();
 
     return respuesta;

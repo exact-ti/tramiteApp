@@ -3,10 +3,8 @@ import 'package:tramiteapp/src/CoreProyecto/dashboard/DashboardCoreInterface.dar
 import 'package:tramiteapp/src/Providers/dashboard/DashboardProvider.dart';
 
 class DashboardController {
-  DashboardCoreInterface dashboardCore =new DashboardCoreImpl(new DashboardProvider());
+  DashboardCoreInterface dashboardCore = new DashboardCoreImpl(new DashboardProvider());
   Future<dynamic> listarItems() async {
-    dynamic entregas =  await dashboardCore.consultarItems();
-    return entregas;
+    return await dashboardCore.consultarItems();
   }
-
 }

@@ -139,7 +139,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                       hinttext: "",
                     ))),
             Expanded(
-              child: Container(
+              child: listaEnvios.isEmpty?sinResultados("No se han encontrado resultados"):Container(
                   alignment: Alignment.bottomCenter,
                   child: ListCod(enviosModel: listaEnvios)),
             ),

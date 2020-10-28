@@ -20,24 +20,19 @@ class EntregaregularController {
   Future<List<EnvioModel>> listarEnviosEntrega(
       BuildContext context, String codigo) async {
     _navigationService.showModal();
-
     List<EnvioModel> recorridos =
         await intersedeInterface.listarEnviosByCodigo(codigo);
-
+    if (recorridos == null) recorridos = [];
     _navigationService.goBack();
-
     return recorridos;
   }
 
   Future<EnvioModel> validarCodigoEntrega(
       String codigobandeja, String codigo, BuildContext context) async {
     _navigationService.showModal();
-
-    EnvioModel envio =
-        await intersedeInterface.validarCodigo(codigo, codigobandeja);
-
+    EnvioModel envio = await intersedeInterface.validarCodigo(codigo, codigobandeja);
+    if (envio != null) envio.estado = true;
     _navigationService.goBack();
-
     return envio;
   }
 
@@ -53,9 +48,7 @@ class EntregaregularController {
     if (respuesta["status"] == "success") {
       bool respuestatrue = await notificacion(context, "success", "EXACT",
           "Se ha registrado correctamente la valija");
-
       _navigationService.goBack();
-
       if (respuestatrue != null) {
         if (respuestatrue) {
           Navigator.of(context).pushNamed('/envio-interutd');

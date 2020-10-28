@@ -143,7 +143,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Consultas"),
+        appBar: CustomAppBar(text: "Recorridos"),
         drawer: DrawerPage(),
         body: scaffoldbody(mainscaffold(), context));
   }

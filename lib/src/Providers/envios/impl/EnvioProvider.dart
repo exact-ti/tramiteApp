@@ -40,15 +40,14 @@ class EnvioProvider implements IEnvioProvider {
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario() async {
     int utdId = obtenerUTDid();
-    Response resp =
-        await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
     return sedeModel.fromJsonValidar(resp.data);
   }
 
   @override
   Future<List<EnvioModel>> listarEnviosActivosByUsuario(
       List<int> estadosids) async {
-    List<String> ids = estadosids.map((estadoId) => "$estadoId");
+    List<String> ids = estadosids.map((estadoId) => "$estadoId").toList();
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
     int buzonId = obtenerBuzonid();
     Response resp = await req.get(
@@ -61,7 +60,7 @@ class EnvioProvider implements IEnvioProvider {
   @override
   Future<List<EnvioModel>> listarRecepcionesActivas(
       List<int> estadosids) async {
-    List<String> ids = estadosids.map((estadoId) => "$estadoId");
+    List<String> ids = estadosids.map((estadoId) => "$estadoId").toList();
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
     int buzonId = obtenerBuzonid();
     Response resp = await req.get(
@@ -73,8 +72,7 @@ class EnvioProvider implements IEnvioProvider {
 
   @override
   Future<List<EstadoEnvio>> listarEstadosEnvios() async {
-    Response resp =
-        await req.get('/servicio-tramite/etapasenvios?incluirHistoricos=false');
+    Response resp = await req.get('/servicio-tramite/etapasenvios?incluirHistoricos=false');
     dynamic respuestaData = resp.data;
     return estadoEnvio.fromJsonToEnviosActivos(respuestaData["data"]);
   }
