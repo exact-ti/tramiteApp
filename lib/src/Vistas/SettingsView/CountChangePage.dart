@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
@@ -20,8 +19,7 @@ class CountChangePage extends StatefulWidget {
 class _CountChangePageState extends State<CountChangePage> {
   SettingsController settingscontroller = new SettingsController();
   final _prefs = new PreferenciasUsuario();
-  String nombreCuenta = "";
-  List<dynamic> listarOpciones = new List();
+
   @override
   void initState() {
     super.initState();
@@ -97,9 +95,7 @@ class _CountChangePageState extends State<CountChangePage> {
         appBar: AppBar(
             backgroundColor: StylesThemeData.PRIMARYCOLOR,
             title: Text(
-                _prefs.tipoperfil == cliente
-                    ? "Cambiar buzón"
-                    : "Cambiar UTD",
+                _prefs.tipoperfil == cliente ? "Cambiar buzón" : "Cambiar UTD",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,

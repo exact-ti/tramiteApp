@@ -15,8 +15,7 @@ class ConsultaEnvioController {
   Future<List<EnvioModel>> listarEnvios(BuildContext context, String paquete,
       String remitente, String destinatario, bool opcion) async {
     _navigationService.showModal();
-    List<EnvioModel> turnos =
-        await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
+    List<EnvioModel> turnos = await consultaCore.consultarByPaqueteAndDestinatarioAndRemitente(
             paquete, remitente, destinatario, opcion);
     _navigationService.goBack();
     if (turnos.isEmpty) {

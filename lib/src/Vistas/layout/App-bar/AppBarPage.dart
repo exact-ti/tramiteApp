@@ -5,7 +5,6 @@ import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
@@ -32,9 +31,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
   AppBarController appBarController = new AppBarController();
-  NotificacionController notificacionController = new NotificacionController();
   List<NotificacionModel> listanotificacionesSinVer = new List();
-  NotificacionModel notificacionModel = new NotificacionModel();
   int estadoApp;
   int idBuzonOrUTD = 0;
 

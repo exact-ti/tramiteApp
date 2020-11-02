@@ -15,34 +15,24 @@ class EnvioPage extends StatefulWidget {
 }
 
 class _EnvioPageState extends State<EnvioPage> {
-  UsuarioFrecuente recordObject;
-  _EnvioPageState(this.recordObject);
+  UsuarioFrecuente usuarioFrecuente;
+  _EnvioPageState(this.usuarioFrecuente);
   final _formKey = GlobalKey<FormState>();
   EnvioController envioController = new EnvioController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   final _observacionController = TextEditingController();
-  var validarSobre = false;
-  var validarBandeja = false;
-  bool confirmaciondeenvio = false;
-  String qrsobre, qrbarra, valuess = "";
-  int indice = 0;
-  int indicebandeja = 0;
+  String qrsobre, qrbarra = "";
   int minvalor = 0;
   String errorSobre = "";
   String errorBandeja = "";
-  FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   FocusNode f3 = FocusNode();
+
   @override
   void initState() {
     minvalor = obtenerCantidadMinima();
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _bandejaController.clear();
-    });
-    valuess = "";
     super.initState();
   }
 
@@ -69,7 +59,7 @@ class _EnvioPageState extends State<EnvioPage> {
     void validarEnvio() {
       envioController.crearEnvio(
           context,
-          recordObject.id,
+          usuarioFrecuente.id,
           _sobreController.text,
           _bandejaController.text,
           _observacionController.text);
@@ -297,7 +287,7 @@ class _EnvioPageState extends State<EnvioPage> {
                       height: 35,
                       child: ListTile(
                         leading: Icon(Icons.perm_identity),
-                        title: new Text("Para: " + recordObject.nombre,
+                        title: new Text("Para: " + usuarioFrecuente.nombre,
                             style: TextStyle(fontSize: 15)),
                       ),
                     ),
@@ -305,9 +295,9 @@ class _EnvioPageState extends State<EnvioPage> {
                       leading: Icon(Icons.location_on),
                       title: new Text(
                           "Área: " +
-                              recordObject.area +
+                              usuarioFrecuente.area +
                               " - " +
-                              recordObject.sede,
+                              usuarioFrecuente.sede,
                           style: TextStyle(fontSize: 15)),
                     ),
                     Container(

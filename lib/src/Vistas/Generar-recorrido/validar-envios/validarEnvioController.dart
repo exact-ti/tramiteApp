@@ -33,14 +33,7 @@ class ValidacionController {
     }
   }
 
-  Future<EnvioModel> validarCodigo(
-      String codigo, int id, BuildContext context) async {
-    EnvioModel envio = await entregaInterface.validarCodigo(codigo, id);
-    if (envio == null) {
-      notificacion(
-          context, "error", "EXACT", "EL código no pertenece al recorrido");
-    }
-
-    return envio;
+  Future<EnvioModel> validarCodigo(String codigo, int id, BuildContext context) async {
+    return await entregaInterface.validarCodigo(codigo, id);
   }
 }

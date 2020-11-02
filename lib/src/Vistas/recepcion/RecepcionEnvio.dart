@@ -5,8 +5,12 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'RecepcionController.dart';
 
 class RecepcionEnvioPage extends StatefulWidget {
@@ -20,22 +24,11 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   List<EnvioModel> listaEnviosModel = new List();
   RecepcionController principalcontroller = new RecepcionController();
   Map<String, dynamic> validados = new HashMap();
-  String qrsobre, qrbarra = "";
-  String codigoBandeja = "";
-  String codigoSobre = "";
-  var listadetinatario;
-  var colorletra = const Color(0xFFACADAD);
   bool respuestaBack = false;
-  var colorseleccion = const Color(0xFFB7DCEE);
   final NavigationService _navigationService = locator<NavigationService>();
-  FocusNode _focusNode;
   FocusNode f1 = FocusNode();
   @override
   void initState() {
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _bandejaController.clear();
-    });
     inicializarEnviosRecepcion();
     super.initState();
   }
@@ -52,14 +45,10 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     });
   }
 
-  var colorplomos = const Color(0xFFEAEFF2);
   @override
   Widget build(BuildContext context) {
     Widget crearItem(EnvioModel entrega) {
       String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.usuario;
-      String observacion = entrega.observacion;
-      int id = entrega.id;
       return GestureDetector(
           onLongPress: () {
             setState(() {
@@ -93,11 +82,13 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text: 'De',
+                              text: 'De ',
                               style:
                                   TextStyle(color: Colors.black, fontSize: 17)),
                           TextSpan(
-                              text: ' $destinatario',
+                              text: entrega.usuario == null
+                                  ? 'Envío importado'
+                                  : '${entrega.usuario}',
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 17)),
                         ],
@@ -117,7 +108,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                                     style: TextStyle(color: Colors.blue)),
                                 onTap: () {
                                   if (!validados.containsValue(true)) {
-                                    trackingPopUp(context, id);
+                                    trackingPopUp(context, entrega.id);
                                   }
                                 },
                               ))
@@ -129,7 +120,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                       Expanded(
                           child: Container(
                               alignment: Alignment.centerRight,
-                              child: Text("$observacion")))
+                              child: Text("${entrega.observacion}")))
                     ],
                   )))
                 ],
@@ -175,7 +166,8 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       }
     }
 
-    void _validarBandejaText(String value) {
+    void _validarBandejaText() {
+      String value = _bandejaController.text;
       if (value != "") {
         List<String> lista = new List();
         lista.add(value);
@@ -185,8 +177,11 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
 
     Future _traerdatosescanerBandeja() async {
       if (!validados.containsValue(true)) {
-        qrbarra = await getDataFromCamera(context);
-        _validarBandejaText(qrbarra);
+        _bandejaController.text = await getDataFromCamera(context);
+        setState(() {
+          _bandejaController.text = _bandejaController.text;
+        });
+        _validarBandejaText();
       }
     }
 
@@ -196,21 +191,6 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
           .forEach((k, v) => v == true ? listid.add(k) : print("no pertenece"));
       validarEnvio(listid, 2);
     }
-
-    final sendButton2 = Container(
-        child: ButtonTheme(
-      minWidth: 150.0,
-      height: 50.0,
-      child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          onPressed: () async {
-            registrarLista();
-          },
-          color: Color(0xFF2C6983),
-          child: Text('Recepcionar', style: TextStyle(color: Colors.white))),
-    ));
 
     Widget _crearListado(List<EnvioModel> listaEnv) {
       if (listaEnv.length == 0)
@@ -222,78 +202,27 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
           itemBuilder: (context, i) => crearItem(listaEnv[i]));
     }
 
-    var bandeja = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: _bandejaController,
-      textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (!validados.containsValue(true)) {
-          _validarBandejaText(value);
-        } else {
-          _bandejaController.text = "";
-        }
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    final campodetextoandIconoBandeja = Row(children: <Widget>[
-      Expanded(
-        child: bandeja,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerBandeja),
-        ),
-      ),
-    ]);
-
     mainscaffold() {
       return Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
-                  width: double.infinity,
-                  child: principalcontroller.labeltext("Envío")),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 30),
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoBandeja),
-            ),
+            Container(
+                margin: const EdgeInsets.only(top: 30, bottom: 5),
+                alignment: Alignment.bottomLeft,
+                width: double.infinity,
+                child: Text("Envío")),
+            Container(
+                margin: const EdgeInsets.only(bottom: 30),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: InputCamera(
+                  inputParam: InputForm(
+                      controller: _bandejaController, fx: f1, hinttext: ""),
+                  onPressed: _traerdatosescanerBandeja,
+                  iconData: Icons.camera_alt,
+                )),
             !respuestaBack
                 ? Expanded(
                     child: Container(
@@ -305,16 +234,14 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                 : Expanded(
                     child: Container(child: _crearListado(listaEnviosModel))),
             validados.containsValue(true)
-                ? Align(
+                ? Container(
+                    margin: const EdgeInsets.only(bottom: 20),
                     alignment: Alignment.center,
-                    child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        alignment: Alignment.center,
-                        height:
-                            screenHeightExcludingToolbar(context, dividedBy: 8),
-                        width: double.infinity,
-                        child: sendButton2),
-                  )
+                    width: double.infinity,
+                    child: CustomButton(
+                        onPressed: registrarLista,
+                        colorParam: StylesThemeData.PRIMARYCOLOR,
+                        texto: "Recepcionar"))
                 : Container()
           ],
         ),
@@ -331,18 +258,12 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         body: mainscaffold());
   }
 
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
   BoxDecoration myBoxDecorationselect(bool seleccionado) {
     return BoxDecoration(
-      border: Border.all(color: colorletra),
+      border: Border.all(color: StylesThemeData.LETTERCOLOR),
       color: seleccionado == null || seleccionado == false
           ? Colors.white
-          : colorseleccion,
+          : StylesThemeData.SELECTIONCOLOR,
     );
   }
 }

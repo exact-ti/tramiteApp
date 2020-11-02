@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEstadoEnum.dart';
 import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'dashboardController.dart';
 

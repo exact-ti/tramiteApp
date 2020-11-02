@@ -75,8 +75,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
     }
 
     Widget informacionArea() {
-      String nombrearea = rutaModel.nombre;
-      String ubicacion = rutaModel.ubicacion;
       return Container(
           child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -98,7 +96,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('$nombrearea'),
+                    child: Text('${rutaModel.nombre}'),
                     flex: 5,
                   ),
                 ],
@@ -119,7 +117,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('$ubicacion'),
+                    child: Text('${rutaModel.ubicacion}'),
                     flex: 5,
                   ),
                 ],
@@ -206,17 +204,10 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: informacionArea()),
-            ),
             Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: tabs),
+                margin: const EdgeInsets.only(bottom: 10, top: 10),
+                child: informacionArea()),
+            Container(child: tabs),
             Expanded(
               child: Container(
                   decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),

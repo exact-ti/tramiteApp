@@ -157,14 +157,14 @@ void trackingPopUp(BuildContext context, int codigo) async {
                             child: Container(
                               margin: const EdgeInsets.only(right: 20),
                               alignment: Alignment.bottomLeft,
-                              child: Text('De',
+                              child: Text('De ',
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 15)),
                             ),
                             flex: 2,
                           ),
                           Expanded(
-                            child: Text(trackingModel.remitente,
+                            child: Text(trackingModel.remitente==null?'Envío importado':trackingModel.remitente,
                                 style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
                             flex: 3,
                           ),

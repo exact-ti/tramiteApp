@@ -17,7 +17,7 @@ class ItemsConsult extends StatelessWidget {
 
     Widget itemConsult(EnvioModel envioModel){
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -29,7 +29,7 @@ class ItemsConsult extends StatelessWidget {
                         child: Container(
                           margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
-                          child: Text('De',
+                          child: Text('De ',
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 15)),
                         ),

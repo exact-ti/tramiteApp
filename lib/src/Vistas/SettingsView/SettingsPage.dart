@@ -83,7 +83,7 @@ class _SettingPageState extends State<SettingPage> {
                   bool respuestaPop = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea cerrar sesión?");
                   if (respuestaPop) {
-                    eliminarpreferences2(context);
+                    eliminarpreferences(context);
                   }
                 },
               ),

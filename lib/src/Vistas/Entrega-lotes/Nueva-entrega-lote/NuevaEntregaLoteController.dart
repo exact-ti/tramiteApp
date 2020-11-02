@@ -38,13 +38,11 @@ class NuevoEntregaLotePageController {
     return boleano;
   }
 
-  Future<EnvioModel> validarCodigo(
-      String codigo, BuildContext context, List<EnvioModel> lista) async {
+  Future<EnvioModel> validarCodigo(String codigo, BuildContext context, List<EnvioModel> lista) async {
     _navigationService.showModal();
-
     EnvioModel envio = await entregaCore.listarValijaByCodigoLote(codigo);
+    if(envio!=null) envio.estado=true;
     _navigationService.goBack();
-
     return envio;
   }
 

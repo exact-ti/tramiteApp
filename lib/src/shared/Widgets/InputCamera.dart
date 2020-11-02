@@ -7,8 +7,8 @@ class InputCamera extends StatelessWidget {
 
   const InputCamera({
     Key key,
-    @required this.iconData,
-    @required this.onPressed,
+    this.iconData,
+    this.onPressed,
     @required this.inputParam,
   }) : super(key: key);
 
@@ -23,14 +23,20 @@ class InputCamera extends StatelessWidget {
             flex: 5,
           ),
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: new IconButton(
-                  icon: Icon(iconData),
-                  tooltip: "Increment",
-                  onPressed: onPressed),
-            ),
-          ),
+              child: iconData != null
+                  ? Container(
+                      margin: const EdgeInsets.only(left: 15),
+                      child: new IconButton(
+                          icon: Icon(iconData),
+                          tooltip: "Increment",
+                          onPressed: onPressed),
+                    )
+                  : Opacity(
+                      opacity: 0.0,
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 15),
+                        child: Icon(Icons.camera_alt),
+                      ))),
         ]));
   }
 }

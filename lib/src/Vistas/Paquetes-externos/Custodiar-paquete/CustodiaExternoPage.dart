@@ -6,6 +6,8 @@ import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/Custod
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
@@ -15,17 +17,8 @@ class CustodiaExternoPage extends StatefulWidget {
 }
 
 class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
+  
   CustodiaController custodiaController = new CustodiaController();
-
-  final subtituloStyle = TextStyle(color: StylesThemeData.LETTERCOLOR);
-
-  final tituloMensaje = 'Custodiar envíos';
-
-  var booleancolor = true;
-
-  var colorwidget = StylesThemeData.INPUTCOLOR;
-
-  var contenido;
 
   var txtCodigoPaquete;
 
@@ -37,94 +30,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
 
   final _codigoController = TextEditingController();
 
-  var colorletra = const Color(0xFFACADAD);
-
-  String txtcodigo = "";
   FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: CustomAppBar(text: "Custodiar envíos"),
-        drawer: DrawerPage(),
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height -
-                  AppBar().preferredSize.height -
-                  MediaQuery.of(context).padding.top),
-          child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[_subtitulo(), _crearListado()],
-                ),
-              )),
-        )));
-  }
-
-  Widget _subtitulo() {
-    this.txtCodigoPaquete = _generarControlCodigoPaquete();
-
-    return Align(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          alignment: Alignment.centerLeft,
-          height: sd.screenHeightExcludingToolbar(context, dividedBy: 6),
-          width: double.infinity,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: this.txtCodigoPaquete,
-                flex: 5,
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 15),
-                  child: new IconButton(
-                      icon: Icon(Icons.camera_alt),
-                      tooltip: "Increment",
-                      onPressed: _custodiarConCamara),
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-
-  Widget _generarControlCodigoPaquete() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: _codigoController,
-      onFieldSubmitted: (text) {
-        setState(() {
-          this.codigoPaquete = text;
-          _codigoController.text = text;
-        });
-        _custodiarPaquete();
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 11.0, horizontal: 10.0),
-        filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Colors.blue,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-      ),
-    );
-  }
 
   Widget _crearListado() {
     return Expanded(
@@ -148,7 +54,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                     return sinResultados("Ha surgido un problema");
                   } else {
                     if (snapshot.hasData) {
-                      booleancolor = true;
                       this.creados = snapshot.data;
                       if (this.creados.length == 0) {
                         return sinResultados("No se han encontrado resultados");
@@ -170,7 +75,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
 
   Widget _crearItem(PaqueteExterno paquete) {
     return Container(
-      decoration: myBoxDecoration(),
+      decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
       margin: EdgeInsets.only(bottom: 5),
       child:
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
@@ -205,12 +110,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     );
   }
 
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
   Future<List<PaqueteExterno>> _listarCreados() async {
     List<PaqueteExterno> paqueteList =
         await custodiaController.listarPaquetesExternosCreados();
@@ -218,7 +117,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   }
 
   void _custodiarPaquete() async {
-    var codigo = this.codigoPaquete;
+    var codigo = this._codigoController.text;
 
     if (codigo == "") {
       notificacion(context, "error", "EXACT",
@@ -269,38 +168,41 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   }
 
   void _custodiarConCamara() async {
-    var codigo = await sd.getDataFromCamera(context);
+    _codigoController.text = await sd.getDataFromCamera(context);
+    setState(() {
+      _codigoController.text = _codigoController.text;
+    });
+    _custodiarPaquete();
+  }
 
-    this.codigoPaqueteCamara = codigo;
-
-    if (codigo == "") {
-      return;
-    }
-
-    bool existeEnvio = _validarCodigo(codigo);
-
-    if (existeEnvio == false) {
-      popuptoinput(
-          context, f1, "error", "EXACT", "El código no pertenece a la lista");
-      return;
-    }
-
-    PaqueteExterno paq = new PaqueteExterno();
-
-    paq.paqueteId = codigo;
-
-    bool resp = await custodiaController.custodiarPaquete(paq);
-
-    if (resp) {
-      setState(() {
-        this.codigoPaquete = "";
-        _codigoController.text = "";
-      });
-      enfocarInputfx(context, f1);
-      _crearListado();
-    } else {
-      popuptoinput(context, f1, "error", "EXACT",
-          "No se pudo custodiar el paquete con código $codigo");
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: CustomAppBar(text: "Custodiar envíos"),
+        drawer: DrawerPage(),
+        body: scaffoldbody(
+            Padding(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 20, bottom: 20),
+                        child: InputCamera(
+                            iconData: Icons.camera_alt,
+                            onPressed: _custodiarConCamara,
+                            inputParam: InputForm(
+                              controller: _codigoController,
+                              fx: f1,
+                              hinttext: "",
+                              onPressed: _custodiarPaquete,
+                            )),
+                      ),
+                      _crearListado()
+                    ],
+                  ),
+                )),
+            context));
   }
 }

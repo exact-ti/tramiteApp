@@ -2,39 +2,21 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class PrincipalPage extends StatefulWidget {
-  final double bottomHeight;
-  PrincipalPage({
-    this.bottomHeight,
-  });
   @override
   _PrincipalPageState createState() => _PrincipalPageState();
 }
 
 class _PrincipalPageState extends State<PrincipalPage> {
   PrincipalController principalcontroller = new PrincipalController();
-  EnvioController envioController = new EnvioController();
   int cantidad = obtenerCantidadMinima();
-  var listadestinatarios;
   String textdestinatario = "";
-
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-
-  var nuevo = 0;
-
   @override
   void initState() {
-    prueba = Text("Usuarios frecuentes",
-        style: TextStyle(fontSize: 15, color: Color(0xFFACADAD)));
-
     setState(() {
       textdestinatario = "";
     });
@@ -166,17 +148,17 @@ class _PrincipalPageState extends State<PrincipalPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(top: 20, bottom: 10),
-                  width: double.infinity,
-                  child: destinatario),
-            ),
-            Row(
-              children: <Widget>[textdestinatario != "" ? Container() : prueba],
-            ),
+            Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(top: 20, bottom: 10),
+                width: double.infinity,
+                child: destinatario),
+            Container(
+                child: textdestinatario != ""
+                    ? Container()
+                    : Text("Usuarios frecuentes",
+                        style: TextStyle(
+                            fontSize: 15, color: StylesThemeData.LETTERCOLOR))),
             Expanded(
               child: Container(
                   alignment: Alignment.bottomCenter,

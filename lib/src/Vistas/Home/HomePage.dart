@@ -27,10 +27,9 @@ class _HomePageState extends State<HomePage> {
       appBar: CustomAppBar(text: "Bienvenido"),
       drawer: DrawerPage(),
       backgroundColor: Colors.white,
-      body: Center(
-        child: ListView(
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 300.0),
             Center(
                 child: Text("EXACT",
                     style: TextStyle(
@@ -42,7 +41,6 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 20, color: Colors.grey))),
           ],
         ),
-      ),
     );
   }
 }

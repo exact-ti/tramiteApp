@@ -3,9 +3,9 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosActivosController.dart';
 
 class ListarEnviosActivosPage extends StatefulWidget {
@@ -20,22 +20,12 @@ class ListarEnviosActivosPage extends StatefulWidget {
 class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   dynamic objetoModo;
   _ListarEnviosActivosPageState(this.objetoModo);
-  EnviosActivosController principalcontroller = new EnviosActivosController();
-  EnvioController envioController = new EnvioController();
+  EnviosActivosController enviosActivosController = new EnviosActivosController();
   List<EstadoEnvio> estadosSave = new List();
   List<EnvioModel> envios = new List();
   List<int> estadosIds = new List();
-  var listadestinatarios;
-  String textdestinatario = "";
   List<bool> isSelected;
   int indexSwitch = 0;
-  int numvalijas = 0;
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  String codigo = "";
-  var nuevo = 0;
 
   @override
   void initState() {
@@ -54,23 +44,16 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
         indexSwitch = 0;
       }
     }
-    setState(() {
-      textdestinatario = "";
-    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(EnvioModel entrega, int switched) {
-      String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.destinatario;
-      String observacion = entrega.observacion;
-      String fecha = entrega.fecha;
+    Widget crearItem(EnvioModel entrega) {
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -80,12 +63,12 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("$destinatario"),
+                    child: Text("${entrega.destinatario}"),
                   ),
                   Expanded(
                       child: Container(
                           alignment: Alignment.centerRight,
-                          child: Text("$fecha")))
+                          child: Text("${entrega.fecha}")))
                 ],
               ))),
               Expanded(
@@ -95,7 +78,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                   Container(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        child: Text("$codigopaquete",
+                        child: Text("${entrega.codigoPaquete}",
                             style: TextStyle(color: Colors.blue)),
                         onTap: () {
                           trackingPopUp(context, entrega.id);
@@ -104,7 +87,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                   Expanded(
                       child: Container(
                           alignment: Alignment.centerRight,
-                          child: Text("$observacion")))
+                          child: Text("${entrega.observacion}")))
                 ],
               )))
             ],
@@ -135,7 +118,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
     Widget listTagFuture(List<int> estadosParam) {
       return FutureBuilder(
-          future: principalcontroller.listarEnviosEstados(),
+          future: enviosActivosController.listarEnviosEstados(),
           builder: (BuildContext context,
               AsyncSnapshot<List<EstadoEnvio>> snapshot) {
             switch (snapshot.connectionState) {
@@ -210,7 +193,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
       envios.clear();
       return FutureBuilder(
           future:
-              principalcontroller.listarActivosController(switched, estadosIds),
+              enviosActivosController.listarActivosController(switched, estadosIds),
           builder:
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             switch (snapshot.connectionState) {
@@ -234,7 +217,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                       return ListView.builder(
                           itemCount: envios.length,
                           itemBuilder: (context, i) =>
-                              crearItem(envios[i], switched));
+                              crearItem(envios[i]));
                     }
                   } else {
                     return sinResultados("No se han encontrado resultados");
@@ -245,10 +228,10 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: colorletra,
-      fillColor: colorletra,
+      borderColor: StylesThemeData.LETTERCOLOR,
+      fillColor: StylesThemeData.LETTERCOLOR,
       borderWidth: 1,
-      selectedBorderColor: colorletra,
+      selectedBorderColor: StylesThemeData.LETTERCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -437,35 +420,25 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Container(
+            Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 10),
                   width: double.infinity,
                   child: estadoButton),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
+            Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   alignment: Alignment.center,
                   width: double.infinity,
                   child: listarTags(estadosSave, estadosIds)),
-            ),
             Container(
                 margin: const EdgeInsets.only(top: 10),
-                height: screenHeightExcludingToolbar(context, dividedBy: 20),
                 child: tabs),
-            Expanded(
-              child: Container(
-                  decoration: myBoxDecoration(colorletra),
+            Expanded(child: Container(
+                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
                   alignment: Alignment.bottomCenter,
-                  child: _crearListado(indexSwitch)),
-            )
+                  child: _crearListado(indexSwitch)))
           ],
         ),
       );

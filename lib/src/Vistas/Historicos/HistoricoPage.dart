@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
@@ -22,8 +24,6 @@ class _HistoricoPageState extends State<HistoricoPage> {
   List<EnvioModel> listaEnviosEntrada = new List();
   List<EnvioModel> listaEnviosSalida = new List();
   HistoricoController principalcontroller = new HistoricoController();
-  List<String> listaCodigosValidados = new List();
-  FocusNode _focusNode;
   List<bool> isSelected;
   int indexSwitch = 0;
   FocusNode f1inicio = FocusNode();
@@ -31,10 +31,6 @@ class _HistoricoPageState extends State<HistoricoPage> {
   bool pressButton = false;
   void initState() {
     isSelected = [true, false];
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _inicioController.clear();
-    });
     super.initState();
   }
 
@@ -75,34 +71,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
       }
     }
 
-    final sendButton = Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: SizedBox(
-          width: double.infinity,
-          height: 60,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              pressConsulta();
-            },
-            color: Color(0xFF2C6983),
-            child: Text('Buscar', style: TextStyle(color: Colors.white)),
-          ),
-        ));
-
-    final textInicio = Container(
-      child: Text("Desde"),
-    );
-
-    final textFin = Container(
-      child: Text("Hasta"),
-    );
-
     Widget crearItem(EnvioModel envio) {
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.INPUTCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -114,14 +85,16 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         child: Container(
                           margin: const EdgeInsets.only(right: 20, left: 10),
                           alignment: Alignment.centerLeft,
-                          child: Text('De',
+                          child: Text('De ',
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 15)),
                         ),
                         flex: 1,
                       ),
                       Expanded(
-                        child: Text(envio.remitente,
+                        child: Text(envio.remitente == null
+                                ? "Envío importado"
+                                : envio.remitente,
                             style: TextStyle(color: Colors.black)),
                         flex: 5,
                       ),
@@ -135,7 +108,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         child: Container(
                           margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.centerLeft,
-                          child: Text('para',
+                          child: Text('Para',
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 15)),
                         ),
@@ -291,7 +264,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
       }
       if (listaEnvios.length == 0) {
         return Container(
-          decoration: myBigBoxDecoration(StylesThemeData.INPUTCOLOR),
+          decoration: myBigBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
           alignment: Alignment.center,
           child: Center(child: sinResultados("No se encontraron resultados")),
@@ -304,10 +277,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.INPUTCOLOR,
-      fillColor: StylesThemeData.INPUTCOLOR,
+      borderColor: StylesThemeData.LISTBORDERCOLOR,
+      fillColor: StylesThemeData.LISTBORDERCOLOR,
       borderWidth: 1,
-      selectedBorderColor: StylesThemeData.INPUTCOLOR,
+      selectedBorderColor: StylesThemeData.LISTBORDERCOLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -337,105 +310,40 @@ class _HistoricoPageState extends State<HistoricoPage> {
       isSelected: isSelected,
     );
 
-    final campodetextoandIconoInicio = Row(children: <Widget>[
-      Expanded(
-        child: fechainicio,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
-    final campodetextoandIconoFin = Row(children: <Widget>[
-      Expanded(
-        child: fechafin,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
-    final campodetextoandIconoButton = Row(children: <Widget>[
-      Expanded(
-        child: sendButton,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
     Widget mainscaffold() {
       return Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 30),
+            Container(
+                  margin: const EdgeInsets.only(top: 20,bottom: 5),
                   alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
                   width: double.infinity,
-                  child: textInicio),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
+                  child: Text("Desde")),
+            Container(
                   alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
                   width: double.infinity,
-                  child: campodetextoandIconoInicio),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
+                  child: InputCamera(inputParam: fechainicio)),
+            Container(
                   alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
+                  margin: const EdgeInsets.only(top: 10,bottom: 5),
                   width: double.infinity,
-                  child: textFin),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
+                  child: Text("Hasta")),
+            Container(
                   alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
                   width: double.infinity,
-                  child: campodetextoandIconoFin),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: InputCamera(inputParam: fechafin)),
+            Container(
                 alignment: Alignment.centerLeft,
-                height: screenHeightExcludingToolbar(context, dividedBy: 12),
                 width: double.infinity,
-                child: campodetextoandIconoButton,
+                child: InputCamera(inputParam: CustomButton(onPressed: pressConsulta, colorParam: StylesThemeData.PRIMARYCOLOR, texto: 'Buscar')),
               ),
-            ),
             !pressButton
                 ? Container()
                 : Container(
                     margin: const EdgeInsets.only(top: 10),
                     alignment: Alignment.bottomLeft,
-                    height:
-                        screenHeightExcludingToolbar(context, dividedBy: 20),
                     child: tabs),
             !pressButton
                 ? Container()

@@ -3,8 +3,12 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'RetirarEnvioController.dart';
 
 class RetirarEnvioPage extends StatefulWidget {
@@ -18,28 +22,13 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   final _remitenteController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   ConsultaEnvioController principalcontroller = new ConsultaEnvioController();
-  String qrsobre, qrbarra, valuess = "";
-  var listadestinatarios;
-  String codigoValidar = "";
-  String codigoPaquete = "";
-  String codigoDestinatario = "";
-  String codigoremitente = "";
-  int cantidadPendientes = 0;
-  int cantidadInicial = 0;
-  String selectedFc;
-  List<String> listaCodigosValidados = new List();
   bool activo = false;
   bool button = false;
-  FocusNode _focusNode;
   FocusNode f1paquete = FocusNode();
   FocusNode f2remitente = FocusNode();
   FocusNode f3destinatario = FocusNode();
-  var colorletra = const Color(0xFFACADAD);
+
   void initState() {
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _paqueteController.clear();
-    });
     super.initState();
   }
 
@@ -59,6 +48,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   }
 
   void buscarEnvios() {
+    desenfocarInputfx(context);
     if (_paqueteController.text == "" &&
         _remitenteController.text == "" &&
         _destinatarioController.text == "") {
@@ -72,7 +62,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       setState(() {
         button = true;
       });
-      listarEnvios(codigoPaquete, codigoremitente, codigoDestinatario, activo);
+      listarEnvios(_paqueteController.text, _remitenteController.text,
+          _destinatarioController.text, activo);
     }
   }
 
@@ -90,6 +81,14 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
       await notificacion(context, "Error", "Exact", respuesta["message"]);
       return false;
     }
+  }
+
+  Future _traerdatosescanerPaquete() async {
+    _paqueteController.text = await getDataFromCamera(context);
+    setState(() {
+      _paqueteController.text = _paqueteController.text;
+    });
+    _validarPaqueteText();
   }
 
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
@@ -122,8 +121,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             : Colors.red[200]),
                   ),
                 )),
-            content: SingleChildScrollView(
-                child: StatefulBuilder(
+            content: SingleChildScrollView(child: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return new Column(mainAxisSize: MainAxisSize.min, children: <
                   Widget>[
@@ -276,59 +274,24 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     return respuesta;
   }
 
+  void _validarPaqueteText() async {
+    enfocarInputfx(context, f2remitente);
+  }
+
+  void _validarRemitenteText() async {
+    enfocarInputfx(context, f3destinatario);
+  }
+
+  void _validarDestinatarioText() async {
+    desenfocarInputfx(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final sendButton = Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: SizedBox(
-          width: double.infinity,
-          height: 60,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              desenfocarInputfx(context);
-              buscarEnvios();
-            },
-            color: Color(0xFF2C6983),
-            child: Text('Buscar', style: TextStyle(color: Colors.white)),
-          ),
-        ));
-
-    void _validarPaqueteText(String value) async {
-      codigoPaquete = value;
-      _paqueteController.text = value;
-      enfocarInputfx(context, f2remitente);
-    }
-
-    void _validarRemitenteText(String value) async {
-      codigoremitente = value;
-      _remitenteController.text = value;
-      enfocarInputfx(context, f3destinatario);
-    }
-
-    void _validarDestinatarioText(String value) async {
-      codigoDestinatario = value;
-      _destinatarioController.text = value;
-    }
-
-    final textPaquete = Container(
-      child: Text("Código de paquete"),
-    );
-
-    final textRemitente = Container(
-      child: Text("De"),
-    );
-
-    final textDestinatario = Container(
-      child: Text("Para"),
-    );
-
     Widget crearItem(EnvioModel envio, int i) {
       String codigo = envio.codigoPaquete;
       return Container(
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () async {
@@ -359,7 +322,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                               margin:
                                   const EdgeInsets.only(right: 20, left: 10),
                               alignment: Alignment.centerLeft,
-                              child: Text('De',
+                              child: Text('De ',
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 15)),
                             ),
@@ -383,7 +346,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                             child: Container(
                               margin: const EdgeInsets.only(left: 10),
                               alignment: Alignment.centerLeft,
-                              child: Text('para',
+                              child: Text('Para',
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 15)),
                             ),
@@ -429,109 +392,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
               )));
     }
 
-    Future _traerdatosescanerPaquete() async {
-      qrbarra = await getDataFromCamera(context);
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      _validarPaqueteText(qrbarra);
-    }
-
-    var paquete = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f1paquete,
-      controller: _paqueteController,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        _validarPaqueteText(value);
-      },
-      onChanged: (text) {
-        codigoPaquete = text;
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    var remitente = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f2remitente,
-      controller: _remitenteController,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        _validarRemitenteText(value);
-      },
-      onChanged: (text) {
-        codigoremitente = text;
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    var destinatario = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f3destinatario,
-      controller: _destinatarioController,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        _validarDestinatarioText(value);
-      },
-      onChanged: (text) {
-        codigoDestinatario = text;
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
     Widget _crearListadoAgregar(List<EnvioModel> lista) {
       if (lista.length == 0) {
         return Container();
@@ -541,67 +401,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
           itemBuilder: (context, i) => crearItem(lista[i], 1));
     }
 
-    final campodetextoandIconoDestinatario = Row(children: <Widget>[
-      Expanded(
-        child: destinatario,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
-    final campodetextoandIconoPaquete = Row(children: <Widget>[
-      Expanded(
-        child: paquete,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerPaquete),
-        ),
-      ),
-    ]);
-
-    final campodetextoandIconoRemitente = Row(children: <Widget>[
-      Expanded(
-        child: remitente,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
-    final campodetextoandIconoButton = Row(children: <Widget>[
-      Expanded(
-        child: sendButton,
-        flex: 5,
-      ),
-      Expanded(
-        child: Opacity(
-            opacity: 0.0,
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Icon(Icons.camera_alt),
-            )),
-      ),
-    ]);
-
     Widget mainscaffold() {
       return Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -609,65 +408,63 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
-                  width: double.infinity,
-                  child: textPaquete),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoPaquete),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
-                  width: double.infinity,
-                  child: textRemitente),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoRemitente),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
-                  child: textDestinatario),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                alignment: Alignment.centerLeft,
-                height: screenHeightExcludingToolbar(context, dividedBy: 12),
+            Container(
+                margin: EdgeInsets.only(top: 20, bottom: 5),
+                alignment: Alignment.bottomLeft,
                 width: double.infinity,
-                child: campodetextoandIconoDestinatario,
-                margin: const EdgeInsets.only(bottom: 20),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: EdgeInsets.only(bottom: 10),
+                child: Text("Código de paquete")),
+            Container(
                 alignment: Alignment.centerLeft,
-                height: screenHeightExcludingToolbar(context, dividedBy: 12),
                 width: double.infinity,
-                child: campodetextoandIconoButton,
-              ),
+                child: InputCamera(
+                    iconData: Icons.camera_alt,
+                    onPressed: _traerdatosescanerPaquete,
+                    inputParam: InputForm(
+                      controller: _paqueteController,
+                      fx: f1paquete,
+                      hinttext: "",
+                      onPressed: _validarPaqueteText,
+                    ))),
+            Container(
+                margin: EdgeInsets.only(top: 10, bottom: 5),
+                alignment: Alignment.bottomLeft,
+                width: double.infinity,
+                child: Text("De")),
+            Container(
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: InputCamera(
+                    inputParam: InputForm(
+                  controller: _remitenteController,
+                  fx: f2remitente,
+                  hinttext: "",
+                  onPressed: _validarRemitenteText,
+                ))),
+            Container(
+                margin: EdgeInsets.only(top: 10, bottom: 5),
+                alignment: Alignment.bottomLeft,
+                child: Text("Para")),
+            Container(
+              alignment: Alignment.centerLeft,
+              width: double.infinity,
+              child: InputCamera(
+                  inputParam: InputForm(
+                controller: _destinatarioController,
+                fx: f3destinatario,
+                hinttext: "",
+                onPressed: _validarDestinatarioText,
+              )),
+              margin: const EdgeInsets.only(bottom: 20),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              alignment: Alignment.centerLeft,
+              width: double.infinity,
+              child: InputCamera(
+                  inputParam: CustomButton(
+                      onPressed: buscarEnvios,
+                      colorParam: StylesThemeData.PRIMARYCOLOR,
+                      texto: "Buscar")),
             ),
             Expanded(
                 child: Container(child: _crearListadoAgregar(listaEnvios))),

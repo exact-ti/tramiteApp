@@ -73,7 +73,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
           await notificacion(
               context, "success", "EXACT", "El envío $value fue agregado");
         } else {
-          await notificacion(context, "success", "EXACT",
+          await notificacion(context, "error", "EXACT",
               "El envío $value no pertenece al recorrido");
         }
       }
@@ -139,9 +139,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                       hinttext: "",
                     ))),
             Expanded(
-              child: listaEnvios.isEmpty?sinResultados("No se han encontrado resultados"):Container(
+              child: Container(
                   alignment: Alignment.bottomCenter,
-                  child: ListCod(enviosModel: listaEnvios)),
+                  child: ListCod(enviosModel: listaEnvios,mensaje: "No se han encontrado resultados",)),
             ),
             Container(
                 alignment: Alignment.center,

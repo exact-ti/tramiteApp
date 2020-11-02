@@ -116,6 +116,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             if (listaEnvios.length == 0) {
               bool respuestatrue = await notificacion(context, "success",
                   "EXACT", "Se ha recepcionado los documentos con éxito");
+                  desenfocarInputfx(context);
                 if (respuestatrue) {
                   Navigator.of(context).pushNamed('/envio-interutd');
                 }

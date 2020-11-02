@@ -37,10 +37,9 @@ class NuevoEntregaExternaController {
   Future<EnvioModel> validarCodigoEntrega(
       String bandeja, String codigo, BuildContext context) async {
     _navigationService.showModal();
-
     EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
+    if(envio!=null) envio.estado=true;
     _navigationService.goBack();
-
     return envio;
   }
 

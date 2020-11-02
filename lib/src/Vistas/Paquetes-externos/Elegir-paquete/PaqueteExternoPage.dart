@@ -15,67 +15,16 @@ class PaqueteExternoPage extends StatefulWidget {
 }
 
 class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
-  PaqueteExternoController paqueteExternoController =
-      new PaqueteExternoController();
 
-  final subtituloStyle = TextStyle(color: StylesThemeData.LETTERCOLOR);
-  var booleancolor = true;
-  var colorwidget = StylesThemeData.INPUTCOLOR;
-
-  @override
-  Widget build(BuildContext context) {
-    const colorplomo = const Color(0xFFEAEFF2);
-    const colorblanco = const Color(0xFFFFFFFF);
-    var booleancolor = true;
-
-    if (booleancolor) {
-      colorwidget = colorplomo;
-      booleancolor = false;
-    } else {
-      colorwidget = colorblanco;
-      booleancolor = true;
-    }
-
-    return Scaffold(
-        appBar: CustomAppBar(text: "Custodia de documentos externos"),
-        drawer: DrawerPage(),
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height -
-                        AppBar().preferredSize.height -
-                        MediaQuery.of(context).padding.top),
-                child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          _subtitulo(),
-                          _crearListaTipoPaquete()
-                        ],
-                      ),
-                    )))));
-  }
+  PaqueteExternoController paqueteExternoController = new PaqueteExternoController();
 
   Widget _subtitulo() {
-    return Align(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          alignment: Alignment.centerLeft,
-          height: sd.screenHeightExcludingToolbar(context, dividedBy: 6),
-          width: double.infinity,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Text('Elige el tipo de paquete', style: subtituloStyle),
-                flex: 5,
-              )
-            ],
-          ),
-        ));
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(top: 20,bottom: 20),
+      width: double.infinity,
+      child: Text('Elige el tipo de paquete', style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+    );
   }
 
   Widget _crearListaTipoPaquete() {
@@ -120,20 +69,13 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
   }
 
   Widget _crearItem(TipoPaqueteModel item) {
-    if (booleancolor) {
-      colorwidget =  StylesThemeData.INPUTCOLOR;
-      booleancolor = false;
-    } else {
-      colorwidget = Colors.white;
-      booleancolor = true;
-    }
     return Container(
-        decoration: myBoxDecoration(),
+        decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
         margin: EdgeInsets.only(bottom: 5),
         child: InkWell(
             onTap: () {
-              _onSearchButtonPressed(item);
-            }, 
+              _selectPaquete(item);
+            },
             child: Container(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -150,12 +92,12 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
                             Container(
                                 height: 80,
                                 child: Icon(Icons.keyboard_arrow_right,
-                                    color: Color(0xffC7C7C7), size: 50))
+                                    color: StylesThemeData.LETTERCOLOR, size: 50))
                           ]))
                 ]))));
   }
 
-  void _onSearchButtonPressed(TipoPaqueteModel item) {
+  void _selectPaquete(TipoPaqueteModel item) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -165,24 +107,35 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
   }
 
   Widget _informacionItem(TipoPaqueteModel item) {
-    String descripcion = item.nombre;
-
     return Container(
         child: ListView(shrinkWrap: true, children: <Widget>[
       Container(
           child: ListTile(
-        title: Text("$descripcion"),
+        title: Text("${item.nombre}"),
         leading: Icon(
           Icons.description,
-          color: Color(0xffC7C7C7),
+          color:  StylesThemeData.LETTERCOLOR,
         ),
       )),
     ]));
   }
 
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: StylesThemeData.LETTERCOLOR),
-    );
+  @override
+  Widget build(BuildContext context) {
+    Widget mainscaffold() {
+      return Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[_subtitulo(), _crearListaTipoPaquete()],
+            ),
+          ));
+    }
+
+    return Scaffold(
+        appBar: CustomAppBar(text: "Custodia de documentos externos"),
+        drawer: DrawerPage(),
+        body: scaffoldbody(mainscaffold(), context));
   }
 }

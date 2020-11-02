@@ -6,14 +6,17 @@ import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class ListCod extends StatelessWidget {
   final List<EnvioModel> enviosModel;
+  final String mensaje;
 
   const ListCod({
     Key key,
     @required this.enviosModel,
+    this.mensaje,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     Widget itemCod(EnvioModel envioModel) {
       return Container(
           decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
@@ -31,7 +34,7 @@ class ListCod extends StatelessWidget {
     }
 
     return enviosModel.isEmpty
-        ? Container()
+        ? Container(child: sinResultados(mensaje==null?"":mensaje),)
         : ListView.builder(
             itemCount: this.enviosModel.length,
             itemBuilder: (context, i) => itemCod(this.enviosModel[i]));

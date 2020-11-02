@@ -33,12 +33,10 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
   ImportarArchivoController imp = new ImportarArchivoController();
 
-  String titulo = 'Importar envíos';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(text: titulo),
+      appBar: CustomAppBar(text: 'Importar envíos'),
       drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Container(

@@ -21,10 +21,16 @@ class _LoginPageState extends State<LoginPage> {
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   bool passwordVisible = true;
-  String usuario = "";
   String password = "";
+    FocusNode _focusNode;
+
   @override
   void initState() {
+        _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) _usernameController.clear();
+      if (_focusNode.hasFocus) _passwordController.clear();
+    });
     super.initState();
     checkLoginStatus();
   }
@@ -72,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (newValue) {
-        usuario = newValue;
         enfocarcodigocontrasena();
       },
       decoration: InputDecoration(
@@ -207,7 +212,9 @@ class _LoginPageState extends State<LoginPage> {
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: StylesThemeData.PRIMARYCOLOR),
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+          color: StylesThemeData.PRIMARYCOLOR),
     );
 
     final enlace = InkWell(

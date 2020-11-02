@@ -86,7 +86,7 @@ class NavigationService {
               ),
               InkWell(
                 onTap: () {
-                  eliminarpreferences(null);
+                  eliminarpreferences(context);
                   this.navigationTo('/login');
                 },
                 child: Center(

@@ -46,7 +46,6 @@ void eliminarpreferences(BuildContext context) async {
   Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
       1;
   sharedPreferences.clear();
-  sharedPreferences.commit();
   if (context != null) {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
@@ -54,24 +53,11 @@ void eliminarpreferences(BuildContext context) async {
   }
 }
 
-void eliminarpreferences2(BuildContext context) async {
-  SharedPreferences sharedPreferences;
-  sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
-      1;
-  sharedPreferences.clear();
-  sharedPreferences.commit();
-  if (context != null) {
-    Navigator.of(context, rootNavigator: true).pushReplacement(
-        MaterialPageRoute(builder: (context) => new LoginPage()));
-  }
-}
 
 void deletepreferencesWithoutContext() async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
-  sharedPreferences.commit();
 }
 
 void redirection(BuildContext context, String ruta) {

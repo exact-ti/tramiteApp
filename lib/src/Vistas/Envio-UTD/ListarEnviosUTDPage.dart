@@ -23,9 +23,6 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
   @override
   Widget build(BuildContext context) {
     Widget crearItem(EnvioModel entrega) {
-      String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.destinatario;
-      String observacion = entrega.observacion;
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
@@ -39,7 +36,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("$destinatario"),
+                    child: Text("${entrega.destinatario}"),
                   )
                 ],
               ))),
@@ -50,7 +47,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
                   Container(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        child: Text("$codigopaquete",
+                        child: Text("${entrega.codigoPaquete}",
                             style: TextStyle(color: Colors.blue)),
                         onTap: () {
                           trackingPopUp(context, entrega.id);
@@ -59,7 +56,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
                   Expanded(
                       child: Container(
                           alignment: Alignment.centerRight,
-                          child: Text("$observacion")))
+                          child: Text("${entrega.observacion}")))
                 ],
               )))
             ],

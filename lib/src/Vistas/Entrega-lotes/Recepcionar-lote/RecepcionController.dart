@@ -23,10 +23,10 @@ class RecepcionControllerLote {
   }
 
   Future<bool> recogerdocumentoLote(
-      BuildContext context, String codigo, String paquete) async {
+      BuildContext context, String codigoLote, String codigoValija) async {
     _navigationService.showModal();
 
-    bool respuesta = await recepcionInterface.recibirLote(codigo, paquete);
+    bool respuesta = await recepcionInterface.recibirLote(codigoLote, codigoValija);
     _navigationService.goBack();
 
     return respuesta;

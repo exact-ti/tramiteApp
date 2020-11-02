@@ -32,9 +32,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   List<EnvioModel> listaEnvios = new List();
   EntregaregularController principalcontroller = new EntregaregularController();
   String mensaje = "";
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  bool isSwitched = true;
+  FocusNode focusBandeja = FocusNode();
+  FocusNode focusEnvio = FocusNode();
+  bool enRecojo = true;
   String codigoMostrar = '';
 
   @override
@@ -64,13 +64,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         .toList()
         .isNotEmpty;
     if (pertenecia) {
-      if (isSwitched) {
+      if (enRecojo) {
         dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
             context,
             recorridoUsuario.id,
             _bandejaController.text,
             documento,
-            isSwitched);
+            enRecojo);
         if (respuestaMap.containsValue("success")) {
           dynamic respuestaMap2 = respuestaMap["data"];
           mensaje = respuestaMap2["destino"];
@@ -86,7 +86,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             recorridoUsuario.id,
             _bandejaController.text,
             documento,
-            isSwitched);
+            enRecojo);
         if (respuestaMap["status"] == "success") {
           listaEnvios.removeWhere((value) => value.codigoPaquete == documento);
           mensaje = "Se registró la entrega";
@@ -102,13 +102,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         listaEnvios = listaEnvios;
       });
     } else {
-      if (isSwitched) {
+      if (enRecojo) {
         dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
             context,
             recorridoUsuario.id,
             _bandejaController.text,
             documento,
-            isSwitched);
+            enRecojo);
         if (respuestaMap.containsValue("success")) {
           dynamic respuestaMap2 = respuestaMap["data"];
           mensaje = respuestaMap2["destino"];
@@ -127,7 +127,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             recorridoUsuario.id,
             _bandejaController.text,
             documento,
-            isSwitched);
+            enRecojo);
         if (respuestaMap["status"] == "success") {
           setState(() {
             codigoMostrar = documento;
@@ -141,7 +141,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         }
       }
     }
-    enfocarInputfx(context, f2);
+    enfocarInputfx(context, focusEnvio);
   }
 
   void _validarSobreText() async {
@@ -149,7 +149,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       bool respuestatrue = await notificacion(context, "error", "EXACT",
           "Primero debe ingresar el codigo de la bandeja");
       if (respuestatrue) {
-        enfocarInputfx(context, f1);
+        enfocarInputfx(context, focusBandeja);
         setState(() {
           listaEnvios = [];
           codigoMostrar = "";
@@ -164,7 +164,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         bool respuesta = await notificacion(
             context, "error", "EXACT", "Ingrese el codigo de sobre");
         if (respuesta) {
-          enfocarInputfx(context, f2);
+          enfocarInputfx(context, focusEnvio);
         }
       }
     }
@@ -176,7 +176,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       _sobreController.text = "";
       _bandejaController.text = "";
       listaEnvios.clear();
-      isSwitched = isSwitched ? false : true;
+      enRecojo = enRecojo ? false : true;
       mensaje = "";
       codigoMostrar = "";
     });
@@ -185,28 +185,29 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   void _validarBandejaText() async {
     String value = _bandejaController.text;
     if (value != "") {
-      if (isSwitched) {
+      if (enRecojo) {
         listaEnvios = await principalcontroller.listarEnviosRecojo(
             context, recorridoUsuario.id, value);
         if (listaEnvios == null) {
-          notificacion(context, "error", "EXACT",
-              "El código no existe en la base de datos");
-          setState(() {
-            mensaje = "";
-            listaEnvios = [];
-            _bandejaController.text = value;
-          });
-          enfocarInputfx(context, f1);
+          bool respuestaNotificacion = await notificacion(context, "error",
+              "EXACT", "El código no existe en la base de datos");
+          if (respuestaNotificacion) {
+            setState(() {
+              mensaje = "";
+              listaEnvios = [];
+            });
+            enfocarInputfx(context, focusBandeja);
+          }
         } else {
           if (listaEnvios.isEmpty) {
-            if (isSwitched) {
+            if (enRecojo) {
               bool respuestatrue = await notificacion(context, "error", "EXACT",
                   "No tiene envíos por recoger en el área");
-              if (respuestatrue) enfocarInputfx(context, f1);
+              if (respuestatrue) enfocarInputfx(context, focusBandeja);
             } else {
               bool respuestatrue = await notificacion(context, "error", "EXACT",
                   "No tiene envíos por entregar en el área");
-              if (respuestatrue) enfocarInputfx(context, f1);
+              if (respuestatrue) enfocarInputfx(context, focusBandeja);
             }
             setState(() {
               mensaje = "";
@@ -214,7 +215,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               _bandejaController.text = value;
             });
           } else {
-            enfocarInputfx(context, f2);
+            enfocarInputfx(context, focusEnvio);
             setState(() {
               mensaje = "";
               _bandejaController.text = value;
@@ -234,9 +235,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             });
             bool respuestatrue = await notificacion(context, "error", "EXACT",
                 "No tienes envíos para entregar a esta área");
-            if (respuestatrue) enfocarInputfx(context, f1);
+            if (respuestatrue) enfocarInputfx(context, focusBandeja);
           } else {
-            enfocarInputfx(context, f2);
+            enfocarInputfx(context, focusEnvio);
             setState(() {
               listaEnvios = listaEnvios;
               _bandejaController.text = value;
@@ -249,7 +250,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           });
           bool respuestatrue = await notificacion(
               context, "error", "EXACT", respuesta["message"]);
-          if (respuestatrue) enfocarInputfx(context, f1);
+          if (respuestatrue) enfocarInputfx(context, focusBandeja);
         }
       }
     }
@@ -299,7 +300,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               width: double.infinity,
               child: CustomSwitch(
                   onPressed: changeSwitch,
-                  switchValue: isSwitched,
+                  switchValue: enRecojo,
                   textEnabled: "En entrega",
                   textDisabled: "En recojo"),
               margin: const EdgeInsets.only(bottom: 10, top: 10),
@@ -318,7 +319,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                     inputParam: InputForm(
                       onPressed: _validarBandejaText,
                       controller: _bandejaController,
-                      fx: f1,
+                      fx: focusBandeja,
                       hinttext: "",
                     ))),
             Container(
@@ -335,7 +336,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                   inputParam: InputForm(
                     onPressed: _validarSobreText,
                     controller: _sobreController,
-                    fx: f2,
+                    fx: focusEnvio,
                     hinttext: "",
                   )),
               margin: const EdgeInsets.only(bottom: 20),

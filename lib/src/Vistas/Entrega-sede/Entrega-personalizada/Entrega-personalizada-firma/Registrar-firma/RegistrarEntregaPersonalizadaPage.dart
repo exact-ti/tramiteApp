@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'RegistrarEntregaPersonalizadaController.dart';
 
@@ -23,46 +25,15 @@ class _RegistrarEntregapersonalizadoPageState
   dynamic imagenFirma;
   _RegistrarEntregapersonalizadoPageState(this.imagenFirma);
   final _sobreController = TextEditingController();
-  final _firmaController = TextEditingController();
-  RegistrarEntregaPersonalizadaController personalizadacontroller =
-      new RegistrarEntregaPersonalizadaController();
+  RegistrarEntregaPersonalizadaController personalizadacontroller =new RegistrarEntregaPersonalizadaController();
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
-  String qrsobre, qrbarra, valuess = "";
-  var listadestinatarios;
-  String codigoValidar = "";
-  String codigoFIRMA = "";
-  String codigoSobre = "";
-  String textdestinatario = "";
-  bool inicio = true;
-  String respuestaBack = "";
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  var nuevo = 0;
-  bool isSwitched = true;
-  var validarSobre = false;
-  var validarBandeja = false;
-  bool confirmaciondeenvio = false;
-  int indice = 0;
-  int indicebandeja = 0;
-  bool colorRespuesta = true;
-  List<String> listacodigos = new List();
-  FocusNode _focusNode;
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
+  List<EnvioModel> listaEnvios = new List();
+  FocusNode focusSobre = FocusNode();
   @override
   void initState() {
-    valuess = "";
-    listacodigos = [];
+    listaEnvios = [];
     super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _firmaController.clear();
-    });
   }
-
-  var colorplomos = const Color(0xFFEAEFF2);
   void notifierAccion(String mensaje, Color color) {
     final snack = new SnackBar(
       content: new Text(mensaje),
@@ -73,24 +44,23 @@ class _RegistrarEntregapersonalizadoPageState
 
   @override
   Widget build(BuildContext context) {
-    void _validarSobreText(String value) async {
-      if (value != "") {
-        if (!listacodigos.contains(value)) {
+    void _validarSobre() async {
+      if (_sobreController.text != "") {
+        if (listaEnvios.where((envio) => envio.codigoPaquete==_sobreController.text).toList().isEmpty) {
           dynamic respuesta = await personalizadacontroller.guardarEntrega(
-              context, imagenFirma, value);
+              context, imagenFirma, _sobreController.text);
           if (respuesta.containsValue("success")) {
             desenfocarInputfx(context);
-            listacodigos.add(value);
+            EnvioModel envioModel = new EnvioModel();
+            envioModel.codigoPaquete=_sobreController.text;
+            envioModel.estado=true;
             setState(() {
-              _sobreController.text = "";
-              codigoSobre = "";
-              listacodigos = listacodigos;
+              listaEnvios.add(envioModel);
             });
             notifierAccion("Se registró la entrega", StylesThemeData.PRIMARYCOLOR);
           } else {
             setState(() {
               _sobreController.text = "";
-              listacodigos = listacodigos;
             });
             notifierAccion(respuesta["message"], Colors.red);
           }
@@ -102,57 +72,15 @@ class _RegistrarEntregapersonalizadoPageState
       }
     }
 
-    final textFIRMA = Container(
-      child: Text("Firma"),
-      margin: const EdgeInsets.only(left: 15),
-    );
-
-    final textSobre = Container(
-      child: Text("Código de sobre"),
-      margin: const EdgeInsets.only(left: 15),
-    );
-
-    Future _traerdatosescanerSobre() async {
-      qrbarra = await getDataFromCamera(context);
-      _validarSobreText(qrbarra);
+    Future _getDataCameraSobre() async {
+      _sobreController.text = await getDataFromCamera(context);
+      setState(() {
+        _sobreController.text=_sobreController.text;
+      });
+      _validarSobre();
     }
 
-    var sobre = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f2,
-      controller: _sobreController,
-      textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (value.length == 0) {
-          notificacion(
-              context, "error", "EXACT", "El codigo de sobre es obligatorio");
-          enfocarInputfx(context, f2);
-        } else {
-            _validarSobreText(value);
-        }
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    final campodetextoandIconoFIRMA = Container(
+    Widget campodetextoandIconoFIRMA = Container(
       child:  LimitedBox(
               maxHeight: screenHeightExcludingToolbar(context, dividedBy: 5),
               child: Container(
@@ -162,42 +90,6 @@ class _RegistrarEntregapersonalizadoPageState
                           child: Image.memory(
                               Base64Decoder().convert(imagenFirma)))))),
     );
-
-    final campodetextoandIconoSobre = Row(children: <Widget>[
-      Expanded(
-        child: sobre,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerSobre),
-        ),
-      ),
-    ]);
-
-    Widget crearItem(String codigopaquete) {
-      return Container(
-          decoration: myBoxDecoration(),
-          margin: EdgeInsets.only(bottom: 5),
-          child: ListTile(
-            title: Text("$codigopaquete"),
-            leading: FaIcon(FontAwesomeIcons.qrcode, color: Color(0xffC7C7C7)),
-            trailing: Icon(
-              Icons.check,
-              color: Color(0xffC7C7C7),
-            ),
-          ));
-    }
-
-    Widget _crearListadoinMemoria(List<String> validados) {
-      return ListView.builder(
-          itemCount: validados.length,
-          itemBuilder: (context, i) => crearItem(validados[i]));
-    }
 
     return Scaffold(
         appBar:CustomAppBar(text: "Entrega personalizada"),
@@ -213,71 +105,41 @@ class _RegistrarEntregapersonalizadoPageState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
+                      Container(
                           alignment: Alignment.bottomLeft,
-                          height: screenHeightExcludingToolbar(context,
-                              dividedBy: 30),
                           width: double.infinity,
-                          child: textFIRMA,
-                          margin: const EdgeInsets.only(top: 50),
+                          child: Text("Firma"),
+                          margin: const EdgeInsets.only(top: 20),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
+                      Container(
                           width: double.infinity,
                           child: campodetextoandIconoFIRMA,
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
+                      Container(
+                            margin: const EdgeInsets.only(bottom: 5),
                             alignment: Alignment.bottomLeft,
-                            height: screenHeightExcludingToolbar(context,
-                                dividedBy: 30),
-                            child: textSobre),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
+                            child: Text("Código de sobre")),
+                      Container(
                           alignment: Alignment.centerLeft,
-                          height: screenHeightExcludingToolbar(context,
-                              dividedBy: 12),
                           width: double.infinity,
-                          child: campodetextoandIconoSobre,
-                          margin: const EdgeInsets.only(bottom: 40),
+                          child: InputCamera(
+                        iconData: Icons.camera_alt,
+                        onPressed: _getDataCameraSobre,
+                        inputParam: InputForm(
+                          controller: _sobreController,
+                          fx: focusSobre,
+                          hinttext: "",
+                          onPressed: _validarSobre,
+                        )),
+                          margin: const EdgeInsets.only(bottom: 20),
                         ),
-                      ),
                       Expanded(
                         child: Container(
                             alignment: Alignment.bottomCenter,
-                            child: _crearListadoinMemoria(listacodigos)),
+                            child: ListCod(enviosModel: listaEnvios)),
                       ),
                     ],
                   ),
                 ))));
-  }
-
-  Size screenSize(BuildContext context) {
-    return MediaQuery.of(context).size;
-  }
-
-  double screenHeight(BuildContext context,
-      {double dividedBy = 1, double reducedBy = 0.0}) {
-    return (screenSize(context).height - reducedBy) / dividedBy;
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
-  double screenHeightExcludingToolbar(BuildContext context,
-      {double dividedBy = 1}) {
-    return screenHeight(context,
-        dividedBy: dividedBy, reducedBy: kToolbarHeight);
   }
 }

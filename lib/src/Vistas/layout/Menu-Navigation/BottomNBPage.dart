@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Vistas/Consulta-Envio/ConsultaEnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/Envio-activos/Listar-envios/ListarEnviosActivosPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage.dart';
 import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
@@ -25,7 +25,6 @@ class TopLevelWidget extends StatefulWidget {
 
 class _TopLevelWidgetState extends State<TopLevelWidget> {
   final navigatorKey = GlobalKey<NavigatorState>();
-  PageController pageController = PageController();
   MenuController menuController = new MenuController();
   int currentIndex = 0;
   Menu menuu = new Menu();
@@ -131,6 +130,8 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         key: key,
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 10,
+        
+        unselectedFontSize: 10,
         items: returnItems(),
         onTap: (routeIndex) {
           String nombre = listMenu

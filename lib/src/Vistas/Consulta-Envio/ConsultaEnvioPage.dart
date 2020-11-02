@@ -51,16 +51,14 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
 
   void listarEnvios(String paquete, String remitente, String destinatario,
       bool opcion) async {
-    this.listaEnvios = await principalcontroller.listarEnvios(
-        context, paquete, remitente, destinatario, opcion);
+    this.listaEnvios = await principalcontroller.listarEnvios(context, paquete, remitente, destinatario, opcion);
     if (this.listaEnvios.isNotEmpty) {
       setState(() {
         this.listaEnvios = this.listaEnvios;
       });
     } else {
-      this.listaEnvios.clear();
       setState(() {
-        this.listaEnvios = this.listaEnvios;
+        this.listaEnvios.clear();
       });
     }
   }
@@ -71,7 +69,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
         margin: const EdgeInsets.only(top: 10),
         child: SizedBox(
           width: double.infinity,
-          height: 60,
+          height: 40,
           child: RaisedButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
@@ -121,7 +119,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
         child: opcion == false
             ? Text(
                 "Mostrar inactivos",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.black),
               )
             : Text(
                 "Mostrar activos",
@@ -138,7 +136,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(top: 40, bottom: 10),
+                margin: const EdgeInsets.only(top: 20, bottom: 5),
                 alignment: Alignment.bottomLeft,
                 child: Text("Código de paquete")),
             Container(
@@ -154,7 +152,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                         align: null,
                         hinttext: ""))),
             Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 10),
+                margin: const EdgeInsets.only(top: 10, bottom: 5),
                 alignment: Alignment.bottomLeft,
                 child: Text("De")),
             Container(
@@ -180,7 +178,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   ),
                 ])),
             Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 10),
+                margin: const EdgeInsets.only(top: 10, bottom: 5),
                 alignment: Alignment.bottomLeft,
                 child: Text("Para")),
             Container(
@@ -205,7 +203,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                       )),
                 ),
               ]),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 10),
             ),
             Container(
               alignment: Alignment.centerLeft,
