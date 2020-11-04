@@ -4,10 +4,10 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
-class ItemsConsult extends StatelessWidget {
+class ItemsConsultWidget extends StatelessWidget {
   final List<EnvioModel> enviosModel;
 
-  const ItemsConsult({
+  const ItemsConsultWidget({
     Key key,
     @required this.enviosModel,
   }) : super(key: key);
@@ -17,7 +17,7 @@ class ItemsConsult extends StatelessWidget {
 
     Widget itemConsult(EnvioModel envioModel){
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -82,7 +82,7 @@ class ItemsConsult extends StatelessWidget {
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 15)),
                             )),
-                        flex: 3,
+                            flex: 2,
                       ),
                       Expanded(
                         child: Container(
@@ -90,9 +90,9 @@ class ItemsConsult extends StatelessWidget {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: Text(envioModel.codigoUbicacion,
-                              style: TextStyle(color: Colors.black)),
+                              style: TextStyle(color: Colors.black,fontSize: 15)),
                         ),
-                        flex: 6,
+                        flex: 3,
                       ),
                     ],
                   )),

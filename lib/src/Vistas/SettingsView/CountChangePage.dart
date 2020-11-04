@@ -93,7 +93,7 @@ class _CountChangePageState extends State<CountChangePage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARYCOLOR,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text(
                 _prefs.tipoperfil == cliente ? "Cambiar buzón" : "Cambiar UTD",
                 style: TextStyle(

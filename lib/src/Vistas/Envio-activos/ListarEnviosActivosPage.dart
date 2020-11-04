@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosActivosController.dart';
@@ -53,7 +54,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -123,7 +124,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               AsyncSnapshot<List<EstadoEnvio>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -132,7 +133,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     estadosSave = snapshot.data;
@@ -173,7 +174,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                       return Container();
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -198,7 +199,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -207,12 +208,12 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     final envios = snapshot.data;
                     if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
                           itemCount: envios.length,
@@ -220,7 +221,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                               crearItem(envios[i]));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -228,10 +229,10 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTERCOLOR,
-      fillColor: StylesThemeData.LETTERCOLOR,
+      borderColor: StylesThemeData.LETTER_COLOR,
+      fillColor: StylesThemeData.LETTER_COLOR,
       borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTERCOLOR,
+      selectedBorderColor: StylesThemeData.LETTER_COLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -434,7 +435,7 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                 margin: const EdgeInsets.only(top: 10),
                 child: tabs),
             Expanded(child: Container(
-                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+                  decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
                   alignment: Alignment.bottomCenter,

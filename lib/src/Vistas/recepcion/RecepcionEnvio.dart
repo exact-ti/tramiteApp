@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
@@ -166,11 +167,10 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       }
     }
 
-    void _validarBandejaText() {
-      String value = _bandejaController.text;
-      if (value != "") {
+    void _validarBandejaText(dynamic valueBandejaController) {
+      if (valueBandejaController != "") {
         List<String> lista = new List();
-        lista.add(value);
+        lista.add(valueBandejaController);
         validarEnvio(lista, 1);
       }
     }
@@ -181,7 +181,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         setState(() {
           _bandejaController.text = _bandejaController.text;
         });
-        _validarBandejaText();
+        _validarBandejaText(_bandejaController.text);
       }
     }
 
@@ -195,8 +195,9 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     Widget _crearListado(List<EnvioModel> listaEnv) {
       if (listaEnv.length == 0)
         return Container(
-            child:
-                Center(child: sinResultados("No hay envíos para recepcionar")));
+            child: Center(
+                child: sinResultados("No hay envíos para recepcionar",
+                    IconsData.ICON_ERROR_EMPTY)));
       return ListView.builder(
           itemCount: listaEnv.length,
           itemBuilder: (context, i) => crearItem(listaEnv[i]));
@@ -209,17 +210,15 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(top: 30, bottom: 5),
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                child: Text("Envío")),
-            Container(
                 margin: const EdgeInsets.only(bottom: 30),
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: InputCamera(
-                  inputParam: InputForm(
-                      controller: _bandejaController, fx: f1, hinttext: ""),
+                child: InputCameraWidget(
+                  inputParam: InputWidget(
+                      controller: _bandejaController,
+                      focusInput: f1,
+                      methodOnPressed: _validarBandejaText,
+                      hinttext: "Envío"),
                   onPressed: _traerdatosescanerBandeja,
                   iconData: Icons.camera_alt,
                 )),
@@ -238,9 +237,9 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                     margin: const EdgeInsets.only(bottom: 20),
                     alignment: Alignment.center,
                     width: double.infinity,
-                    child: CustomButton(
+                    child: ButtonWidget(
                         onPressed: registrarLista,
-                        colorParam: StylesThemeData.PRIMARYCOLOR,
+                        colorParam: StylesThemeData.PRIMARY_COLOR,
                         texto: "Recepcionar"))
                 : Container()
           ],
@@ -260,10 +259,10 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
 
   BoxDecoration myBoxDecorationselect(bool seleccionado) {
     return BoxDecoration(
-      border: Border.all(color: StylesThemeData.LETTERCOLOR),
+      border: Border.all(color: StylesThemeData.LETTER_COLOR),
       color: seleccionado == null || seleccionado == false
           ? Colors.white
-          : StylesThemeData.SELECTIONCOLOR,
+          : StylesThemeData.SELECTION_COLOR,
     );
   }
 }

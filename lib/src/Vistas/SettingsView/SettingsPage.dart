@@ -95,7 +95,7 @@ class _SettingPageState extends State<SettingPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARYCOLOR,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Cuenta",
                 style: TextStyle(
                     fontSize: 18,

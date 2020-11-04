@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/styles/icon_style.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'EnvioController.dart';
 
 class EnvioPage extends StatefulWidget {
@@ -26,26 +31,14 @@ class _EnvioPageState extends State<EnvioPage> {
   int minvalor = 0;
   String errorSobre = "";
   String errorBandeja = "";
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
+  FocusNode focusSobre = FocusNode();
+  FocusNode focusBandeja = FocusNode();
+  FocusNode focusObservacion = FocusNode();
 
   @override
   void initState() {
     minvalor = obtenerCantidadMinima();
     super.initState();
-  }
-
-  Widget errorsobre(String contenido) {
-    return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
-  }
-
-  Widget respuesta(String contenido) {
-    return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
-  }
-
-  Widget datosUsuarios(String text) {
-    return ListTile(title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
   Widget datosUsuariosArea(String text) {
@@ -54,58 +47,193 @@ class _EnvioPageState extends State<EnvioPage> {
         title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
+  void validarEnvio() {
+    envioController.crearEnvio(
+        context,
+        usuarioFrecuente.id,
+        _sobreController.text,
+        _bandejaController.text,
+        _observacionController.text);
+  }
+
+  void onPressEnviarButton() {
+    if (errorSobre.length == 0 &&
+        errorBandeja.length == 0 &&
+        _sobreController.text.length != 0) {
+      validarEnvio();
+    }
+  }
+
+  void enfocarCodigoBandeja(dynamic value) async {
+    FocusScope.of(context).unfocus();
+    new TextEditingController().clear();
+    if (errorBandeja.length != 0) {
+      popuptoinput(context, focusBandeja, "error", "EXACT", errorBandeja);
+    } else {
+      enfocarInputfx(context, focusObservacion);
+    }
+  }
+
+  void evaluarBandeja(texto) async {
+    if (texto.length >= obtenerCantidadMinima()) {
+      bool respuestac = await envioController.validarexistenciabandeja(texto);
+      if (!respuestac) {
+        setState(() {
+          errorBandeja = "No es posible procesar el código";
+        });
+      } else {
+        setState(() {
+          errorBandeja = "";
+        });
+      }
+    } else {
+      if (texto.length != 0) {
+        setState(() {
+          errorBandeja = "La longitud mínima es de $minvalor caracteres";
+        });
+      } else {
+        setState(() {
+          errorBandeja = "";
+          _bandejaController.text = "";
+        });
+      }
+    }
+  }
+
+  void enfocarCodigoBandejaByCamera(texto) async {
+    if (texto.length >= obtenerCantidadMinima()) {
+      bool respuestac = await envioController.validarexistenciabandeja(texto);
+      if (!respuestac) {
+        setState(() {
+          errorBandeja = "No es posible procesar el código";
+        });
+        popuptoinput(context, focusBandeja, "error", "EXACT", errorBandeja);
+      } else {
+        setState(() {
+          errorBandeja = "";
+        });
+        enfocarInputfx(context, focusObservacion);
+      }
+    } else {
+      if (texto.length != 0) {
+        setState(() {
+          errorBandeja = "La longitud mínima es de $minvalor caracteres";
+        });
+        popuptoinput(context, focusBandeja, "error", "EXACT", errorBandeja);
+      } else {
+        setState(() {
+          errorBandeja = "";
+          _bandejaController.text = "";
+        });
+
+        enfocarInputfx(context, focusObservacion);
+      }
+    }
+  }
+
+  Future _traerdatosescanerbandeja() async {
+    qrbarra = await getDataFromCamera(context);
+    setState(() {
+      _bandejaController.text = qrbarra;
+    });
+    enfocarCodigoBandejaByCamera(_bandejaController.text);
+  }
+
+  void enfocarcodigoSobre(dynamic texto) async {
+    FocusScope.of(context).unfocus();
+    if (errorSobre.length != 0) {
+      popuptoinput(context, focusSobre, "error", "EXACT", errorSobre);
+    } else {
+      enfocarInputfx(context, focusBandeja);
+    }
+  }
+
+  void evaluarSobre(dynamic texto) async {
+    if (texto.length == 0) {
+      setState(() {
+        errorSobre = "El código de sobre es obligatorio";
+      });
+    } else {
+      if (texto.length >= obtenerCantidadMinima()) {
+        bool respuestac = await envioController.validarexistenciaSobre(texto);
+        if (!respuestac) {
+          setState(() {
+            errorSobre = "No es posible procesar el código";
+          });
+        } else {
+          setState(() {
+            errorSobre = "";
+          });
+        }
+      } else {
+        setState(() {
+          errorSobre = "La longitud mínima es de $minvalor caracteres";
+        });
+      }
+    }
+  }
+
+  void enfocarcodigoSobreByCamera(String texto) async {
+    if (texto.length == 0) {
+      setState(() {
+        errorSobre = "El código de sobre es obligatorio";
+      });
+      popuptoinput(context, focusSobre, "error", "EXACT", errorSobre);
+    } else {
+      if (texto.length >= obtenerCantidadMinima()) {
+        bool respuestac = await envioController.validarexistenciaSobre(texto);
+        if (!respuestac) {
+          setState(() {
+            errorSobre = "No es posible procesar el código";
+          });
+          popuptoinput(context, focusSobre, "error", "EXACT", errorSobre);
+        } else {
+          setState(() {
+            errorSobre = "";
+          });
+          enfocarInputfx(context, focusBandeja);
+        }
+      } else {
+        setState(() {
+          errorSobre = "La longitud mínima es de $minvalor caracteres";
+        });
+        popuptoinput(context, focusSobre, "error", "EXACT", errorSobre);
+      }
+    }
+  }
+
+  Future _traerdatosescanersobre() async {
+    _sobreController.text = await getDataFromCamera(context);
+    setState(() {
+      _sobreController.text = _sobreController.text;
+    });
+    enfocarcodigoSobreByCamera(_sobreController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
-    void validarEnvio() {
-      envioController.crearEnvio(
-          context,
-          usuarioFrecuente.id,
-          _sobreController.text,
-          _bandejaController.text,
-          _observacionController.text);
+    Widget errorsobre(String contenido) {
+      return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
     }
 
-    final sendButton = Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(top: 20, bottom: 10),
-        alignment: Alignment.center,
-        child: ButtonTheme(
-          minWidth: 150.0,
-          height: 50.0,
-          child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () {
-                if (errorSobre.length == 0 &&
-                    errorBandeja.length == 0 &&
-                    _sobreController.text.length != 0) {
-                  validarEnvio();
-                }
-              },
-              color: errorSobre.length != 0 ||
-                      errorBandeja.length != 0 ||
-                      _sobreController.text.length == 0
-                  ? Colors.grey
-                  : Color(0xFF2C6983),
-              child: Text('Enviar', style: TextStyle(color: Colors.white))),
-        ));
     final observacion = TextFormField(
       maxLines: 6,
       controller: _observacionController,
-      focusNode: f3,
+      focusNode: focusObservacion,
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
+        hintText: "Observación (Opcional)",
+        hintStyle: TextStyle(color: StylesThemeData.INPUT_HINT_COLOR),
         filled: true,
-        fillColor: Color(0xFFEAEFF2),
+        fillColor: StylesThemeData.INPUT_COLOR,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
+          borderSide: BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
+            color: StylesThemeData.INPUT_BORDER_COLOR,
             width: 0.0,
           ),
         ),
@@ -119,249 +247,94 @@ class _EnvioPageState extends State<EnvioPage> {
       },
     );
 
-    void enfocarCodigoBandeja() async {
-      FocusScope.of(context).unfocus();
-      new TextEditingController().clear();
-      if (errorBandeja.length != 0) {
-        popuptoinput(context, f2, "error", "EXACT", errorBandeja);
-      } else {
-        enfocarInputfx(context, f3);
-      }
-    }
-
-    evaluarBandeja(texto) async {
-      if (texto.length >= obtenerCantidadMinima()) {
-        bool respuestac = await envioController.validarexistenciabandeja(texto);
-        if (!respuestac) {
-          setState(() {
-            errorBandeja = "No es posible procesar el código";
-          });
-        } else {
-          setState(() {
-            errorBandeja = "";
-          });
-        }
-      } else {
-        if (texto.length != 0) {
-          setState(() {
-            errorBandeja = "La longitud mínima es de $minvalor caracteres";
-          });
-        } else {
-          setState(() {
-            errorBandeja = "";
-          });
-        }
-      }
-    }
-
-    Future _traerdatosescanerbandeja() async {
-      qrbarra = await getDataFromCamera(context);
-      setState(() {
-        _bandejaController.text = qrbarra;
-      });
-      await evaluarBandeja(qrbarra);
-      enfocarCodigoBandeja();
-    }
-
-    var bandeja = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f2,
-      textCapitalization: TextCapitalization.sentences,
-      inputFormatters: [
-        UpperCaseTextFormatter(),
-      ],
-      controller: _bandejaController,
-      textInputAction: TextInputAction.next,
-      onChanged: (text) {
-        evaluarBandeja(text);
-      },
-      onFieldSubmitted: (value) async {
-        enfocarCodigoBandeja();
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    void enfocarcodigoSobre() async {
-      FocusScope.of(context).unfocus();
-      if (errorSobre.length != 0) {
-        popuptoinput(context, f1, "error", "EXACT", errorSobre);
-      } else {
-        enfocarInputfx(context, f2);
-      }
-    }
-
-    void evaluarSobre(String texto) async {
-      if (texto.length == 0) {
-        setState(() {
-          errorSobre = "El código de sobre es obligatorio";
-        });
-      } else {
-        if (texto.length >= obtenerCantidadMinima()) {
-          bool respuestac = await envioController.validarexistenciaSobre(texto);
-          if (!respuestac) {
-            setState(() {
-              errorSobre = "No es posible procesar el código";
-            });
-          } else {
-            setState(() {
-              errorSobre = "";
-            });
-          }
-        } else {
-          setState(() {
-            errorSobre = "La longitud mínima es de $minvalor caracteres";
-          });
-        }
-      }
-    }
-
-    Future _traerdatosescanersobre() async {
-      qrsobre = await getDataFromCamera(context);
-      setState(() {
-        _sobreController.text = qrsobre;
-      });
-      await evaluarSobre(qrsobre);
-      enfocarcodigoSobre();
-    }
-
-    var sobre = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: _sobreController,
-      focusNode: f1,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) async {
-        enfocarcodigoSobre();
-      },
-      onChanged: (text) {
-        evaluarSobre(text);
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
     mainscaffold() {
       return Form(
           key: _formKey,
           child: SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                  left: 20, right: 20, top: 10, bottom: 0),
-              child: Column(
+              child: paddingWidget(Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Container(
-                      height: 35,
-                      child: ListTile(
-                        leading: Icon(Icons.perm_identity),
-                        title: new Text("Para: " + usuarioFrecuente.nombre,
-                            style: TextStyle(fontSize: 15)),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.location_on),
-                      title: new Text(
-                          "Área: " +
-                              usuarioFrecuente.area +
-                              " - " +
-                              usuarioFrecuente.sede,
-                          style: TextStyle(fontSize: 15)),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 15),
-                      height: 40,
-                      child: ListTile(
-                          title: new Text("Código de sobre",
-                              style: TextStyle(fontSize: 15))),
-                    ),
-                    Row(children: <Widget>[
-                      Expanded(
-                        child: sobre,
-                        flex: 5,
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          child: new IconButton(
-                              icon: Icon(Icons.camera_alt),
-                              tooltip: "Increment",
-                              onPressed: _traerdatosescanersobre),
+                Container(
+                    margin:
+                        const EdgeInsets.only(top: 20, bottom: 10, left: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Icon(
+                            IconsData.ICON_USER,
+                            size: StylesIconData.ICON_SIZE,
+                            color: StylesThemeData.ICON_COLOR,
+                          ),
                         ),
-                      ),
-                    ]),
-                    errorSobre.length == 0
-                        ? Container()
-                        : errorsobre(errorSobre),
-                    Container(
-                      margin: const EdgeInsets.only(top: 15),
-                      height: 40,
-                      child: ListTile(
-                          title: new Text("Código de bandeja (Opcional)",
-                              style: TextStyle(fontSize: 15))),
-                    ),
-                    Row(children: <Widget>[
-                      Expanded(
-                        child: bandeja,
-                        flex: 5,
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          child: new IconButton(
-                              icon: Icon(Icons.camera_alt),
-                              tooltip: "Increment",
-                              onPressed: _traerdatosescanerbandeja),
+                        Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: Text("Para: ${usuarioFrecuente.nombre}",
+                                style: TextStyle(fontSize: 15)))
+                      ],
+                    )),
+                Container(
+                    margin:
+                        const EdgeInsets.only(top: 20, bottom: 10, left: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Icon(
+                            IconsData.ICON_LOCATION,
+                            size: StylesIconData.ICON_SIZE,
+                            color: StylesThemeData.ICON_COLOR,
+                          ),
                         ),
-                      ),
-                    ]),
-                    errorBandeja.length == 0
-                        ? Container()
-                        : errorsobre(errorBandeja),
-                    Container(
-                      margin: const EdgeInsets.only(top: 15),
-                      child: ListTile(
-                          title: new Text("Observación (Opcional)",
-                              style: TextStyle(fontSize: 15))),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 0),
-                      child: observacion,
-                    ),
-                    sendButton
-                  ])));
+                        Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: Text(
+                                "Área: " +
+                                    usuarioFrecuente.area +
+                                    " - " +
+                                    usuarioFrecuente.sede,
+                                style: TextStyle(fontSize: 15)))
+                      ],
+                    )),
+                InputCameraWidget(
+                    iconData: IconsData.ICON_CAMERA,
+                    onPressed: _traerdatosescanersobre,
+                    inputParam: InputWidget(
+                        controller: _sobreController,
+                        focusInput: focusSobre,
+                        iconPrefix: IconsData.ICON_SOBRE,
+                        methodOnChange: evaluarSobre,
+                        methodOnPressed: enfocarcodigoSobre,
+                        hinttext: "Código de sobre")),
+                errorSobre.length == 0 ? Container() : errorsobre(errorSobre),
+                InputCameraWidget(
+                    iconData: IconsData.ICON_CAMERA,
+                    onPressed: _traerdatosescanerbandeja,
+                    inputParam: InputWidget(
+                        controller: _bandejaController,
+                        focusInput: focusBandeja,
+                        iconPrefix: IconsData.ICON_SOBRE,
+                        methodOnChange: evaluarBandeja,
+                        methodOnPressed: enfocarCodigoBandeja,
+                        hinttext: "Código de bandeja (Opcional)")),
+                errorBandeja.length == 0
+                    ? Container()
+                    : errorsobre(errorBandeja),
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: observacion,
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: ButtonWidget(
+                        onPressed: onPressEnviarButton,
+                        colorParam: errorSobre.length != 0 ||
+                                errorBandeja.length != 0 ||
+                                _sobreController.text.length == 0
+                            ? StylesThemeData.BUTTON_DISABLE_COLOR
+                            : StylesThemeData.BUTTON_PRIMARY_COLOR,
+                        texto: "Enviar"))
+              ]))));
     }
 
     return Scaffold(

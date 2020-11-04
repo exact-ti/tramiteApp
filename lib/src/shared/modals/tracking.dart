@@ -144,7 +144,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.codigo,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],
@@ -165,7 +165,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.remitente==null?'Envío importado':trackingModel.remitente,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],
@@ -186,7 +186,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.origen,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],
@@ -207,7 +207,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.destinatario,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],
@@ -228,7 +228,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(trackingModel.destino,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],
@@ -249,7 +249,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                           ),
                           Expanded(
                             child: Text(observacion,
-                                style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+                                style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
                             flex: 3,
                           ),
                         ],

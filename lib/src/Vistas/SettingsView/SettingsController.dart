@@ -28,7 +28,7 @@ class SettingsController {
 
     for (dynamic opcion in opciones) {
       listadecodigos.add(Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 5),
           padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
@@ -42,7 +42,7 @@ class SettingsController {
                     child: Center(
                       child: Text(
                         opcion.nombre,
-                        style: TextStyle(color: StylesThemeData.LETTERCOLOR, fontSize: 12),
+                        style: TextStyle(color: StylesThemeData.LETTER_COLOR, fontSize: 12),
                       ),
                     )),
                 onTap: () async {

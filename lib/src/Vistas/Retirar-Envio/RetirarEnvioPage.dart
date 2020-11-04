@@ -3,9 +3,9 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
@@ -88,7 +88,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     setState(() {
       _paqueteController.text = _paqueteController.text;
     });
-    _validarPaqueteText();
+    _validarPaqueteText(_paqueteController.text);
   }
 
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
@@ -274,15 +274,15 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     return respuesta;
   }
 
-  void _validarPaqueteText() async {
+  void _validarPaqueteText(dynamic valuePaqueteController) async {
     enfocarInputfx(context, f2remitente);
   }
 
-  void _validarRemitenteText() async {
+  void _validarRemitenteText(dynamic valueRemitenteController) async {
     enfocarInputfx(context, f3destinatario);
   }
 
-  void _validarDestinatarioText() async {
+  void _validarDestinatarioText(dynamic valueDestinatarioController) async {
     desenfocarInputfx(context);
   }
 
@@ -291,7 +291,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     Widget crearItem(EnvioModel envio, int i) {
       String codigo = envio.codigoPaquete;
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () async {
@@ -402,74 +402,55 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(top: 20, bottom: 5),
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                child: Text("Código de paquete")),
-            Container(
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Column(
+            children: <Widget>[
+              Container(
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  child: InputCameraWidget(
+                      iconData: Icons.camera_alt,
+                      onPressed: _traerdatosescanerPaquete,
+                      inputParam: InputWidget(
+                        controller: _paqueteController,
+                        focusInput: f1paquete,
+                        hinttext: "Código de paquete",
+                        methodOnPressed: _validarPaqueteText,
+                      ))),
+              Container(
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  child: InputWidget(
+                    controller: _remitenteController,
+                    focusInput: f2remitente,
+                    hinttext: "De",
+                    methodOnPressed: _validarRemitenteText,
+                  )),
+              Container(
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: InputCamera(
-                    iconData: Icons.camera_alt,
-                    onPressed: _traerdatosescanerPaquete,
-                    inputParam: InputForm(
-                      controller: _paqueteController,
-                      fx: f1paquete,
-                      hinttext: "",
-                      onPressed: _validarPaqueteText,
-                    ))),
-            Container(
-                margin: EdgeInsets.only(top: 10, bottom: 5),
-                alignment: Alignment.bottomLeft,
+                child: InputWidget(
+                  controller: _destinatarioController,
+                  focusInput: f3destinatario,
+                  hinttext: "Para",
+                  methodOnPressed: _validarDestinatarioText,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 20, top: 20),
                 width: double.infinity,
-                child: Text("De")),
-            Container(
-                alignment: Alignment.centerLeft,
-                width: double.infinity,
-                child: InputCamera(
-                    inputParam: InputForm(
-                  controller: _remitenteController,
-                  fx: f2remitente,
-                  hinttext: "",
-                  onPressed: _validarRemitenteText,
-                ))),
-            Container(
-                margin: EdgeInsets.only(top: 10, bottom: 5),
-                alignment: Alignment.bottomLeft,
-                child: Text("Para")),
-            Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: InputCamera(
-                  inputParam: InputForm(
-                controller: _destinatarioController,
-                fx: f3destinatario,
-                hinttext: "",
-                onPressed: _validarDestinatarioText,
-              )),
-              margin: const EdgeInsets.only(bottom: 20),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: InputCamera(
-                  inputParam: CustomButton(
-                      onPressed: buscarEnvios,
-                      colorParam: StylesThemeData.PRIMARYCOLOR,
-                      texto: "Buscar")),
-            ),
-            Expanded(
-                child: Container(child: _crearListadoAgregar(listaEnvios))),
-          ],
-        ),
+                child: ButtonWidget(
+                    onPressed: buscarEnvios,
+                    colorParam: StylesThemeData.PRIMARY_COLOR,
+                    texto: "Buscar"),
+              ),
+            ],
+          )),
+          Expanded(child: Container(child: _crearListadoAgregar(listaEnvios))),
+        ],
       );
     }
 

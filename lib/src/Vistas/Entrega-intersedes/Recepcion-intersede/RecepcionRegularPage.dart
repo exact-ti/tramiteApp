@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 import 'RecepcionRegularController.dart';
 
 class RecepcionInterPage extends StatefulWidget {
@@ -65,6 +68,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   }
 
   void sendButton() async {
+    desenfocarInputfx(context);
     if (listaEnvios.length > 0) {
       bool respuestaarray = await confirmarArray(context, "success", "EXACT",
           "Faltan los siguientes elementos a validar", listaEnvios);
@@ -94,7 +98,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
   }
 
-  void _validarSobreText() async {
+  void _validarSobreText(dynamic valueSobreController) async {
     if (_bandejaController.text == "" || listaEnvios.length == 0) {
       setState(() {
         _sobreController.text = "";
@@ -102,7 +106,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
       popuptoinput(context, f1, "error", "EXACT",
           "Primero debe ingresar el codigo de la valija");
     } else {
-      String value = _sobreController.text;
+      String value = valueSobreController;
       if (value != "") {
         bool perteneceLista = listaEnvios
             .where((envio) => envio.codigoPaquete == value)
@@ -114,12 +118,12 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           if (respuestaValidar["status"] == "success") {
             listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
             if (listaEnvios.length == 0) {
+              desenfocarInputfx(context);
               bool respuestatrue = await notificacion(context, "success",
                   "EXACT", "Se ha recepcionado los documentos con éxito");
-                  desenfocarInputfx(context);
-                if (respuestatrue) {
-                  Navigator.of(context).pushNamed('/envio-interutd');
-                }
+              if (respuestatrue) {
+                Navigator.of(context).pushNamed('/envio-interutd');
+              }
             }
             setState(() {
               mensajeconfirmation = "El sobre $value fue recepcionado";
@@ -164,14 +168,13 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
   }
 
-  void _validarBandejaText() async {
-    String value = _bandejaController.text;
+  void _validarBandejaText(dynamic valueBandejaController) async {
+    String value = valueBandejaController;
     if (value != "") {
       listaEnvios = await principalcontroller.listarEnvios(context, value);
       if (listaEnvios.isNotEmpty) {
         setState(() {
           mensajeconfirmation = "";
-          _bandejaController.text = value;
           listaEnvios = listaEnvios;
         });
         enfocarInputfx(context, f2);
@@ -195,7 +198,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     setState(() {
       _sobreController.text = _sobreController.text;
     });
-    _validarSobreText();
+    _validarSobreText(_sobreController.text);
   }
 
   Future _traerdatosescanerBandeja() async {
@@ -203,7 +206,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     setState(() {
       _bandejaController.text = _bandejaController.text;
     });
-    _validarBandejaText();
+    _validarBandejaText(_bandejaController.text);
   }
 
   @override
@@ -215,55 +218,64 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(top: 40,bottom: 10),
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                child: Text("Código de valija")),
-            Container(
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: InputCamera(
+                child: InputCameraWidget(
                     iconData: Icons.camera_alt,
                     onPressed: _traerdatosescanerBandeja,
-                    inputParam: InputForm(
-                        onPressed: _validarBandejaText,
+                    inputParam: InputWidget(
+                        iconPrefix: IconsData.ICON_SOBRE,
+                        methodOnPressed: _validarBandejaText,
                         controller: _bandejaController,
-                        fx: f1,
-                        hinttext: ""))),
-            Container(
-                margin: const EdgeInsets.only(top: 20,bottom: 10),
-                alignment: Alignment.bottomLeft,
-                child: Text("Código de sobre")),
+                        focusInput: f1,
+                        hinttext: "Código de valija"))),
             Container(
               alignment: Alignment.centerLeft,
               width: double.infinity,
-              child: InputCamera(
+              child: InputCameraWidget(
                   iconData: Icons.camera_alt,
                   onPressed: _traerdatosescanerSobre,
-                  inputParam: InputForm(
-                      onPressed: _validarSobreText,
+                  inputParam: InputWidget(
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      methodOnPressed: _validarSobreText,
                       controller: _sobreController,
-                      fx: f2,
-                      hinttext: "")),
-              margin: const EdgeInsets.only(bottom: 10),
+                      focusInput: f2,
+                      hinttext: "Código de sobre")),
+              margin: const EdgeInsets.only(bottom: 20),
             ),
             mensajeconfirmation.length == 0
                 ? Container()
                 : Container(
-                    margin: const EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(bottom: 20),
                     child: Center(child: Text(mensajeconfirmation))),
             Expanded(
                 child: Container(
-                    child: ListCod(
-              enviosModel: listaEnvios,
-            ))),
+                    child: ListView.builder(
+                        itemCount: listaEnvios.length,
+                        itemBuilder: (context, i) => ItemWidget(
+                            iconPrimary: FontAwesomeIcons.qrcode,
+                            iconSend: listaEnvios[i].estado
+                                ? IconsData.ICON_ENVIO_CONFIRMADO
+                                : null,
+                            itemIndice: i,
+                            methodAction: null,
+                            colorItem: i % 2 == 0
+                                ? StylesThemeData.ITEM_SHADED_COLOR
+                                : StylesThemeData.ITEM_UNSHADED_COLOR,
+                            titulo: listaEnvios[i].codigoPaquete,
+                            subtitulo: null,
+                            subSecondtitulo: null,
+                            styleTitulo: StylesTitleData.STYLE_TITLE,
+                            styleSubTitulo: null,
+                            styleSubSecondtitulo: null,
+                            iconColor: StylesThemeData.ICON_COLOR)))),
             listaEnvios.length > 0
                 ? Container(
-                    margin: const EdgeInsets.only(bottom: 20,top: 10),
+                    margin: const EdgeInsets.only(bottom: 20, top: 10),
                     alignment: Alignment.center,
-                    child: CustomButton(
+                    child: ButtonWidget(
                         onPressed: sendButton,
-                        colorParam: StylesThemeData.PRIMARYCOLOR,
+                        colorParam: StylesThemeData.PRIMARY_COLOR,
                         texto: "Terminar"))
                 : Container(),
           ],

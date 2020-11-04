@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
@@ -5,13 +6,15 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -28,7 +31,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   final _sobreController = TextEditingController();
   List<EnvioModel> listaEnvios = new List();
   ValidacionController validacionController = new ValidacionController();
-  FocusNode f1 = FocusNode();
+  FocusNode focusSobre = FocusNode();
 
   @override
   void initState() {
@@ -46,8 +49,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     }
   }
 
-  void _validarText() async {
-    String value = _sobreController.text;
+  void _validarText(dynamic value) async {
     desenfocarInputfx(context);
     if (value != "") {
       bool perteneceLista = listaEnvios
@@ -81,10 +83,10 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
         _sobreController.text = "";
       });
       if (listaEnvios.where((envio) => !envio.estado).toList().isNotEmpty) {
-        enfocarInputfx(context, f1);
+        enfocarInputfx(context, focusSobre);
       }
     } else {
-      popuptoinput(context, f1, "error", "EXACT",
+      popuptoinput(context, focusSobre, "error", "EXACT",
           "Es necesario ingresar el código del documento");
     }
   }
@@ -94,7 +96,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
     setState(() {
       _sobreController.text;
     });
-    _validarText();
+    _validarText(_sobreController.text);
   }
 
   void onPressed() async {
@@ -119,48 +121,64 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(top: 30, bottom: 20),
-                width: double.infinity,
-                child: InputCamera(
-                    iconData: Icons.camera_alt,
-                    onPressed: _traerdatosescanerbandeja,
-                    inputParam: InputForm(
-                      onPressed: _validarText,
-                      controller: _sobreController,
-                      fx: f1,
-                      hinttext: "",
-                    ))),
-            Expanded(
-              child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: ListCod(enviosModel: listaEnvios,mensaje: "No se han encontrado resultados",)),
-            ),
-            Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                margin: EdgeInsets.only(bottom: 40),
-                child: CustomButton(
-                    onPressed: onPressed,
-                    colorParam: StylesThemeData.PRIMARYCOLOR,
-                    texto: listaEnvios.length == 0
-                        ? 'Crear solo recojo'
-                        : 'Crear recorrido'))
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
         appBar: CustomAppBar(text: "Validación de documentos"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(top: 30, bottom: 20),
+                      width: double.infinity,
+                      child: InputCameraWidget(
+                          iconData: Icons.camera_alt,
+                          onPressed: _traerdatosescanerbandeja,
+                          inputParam: InputWidget(
+                            methodOnPressed: _validarText,
+                            controller: _sobreController,
+                            focusInput: focusSobre,
+                            hinttext: "",
+                          ))),
+                ),
+                Expanded(
+                    child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: 
+                  listaEnvios.isEmpty?sinResultados("No se han encontrado resultados", IconsData.ICON_ERROR_EMPTY) :ListView.builder(
+                      itemCount: listaEnvios.length,
+                      itemBuilder: (context, i) => ItemWidget(
+                          iconPrimary: FontAwesomeIcons.qrcode,
+                          iconSend: listaEnvios[i].estado
+                              ? IconsData.ICON_ENVIO_CONFIRMADO
+                              : null,
+                          itemIndice: i,
+                          methodAction: null,
+                          colorItem: i % 2 == 0
+                              ? StylesThemeData.ITEM_SHADED_COLOR
+                              : StylesThemeData.ITEM_UNSHADED_COLOR,
+                          titulo: listaEnvios[i].codigoPaquete,
+                          subtitulo: null,
+                          subSecondtitulo: null,
+                          styleTitulo: StylesTitleData.STYLE_TITLE,
+                          styleSubTitulo: null,
+                          styleSubSecondtitulo: null,
+                          iconColor: StylesThemeData.ICON_COLOR)),
+                )),
+                Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    margin: EdgeInsets.only(bottom: 40),
+                    child: ButtonWidget(
+                        onPressed: onPressed,
+                        colorParam: StylesThemeData.PRIMARY_COLOR,
+                        texto: listaEnvios.length == 0
+                            ? 'Crear solo recojo'
+                            : 'Crear recorrido'))
+              ],
+            ),
+            context));
   }
 }

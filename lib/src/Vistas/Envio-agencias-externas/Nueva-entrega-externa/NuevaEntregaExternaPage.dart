@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 import 'NuevaEntregaExternaController.dart';
 
 class NuevoEntregaExternaPage extends StatefulWidget {
@@ -23,7 +26,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   FocusNode focusValija = FocusNode();
   FocusNode focusEnvio = FocusNode();
   List<EnvioModel> listaEnvios = [];
-  NuevoEntregaExternaController principalcontroller = new NuevoEntregaExternaController();
+  NuevoEntregaExternaController principalcontroller =
+      new NuevoEntregaExternaController();
 
   void initState() {
     super.initState();
@@ -31,23 +35,28 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
   void onPressRegistrarButton() async {
     if (listaEnvios.where((envio) => envio.estado).toList().isEmpty) {
-      popuptoinput(context, focusEnvio, "error", "EXACT","No hay ningún envío validado");
+      popuptoinput(context, focusEnvio, "error", "EXACT",
+          "No hay ningún envío validado");
     } else {
-      List<EnvioModel> listaEnviosNovalidados = listaEnvios.where((envio) => !envio.estado).toList();
+      List<EnvioModel> listaEnviosNovalidados =
+          listaEnvios.where((envio) => !envio.estado).toList();
       if (listaEnviosNovalidados.isEmpty) {
         principalcontroller.confirmacionDocumentosValidadosEntrega(
             listaEnvios, context, _codigoValijaController.text);
       } else {
-        bool respuestaarray = await confirmarArray(context, "success", "EXACT", "Te faltan asociar estos documentos",listaEnviosNovalidados);
+        bool respuestaarray = await confirmarArray(context, "success", "EXACT",
+            "Te faltan asociar estos documentos", listaEnviosNovalidados);
         if (respuestaarray) {
           principalcontroller.confirmacionDocumentosValidadosEntrega(
-              listaEnvios.where((envio) => envio.estado).toList(), context, _codigoValijaController.text);
+              listaEnvios.where((envio) => envio.estado).toList(),
+              context,
+              _codigoValijaController.text);
         }
       }
     }
   }
 
-  void _validarCodEnvio() async {
+  void _validarCodEnvio(dynamic valueEnvioController) async {
     if (_codigoValijaController.text == "") {
       popuptoinput(context, focusValija, "error", "EXACT",
           "Primero debe ingresar el codigo de la valija");
@@ -62,7 +71,9 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
           setState(() {
             _codigoEnvioController.clear();
             listaEnvios.forEach((envio) {
-              envio.estado = true;
+              if (envio.codigoPaquete == valueEnvioController) {
+                envio.estado = true;
+              }
             });
           });
           enfocarInputfx(context, focusEnvio);
@@ -90,7 +101,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     }
   }
 
-  void _listarCodEnviosByValija() async {
+  void _listarCodEnviosByValija(dynamic valueValijaController) async {
     if (_codigoValijaController.text != "") {
       EnvioModel envioModel = new EnvioModel();
       dynamic respuestalist = await principalcontroller.listarEnviosEntrega(
@@ -137,7 +148,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     setState(() {
       _codigoEnvioController.text = _codigoEnvioController.text;
     });
-    _validarCodEnvio();
+    _validarCodEnvio(_codigoEnvioController.text);
   }
 
   Future _getDataCameraCodValija() async {
@@ -145,7 +156,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
     setState(() {
       _codigoValijaController.text = _codigoValijaController.text;
     });
-    _listarCodEnviosByValija();
+    _listarCodEnviosByValija(_codigoValijaController.text);
   }
 
   @override
@@ -160,50 +171,64 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Container(
-                      margin: EdgeInsets.only(top: 20,bottom: 5),
-                      alignment: Alignment.bottomLeft,
-                      width: double.infinity,
-                      child: Text("Código de valija")),
-                  Container(
+                      margin: EdgeInsets.only(top: 20),
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
-                      child: InputCamera(
-                        inputParam: InputForm(
+                      child: InputCameraWidget(
+                        inputParam: InputWidget(
+                            iconPrefix: IconsData.ICON_SOBRE,
                             controller: _codigoValijaController,
-                            fx: focusValija,
-                            hinttext: "",
-                            onPressed: _listarCodEnviosByValija),
+                            focusInput: focusValija,
+                            hinttext: "Código de valija",
+                            methodOnPressed: _listarCodEnviosByValija),
                         iconData: Icons.camera_alt,
                         onPressed: _getDataCameraCodValija,
                       )),
                   Container(
-                      margin: EdgeInsets.only(top: 10,bottom: 5),
-                      alignment: Alignment.bottomLeft,
-                      child: Text("Código de envío")),
-                  Container(
                     alignment: Alignment.centerLeft,
                     width: double.infinity,
-                    child: InputCamera(
-                        inputParam: InputForm(
+                    child: InputCameraWidget(
+                        inputParam: InputWidget(
+                            iconPrefix: IconsData.ICON_SOBRE,
                             controller: _codigoEnvioController,
-                            fx: focusEnvio,
-                            hinttext: "",
-                            onPressed: _validarCodEnvio),
+                            focusInput: focusEnvio,
+                            hinttext: "Código de sobre",
+                            methodOnPressed: _validarCodEnvio),
                         iconData: Icons.camera_alt,
                         onPressed: _getDataCameraCodEnvio),
                     margin: const EdgeInsets.only(bottom: 20),
                   ),
                   Expanded(
-                    child: Container(child: ListCod(enviosModel: listaEnvios)),
+                    child: Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: ListView.builder(
+                            itemCount: listaEnvios.length,
+                            itemBuilder: (context, i) => ItemWidget(
+                                iconPrimary: FontAwesomeIcons.qrcode,
+                                iconSend: listaEnvios[i].estado
+                                    ? IconsData.ICON_ENVIO_CONFIRMADO
+                                    : null,
+                                itemIndice: i,
+                                methodAction: null,
+                                colorItem: i % 2 == 0
+                                    ? StylesThemeData.ITEM_SHADED_COLOR
+                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
+                                titulo: listaEnvios[i].codigoPaquete,
+                                subtitulo: null,
+                                subSecondtitulo: null,
+                                styleTitulo: StylesTitleData.STYLE_TITLE,
+                                styleSubTitulo: null,
+                                styleSubSecondtitulo: null,
+                                iconColor: StylesThemeData.ICON_COLOR))),
                   ),
                   listaEnvios.isNotEmpty
                       ? Container(
-                          margin: const EdgeInsets.only(top: 10),
+                          margin: const EdgeInsets.only(top: 10, bottom: 30),
                           alignment: Alignment.center,
                           width: double.infinity,
-                          child: CustomButton(
+                          child: ButtonWidget(
                               onPressed: onPressRegistrarButton,
-                              colorParam: StylesThemeData.PRIMARYCOLOR,
+                              colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                               texto: "Registrar"))
                       : Container(),
                 ],

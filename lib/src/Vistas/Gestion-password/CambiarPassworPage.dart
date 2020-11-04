@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
@@ -159,7 +159,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
                 ? Icons.visibility_off
                 : Icons.visibility,
             size: 18,
-            color: StylesThemeData.PRIMARYCOLOR,
+            color: StylesThemeData.PRIMARY_COLOR,
           ),
         ),
       ),
@@ -219,7 +219,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
           child: Icon(
             !visibilidadNuevaPassword ? Icons.visibility_off : Icons.visibility,
             size: 18,
-            color: StylesThemeData.PRIMARYCOLOR,
+            color: StylesThemeData.PRIMARY_COLOR,
           ),
         ),
       ),
@@ -281,7 +281,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
                 ? Icons.visibility_off
                 : Icons.visibility,
             size: 18,
-            color: StylesThemeData.PRIMARYCOLOR,
+            color: StylesThemeData.PRIMARY_COLOR,
           ),
         ),
       ),
@@ -333,7 +333,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
                 margin: const EdgeInsets.only(bottom: 20, top: 20),
                 alignment: Alignment.center,
                 width: double.infinity,
-                child: CustomButton(
+                child: ButtonWidget(
                     onPressed: onPressedCambiarButton,
                     colorParam: validarSend(actualPassword)
                         ? Color(0xFF2C6983)
@@ -346,7 +346,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARYCOLOR,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Cambiar contraseña",
                 style: TextStyle(
                     fontSize: 18,

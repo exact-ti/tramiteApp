@@ -12,20 +12,17 @@ class ListarEnviosController {
   final NavigationService _navigationService = locator<NavigationService>();
 
   Future<List<EnvioInterSedeModel>> listarentregasInterSedeController(
-      int switched) async {
-    List<EnvioInterSedeModel> entregas =  await intersedeInterface.listarIntersedesUsuario(switched);
+      bool porRecibir) async {
+    List<EnvioInterSedeModel> entregas =
+        await intersedeInterface.listarIntersedesUsuario(porRecibir);
     return entregas;
   }
 
-  Future<bool> onSearchButtonPressed(
-      BuildContext context, EnvioInterSedeModel enviomodel) async {
-            _navigationService.showModal();
-
-    bool respuesta =
-        await intersedeInterface.iniciarEntregaIntersede(enviomodel.utdId);
-            _navigationService.goBack();
+  Future<bool> onSearchButtonPressed(BuildContext context, EnvioInterSedeModel enviomodel) async {
+    _navigationService.showModal();
+    bool respuesta = await intersedeInterface.iniciarEntregaIntersede(enviomodel.utdId);
+    _navigationService.goBack();
 
     return respuesta;
   }
-
 }

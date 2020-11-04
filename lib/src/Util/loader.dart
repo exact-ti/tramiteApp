@@ -14,8 +14,11 @@ class ColorLoader3 extends StatefulWidget {
 
 class _ColorLoader3State extends State<ColorLoader3>
     with SingleTickerProviderStateMixin {
+  // ignore: non_constant_identifier_names
   Animation<double> animation_rotation;
+  // ignore: non_constant_identifier_names
   Animation<double> animation_radius_in;
+  // ignore: non_constant_identifier_names
   Animation<double> animation_radius_out;
   AnimationController controller;
 
@@ -91,13 +94,13 @@ class _ColorLoader3State extends State<ColorLoader3>
                     offset: Offset(0.0, 0.0),
                     child: Dot(
                       radius: radius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                   ),
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.INPUTCOLOR,
+                      color: StylesThemeData.INPUT_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0),
@@ -107,7 +110,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 1 * pi / 4),
@@ -117,7 +120,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 2 * pi / 4),
@@ -127,7 +130,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 3 * pi / 4),
@@ -137,7 +140,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 4 * pi / 4),
@@ -147,7 +150,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 5 * pi / 4),
@@ -157,7 +160,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 6 * pi / 4),
@@ -167,7 +170,7 @@ class _ColorLoader3State extends State<ColorLoader3>
                   new Transform.translate(
                     child: Dot(
                       radius: dotRadius,
-                      color: StylesThemeData.PRIMARYCOLOR,
+                      color: StylesThemeData.PRIMARY_COLOR,
                     ),
                     offset: Offset(
                       radius * cos(0.0 + 7 * pi / 4),

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class PrincipalPage extends StatefulWidget {
@@ -15,65 +18,38 @@ class _PrincipalPageState extends State<PrincipalPage> {
   PrincipalController principalcontroller = new PrincipalController();
   int cantidad = obtenerCantidadMinima();
   String textdestinatario = "";
+  final _usuarioController = TextEditingController();
+  FocusNode focusUsuario = FocusNode();
+  List<UsuarioFrecuente> listusuarios;
   @override
   void initState() {
-    setState(() {
-      textdestinatario = "";
-    });
     super.initState();
+  }
+
+  void onPressedItemWidget(dynamic indiceUsuario) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            EnvioPage(usuariopage: listusuarios[indiceUsuario]),
+      ),
+    );
+  }
+
+  void onchangeTextForm(dynamic valorTextForm) {
+    setState(() {
+      textdestinatario = valorTextForm;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const colorborde = const Color(0xFFD5DCDF);
-    var booleancolor = true;
-    var colorwidget = StylesThemeData.INPUTCOLOR;
-
-    Widget crearItem(UsuarioFrecuente usuario) {
-      if (booleancolor) {
-        colorwidget = StylesThemeData.INPUTCOLOR;
-        booleancolor = false;
-      } else {
-        colorwidget = Colors.white;
-        booleancolor = true;
-      }
-      return Container(
-          child: new ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EnvioPage(usuariopage: usuario),
-                  ),
-                );
-              },
-              title: new Text(usuario.nombre, style: TextStyle(fontSize: 15)),
-              subtitle: new Text(usuario.sede + " - " + usuario.area,
-                  style: TextStyle(fontSize: 12)),
-              trailing: Icon(
-                Icons.keyboard_arrow_right,
-                color: Color(0xffC7C7C7),
-              )),
-          alignment: Alignment.center,
-          decoration: new BoxDecoration(
-              color: colorwidget,
-              border: new Border(top: BorderSide(color: colorborde))));
-    }
-
-    dynamic retonarFuncion(String texto) {
-      final futureVar = principalcontroller.listarUsuariosporFiltro(texto);
-      return futureVar;
-    }
-
     Widget _crearListadoporfiltro(String texto) {
-      booleancolor = true;
-      colorwidget = StylesThemeData.INPUTCOLOR;
-      List<UsuarioFrecuente> usuarios = [];
       if (this.cantidad > texto.length && texto.length > 0) {
         return Container();
       } else {
         return FutureBuilder(
-            future: retonarFuncion(texto),
+            future: principalcontroller.listarUsuariosporFiltro(texto),
             builder: (BuildContext context,
                 AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
               switch (snapshot.connectionState) {
@@ -91,18 +67,31 @@ class _PrincipalPageState extends State<PrincipalPage> {
                     return Center(child: new Text('Ha surgido un problema'));
                   } else {
                     if (snapshot.hasData) {
-                      booleancolor = true;
-                      usuarios = snapshot.data;
-                      if (usuarios.length == 0) {
-                        return sinResultados("No se han encontrado resultados");
+                      this.listusuarios = snapshot.data;
+                      if (this.listusuarios.length == 0) {
+                        return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                       } else {
                         return ListView.builder(
-                            itemCount: usuarios.length,
-                            itemBuilder: (context, i) =>
-                                crearItem(usuarios[i]));
+                            itemCount: this.listusuarios.length,
+                            itemBuilder: (context, i) => ItemWidget(
+                                iconPrimary: IconsData.ICON_USER,
+                                iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+                                itemIndice: i,
+                                methodAction: onPressedItemWidget,
+                                colorItem: i % 2 == 0
+                                    ? StylesThemeData.ITEM_SHADED_COLOR
+                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
+                                titulo: this.listusuarios[i].nombre,
+                                subtitulo:
+                                    "${this.listusuarios[i].area} - ${this.listusuarios[i].sede}",
+                                subSecondtitulo: null,
+                                styleTitulo: TextStyle(fontSize: 15),
+                                styleSubTitulo: TextStyle(fontSize: 12),
+                                styleSubSecondtitulo: null,
+                                iconColor: StylesThemeData.ICON_COLOR));
                       }
                     } else {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     }
                   }
               }
@@ -110,73 +99,46 @@ class _PrincipalPageState extends State<PrincipalPage> {
       }
     }
 
-    Widget _myListView(String buscador) {
-      return _crearListadoporfiltro(buscador);
-    }
-
-    final destinatario = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      onChanged: (text) {
-        setState(() {
-          textdestinatario = text;
-        });
-      },
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        contentPadding: new EdgeInsets.symmetric(vertical: 11.0),
-        filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Colors.blue,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xffF0F3F4),
-            width: 0.0,
-          ),
-        ),
-        hintText: 'Ingrese destinatario',
+    return Scaffold(
+      appBar: CustomAppBar(
+        text: "Generar envío",
+        leadingbool: boolIfPerfil() ? false : true,
+      ),
+      drawer: drawerIfPerfil(),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                 Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    width: double.infinity,
+                    child: InputWidget(
+                      controller: _usuarioController,
+                      focusInput: focusUsuario,
+                      hinttext: 'Ingrese destinatario',
+                      methodOnChange: onchangeTextForm,
+                      iconPrefix: Icons.search,
+                    )), 
+                Container(
+                    child: textdestinatario != ""
+                        ? Container()
+                        : Text("Usuarios frecuentes",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: StylesThemeData.LETTER_COLOR))),
+              ])),
+          Expanded(
+            child: Container(
+                alignment: Alignment.bottomCenter,
+                child: _crearListadoporfiltro(textdestinatario)),
+          )
+        ],
       ),
     );
-    mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 20, bottom: 10),
-                width: double.infinity,
-                child: destinatario),
-            Container(
-                child: textdestinatario != ""
-                    ? Container()
-                    : Text("Usuarios frecuentes",
-                        style: TextStyle(
-                            fontSize: 15, color: StylesThemeData.LETTERCOLOR))),
-            Expanded(
-              child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: _myListView(textdestinatario)),
-            )
-          ],
-        ),
-      );
-    }
-
-    return Scaffold(
-        appBar: CustomAppBar(
-          text: "Generar envío",
-          leadingbool: boolIfPerfil() ? false : true,
-        ),
-        drawer: drawerIfPerfil(),
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        body: mainscaffold());
   }
 }

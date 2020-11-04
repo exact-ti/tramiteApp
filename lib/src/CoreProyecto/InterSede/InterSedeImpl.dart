@@ -15,11 +15,11 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(int switched) async {
-      if(switched==0){
-      return await intersede.listarEnvioByUsuario();
+  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(bool porRecibir) async {
+      if(porRecibir){
+        return await intersede.listarRecepcionByUsuario();       
       }else{
-       return await intersede.listarRecepcionByUsuario();       
+        return await intersede.listarEnvioByUsuario();
       }
   }
 

@@ -172,6 +172,7 @@ class NavigationService {
 
   void showModal() {
     Widget alert = WillPopScope(
+        // ignore: missing_return
         onWillPop: () {},
         child: AlertDialog(
           content: loadingGet(),

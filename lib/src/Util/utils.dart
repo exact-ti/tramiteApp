@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +25,6 @@ EnvioController envioController = new EnvioController();
 Menu menu = new Menu();
 final _prefs = new PreferenciasUsuario();
 
-
-
 String titulosPage(int pos) {
   switch (pos) {
     case 0:
@@ -40,11 +39,10 @@ String titulosPage(int pos) {
   }
 }
 
-void eliminarpreferences(BuildContext context) async {
+/* void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
-      1;
+  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =1;
   sharedPreferences.clear();
   if (context != null) {
     Navigator.of(context).pushAndRemoveUntil(
@@ -52,7 +50,18 @@ void eliminarpreferences(BuildContext context) async {
         (Route<dynamic> route) => false);
   }
 }
-
+ */
+void eliminarpreferences(BuildContext context) async {
+  SharedPreferences sharedPreferences;
+  sharedPreferences = await SharedPreferences.getInstance();
+  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
+      1;
+  sharedPreferences.clear();
+  if (context != null) {
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(builder: (context) => new LoginPage()));
+  }
+}
 
 void deletepreferencesWithoutContext() async {
   SharedPreferences sharedPreferences;
@@ -93,7 +102,7 @@ void enfocarInputfx(BuildContext context, FocusNode fx) {
 
 void desenfocarInputfx(BuildContext context) {
   FocusScope.of(context).unfocus();
-  FocusScope.of(context).requestFocus(new FocusNode()); 
+  FocusScope.of(context).requestFocus(new FocusNode());
   new TextEditingController().clear();
 }
 
@@ -111,17 +120,39 @@ BoxDecoration myBoxDecoration(Color colorparam) {
       borderRadius: BorderRadius.circular(5));
 }
 
+Widget paddingWidget(Widget widgetChild) {
+  return Container(
+    padding: const EdgeInsets.only(left: 20, right: 20),
+    child: widgetChild,
+  );
+}
+
 BoxDecoration myBigBoxDecoration(Color colorletra) {
   return BoxDecoration(
     border: Border.all(color: colorletra),
   );
 }
 
-Widget sinResultados(String mensaje) {
+Widget sinResultados(String mensaje, IconData iconData) {
   return Center(
-      child: Text(mensaje,
-          style: TextStyle(
-              color: StylesThemeData.LETTERCOLOR, fontSize: 20, fontWeight: FontWeight.bold)));
+      child: Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      FaIcon(
+        iconData,
+        color: StylesThemeData.ICON_COLOR,
+        size: 100,
+      ),
+      Container(
+          margin: const EdgeInsets.only(top: 15),
+          child: Text(mensaje,
+              style: TextStyle(
+                color: StylesThemeData.LETTER_COLOR,
+                fontSize: 20,
+              )))
+    ],
+  ));
 }
 
 Widget loadingGet() {
@@ -140,7 +171,7 @@ Widget loadingGet() {
           margin: EdgeInsets.only(top: 5),
           child: FadingText(
             "Loading",
-            style: TextStyle(fontSize: 20, color: StylesThemeData.LETTERCOLOR),
+            style: TextStyle(fontSize: 20, color: StylesThemeData.LETTER_COLOR),
           )),
     ],
   );
@@ -170,8 +201,8 @@ Widget scaffoldbody(Widget principal, BuildContext context) {
 Widget scaffoldbodyLogin(Widget principal, BuildContext context) {
   return SingleChildScrollView(
       child: ConstrainedBox(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height),
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: principal));
 }
 
@@ -189,14 +220,35 @@ int obtenerCantidadMinima() {
   return cantidad;
 }
 
+int obtenerCantidadMinimaCodigoPaquete() {
+  ConfiguracionModel configuracionModel = new ConfiguracionModel();
+  List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
+  List<ConfiguracionModel> configuration =
+      configuracionModel.fromPreferencs(configuraciones);
+  int cantidad = 0;
+  for (ConfiguracionModel confi in configuration) {
+    if (confi.nombre == "MAX_CARACTERES_CODIGO_PAQUETE") {
+      cantidad = int.parse(confi.valor);
+    }
+  }
+  return cantidad;
+}
+
+List<Menu> listMenuUtil(){
+    List<dynamic> menus = json.decode(_prefs.menus);
+    List<Menu> listmenu = menu.fromPreferencs(menus);
+    listmenu.sort((a, b) => a.orden.compareTo(b.orden));
+    listmenu.reversed;
+    return listmenu;
+}
+
 int obtenerUTDid() {
   UtdModel utdModel = new UtdModel();
-  if (_prefs.utd!=null) {
-      Map<String, dynamic> utd = json.decode(_prefs.utd);
-  UtdModel umodel = utdModel.fromPreferencs(utd);
+  if (_prefs.utd != null) {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
     return umodel.id;
-
-  }else{
+  } else {
     return 0;
   }
 }
@@ -231,7 +283,7 @@ void navegarHomeExact(BuildContext context) {
     List<Menu> listmenu = menu.fromPreferencs(menus);
     for (Menu men in listmenu) {
       if (men.home) {
-        if (_prefs.tipoperfil== cliente) {
+        if (_prefs.tipoperfil == cliente) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>
@@ -245,17 +297,16 @@ void navegarHomeExact(BuildContext context) {
   }
 }
 
-
 void navegarNotificaciones(BuildContext context) {
-        if (_prefs.tipoperfil== cliente) {
-          Navigator.of(context, rootNavigator: true).pushReplacement(
-              MaterialPageRoute(
-                  builder: (context) =>
-                      new TopLevelWidget(rutaPage: "/notificaciones")));
-        } else {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              "/notificaciones", (Route<dynamic> route) => false);
-        }
+  if (_prefs.tipoperfil == cliente) {
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) =>
+                new TopLevelWidget(rutaPage: "/notificaciones")));
+  } else {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        "/notificaciones", (Route<dynamic> route) => false);
+  }
 }
 
 String validateEmail(String value) {
@@ -279,5 +330,6 @@ String rutaPrincipal() {
   return listmenu
       .where((element) => element.home)
       .map((e) => e.link)
-      .toList().first;
+      .toList()
+      .first;
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 void showModal2(BuildContext context) {
   Widget alert = WillPopScope(
+      // ignore: missing_return
       onWillPop: () {},
       child: AlertDialog(
         content: new Row(

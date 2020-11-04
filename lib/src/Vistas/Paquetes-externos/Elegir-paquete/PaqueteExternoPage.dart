@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class PaqueteExternoPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(top: 20,bottom: 20),
       width: double.infinity,
-      child: Text('Elige el tipo de paquete', style: TextStyle(color: StylesThemeData.LETTERCOLOR)),
+      child: Text('Elige el tipo de paquete', style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
     );
   }
 
@@ -37,7 +37,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
                 AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return sinResultados("No hay conexión con el servidor");
+                  return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
                 case ConnectionState.waiting:
                   return Center(
                       child: Padding(
@@ -46,12 +46,12 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
                   ));
                 default:
                   if (snapshot.hasError) {
-                    return sinResultados("Ha surgido un problema");
+                    return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                   } else {
                     if (snapshot.hasData) {
                       final tipoPaquetes = snapshot.data;
                       if (tipoPaquetes.length == 0) {
-                        return sinResultados("No se han encontrado resultados");
+                        return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                       } else {
                         return ListView.builder(
                             itemCount: tipoPaquetes.length,
@@ -59,7 +59,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
                                 _crearItem(tipoPaquetes[i]));
                       }
                     } else {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     }
                   }
               }
@@ -70,7 +70,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
 
   Widget _crearItem(TipoPaqueteModel item) {
     return Container(
-        decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+        decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
         margin: EdgeInsets.only(bottom: 5),
         child: InkWell(
             onTap: () {
@@ -92,7 +92,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
                             Container(
                                 height: 80,
                                 child: Icon(Icons.keyboard_arrow_right,
-                                    color: StylesThemeData.LETTERCOLOR, size: 50))
+                                    color: StylesThemeData.LETTER_COLOR, size: 50))
                           ]))
                 ]))));
   }
@@ -114,7 +114,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
         title: Text("${item.nombre}"),
         leading: Icon(
           Icons.description,
-          color:  StylesThemeData.LETTERCOLOR,
+          color:  StylesThemeData.LETTER_COLOR,
         ),
       )),
     ]));

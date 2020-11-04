@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'DetalleRutaController.dart';
@@ -37,12 +38,26 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(DetalleRutaModel detalleRutaModel, int switched) {
+    Widget crearItem(DetalleRutaModel detalleRutaModel, int switched,
+        int indiceItem, Color colorItem) {
       return Container(
           height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-          margin: EdgeInsets.only(bottom: 5),
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: colorItem,
+            border: indiceItem == 0
+                ? Border(
+                    top: BorderSide(
+                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                    bottom: BorderSide(
+                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                  )
+                : Border(
+                    bottom: BorderSide(
+                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                  ),
+          ),
           child: Column(
             children: <Widget>[
               Expanded(
@@ -135,7 +150,8 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
               AsyncSnapshot<List<DetalleRutaModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",
+                    IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -144,20 +160,28 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados(
+                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     detallesRuta = snapshot.data;
                     if (detallesRuta.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",
+                          IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
                           itemCount: detallesRuta.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(detallesRuta[i], switched));
+                          itemBuilder: (context, i) => crearItem(
+                              detallesRuta[i],
+                              switched,
+                              i,
+                              i % 2 == 0
+                                  ? StylesThemeData.ITEM_SHADED_COLOR
+                                  : StylesThemeData.ITEM_UNSHADED_COLOR));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -165,10 +189,10 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTERCOLOR,
-      fillColor: StylesThemeData.LETTERCOLOR,
+      borderColor: StylesThemeData.LETTER_COLOR,
+      fillColor: StylesThemeData.LETTER_COLOR,
       borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTERCOLOR,
+      selectedBorderColor: StylesThemeData.LETTER_COLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -199,25 +223,24 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
     );
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                margin: const EdgeInsets.only(bottom: 10, top: 10),
-                child: informacionArea()),
-            Container(child: tabs),
-            Expanded(
-              child: Container(
-                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado(indexSwitch)),
-            )
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Column(
+            children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only(bottom: 10, top: 10),
+                  child: informacionArea()),
+              Container(child: tabs),
+            ],
+          )),
+          Expanded(
+            child: Container(
+                decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
+                alignment: Alignment.bottomCenter,
+                child: _crearListado(indexSwitch)),
+          )
+        ],
       );
     }
 

@@ -6,8 +6,9 @@ import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/Custod
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
@@ -42,7 +43,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                 AsyncSnapshot<List<PaqueteExterno>> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return sinResultados("No hay conexión con el servidor");
+                  return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
                 case ConnectionState.waiting:
                   return Center(
                       child: Padding(
@@ -51,12 +52,12 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                   ));
                 default:
                   if (snapshot.hasError) {
-                    return sinResultados("Ha surgido un problema");
+                    return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                   } else {
                     if (snapshot.hasData) {
                       this.creados = snapshot.data;
                       if (this.creados.length == 0) {
-                        return sinResultados("No se han encontrado resultados");
+                        return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                       } else {
                         return ListView.builder(
                             itemCount: this.creados.length,
@@ -64,7 +65,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                                 _crearItem(this.creados[i]));
                       }
                     } else {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     }
                   }
               }
@@ -75,7 +76,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
 
   Widget _crearItem(PaqueteExterno paquete) {
     return Container(
-      decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+      decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
       margin: EdgeInsets.only(bottom: 5),
       child:
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
@@ -116,8 +117,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     return paqueteList;
   }
 
-  void _custodiarPaquete() async {
-    var codigo = this._codigoController.text;
+  void _custodiarPaquete(dynamic valueCodigoController) async {
+    var codigo =valueCodigoController;
 
     if (codigo == "") {
       notificacion(context, "error", "EXACT",
@@ -172,7 +173,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     setState(() {
       _codigoController.text = _codigoController.text;
     });
-    _custodiarPaquete();
+    _custodiarPaquete(_codigoController.text);
   }
 
   @override
@@ -189,14 +190,14 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(top: 20, bottom: 20),
-                        child: InputCamera(
+                        child: InputCameraWidget(
                             iconData: Icons.camera_alt,
                             onPressed: _custodiarConCamara,
-                            inputParam: InputForm(
+                            inputParam: InputWidget(
                               controller: _codigoController,
-                              fx: f1,
-                              hinttext: "",
-                              onPressed: _custodiarPaquete,
+                              focusInput: f1,
+                              hinttext: "Ingresar código",
+                              methodOnPressed: _custodiarPaquete,
                             )),
                       ),
                       _crearListado()

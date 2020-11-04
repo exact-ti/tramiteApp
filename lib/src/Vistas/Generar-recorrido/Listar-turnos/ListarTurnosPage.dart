@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 import 'ListarTurnosController.dart';
 
 class ListarTurnosPage extends StatefulWidget {
@@ -14,7 +17,7 @@ class ListarTurnosPage extends StatefulWidget {
 
 class _ListarTurnosPageState extends State<ListarTurnosPage> {
   ListarTurnosController principalcontroller = new ListarTurnosController();
-
+  List<EntregaModel> listasRecorridos = new List();
   @override
   void initState() {
     super.initState();
@@ -24,66 +27,13 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     Navigator.of(context).pushNamed('/entregas-pisos-propios');
   }
 
+  void onPressRecorrido(dynamic indiceRecorrido) {
+    principalcontroller.onSearchButtonPressed(
+        context, listasRecorridos[indiceRecorrido]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget informacionEntrega(EntregaModel entrega) {
-      return Container(
-          height: 100,
-          child: ListView(
-              shrinkWrap: false,
-              physics: const NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                Container(
-                  height: 20,
-                  child: ListTile(title: Text("${entrega.nombreTurno}")),
-                ),
-                Container(
-                    height: 20,
-                    child: ListTile(
-                        title: Text("${entrega.estado.nombreEstado}",
-                            style: TextStyle(fontSize: 11)))),
-                Container(
-                    height: 20,
-                    child: ListTile(
-                      title: Text("${entrega.usuario}"),
-                      leading: Icon(
-                        Icons.perm_identity,
-                        color: Color(0xffC7C7C7),
-                      ),
-                    )),
-              ]));
-    }
-
-    Widget crearItem(EntregaModel entrega) {
-      return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: InkWell(
-              onTap: () {
-                principalcontroller.onSearchButtonPressed(context, entrega);
-              },
-              child: Container(
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: informacionEntrega(entrega),
-                        flex: 5,
-                      ),
-                      Expanded(
-                          flex: 1,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    height: 100,
-                                    child: Icon(Icons.keyboard_arrow_right,
-                                        color: Color(0xffC7C7C7), size: 50))
-                              ])),
-                    ]),
-              )));
-    }
-
     Widget _crearListado() {
       return FutureBuilder(
           future: principalcontroller.listarentregasController(),
@@ -91,7 +41,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
               AsyncSnapshot<List<EntregaModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",
+                    IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -100,19 +51,38 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados(
+                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
-                    final entregas = snapshot.data;
-                    if (entregas.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                    listasRecorridos = snapshot.data;
+                    if (listasRecorridos.length == 0) {
+                      return sinResultados("No se han encontrado resultados",
+                          IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
-                          itemCount: entregas.length,
-                          itemBuilder: (context, i) => crearItem(entregas[i]));
+                          itemCount: listasRecorridos.length,
+                          itemBuilder: (context, i) => ItemWidget(
+                              iconPrimary: IconsData.ICON_USER,
+                              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+                              itemIndice: i,
+                              methodAction: onPressRecorrido,
+                              colorItem: i % 2 == 0
+                                  ? StylesThemeData.ITEM_SHADED_COLOR
+                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
+                              titulo: listasRecorridos[i].nombreTurno,
+                              subtitulo: listasRecorridos[i].usuario,
+                              subSecondtitulo:
+                                  listasRecorridos[i].estado.nombreEstado,
+                              styleTitulo: StylesTitleData.STYLE_TITLE,
+                              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+                              styleSubSecondtitulo:
+                                  StylesTitleData.STYLE_SECOND_SUBTILE,
+                              iconColor: StylesThemeData.ICON_COLOR));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -120,25 +90,22 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 20),
-                alignment: Alignment.centerLeft,
-                width: double.infinity,
-                child: CustomButton(
-                    onPressed: redirectButtom,
-                    colorParam: StylesThemeData.PRIMARYCOLOR,
-                    texto: "Nuevo Recorrido")),
-            Expanded(
-              child: Container(
-                  alignment: Alignment.bottomCenter, child: _crearListado()),
-            )
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Container(
+              margin: const EdgeInsets.only(top: 20, bottom: 20),
+              alignment: Alignment.centerLeft,
+              width: double.infinity,
+              child: ButtonWidget(
+                  onPressed: redirectButtom,
+                  colorParam: StylesThemeData.PRIMARY_COLOR,
+                  texto: "Nuevo Recorrido"))),
+          Expanded(
+            child: Container(
+                alignment: Alignment.bottomCenter, child: _crearListado()),
+          )
+        ],
       );
     }
 

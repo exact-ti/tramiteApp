@@ -2,7 +2,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 
 abstract class InterSedeInterface {
-  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(int switched);
+  Future<List<EnvioInterSedeModel>> listarIntersedesUsuario(bool porRecibir);
 
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo);
 

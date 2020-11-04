@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
@@ -110,9 +110,9 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
                 margin: const EdgeInsets.only(bottom: 20),
                 alignment: Alignment.center,
                 width: double.infinity,
-                child: CustomButton(
+                child: ButtonWidget(
                     onPressed: buttonPress,
-                    colorParam: StylesThemeData.PRIMARYCOLOR,
+                    colorParam: StylesThemeData.PRIMARY_COLOR,
                     texto: 'Enviar'))
           ],
         ),
@@ -121,7 +121,7 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARYCOLOR,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Recupera tu cuenta",
                 style: TextStyle(
                     fontSize: 18,

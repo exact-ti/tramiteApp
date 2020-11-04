@@ -9,7 +9,7 @@ class RecorridoAdicionalController {
     EntregaInterface entregaInterface = new EntregaImpl( new EntregaProvider());
 
     Future<List<RecorridoModel>>  recorridosController(String nombre) async {
-       List<RecorridoModel> entregas =  await entregaInterface.listarRecorridosporNombre(nombre);
+        List<RecorridoModel> entregas =  await entregaInterface.listarRecorridosporNombre(nombre);
         return entregas;
     }
 

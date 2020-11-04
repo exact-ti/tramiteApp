@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/TurnoModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 import 'NuevaEntregaLoteController.dart';
 
 class NuevoEntregaLotePage extends StatefulWidget {
@@ -56,7 +59,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
   }
 
-  void _listarTurnosByCodValija() async {
+  void _listarTurnosByCodValija(dynamic valueLoteController) async {
     TurnoModel turnoModel = new TurnoModel();
     dynamic turnosmap = await nuevoEntregaLotePageController.listarturnos(
         context, _codLoteController.text);
@@ -81,7 +84,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     }
   }
 
-  void _validarCodValija() async {
+  void _validarCodValija(dynamic valueValijaController) async {
     if (_codLoteController.text == "") {
       popuptoinput(context, focusCodLote, "error", "EXACT",
           "Primero debe ingresar el codigo del lote");
@@ -125,7 +128,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     setState(() {
       _codValijaController.text = _codValijaController.text;
     });
-    _validarCodValija();
+    _validarCodValija(_codValijaController.text);
   }
 
   Future _getDataCameraCodLote() async {
@@ -133,7 +136,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     setState(() {
       _codLoteController.text = _codLoteController.text;
     });
-    _listarTurnosByCodValija();
+    _listarTurnosByCodValija(_codLoteController.text);
   }
 
   @override
@@ -141,18 +144,18 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     Widget _crearCombo(String codigo, List<TurnoModel> listTurnos) {
       return new Container(
           decoration: BoxDecoration(
-              color: StylesThemeData.ITEMTURNOCOLOR,
+              color: StylesThemeData.ITEM_TURNO_COLOR,
               borderRadius: BorderRadius.circular(10.0),
               border: Border.all(
                   width: 3,
-                  color: StylesThemeData.ITEMTURNOCOLOR,
+                  color: StylesThemeData.ITEM_TURNO_COLOR,
                   style: BorderStyle.solid)),
           child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButton<String>(
                   underline: Container(
                     height: 2,
-                    color: StylesThemeData.ITEMTURNOCOLOR,
+                    color: StylesThemeData.ITEM_TURNO_COLOR,
                   ),
                   isExpanded: true,
                   style: TextStyle(color: Colors.black, fontSize: 16),
@@ -160,7 +163,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                       alignment: Alignment.center,
                       child: listTurnos.length != 0
                           ? Text("Escoge un turno")
-                          : Text("- - - - - - - - - - - - -")),
+                          : Text("Escoge un turno")),
                   onChanged: (newValue) {
                     setState(() {
                       FocusScope.of(context).requestFocus(new FocusNode());
@@ -209,71 +212,81 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
     return Scaffold(
         appBar: CustomAppBar(text: "Entrega de lotes"),
         drawer: DrawerPage(),
-        body: scaffoldbody(Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                          margin: const EdgeInsets.only(top: 20,bottom: 5),
-                          alignment: Alignment.bottomLeft,
-                          width: double.infinity,
-                          child: Text("Código de lote")),
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          width: double.infinity,
-                          child: InputCamera(
-                              iconData: Icons.camera_alt,
-                              onPressed: _getDataCameraCodLote,
-                              inputParam: InputForm(
-                                controller: _codLoteController,
-                                fx: focusCodLote,
-                                hinttext: "",
-                                onPressed: _listarTurnosByCodValija,
-                              ))),
-                      Container(
-                          margin: const EdgeInsets.only(top: 10,bottom: 5),
-                          alignment: Alignment.bottomLeft,
-                          width: double.infinity,
-                          child: Text("Turno")),
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          width: double.infinity,
-                          child:comboList(_codLoteController.text, listTurnos)),
-                      Container(
-                          alignment: Alignment.bottomLeft,
-                          margin: const EdgeInsets.only(top: 10,bottom: 5),
-                          child: Text("Código de valija")),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: double.infinity,
-                        child: InputCamera(
-                            iconData: Icons.camera_alt,
-                            onPressed: _getDataCameraCodValija,
-                            inputParam: InputForm(
-                              controller: _codValijaController,
-                              fx: focusCodValija,
-                              hinttext: "",
-                              onPressed: _validarCodValija,
-                            )),
-                        margin: const EdgeInsets.only(bottom: 30),
-                      ),
-                      Expanded(
-                          child: Container(
-                        margin: const EdgeInsets.only(top: 20,bottom: 10),
-                        child: ListCod(enviosModel: listValijas),
-                      )),
-                      listValijas.length != 0
-                          ? Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              child: CustomButton(
-                                  onPressed: onPressedRegistrarButton,
-                                  colorParam: StylesThemeData.PRIMARYCOLOR,
-                                  texto: "Registrar"))
-                          : Container(),
-                    ],
+        body: scaffoldbody(
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      width: double.infinity,
+                      child: InputCameraWidget(
+                          iconData: Icons.camera_alt,
+                          onPressed: _getDataCameraCodLote,
+                          inputParam: InputWidget(
+                            iconPrefix: IconsData.ICON_SOBRE,
+                            controller: _codLoteController,
+                            focusInput: focusCodLote,
+                            hinttext: "Código de lote",
+                            methodOnPressed: _listarTurnosByCodValija,
+                          ))),
+                  Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      alignment: Alignment.centerLeft,
+                      width: double.infinity,
+                      child: comboList(_codLoteController.text, listTurnos)),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: double.infinity,
+                    child: InputCameraWidget(
+                        iconData: Icons.camera_alt,
+                        onPressed: _getDataCameraCodValija,
+                        inputParam: InputWidget(
+                          controller: _codValijaController,
+                          focusInput: focusCodValija,
+                          iconPrefix: IconsData.ICON_SOBRE,
+                          hinttext: "Código de valija",
+                          methodOnPressed: _validarCodValija,
+                        )),
+                    margin: const EdgeInsets.only(bottom: 30),
                   ),
-                ), context));
+                  Expanded(
+                      child: Container(
+                    margin: const EdgeInsets.only(top: 20, bottom: 10),
+                    child: ListView.builder(
+                        itemCount: listValijas.length,
+                        itemBuilder: (context, i) => ItemWidget(
+                            iconPrimary: FontAwesomeIcons.qrcode,
+                            iconSend: listValijas[i].estado
+                                ? IconsData.ICON_ENVIO_CONFIRMADO
+                                : null,
+                            itemIndice: i,
+                            methodAction: null,
+                            colorItem: i % 2 == 0
+                                ? StylesThemeData.ITEM_SHADED_COLOR
+                                : StylesThemeData.ITEM_UNSHADED_COLOR,
+                            titulo: listValijas[i].codigoPaquete,
+                            subtitulo: null,
+                            subSecondtitulo: null,
+                            styleTitulo: StylesTitleData.STYLE_TITLE,
+                            styleSubTitulo: null,
+                            styleSubSecondtitulo: null,
+                            iconColor: StylesThemeData.ICON_COLOR)),
+                  )),
+                  listValijas.length != 0
+                      ? Container(
+                          margin: const EdgeInsets.only(top: 20, bottom: 30),
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          child: ButtonWidget(
+                              onPressed: onPressedRegistrarButton,
+                              colorParam: StylesThemeData.PRIMARY_COLOR,
+                              texto: "Registrar"))
+                      : Container(),
+                ],
+              ),
+            ),
+            context));
   }
 }

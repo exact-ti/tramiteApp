@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
-class CustomSwitch extends StatelessWidget {
+class SwitchWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final bool switchValue;
   final String textEnabled;
   final String textDisabled;
-  const CustomSwitch({
+  const SwitchWidget({
     Key key,
     @required this.onPressed,
     @required this.switchValue,
@@ -26,8 +26,8 @@ class CustomSwitch extends StatelessWidget {
             onChanged: (value) {
               onPressed();
             },
-            activeTrackColor: StylesThemeData.SWITCHCOLOR,
-            activeColor: StylesThemeData.PRIMARYCOLOR,
+            activeTrackColor: StylesThemeData.SWITCH_COLOR,
+            activeColor: StylesThemeData.PRIMARY_COLOR,
           ),
         ),
         Expanded(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
@@ -73,7 +74,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
 
     Widget crearItem(EnvioModel envio) {
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -92,7 +93,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         flex: 1,
                       ),
                       Expanded(
-                        child: Text(envio.remitente == null
+                        child: Text(
+                            envio.remitente == null
                                 ? "Envío importado"
                                 : envio.remitente,
                             style: TextStyle(color: Colors.black)),
@@ -186,6 +188,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
           controller: _inicioController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
+            hintText: "Desde",
+            prefix: Icon(FontAwesomeIcons.calendarCheck),
             contentPadding:
                 new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             filled: true,
@@ -236,8 +240,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
           controller: _finController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            contentPadding:
-                new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+            hintText: "Hasta",
+            prefix: Icon(FontAwesomeIcons.calendarCheck),
+            contentPadding:new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             filled: true,
             fillColor: Color(0xFFEAEFF2),
             errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
@@ -248,7 +253,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
               borderSide: BorderSide(
-                color: Color(0xFFEAEFF2),
+                color: Colors.blue,
                 width: 0.0,
               ),
             ),
@@ -264,10 +269,12 @@ class _HistoricoPageState extends State<HistoricoPage> {
       }
       if (listaEnvios.length == 0) {
         return Container(
-          decoration: myBigBoxDecoration(StylesThemeData.LISTBORDERCOLOR),
+          decoration: myBigBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
           alignment: Alignment.center,
-          child: Center(child: sinResultados("No se encontraron resultados")),
+          child: Center(
+              child: sinResultados(
+                  "No se encontraron resultados", IconsData.ICON_ERROR_EMPTY)),
         );
       } else {
         return ListView.builder(
@@ -277,10 +284,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
     }
 
     Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LISTBORDERCOLOR,
-      fillColor: StylesThemeData.LISTBORDERCOLOR,
+      borderColor: StylesThemeData.LIST_BORDER_COLOR,
+      fillColor: StylesThemeData.LIST_BORDER_COLOR,
       borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LISTBORDERCOLOR,
+      selectedBorderColor: StylesThemeData.LIST_BORDER_COLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -311,49 +318,42 @@ class _HistoricoPageState extends State<HistoricoPage> {
     );
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          children: <Widget>[
-            Container(
-                  margin: const EdgeInsets.only(top: 20,bottom: 5),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: Text("Desde")),
-            Container(
+      return Column(
+        children: <Widget>[
+          paddingWidget(Column(
+            children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only(bottom: 20, top: 20),
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
-                  child: InputCamera(inputParam: fechainicio)),
-            Container(
-                  alignment: Alignment.bottomLeft,
-                  margin: const EdgeInsets.only(top: 10,bottom: 5),
-                  width: double.infinity,
-                  child: Text("Hasta")),
-            Container(
+                  child: fechainicio),
+              Container(
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
                   margin: const EdgeInsets.only(bottom: 20),
-                  child: InputCamera(inputParam: fechafin)),
-            Container(
-                alignment: Alignment.centerLeft,
-                width: double.infinity,
-                child: InputCamera(inputParam: CustomButton(onPressed: pressConsulta, colorParam: StylesThemeData.PRIMARYCOLOR, texto: 'Buscar')),
-              ),
-            !pressButton
-                ? Container()
-                : Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    alignment: Alignment.bottomLeft,
-                    child: tabs),
-            !pressButton
-                ? Container()
-                : Expanded(
-                    child: Container(
-                    child: _crearListadoAgregar(indexSwitch),
-                    margin: const EdgeInsets.only(bottom: 5),
-                  )),
-          ],
-        ),
+                  child: fechafin),
+              Container(
+                  width: double.infinity,
+                  child: ButtonWidget(
+                      onPressed: pressConsulta,
+                      colorParam: StylesThemeData.PRIMARY_COLOR,
+                      texto: 'Buscar')),
+            ],
+          )),
+          !pressButton
+              ? Container()
+              : Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  alignment: Alignment.bottomLeft,
+                  child: tabs),
+          !pressButton
+              ? Container()
+              : Expanded(
+                  child: Container(
+                  child: _crearListadoAgregar(indexSwitch),
+                  margin: const EdgeInsets.only(bottom: 5),
+                )),
+        ],
       );
     }
 

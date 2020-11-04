@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'ClasificacionController.dart';
 
 class ClasificacionPage extends StatefulWidget {
@@ -23,18 +23,17 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     super.initState();
   }
 
-  void _validarText() async {
-    String value = _sobreController.text;
+  void _validarText(dynamic valueSobreController) async {
     desenfocarInputfx(context);
-    listapalomar = await principalcontroller.listarpalomarByCodigo(context, value);
+    listapalomar = await principalcontroller.listarpalomarByCodigo(context, valueSobreController);
     if (listapalomar.isNotEmpty) {
       setState(() {
-        _sobreController.text = value;
+        _sobreController.text = valueSobreController;
         listapalomar = listapalomar;
       });
     } else {
       setState(() {
-        _sobreController.text = value;
+        _sobreController.text = valueSobreController;
         listapalomar = [];
       });
       popuptoinput(context, f1, "error", "EXACT",
@@ -47,7 +46,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     setState(() {
       _sobreController.text = _sobreController.text;
     });
-    _validarText();
+    _validarText(_sobreController.text);
   }
 
   @override
@@ -135,14 +134,14 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(top: 40),
-                child: InputCamera(
+                margin: const EdgeInsets.only(top: 20),
+                child: InputCameraWidget(
                     iconData: Icons.camera_alt,
                     onPressed: _traerdatosescanerbandeja,
-                    inputParam: InputForm(
-                        onPressed: _validarText,
+                    inputParam: InputWidget(
+                        methodOnPressed: _validarText,
                         controller: _sobreController,
-                        fx: f1,
+                        focusInput: f1,
                         hinttext: "Ingresar código",align: TextAlign.center,))),
             Expanded(
               child: _sobreController.text == ""

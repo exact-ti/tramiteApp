@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
@@ -106,7 +107,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
               AsyncSnapshot<List<NotificacionModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -115,12 +116,12 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     final notificaciones = snapshot.data;
                     if (notificaciones.length == 0) {
-                      return sinResultados("No hay notificaciones pendientes");
+                      return sinResultados("No hay notificaciones pendientes",IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
                           itemCount: notificaciones.length,
@@ -128,7 +129,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                               crearItem(notificaciones[i]));
                     }
                   } else {
-                    return sinResultados("No hay notificaciones pendientes");
+                    return sinResultados("No hay notificaciones pendientes",IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -150,7 +151,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARYCOLOR,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Notificaciones",
                 style: TextStyle(
                     fontSize: 18,

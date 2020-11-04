@@ -6,9 +6,10 @@ import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-exte
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosAgenciasController.dart';
@@ -237,7 +238,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     Widget _crearListado(List<EnvioInterSedeModel> envios) {
       if (envios.length == 0) {
         return Container(
-            child: Center(child: sinResultados("No hay envíos para agencias")));
+            child: Center(child: sinResultados("No hay envíos para agencias",IconsData.ICON_ERROR_EMPTY)));
       } else {
         return ListView.builder(
             itemCount: envios.length,
@@ -252,12 +253,12 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(top: 20),
+                margin: const EdgeInsets.only(top: 20,bottom: 20),
                 alignment: Alignment.bottomLeft,
                 width: double.infinity,
-                child: CustomButton(
+                child: ButtonWidget(
                     onPressed: onPressedNuevaButton,
-                    colorParam: StylesThemeData.PRIMARYCOLOR,
+                    colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                     texto: "Nueva")),
             !respuestaBack
                 ? Expanded(
@@ -274,12 +275,12 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                   ),
             validados.containsValue(true)
                 ? Container(
-                    margin: const EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.only(bottom: 30,top: 20),
                     alignment: Alignment.center,
                     width: double.infinity,
-                    child: CustomButton(
+                    child: ButtonWidget(
                         onPressed: registrarlista,
-                        colorParam: StylesThemeData.PRIMARYCOLOR,
+                        colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                         texto: "Terminar"))
                 : Container(),
           ],
@@ -295,10 +296,10 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
   BoxDecoration myBoxDecoration(bool seleccionado) {
     return BoxDecoration(
-      border: Border.all(color: StylesThemeData.LETTERCOLOR),
+      border: Border.all(color: StylesThemeData.LETTER_COLOR),
       color: seleccionado == null || seleccionado == false
           ? Colors.white
-          : StylesThemeData.SELECTIONCOLOR2,
+          : StylesThemeData.SELECTION_COLOR_2,
     );
   }
 }

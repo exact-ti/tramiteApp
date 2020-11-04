@@ -15,6 +15,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
@@ -60,7 +61,10 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   final valorCampo = 'No encontrado';
   int totalFilas = 0;
   int codigosEncontrados = 0;
+  // ignore: non_constant_identifier_names
   int codigo_paquete_incorrecto = 0;
+  // ignore: non_constant_identifier_names
+  int codigo_paquete_formatoIncorrecto = 0;
   var mensajeResultado = Text('');
   var contenido;
   final tituloVentana = "Importar envíos";
@@ -83,7 +87,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   onPressed: () async {
                     contenido = _adjuntarArchivo(context);
                   },
-                  color:  StylesThemeData.PRIMARYCOLOR,
+                  color: StylesThemeData.PRIMARY_COLOR,
                   child:
                       Text('Adjuntar', style: TextStyle(color: Colors.white))),
             )),
@@ -111,7 +115,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                     _importarRegistros(context);
                     setState(() {});
                   },
-                  color: StylesThemeData.PRIMARYCOLOR,
+                  color: StylesThemeData.PRIMARY_COLOR,
                   child:
                       Text('Importar', style: TextStyle(color: Colors.white))),
             )),
@@ -125,7 +129,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
       for (var item in this.data) {
         if (item.nombre != 'No encontrado' &&
             item.id != null &&
-            item.id.trim() != "") {
+            item.id.trim() != "" &&
+            item.id.trim().length <= sd.obtenerCantidadMinimaCodigoPaquete()) {
           PaqueteExterno paquete = new PaqueteExterno();
           paquete.paqueteId = item.id;
           paquete.destinatarioId = item.idBuzon.toString();
@@ -133,6 +138,10 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
         if (item.id == null || item.id.trim() == "") {
           this.codigo_paquete_incorrecto++;
+        }
+
+        if (item.id.trim().length > sd.obtenerCantidadMinimaCodigoPaquete()) {
+          this.codigo_paquete_formatoIncorrecto++;
         }
       }
 
@@ -157,23 +166,125 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             description = 'Existen ' +
                 this.codigo_paquete_incorrecto.toString() +
                 ' códigos de paquete vacíos';
+            if (codigo_paquete_formatoIncorrecto > 0) {
+              if (codigo_paquete_formatoIncorrecto > 1) {
+                description = description +
+                    'y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+              } else {
+                description = description +
+                    'y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+              }
+            }
           } else {
-            description = description +
-                ' y ' +
-                this.codigo_paquete_incorrecto.toString() +
-                ' códigos de paquete vacíos';
+            description = codigo_paquete_formatoIncorrecto > 0
+                ? description +
+                    ' y ' +
+                    this.codigo_paquete_incorrecto.toString() +
+                    ' códigos de paquete vacíos'
+                : description +
+                    ' , ' +
+                    this.codigo_paquete_incorrecto.toString() +
+                    ' códigos de paquete vacíos';
+            if (codigo_paquete_formatoIncorrecto > 0) {
+              if (codigo_paquete_formatoIncorrecto > 1) {
+                description = description +
+                    'y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+              } else {
+                description = description +
+                    'y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+              }
+            }
           }
         } else {
-          if (this.codigo_paquete_incorrecto == 1) {
+          if (this.codigo_paquete_incorrecto == 0) {
+            if (noencontrados == 0) {
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      'Existen $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      'Existe $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
+            } else {
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
+            }
+          } else if (this.codigo_paquete_incorrecto == 1) {
             if (noencontrados == 0) {
               description = 'Existe ' +
                   this.codigo_paquete_incorrecto.toString() +
                   ' código de paquete vacío';
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
             } else {
-              description = description +
-                  ' y ' +
+              description = codigo_paquete_formatoIncorrecto > 0
+                  ? description +
+                      ', ' +
+                      this.codigo_paquete_incorrecto.toString() +
+                      ' código de paquetes vacío'
+                  : description +
+                      ' y ' +
+                      this.codigo_paquete_incorrecto.toString() +
+                      ' código de paquetes vacío';
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
+            }
+          } else {
+            if (noencontrados == 0) {
+              description = 'Existe ' +
                   this.codigo_paquete_incorrecto.toString() +
-                  ' código de paquetes vacío';
+                  ' códigos de paquete vacío';
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
+            } else {
+              description = codigo_paquete_formatoIncorrecto > 0
+                  ? description +
+                      ', ' +
+                      this.codigo_paquete_incorrecto.toString() +
+                      ' códigos de paquetes vacío'
+                  : description +
+                      ' y ' +
+                      this.codigo_paquete_incorrecto.toString() +
+                      ' códigos de paquetes vacío';
+              if (codigo_paquete_formatoIncorrecto > 0) {
+                if (codigo_paquete_formatoIncorrecto > 1) {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto códigos con formato incorrecto';
+                } else {
+                  description = description +
+                      ' y $codigo_paquete_formatoIncorrecto código con formato incorrecto';
+                }
+              }
             }
           }
         }
@@ -184,6 +295,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           this.data = new List<PaqueteExternoBuzonModel>();
           this.totalFilas = 0;
           this.codigosEncontrados = 0;
+          this.codigo_paquete_formatoIncorrecto = 0;
+          this.codigo_paquete_incorrecto = 0;
           contenido = null;
           setState(() {
             contenido = null;
@@ -193,9 +306,12 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
           }
         }
 
-        if (this.codigo_paquete_incorrecto > 0 || noencontrados > 0) {
+        if (this.codigo_paquete_incorrecto > 0 ||
+            noencontrados > 0 ||
+            codigo_paquete_formatoIncorrecto > 0) {
           bool respuestabool = await confirmacion(context, "success", "EXACT",
               description + ". ¿Desea registrar los documentos correctos?");
+          this.codigo_paquete_formatoIncorrecto = 0;
           if (!respuestabool) {
             return;
           }
@@ -221,7 +337,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
       } else {
         var descrip = "";
-
         if (this.codigo_paquete_incorrecto > 1) {
           descrip = 'Existen ' +
               this.codigo_paquete_incorrecto.toString() +
@@ -236,10 +351,8 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         if (this.codigo_paquete_incorrecto > 0) {
           bool respuestabool =
               await confirmacion(context, "success", "EXACT", descrip);
-          if (respuestabool != null) {
-            if (!respuestabool) {
-              return;
-            }
+          if (!respuestabool) {
+            return;
           }
         }
 
@@ -268,36 +381,6 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     }
   }
 
-  void _mensajeAdvertenciaNoEncontrados(BuildContext context) {
-    if (totalFilas > 0 && totalFilas > codigosEncontrados) {
-      var mensaje = 'Existen ' +
-          (totalFilas - codigosEncontrados).toString() +
-          ' destinos no encontrados';
-      TextStyle(color: Colors.red);
-      notificacion(context, "error", "EXACT", mensaje);
-    }
-  }
-
-  void _mensajeResultadoImportacion(BuildContext context) {
-    var mensaje = '';
-    TextStyle estilo;
-
-    if (totalFilas == 0) {
-      return;
-    } else {
-      if (totalFilas == codigosEncontrados) {
-        mensaje = codigosEncontrados.toString() + ' correctos';
-        estilo = new TextStyle(color: Colors.blue);
-      } else {
-        mensaje = 'Existen ' +
-            (totalFilas - codigosEncontrados).toString() +
-            ' destinos no encontrados';
-        estilo = new TextStyle(color: Colors.red);
-      }
-    }
-    notificacion(context, "error", "EXACT", mensaje);
-  }
-
   Widget _adjuntarArchivo(BuildContext context) {
     return FutureBuilder(
         future: _generateListFromDecoderData(context),
@@ -305,7 +388,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
             AsyncSnapshot<List<PaqueteExternoBuzonModel>> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return sinResultados("No hay conexión con el servidor");
+              return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
             case ConnectionState.waiting:
               return Center(
                   child: Padding(
@@ -314,12 +397,12 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
               ));
             default:
               if (snapshot.hasError) {
-                return sinResultados("Ha surgido un problema");
+                return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
               } else {
                 if (snapshot.hasData) {
                   final entregas = snapshot.data;
                   if (entregas.length == 0) {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                   } else {
                     return Container(
                         child: Column(
@@ -329,7 +412,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                     ));
                   }
                 } else {
-                  return sinResultados("No se han encontrado resultados");
+                  return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                 }
               }
           }
@@ -448,7 +531,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
     List<PaqueteExternoBuzonModel> listavacio = new List();
     int correctos = 0;
     for (PaqueteExternoBuzonModel paquete in data) {
-      if (paquete.id == null || paquete.id == "") {
+      if (paquete.id == null || paquete.id == "" || paquete.id.length > 14) {
         paquete.estado = false;
       }
       if (paquete.estado) {
@@ -482,7 +565,13 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.red),
                 )
-              : Text(item.id.toString(), textAlign: TextAlign.center)),
+              : item.id.toString().length > sd.obtenerCantidadMinimaCodigoPaquete()
+                  ? Text(
+                      "Máx. ${sd.obtenerCantidadMinimaCodigoPaquete()} dígitos",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red),
+                    )
+                  : Text(item.id.toString(), textAlign: TextAlign.center)),
           DataCell(item.idBuzon.toString() == ""
               ? Text("No ingresado",
                   textAlign: TextAlign.center,

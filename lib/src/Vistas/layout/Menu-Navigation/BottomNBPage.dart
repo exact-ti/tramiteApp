@@ -1,18 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
-import 'package:tramiteapp/src/Vistas/Consulta-Envio/ConsultaEnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage.dart';
-import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
-import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
-import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
-import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
-import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tramiteapp/src/routes/routes.dart';
 import 'MenuController.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 
 class TopLevelWidget extends StatefulWidget {
   final String rutaPage;
@@ -33,81 +24,55 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
   @override
   void initState() {
     listarMenuBottomNavBar();
-    validarIngreso();
     super.initState();
   }
 
-  validarIngreso() {
+  void listarMenuBottomNavBar() async {
+    List<Menu> listmen = listMenuUtil();
     if (widget.rutaPage != null) {
+      if (widget.rutaPage == "/") {
+        menuinicio = "/dashboard";
+      } else {
+        menuinicio = widget.rutaPage;
+      }
+      int ordenprueba = listmen
+          .where((element) => element.link == menuinicio)
+          .map((e) => e.orden - 1)
+          .toList()
+          .first;
       if (this.mounted) {
-        String rutaname = "";
-        if (widget.rutaPage == "/") {
-          rutaname = "/dashboard";
-        } else {
-          rutaname = widget.rutaPage;
-        }
-        int ordenprueba = listMenu
-            .where((element) => element.link == rutaname)
-            .map((e) => e.orden - 1)
-            .toList()
-            .first;
-        setState(() { 
+        setState(() {
+          listMenu = listmen;
+          menuinicio = menuinicio;
           currentIndex = ordenprueba;
         });
       }
-    }
-  }
-
-  void listarMenuBottomNavBar() async {
-    final _prefs = new PreferenciasUsuario();
-    List<dynamic> menus = json.decode(_prefs.menus);
-    List<Menu> listmenu = menuu.fromPreferencs(menus);
-    listmenu.sort((a, b) => a.orden.compareTo(b.orden));
-    listmenu.reversed;
-    if (this.mounted) {
-      setState(() {
-        menuinicio = listmenu
-            .where((element) => element.home)
-            .map((e) => e.link)
-            .toList()
-            .first;
-        listMenu = listmenu;
-      });
+    } else {
+      menuinicio = listmen
+          .where((element) => element.home)
+          .map((e) => e.link)
+          .toList()
+          .first;
+      if (this.mounted) {
+        setState(() {
+          menuinicio = menuinicio;
+          listMenu = listmen;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final key = GlobalKey();
-    final pagesRouteFactories = {
-      "/": () => PageRouteBuilder(pageBuilder: (_, a1, a2) => DashboardPage()),
-      "/home": () => PageRouteBuilder(pageBuilder: (_, a1, a2) => HomePage()),
-      "/notificaciones": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => NotificacionesPage()),
-      "/confirmar-envios": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => RecepcionEnvioPage()),
-      "/generar-envio": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => PrincipalPage()),
-      "/consulta-envios": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => ConsultaEnvioPage()),
-      "/envios-activos": () => PageRouteBuilder(
-          pageBuilder: (_, a1, a2) => ListarEnviosActivosPage()),
-      "/retirar-envio": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => RetirarEnvioPage()),
-      "/envios-historicos": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => HistoricoPage()),
-      "/dashboard": () =>
-          PageRouteBuilder(pageBuilder: (_, a1, a2) => DashboardPage()),
-    };
-
     Widget _buildBody() => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
-        supportedLocales: [const Locale('en'), const Locale('es')],
-        onGenerateRoute: (route) {
-          return pagesRouteFactories[route.name]();
-        });
+          debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
+          initialRoute: menuinicio,
+          localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+          supportedLocales: [const Locale('en'), const Locale('es')],
+          routes: getAplicationRoutes(),
+        );
 
     _buildBottomNavigationBarItem(name, icon) => BottomNavigationBarItem(
         icon: Icon(menuController.icons[icon]),
@@ -130,7 +95,6 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         key: key,
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 10,
-        
         unselectedFontSize: 10,
         items: returnItems(),
         onTap: (routeIndex) {

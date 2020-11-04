@@ -5,7 +5,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'GenerarRutaController.dart';
@@ -52,22 +53,21 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget informacionArea(String nombre) {
       return Container(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.center,
           height: 80,
-          child: Align(
-              child: Text(
-                "$nombre",
-                style: TextStyle(fontSize: 11),
-              ),
-              alignment: Alignment(-1.2, 0.0)));
+          child: Text(
+            "$nombre",
+            style: TextStyle(fontSize: 11),
+          ));
     }
 
     Widget informacionIcono(String nombre) {
       return Container(
-          height: 80, child: Center(child: Icon(Icons.location_on)));
+          alignment: Alignment.centerRight,
+          height: 80,
+          child: Icon(Icons.location_on));
     }
 
     Widget informacionRecojo(RutaModel ruta) {
@@ -76,16 +76,16 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           height: 80,
           child: ListView(shrinkWrap: true, children: <Widget>[
             Container(
-              alignment: Alignment.center,
+              padding: const EdgeInsets.only(bottom: 5),
+              alignment: Alignment.bottomCenter,
               height: 40,
-              child: new Center(
-                  child: ListTile(
-                      title:Text("Para recoger", style: TextStyle(fontSize: 9)))),
+              child: Text("Para recoger", style: TextStyle(fontSize: 9)),
             ),
             Center(
               child: Container(
                   height: 40,
-                  child: Text("${ruta.cantidadRecojo}",style: TextStyle(fontSize: 11))),
+                  child: Text("${ruta.cantidadRecojo}",
+                      style: TextStyle(fontSize: 11))),
             )
           ]));
     }
@@ -96,9 +96,10 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           child: ListView(shrinkWrap: true, children: <Widget>[
             Center(
               child: Container(
+                alignment: Alignment.bottomCenter,
+                padding: const EdgeInsets.only(bottom: 5),
                 height: 40,
-                child: ListTile(
-                    title: Text("Para Entrega", style: TextStyle(fontSize: 9))),
+                child: Text("Para Entrega", style: TextStyle(fontSize: 9)),
               ),
             ),
             Center(
@@ -110,7 +111,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           ]));
     }
 
-    Widget crearItem(RutaModel ruta) {
+    Widget crearItem(RutaModel ruta, int indiceItem, Color colorItem) {
       return InkWell(
           onTap: () {
             Map<String, Object> objetoSend = {
@@ -124,8 +125,21 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                 ));
           },
           child: Container(
-            decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-            margin: EdgeInsets.only(bottom: 5),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: colorItem,
+              border: indiceItem == 0
+                  ? Border(
+                      top: BorderSide(
+                          width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                      bottom: BorderSide(
+                          width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                    )
+                  : Border(
+                      bottom: BorderSide(
+                          width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
+                    ),
+            ),
             height: 80,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,7 +173,8 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
               (BuildContext context, AsyncSnapshot<List<RutaModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",
+                    IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -168,20 +183,28 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados(
+                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     final rutas = snapshot.data;
                     if (rutas.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",
+                          IconsData.ICON_ERROR_EMPTY);
                     } else {
                       this.cantidad = rutas.length;
                       return ListView.builder(
                           itemCount: rutas.length,
-                          itemBuilder: (context, i) => crearItem(rutas[i]));
+                          itemBuilder: (context, i) => crearItem(
+                              rutas[i],
+                              i,
+                              i % 2 == 0
+                                  ? StylesThemeData.ITEM_SHADED_COLOR
+                                  : StylesThemeData.ITEM_UNSHADED_COLOR));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -192,9 +215,9 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: CustomButton(
+            child: ButtonWidget(
                 onPressed: onPresBack,
-                colorParam: Colors.grey,
+                colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
                 texto: recorridoUsuario.indicepagina == 1
                     ? "Empezar recorrido"
                     : "Retroceder"),
@@ -203,60 +226,51 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           Expanded(
               flex: 5,
               child: Container(
-                margin: const EdgeInsets.only(left: 5),
-                child:CustomButton(
-                  onPressed: actionButton,
-                  colorParam: StylesThemeData.PRIMARYCOLOR,
-                  texto: recorridoUsuario.indicepagina == 1
-                      ? 'Empezar recorrido'
-                      : 'Terminar')))
+                  margin: const EdgeInsets.only(left: 5),
+                  child: ButtonWidget(
+                      onPressed: actionButton,
+                      colorParam: StylesThemeData.PRIMARY_COLOR,
+                      texto: recorridoUsuario.indicepagina == 1
+                          ? 'Empezar recorrido'
+                          : 'Terminar')))
         ],
       ),
     );
 
-    Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 6),
-                  width: double.infinity,
-                  child: Text("Tu ruta",
-                      style: TextStyle(
-                          fontSize: 20, color: StylesThemeData.LETTERCOLOR))),
-            ),
-            Expanded(
-              child: Container(
-                  alignment: Alignment.bottomCenter, child: _crearListado()),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  alignment: Alignment.center,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 4),
-                  width: double.infinity,
-                  child: recorridoUsuario.indicepagina != 1
-                      ? filaBotones
-                      : CustomButton(
-                          onPressed: actionButton,
-                          colorParam: StylesThemeData.PRIMARYCOLOR,
-                          texto: recorridoUsuario.indicepagina == 1
-                              ? 'Empezar recorrido'
-                              : 'Terminar')),
-            ),
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
         appBar: CustomAppBar(text: "Consultas"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                    width: double.infinity,
+                    child: Text("Tu ruta",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: StylesThemeData.LETTER_COLOR)))),
+                Expanded(
+                  child: Container(
+                      alignment: Alignment.bottomCenter,
+                      child: _crearListado()),
+                ),
+                paddingWidget(Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(top: 10, bottom: 40),
+                    width: double.infinity,
+                    child: recorridoUsuario.indicepagina != 1
+                        ? filaBotones
+                        : ButtonWidget(
+                            onPressed: actionButton,
+                            colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                            texto: recorridoUsuario.indicepagina == 1
+                                ? 'Empezar recorrido'
+                                : 'Terminar'))),
+              ],
+            ),
+            context));
   }
 }

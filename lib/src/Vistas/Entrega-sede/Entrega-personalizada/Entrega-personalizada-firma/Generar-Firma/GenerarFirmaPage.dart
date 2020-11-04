@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Registrar-firma/RegistrarEntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
 class GenerarFirmaPage extends StatefulWidget {
@@ -49,17 +49,17 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
       Expanded(
         child: Container(
             padding: const EdgeInsets.only(left: 1, right: 1),
-            child: CustomButton(
+            child: ButtonWidget(
                 onPressed: onPressSaveButton,
-                colorParam: StylesThemeData.PRIMARYCOLOR,
+                colorParam: StylesThemeData.PRIMARY_COLOR,
                 texto: "Guardar")),
       ),
       Expanded(
         child: Container(
             padding: const EdgeInsets.only(left: 1, right: 1),
-            child: CustomButton(
+            child: ButtonWidget(
                 onPressed: onPressClearButton,
-                colorParam: StylesThemeData.DISABLECOLOR,
+                colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
                 texto: 'Limpiar')),
       ),
     ]);
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                     child: IconButton(
                         icon: FaIcon(
                           FontAwesomeIcons.windowClose,
-                          color: StylesThemeData.ICONCOLOR,
+                          color: StylesThemeData.ICON_COLOR,
                           size: 25,
                         ),
                         onPressed: () {
@@ -100,6 +100,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
                     child: botonesinferiores,
                   )
                 ],

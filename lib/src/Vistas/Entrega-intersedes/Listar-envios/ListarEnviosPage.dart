@@ -1,12 +1,13 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosController.dart';
@@ -17,27 +18,76 @@ class ListarEnviosPage extends StatefulWidget {
 }
 
 class _ListarEnviosPageState extends State<ListarEnviosPage> {
-  ListarEnviosController principalcontroller = new ListarEnviosController();
+  ListarEnviosController listarEnviosController = new ListarEnviosController();
+  List<EnvioInterSedeModel> listEnviosPorRecibir;
+  List<EnvioInterSedeModel> listEnviosEnviados;
+  bool porRecibir = true;
   List<bool> isSelected;
   int indexSwitch = 0;
 
   @override
   void initState() {
     isSelected = [true, false];
+    listarEnviosIntersedes();
     super.initState();
   }
 
-  void iniciarEnvio(EnvioInterSedeModel entrega) async {
-    bool respuesta = await principalcontroller.onSearchButtonPressed(context, entrega);
-    if (respuesta) {
-      notificacion(
-          context, "success", "EXACT", "Se ha iniciado el envío correctamente");
+  void listarEnviosIntersedes() async {
+    listEnviosPorRecibir = await listarEnviosController
+        .listarentregasInterSedeController(porRecibir);
+    listEnviosEnviados = await listarEnviosController
+        .listarentregasInterSedeController(!porRecibir);
+    if (this.mounted) {
       setState(() {
-        indexSwitch = indexSwitch;
+        listEnviosPorRecibir = listEnviosPorRecibir;
+        listEnviosEnviados = listEnviosEnviados;
       });
-    } else {
-      notificacion(context, "error", "EXACT", "No se pudo iniciar la entrega");
     }
+  }
+
+  void iniciarEnvio(dynamic intersedeIndice) async {
+    if (listEnviosEnviados[intersedeIndice].estadoEnvio.id == creado) {
+      bool respuesta = await listarEnviosController.onSearchButtonPressed(
+          context, listEnviosEnviados[intersedeIndice]);
+      if (respuesta) {
+        notificacion(context, "success", "EXACT",
+            "Se ha iniciado el envío correctamente");
+        listarEnviosIntersedes();
+      } else {
+        notificacion(
+            context, "error", "EXACT", "No se pudo iniciar la entrega");
+      }
+    }
+  }
+
+  String obtenerTituloInRecepciones(dynamic intersedeIndice) {
+    return listEnviosPorRecibir[intersedeIndice].destino;
+  }
+
+  String obtenerSubTituloInRecepciones(dynamic intersedeIndice) {
+    return listEnviosPorRecibir[intersedeIndice].codigo;
+  }
+
+  String obtenerSecondSubTituloInRecepciones(dynamic intersedeIndice) {
+    return listEnviosPorRecibir[intersedeIndice].numdocumentos == 1
+        ? "${listEnviosPorRecibir[intersedeIndice].numdocumentos} envío"
+        : "${listEnviosPorRecibir[intersedeIndice].numdocumentos} envíos";
+  }
+
+  String obtenerTituloInEnviados(dynamic intersedeIndice) {
+    return listEnviosEnviados[intersedeIndice].destino;
+  }
+
+  String obtenerSubTituloInEnviados(dynamic intersedeIndice) {
+    return listEnviosEnviados[intersedeIndice].numvalijas == 1
+        ? "${listEnviosEnviados[intersedeIndice].numvalijas} valija"
+        : "${listEnviosEnviados[intersedeIndice].numvalijas} valijas";
+  }
+
+  String obtenerSecondSubTituloInEnviados(dynamic intersedeIndice) {
+    return listEnviosEnviados[intersedeIndice].numdocumentos == 1
+        ? "${listEnviosEnviados[intersedeIndice].numdocumentos} envío"
+        : "${listEnviosEnviados[intersedeIndice].numdocumentos} envíos";
   }
 
   void actionButtonNuevo() {
@@ -49,241 +99,97 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         context,
         MaterialPageRoute(
           builder: (context) => RecepcionInterPage(recorridopage: null),
-        ));
+        )).whenComplete(listarEnviosIntersedes);
+  }
+
+  void recepcionarEnvio(dynamic intersedeIndice) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RecepcionInterPage(
+              recorridopage: listEnviosPorRecibir[intersedeIndice]),
+        )).whenComplete(listarEnviosIntersedes);
+  }
+
+  IconData obtenerIconInRecepciones(dynamic intersedeIndice) {
+    return FontAwesomeIcons.locationArrow;
+  }
+
+  IconData obtenerIconInEnviados(dynamic intersedeIndice) {
+    return listEnviosEnviados[intersedeIndice].estadoEnvio.id == creado
+        ? FontAwesomeIcons.locationArrow
+        : null;
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget informacionEntrega(EnvioInterSedeModel entrega, int switched) {
-      return Container(
-          height: 70,
-          child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(left: 20),
-                  height: 35,
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text("${entrega.destino}",
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold)),
-                        Container(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: switched == 0
-                              ? Text("${entrega.numvalijas} valijas",
-                                  style: TextStyle(fontSize: 12))
-                              : Text("${entrega.codigo}", style: TextStyle(fontSize: 12)),
-                        ),
-                      ]),
-                ),
-                Container(
-                    padding: const EdgeInsets.only(left: 20, top: 10),
-                    height: 35,
-                    child: Text("${entrega.numdocumentos} envíos",
-                        style: TextStyle(fontSize: 12))),
-              ]));
-    }
-
-    Widget iconoRecepcion(EnvioInterSedeModel entrega, BuildContext context) {
-      return Container(
-          height: 70,
-          child: Center(
-              child: FaIcon(
-            FontAwesomeIcons.locationArrow,
-            color: Color(0xffC7C7C7),
-            size: 25,
-          )));
-    }
-
-    Widget iconoEnvio(EnvioInterSedeModel entrega) {
-      return Container(
-          height: 70,
-          child: entrega.estadoEnvio.id == creado
-              ? Center(
-                  child: FaIcon(
-                  FontAwesomeIcons.locationArrow,
-                  color: Color(0xffC7C7C7),
-                  size: 25,
-                ))
-              : Opacity(
-                  opacity: 0.0,
-                  child: FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  )));
-    }
-
-    Widget crearItem(EnvioInterSedeModel entrega, int switched) {
-      return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: InkWell(
-              onTap: () {
-                if (switched == 0) {
-                  iniciarEnvio(entrega);
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            RecepcionInterPage(recorridopage: entrega),
-                      ));
-                }
-              },
-              child: Container(
-                child: Row(children: <Widget>[
-                  Expanded(
-                      flex: 1,
-                      child: Container(
-                          height: 70,
-                          child: Center(
-                              child: FaIcon(
-                            FontAwesomeIcons.cube,
-                            color: Color(0xff000000),
-                            size: 40,
-                          )))),
-                  Expanded(
-                    child: informacionEntrega(entrega, switched),
-                    flex: 3,
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            switched == 0
-                                ? iconoEnvio(entrega)
-                                : iconoRecepcion(entrega, context)
-                          ])),
-                ]),
-              )));
-    }
-
-    Widget _crearListado(int switched) {
-      return FutureBuilder(
-          future:
-              principalcontroller.listarentregasInterSedeController(switched),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<EnvioInterSedeModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    final envios = snapshot.data;
-                    if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(envios[i], switched));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
-    }
-
-    final filaBotones = Container(
+    Widget filaBotones = Container(
       child: Row(
         children: <Widget>[
           Expanded(
               flex: 5,
-              child: CustomButton(
+              child: ButtonWidget(
                   onPressed: actionButtonNuevo,
-                  colorParam: StylesThemeData.PRIMARYCOLOR,
+                  colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                   texto: "Nuevo")),
           Expanded(
               flex: 5,
               child: Container(
                   margin: const EdgeInsets.only(left: 5),
-                  child: CustomButton(
+                  child: ButtonWidget(
                       onPressed: actionButtonRecepcionar,
-                      colorParam: Colors.grey,
+                      colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
                       texto: "Recepcionar"))),
         ],
       ),
     );
-
-    final tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTERCOLOR,
-      fillColor: StylesThemeData.LETTERCOLOR,
-      borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTERCOLOR,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Enviados',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por recibir',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
-
-    Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 20, bottom: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[filaBotones],
-                )),
-            Container(child: tabs),
-            Expanded(
-              child: Container(
-                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
-                  child: _crearListado(indexSwitch)),
-            )
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
         appBar: CustomAppBar(text: "Entregas interUTD"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 20, bottom: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[filaBotones],
+                      )),
+                  Expanded(
+                      child: TabSectionWidget(
+                    iconPrimerTap: Icons.call_received,
+                    iconSecondTap: Icons.screen_share,
+                    namePrimerTap: "Por recibir",
+                    nameSecondTap: "Enviados",
+                    listPrimerTap: listEnviosPorRecibir,
+                    listSecondTap: listEnviosEnviados,
+                    methodPrimerTap: recepcionarEnvio,
+                    methodSecondTap: iniciarEnvio,
+                    primerIconWiget: FontAwesomeIcons.cube,
+                    obtenerSecondIconWigetInPrimerTap: obtenerIconInRecepciones,
+                    obtenerSecondIconWigetInSecondTap: obtenerIconInEnviados,
+                    obtenerTituloInPrimerTap: obtenerTituloInRecepciones,
+                    obtenerSubTituloInPrimerTap: obtenerSubTituloInRecepciones,
+                    obtenerSubSecondtituloInPrimerTap:
+                        obtenerSecondSubTituloInRecepciones,
+                    obtenerTituloInSecondTap: obtenerTituloInEnviados,
+                    obtenerSubTituloInSecondTap: obtenerSubTituloInEnviados,
+                    obtenerSubSecondtituloInSecondTap:
+                        obtenerSecondSubTituloInEnviados,
+                    styleTitulo:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    styleSubTitulo: TextStyle(fontSize: 10),
+                    styleSubSecondtitulo: TextStyle(fontSize: 10),
+                    iconWidgetColor: StylesThemeData.ICON_COLOR,
+                  ))
+                ],
+              ),
+            ),
+            context));
   }
 }

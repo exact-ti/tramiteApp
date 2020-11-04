@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomSwitch.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCamera.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputForm.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListCod.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/SwitchWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/title_style.dart';
 import 'EntregaRegularController.dart';
 
 class EntregaRegularPage extends StatefulWidget {
@@ -47,7 +51,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     setState(() {
       _sobreController.text = _sobreController.text;
     });
-    _validarSobreText();
+    _validarSobreText(_sobreController.text);
   }
 
   Future _traerdatosescanerBandeja() async {
@@ -55,7 +59,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     setState(() {
       _bandejaController.text = _bandejaController.text;
     });
-    _validarBandejaText();
+    _validarBandejaText(_bandejaController.text);
   }
 
   void registrarDocumento(String documento) async {
@@ -144,7 +148,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     enfocarInputfx(context, focusEnvio);
   }
 
-  void _validarSobreText() async {
+  void _validarSobreText(dynamic valueController) async {
     if (_bandejaController.text == "") {
       bool respuestatrue = await notificacion(context, "error", "EXACT",
           "Primero debe ingresar el codigo de la bandeja");
@@ -157,9 +161,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         });
       }
     } else {
-      String value = _sobreController.text;
-      if (value != "") {
-        registrarDocumento(value);
+      if (valueController != "") {
+        registrarDocumento(valueController);
       } else {
         bool respuesta = await notificacion(
             context, "error", "EXACT", "Ingrese el codigo de sobre");
@@ -182,8 +185,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     });
   }
 
-  void _validarBandejaText() async {
-    String value = _bandejaController.text;
+  void _validarBandejaText(dynamic value) async {
     if (value != "") {
       if (enRecojo) {
         listaEnvios = await principalcontroller.listarEnviosRecojo(
@@ -298,7 +300,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             Container(
               alignment: Alignment.centerLeft,
               width: double.infinity,
-              child: CustomSwitch(
+              child: SwitchWidget(
                   onPressed: changeSwitch,
                   switchValue: enRecojo,
                   textEnabled: "En entrega",
@@ -306,38 +308,30 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               margin: const EdgeInsets.only(bottom: 10, top: 10),
             ),
             Container(
-                alignment: Alignment.bottomLeft,
-                margin: const EdgeInsets.only(bottom: 5),
-                width: double.infinity,
-                child: Text("Código de bandeja")),
-            Container(
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: InputCamera(
+                child: InputCameraWidget(
                     iconData: Icons.camera_alt,
                     onPressed: _traerdatosescanerBandeja,
-                    inputParam: InputForm(
-                      onPressed: _validarBandejaText,
+                    inputParam: InputWidget(
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      methodOnPressed: _validarBandejaText,
                       controller: _bandejaController,
-                      fx: focusBandeja,
-                      hinttext: "",
+                      focusInput: focusBandeja,
+                      hinttext: "Código de bandeja",
                     ))),
-            Container(
-                alignment: Alignment.bottomLeft,
-                margin: const EdgeInsets.only(bottom: 5, top: 10),
-                width: double.infinity,
-                child: Text("Código de sobre")),
             Container(
               alignment: Alignment.centerLeft,
               width: double.infinity,
-              child: InputCamera(
+              child: InputCameraWidget(
                   iconData: Icons.camera_alt,
                   onPressed: _traerdatosescanerSobre,
-                  inputParam: InputForm(
-                    onPressed: _validarSobreText,
+                  inputParam: InputWidget(
+                    iconPrefix: IconsData.ICON_SOBRE,
+                    methodOnPressed: _validarSobreText,
                     controller: _sobreController,
-                    fx: focusEnvio,
-                    hinttext: "",
+                    focusInput: focusEnvio,
+                    hinttext: "Código de sobre",
                   )),
               margin: const EdgeInsets.only(bottom: 20),
             ),
@@ -355,24 +349,26 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                                     Expanded(
                                       child: Center(
                                           child: Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
+                                        margin: EdgeInsets.only(right: 20),
                                         alignment: Alignment.center,
                                         child: Text("$codigoMostrar",
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14)),
                                       )),
-                                      flex: 3,
+                                      flex: 2,
                                     ),
                                     Expanded(
                                       child: Center(
                                           child: Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
+                                        margin: EdgeInsets.only(right: 20),
                                         alignment: Alignment.center,
-                                        child: Center(child: Text("$mensaje")),
+                                        child: Center(
+                                            child: Text("$mensaje",
+                                                style:
+                                                    TextStyle(fontSize: 14))),
                                       )),
-                                      flex: 9,
+                                      flex: 3,
                                     )
                                   ],
                                 )
@@ -387,15 +383,31 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             Expanded(
                 child: _bandejaController.text == ""
                     ? Container()
-                    : Container(child: ListCod(enviosModel: listaEnvios))),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  alignment: Alignment.center,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: botonesinferiores),
-            ),
+                    : Container(
+                        child: ListView.builder(
+                            itemCount: listaEnvios.length,
+                            itemBuilder: (context, i) => ItemWidget(
+                                iconPrimary: FontAwesomeIcons.qrcode,
+                                iconSend: listaEnvios[i].estado
+                                    ? IconsData.ICON_ENVIO_CONFIRMADO
+                                    : null,
+                                itemIndice: i,
+                                methodAction: null,
+                                colorItem: i % 2 == 0
+                                    ? StylesThemeData.ITEM_SHADED_COLOR
+                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
+                                titulo: listaEnvios[i].codigoPaquete,
+                                subtitulo: null,
+                                subSecondtitulo: null,
+                                styleTitulo: StylesTitleData.STYLE_TITLE,
+                                styleSubTitulo: null,
+                                styleSubSecondtitulo: null,
+                                iconColor: StylesThemeData.ICON_COLOR)))),
+            Container(
+                margin: EdgeInsets.only(bottom: 20, top: 10),
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: botonesinferiores),
           ],
         ),
       );

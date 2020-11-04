@@ -1,4 +1,4 @@
 const Map properties = const {
-  'API': 'http://192.168.0.104:8891',
-  'LDAP': false
+  'API': 'http://www.exact.com.pe:8891',
+  'LDAP': false,
 };

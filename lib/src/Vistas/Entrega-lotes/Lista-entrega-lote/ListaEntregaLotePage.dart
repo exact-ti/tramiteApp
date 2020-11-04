@@ -8,7 +8,8 @@ import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntr
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/CustomButton.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 
@@ -100,7 +101,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           child: Center(
               child: FaIcon(
             FontAwesomeIcons.locationArrow,
-            color: StylesThemeData.ICONCOLOR,
+            color: StylesThemeData.ICON_COLOR,
             size: 25,
           )));
     }
@@ -126,21 +127,21 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
               ? Center(
                   child: FaIcon(
                   FontAwesomeIcons.locationArrow,
-                  color: StylesThemeData.ICONCOLOR,
+                  color: StylesThemeData.ICON_COLOR,
                   size: 25,
                 ))
               : Opacity(
                   opacity: 0.0,
                   child: FaIcon(
                     FontAwesomeIcons.locationArrow,
-                    color: StylesThemeData.ICONCOLOR,
+                    color: StylesThemeData.ICON_COLOR,
                     size: 25,
                   )));
     }
 
     Widget crearItem(EntregaLoteModel entrega, int switched) {
       return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: InkWell(
               onTap: () {
@@ -191,7 +192,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
               AsyncSnapshot<List<EntregaLoteModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -200,12 +201,12 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     entregas = snapshot.data;
                     if (entregas.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
                           itemCount: entregas.length,
@@ -213,7 +214,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                               crearItem(entregas[i], switched));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -225,16 +226,16 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
         children: <Widget>[
           Expanded(
               flex: 5,
-              child: CustomButton(
+              child: ButtonWidget(
                   onPressed: onPressedNuevoButton,
-                  colorParam: StylesThemeData.PRIMARYCOLOR,
+                  colorParam: StylesThemeData.PRIMARY_COLOR,
                   texto: 'Nuevo')),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(left: 5),
-              child:CustomButton(
+              child:ButtonWidget(
                 onPressed: onPressedRecepcionarButton,
-                colorParam: StylesThemeData.DISABLECOLOR,
+                colorParam: StylesThemeData.DISABLE_COLOR,
                 texto: 'Recepcionar')),
             flex: 5,
           )
@@ -243,10 +244,10 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
     );
 
     final tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTERCOLOR,
-      fillColor: StylesThemeData.LETTERCOLOR,
+      borderColor:  StylesThemeData.LETTER_COLOR,
+      fillColor: StylesThemeData.LETTER_COLOR,
       borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTERCOLOR,
+      selectedBorderColor: StylesThemeData.LETTER_COLOR,
       selectedColor: Colors.white,
       borderRadius: BorderRadius.circular(0),
       children: <Widget>[
@@ -293,7 +294,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
             Container(child: tabs),
             Expanded(
               child: Container(
-                  decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+                  decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
                   alignment: Alignment.bottomCenter,

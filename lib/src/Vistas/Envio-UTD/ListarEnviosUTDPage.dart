@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/theme_data.dart';
 import 'ListarEnviosUTDController.dart';
@@ -26,7 +27,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
       return Container(
           height: 70,
           padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(StylesThemeData.LETTERCOLOR),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
           child: Column(
             children: <Widget>[
@@ -70,7 +71,7 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
+                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_EMPTY);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -79,19 +80,19 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
+                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_EMPTY);
                 } else {
                   if (snapshot.hasData) {
                     final envios = snapshot.data;
                     if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
+                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
                           itemCount: envios.length,
                           itemBuilder: (context, i) => crearItem(envios[i]));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados");
+                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
