@@ -3,12 +3,16 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'RetirarEnvioController.dart';
 
 class RetirarEnvioPage extends StatefulWidget {
@@ -286,121 +290,30 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     desenfocarInputfx(context);
   }
 
+  void onPressedCode(dynamic indiceListEnvios) {
+    trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+  }
+
+  void onPressedWidget(dynamic indiceListEnvios) async {
+    bool respuestamodal = await retirarEnvioModal(
+        context,
+        "success",
+        "EXACT",
+        "¿Seguro que desea retirar el envío ${listaEnvios[indiceListEnvios].codigoPaquete}?",
+        listaEnvios[indiceListEnvios]);
+    if (respuestamodal) {
+      desenfocarInputfx(context);
+      setState(() {
+        _paqueteController.text = "";
+        _remitenteController.text = "";
+        _destinatarioController.text = "";
+        listaEnvios = [];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(EnvioModel envio, int i) {
-      String codigo = envio.codigoPaquete;
-      return Container(
-          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: InkWell(
-              onTap: () async {
-                bool respuestamodal = await retirarEnvioModal(
-                    context,
-                    "success",
-                    "EXACT",
-                    "¿Seguro que desea retirar el envío $codigo?",
-                    envio);
-                if (respuestamodal) {
-                  desenfocarInputfx(context);
-                  setState(() {
-                    _paqueteController.text = "";
-                    _remitenteController.text = "";
-                    _destinatarioController.text = "";
-                    listaEnvios = [];
-                  });
-                }
-              },
-              child: Column(
-                children: <Widget>[
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.only(right: 20, left: 10),
-                              alignment: Alignment.centerLeft,
-                              child: Text('De ',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 15)),
-                            ),
-                            flex: 1,
-                          ),
-                          Expanded(
-                            child: Text(
-                                envio.remitente == null
-                                    ? "Envío importado"
-                                    : envio.remitente,
-                                style: TextStyle(color: Colors.black)),
-                            flex: 5,
-                          ),
-                        ],
-                      )),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              alignment: Alignment.centerLeft,
-                              child: Text('Para',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 15)),
-                            ),
-                            flex: 1,
-                          ),
-                          Expanded(
-                            child: Text(envio.destinatario,
-                                style: TextStyle(color: Colors.black)),
-                            flex: 5,
-                          ),
-                        ],
-                      )),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                                margin:
-                                    const EdgeInsets.only(left: 10, bottom: 10),
-                                alignment: Alignment.centerLeft,
-                                child: new GestureDetector(
-                                  onTap: () {
-                                    trackingPopUp(context, envio.id);
-                                  },
-                                  child: Text(envio.codigoPaquete,
-                                      style: TextStyle(
-                                          color: Colors.blue, fontSize: 15)),
-                                )),
-                            flex: 3,
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Text(envio.observacion,
-                                  style: TextStyle(color: Colors.black)),
-                            ),
-                            flex: 6,
-                          ),
-                        ],
-                      )),
-                ],
-              )));
-    }
-
-    Widget _crearListadoAgregar(List<EnvioModel> lista) {
-      if (lista.length == 0) {
-        return Container();
-      }
-      return ListView.builder(
-          itemCount: lista.length,
-          itemBuilder: (context, i) => crearItem(lista[i], 1));
-    }
-
     Widget mainscaffold() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -443,13 +356,39 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                 margin: EdgeInsets.only(bottom: 20, top: 20),
                 width: double.infinity,
                 child: ButtonWidget(
+                    iconoButton: IconsData.ICON_SEARCH,
                     onPressed: buscarEnvios,
                     colorParam: StylesThemeData.PRIMARY_COLOR,
                     texto: "Buscar"),
               ),
             ],
           )),
-          Expanded(child: Container(child: _crearListadoAgregar(listaEnvios))),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: listaEnvios.length,
+                  itemBuilder: (context, i) => ItemWidget(
+                      itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+                      iconPrimary: null,
+                      iconSend: null,
+                      itemIndice: i,
+                      methodAction: onPressedWidget,
+                      colorItem: i % 2 == 0
+                          ? StylesThemeData.ITEM_UNSHADED_COLOR
+                          : StylesThemeData.ITEM_SHADED_COLOR,
+                      titulo: listaEnvios[i].remitente != null
+                          ? "De: ${listaEnvios[i].remitente}"
+                          : "De : Envío importado",
+                      subtitulo: "Para: ${listaEnvios[i].destinatario}",
+                      subSecondtitulo: listaEnvios[i].codigoPaquete,
+                      styleTitulo: StylesTitleData.STYLE_TITLE,
+                      styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+                      styleSubSecondtitulo:
+                          StylesTitleData.STYLE_SUBTILE_OnPressed,
+                      onPressedCode: onPressedCode,
+                      subThirdtitulo: null,
+                      subFourtitulo: null,
+                      subFivetitulo: listaEnvios[i].codigoUbicacion,
+                      iconColor: StylesThemeData.ICON_COLOR))),
         ],
       );
     }

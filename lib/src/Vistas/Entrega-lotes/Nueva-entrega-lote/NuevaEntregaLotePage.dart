@@ -10,10 +10,11 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'NuevaEntregaLoteController.dart';
 
 class NuevoEntregaLotePage extends StatefulWidget {
@@ -257,6 +258,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                     child: ListView.builder(
                         itemCount: listValijas.length,
                         itemBuilder: (context, i) => ItemWidget(
+                            itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
                             iconPrimary: FontAwesomeIcons.qrcode,
                             iconSend: listValijas[i].estado
                                 ? IconsData.ICON_ENVIO_CONFIRMADO
@@ -280,6 +282,7 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                           alignment: Alignment.center,
                           width: double.infinity,
                           child: ButtonWidget(
+                              iconoButton: IconsData.ICON_REGISTER,
                               onPressed: onPressedRegistrarButton,
                               colorParam: StylesThemeData.PRIMARY_COLOR,
                               texto: "Registrar"))

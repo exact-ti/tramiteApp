@@ -3,15 +3,19 @@ import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarEnviosAgenciasController.dart';
 
 final NavigationService _navigationService = locator<NavigationService>();
@@ -72,6 +76,14 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
   }
 
+      Color colorSelect(dynamic indice, bool seleccionado) {
+    return seleccionado == null || seleccionado == false
+        ?indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR
+        : StylesThemeData.ITEM_SELECT_COLOR;
+  }
+
   void onPressedNuevaButton() {
     Navigator.push(
         context,
@@ -117,174 +129,91 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
   }
 
+  void onPressTap(dynamic indice) {
+    String codigoUtd = enviosvalidados[indice].utdId.toString();
+    bool contienevalidados = validados.containsValue(true);
+    if (contienevalidados) {
+      if (contienevalidados && validados["$codigoUtd"] == false) {
+        setState(() {
+          validados["$codigoUtd"] = true;
+        });
+      } else {
+        setState(() {
+          validados["$codigoUtd"] = false;
+        });
+      }
+    } else {
+      if (!validados.containsValue(true)) {
+        iniciarItem(enviosvalidados[indice]);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget informacionEntrega(EnvioInterSedeModel entrega) {
-      return Container(
-          height: 70,
-          child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  height: 35,
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text("${entrega.destino}",
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold)),
-                        Container(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: Text("${entrega.numvalijas} valijas",
-                              style: TextStyle(fontSize: 12)),
-                        ),
-                      ]),
-                ),
-                Container(
-                    padding: const EdgeInsets.only(left: 10, top: 10),
-                    height: 35,
-                    child: Text("${entrega.numdocumentos} destinos",
-                        style: TextStyle(fontSize: 12))),
-              ]));
-    }
 
-    Widget crearItem(EnvioInterSedeModel entrega) {
-      String codigoUtd = entrega.utdId.toString();
+    Widget crearItem(dynamic indice) {
+      String codigoUtd = enviosvalidados[indice].utdId.toString();
       return GestureDetector(
           onLongPress: () {
             setState(() {
               validados["$codigoUtd"] = true;
             });
           },
-          onTap: () {
-            bool contienevalidados = validados.containsValue(true);
-            if (contienevalidados && validados["$codigoUtd"] == false) {
-              setState(() {
-                validados["$codigoUtd"] = true;
-              });
-            } else {
-              setState(() {
-                validados["$codigoUtd"] = false;
-              });
-            }
-          },
-          child: Container(
-              decoration: myBoxDecoration(validados["$codigoUtd"]),
-              margin: const EdgeInsets.only(bottom: 5),
-              child: InkWell(
-                  onTap: () {
-                    bool contienevalidados = validados.containsValue(true);
-                    if (contienevalidados) {
-                      if (contienevalidados &&
-                          validados["$codigoUtd"] == false) {
-                        setState(() {
-                          validados["$codigoUtd"] = true;
-                        });
-                      } else {
-                        setState(() {
-                          validados["$codigoUtd"] = false;
-                        });
-                      }
-                    } else {
-                      if (!validados.containsValue(true)) {
-                        iniciarItem(entrega);
-                      }
-                    }
-                  },
-                  child: Container(
-                    child: Row(children: <Widget>[
-                      Expanded(
-                        child: Container(
-                            height: 70,
-                            child: Center(
-                                child: FaIcon(
-                              FontAwesomeIcons.cube,
-                              color: Color(0xff000000),
-                              size: 30,
-                            ))),
-                        flex: 1,
-                      ),
-                      Expanded(
-                        child: informacionEntrega(entrega),
-                        flex: 3,
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 70,
-                          child: Center(
-                            child: validados["$codigoUtd"] == null ||
-                                    validados["$codigoUtd"] == false
-                                ? FaIcon(
-                                    FontAwesomeIcons.chevronRight,
-                                    color: Colors.black,
-                                    size: 20,
-                                  )
-                                : FaIcon(
-                                    FontAwesomeIcons.locationArrow,
-                                    color: Colors.black,
-                                    size: 20,
-                                  ),
-                          ),
-                        ),
-                        flex: 1,
-                      ),
-                    ]),
-                  ))));
-    }
-
-    Widget _crearListado(List<EnvioInterSedeModel> envios) {
-      if (envios.length == 0) {
-        return Container(
-            child: Center(child: sinResultados("No hay envíos para agencias",IconsData.ICON_ERROR_EMPTY)));
-      } else {
-        return ListView.builder(
-            itemCount: envios.length,
-            itemBuilder: (context, i) => crearItem(envios[i]));
-      }
+          child: ItemWidget(
+              itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+              itemIndice: indice,
+              methodAction: onPressTap,
+              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+              colorItem: colorSelect(indice, validados["$codigoUtd"]),
+              titulo: enviosvalidados[indice].destino,
+              subtitulo: "${enviosvalidados[indice].numdocumentos} destinos",
+              subThirdtitulo: "${enviosvalidados[indice].numvalijas} valijas",
+              styleTitulo: StylesTitleData.STYLE_TITLE,
+              styleSubTitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+              iconPrimary: IconsData.ICON_SEDE,));
     }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(
             Container(
-                margin: const EdgeInsets.only(top: 20,bottom: 20),
+                margin: const EdgeInsets.only(top: 20, bottom: 20),
                 alignment: Alignment.bottomLeft,
                 width: double.infinity,
-                child: ButtonWidget(
-                    onPressed: onPressedNuevaButton,
-                    colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                    texto: "Nueva")),
-            !respuestaBack
-                ? Expanded(
-                    child: Container(
-                        child: Center(
-                            child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: loadingGet(),
-                  ))))
-                : Expanded(
-                    child: Container(
-                        alignment: Alignment.bottomCenter,
-                        child: _crearListado(enviosvalidados)),
-                  ),
+                child: FilaButtonWidget(
+                    firsButton: ButtonWidget(
+                        iconoButton: IconsData.ICON_NEW,
+                        onPressed: onPressedNuevaButton,
+                        colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                        texto: "Nuevo"))),
+          ),
+          !respuestaBack
+              ? Expanded(
+                  child: Container(
+                      child: Center(
+                          child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ))))
+              : ListItemWidget(
+                  itemWidget: crearItem, listItems: enviosvalidados),
+          paddingWidget(
             validados.containsValue(true)
                 ? Container(
-                    margin: const EdgeInsets.only(bottom: 30,top: 20),
+                    margin: const EdgeInsets.only(bottom: 30, top: 20),
                     alignment: Alignment.center,
                     width: double.infinity,
                     child: ButtonWidget(
+                        iconoButton: IconsData.ICON_FINISH,
                         onPressed: registrarlista,
                         colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                         texto: "Terminar"))
                 : Container(),
-          ],
-        ),
+          )
+        ],
       );
     }
 
@@ -302,4 +231,6 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           : StylesThemeData.SELECTION_COLOR_2,
     );
   }
+
+
 }

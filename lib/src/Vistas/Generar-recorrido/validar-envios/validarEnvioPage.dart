@@ -10,11 +10,12 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class ValidacionEnvioPage extends StatefulWidget {
   final RecorridoModel recorridopage;
@@ -146,37 +147,43 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                 Expanded(
                     child: Container(
                   alignment: Alignment.bottomCenter,
-                  child: 
-                  listaEnvios.isEmpty?sinResultados("No se han encontrado resultados", IconsData.ICON_ERROR_EMPTY) :ListView.builder(
-                      itemCount: listaEnvios.length,
-                      itemBuilder: (context, i) => ItemWidget(
-                          iconPrimary: FontAwesomeIcons.qrcode,
-                          iconSend: listaEnvios[i].estado
-                              ? IconsData.ICON_ENVIO_CONFIRMADO
-                              : null,
-                          itemIndice: i,
-                          methodAction: null,
-                          colorItem: i % 2 == 0
-                              ? StylesThemeData.ITEM_SHADED_COLOR
-                              : StylesThemeData.ITEM_UNSHADED_COLOR,
-                          titulo: listaEnvios[i].codigoPaquete,
-                          subtitulo: null,
-                          subSecondtitulo: null,
-                          styleTitulo: StylesTitleData.STYLE_TITLE,
-                          styleSubTitulo: null,
-                          styleSubSecondtitulo: null,
-                          iconColor: StylesThemeData.ICON_COLOR)),
+                  child: listaEnvios.isEmpty
+                      ? sinResultados("No se han encontrado resultados",
+                          IconsData.ICON_ERROR_EMPTY)
+                      : ListView.builder(
+                          itemCount: listaEnvios.length,
+                          itemBuilder: (context, i) => ItemWidget(
+                              itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+                              iconPrimary: FontAwesomeIcons.qrcode,
+                              iconSend: listaEnvios[i].estado
+                                  ? IconsData.ICON_ENVIO_CONFIRMADO
+                                  : null,
+                              itemIndice: i,
+                              methodAction: null,
+                              colorItem: i % 2 == 0
+                                  ? StylesThemeData.ITEM_SHADED_COLOR
+                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
+                              titulo: listaEnvios[i].codigoPaquete,
+                              subtitulo: null,
+                              subSecondtitulo: null,
+                              styleTitulo: StylesTitleData.STYLE_TITLE,
+                              styleSubTitulo: null,
+                              styleSubSecondtitulo: null,
+                              iconColor: StylesThemeData.ICON_COLOR)),
                 )),
-                Container(
+                paddingWidget(Container(
                     alignment: Alignment.center,
                     width: double.infinity,
                     margin: EdgeInsets.only(bottom: 40),
                     child: ButtonWidget(
+                        iconoButton: listaEnvios.length == 0
+                            ? IconsData.ICON_RECOJO
+                            : IconsData.ICON_NEW,
                         onPressed: onPressed,
                         colorParam: StylesThemeData.PRIMARY_COLOR,
                         texto: listaEnvios.length == 0
                             ? 'Crear solo recojo'
-                            : 'Crear recorrido'))
+                            : 'Crear recorrido')))
               ],
             ),
             context));

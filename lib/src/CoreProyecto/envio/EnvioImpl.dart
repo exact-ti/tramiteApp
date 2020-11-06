@@ -46,8 +46,8 @@ class EnvioImpl implements EnvioInterface {
   }
 
   @override
-  Future<List<EnvioModel>> listarActivos(int switched,List<int> estadosids) async{
-      if(switched==0){
+  Future<List<EnvioModel>> listarActivos(bool porRecibir,List<int> estadosids) async{
+      if(porRecibir){
       return await envio.listarEnviosActivosByUsuario(estadosids);
       }else{
        return await envio.listarRecepcionesActivas(estadosids);       

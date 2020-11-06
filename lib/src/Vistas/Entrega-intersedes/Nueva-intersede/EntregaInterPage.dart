@@ -8,11 +8,12 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'EntregaInterController.dart';
 
 class NuevoIntersedePage extends StatefulWidget {
@@ -34,7 +35,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
 
   void sendPress() async {
     if (_valijaController.text == "") {
-      notificacion(context, "error", "EXACT", "Debe ingresar el codigo de bandeja");
+      notificacion(
+          context, "error", "EXACT", "Debe ingresar el codigo de bandeja");
     } else {
       if (listaEnvios.length != 0) {
         _sobreController.text = "";
@@ -88,13 +90,15 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           });
           enfocarInputfx(context, focusSobre);
         } else {
-          EnvioModel enviocontroller = await principalcontroller.validarCodigoEntrega(_valijaController.text, value, context);
+          EnvioModel enviocontroller = await principalcontroller
+              .validarCodigoEntrega(_valijaController.text, value, context);
           if (enviocontroller != null) {
             setState(() {
               _sobreController.text = "";
               listaEnvios.add(enviocontroller);
             });
-            bool respuestatrue = await notificacion(context, "success", "EXACT", "Envío agregado a la entrega");
+            bool respuestatrue = await notificacion(
+                context, "success", "EXACT", "Envío agregado a la entrega");
             if (respuestatrue) {
               enfocarInputfx(context, focusSobre);
             }
@@ -102,7 +106,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             setState(() {
               _sobreController.text = value;
             });
-            bool respuestatrue = await notificacion(context, "error", "EXACT", "No es posible procesar el código");
+            bool respuestatrue = await notificacion(
+                context, "error", "EXACT", "No es posible procesar el código");
             if (respuestatrue) {
               enfocarInputfx(context, focusSobre);
             }
@@ -121,7 +126,8 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
   void validarListaByBandeja(dynamic valueBandejaController) async {
     String codigo = valueBandejaController;
     if (codigo != "") {
-      listaEnvios = await principalcontroller.listarEnviosEntrega(context, codigo);
+      listaEnvios =
+          await principalcontroller.listarEnviosEntrega(context, codigo);
       if (listaEnvios.isNotEmpty) {
         setState(() {
           listaEnvios = listaEnvios;
@@ -200,30 +206,33 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                       hinttext: "Código de sobre")),
               margin: const EdgeInsets.only(bottom: 30),
             ),
-            Expanded(child: ListView.builder(
-                            itemCount: listaEnvios.length,
-                            itemBuilder: (context, i) => ItemWidget(
-                                iconPrimary: FontAwesomeIcons.qrcode,
-                                iconSend: listaEnvios[i].estado
-                                    ? IconsData.ICON_ENVIO_CONFIRMADO
-                                    : null,
-                                itemIndice: i,
-                                methodAction: null,
-                                colorItem: i % 2 == 0
-                                    ? StylesThemeData.ITEM_SHADED_COLOR
-                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                titulo: listaEnvios[i].codigoPaquete,
-                                subtitulo: null,
-                                subSecondtitulo: null,
-                                styleTitulo: StylesTitleData.STYLE_TITLE,
-                                styleSubTitulo: null,
-                                styleSubSecondtitulo: null,
-                                iconColor: StylesThemeData.ICON_COLOR))),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: listaEnvios.length,
+                    itemBuilder: (context, i) => ItemWidget(
+                        itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+                        iconPrimary: FontAwesomeIcons.qrcode,
+                        iconSend: listaEnvios[i].estado
+                            ? IconsData.ICON_ENVIO_CONFIRMADO
+                            : null,
+                        itemIndice: i,
+                        methodAction: null,
+                        colorItem: i % 2 == 0
+                            ? StylesThemeData.ITEM_SHADED_COLOR
+                            : StylesThemeData.ITEM_UNSHADED_COLOR,
+                        titulo: listaEnvios[i].codigoPaquete,
+                        subtitulo: null,
+                        subSecondtitulo: null,
+                        styleTitulo: StylesTitleData.STYLE_TITLE,
+                        styleSubTitulo: null,
+                        styleSubSecondtitulo: null,
+                        iconColor: StylesThemeData.ICON_COLOR))),
             listaEnvios.where((envio) => envio.estado).toList().isNotEmpty
                 ? Container(
                     alignment: Alignment.center,
-                    margin: const EdgeInsets.only(bottom: 30,top: 10),
+                    margin: const EdgeInsets.only(bottom: 30, top: 10),
                     child: ButtonWidget(
+                        iconoButton: IconsData.ICON_REGISTER,
                         onPressed: sendPress,
                         colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                         texto: "Registrar"))

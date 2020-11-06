@@ -6,10 +6,11 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'EntregaPersonalizadaController.dart';
 
 class EntregapersonalizadoPageDNI extends StatefulWidget {
@@ -125,7 +126,7 @@ class _EntregapersonalizadoPageDNIState
                             iconData: Icons.camera_alt,
                             onPressed: _getDataCameraDNI,
                             inputParam: InputWidget(
-                               iconPrefix: IconsData.ICON_SOBRE,
+                              iconPrefix: IconsData.ICON_SOBRE,
                               controller: _dniController,
                               focusInput: focusDNI,
                               hinttext: "Código",
@@ -138,7 +139,7 @@ class _EntregapersonalizadoPageDNIState
                           iconData: Icons.camera_alt,
                           onPressed: _getDataCameraSobre,
                           inputParam: InputWidget(
-                             iconPrefix: IconsData.ICON_SOBRE,
+                            iconPrefix: IconsData.ICON_SOBRE,
                             controller: _sobreController,
                             focusInput: focusSobre,
                             hinttext: "Código de sobre",
@@ -154,6 +155,7 @@ class _EntregapersonalizadoPageDNIState
                       child: ListView.builder(
                           itemCount: listaEnvios.length,
                           itemBuilder: (context, i) => ItemWidget(
+                              itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
                               iconPrimary: FontAwesomeIcons.qrcode,
                               iconSend: listaEnvios[i].estado
                                   ? IconsData.ICON_ENVIO_CONFIRMADO

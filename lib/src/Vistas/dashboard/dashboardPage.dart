@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'dashboardController.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -91,8 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               return Center(
-                  child: new Text(
-                      'No hay conexión con el servidor')); 
+                  child: sinResultados('No hay conexión con el servidor', IconsData.ICON_ERROR_SERVIDOR)); 
             case ConnectionState.waiting:
               return Center(
                   child: Padding(
@@ -101,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ));
             default:
               if (snapshot.hasError)
-                return Center(child: new Text('Ha surgido un problema'));
+                return Center(child: sinResultados('Ha surgido un problema', IconsData.ICON_ERROR_PROBLEM));
               return futurowidget(snapshot.data);
           }
         });

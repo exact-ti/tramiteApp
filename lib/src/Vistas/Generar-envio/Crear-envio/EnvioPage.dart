@@ -6,8 +6,8 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/styles/icon_style.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Icon_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'EnvioController.dart';
 
 class EnvioPage extends StatefulWidget {
@@ -27,7 +27,6 @@ class _EnvioPageState extends State<EnvioPage> {
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   final _observacionController = TextEditingController();
-  String qrsobre, qrbarra = "";
   int minvalor = 0;
   String errorSobre = "";
   String errorBandeja = "";
@@ -39,12 +38,6 @@ class _EnvioPageState extends State<EnvioPage> {
   void initState() {
     minvalor = obtenerCantidadMinima();
     super.initState();
-  }
-
-  Widget datosUsuariosArea(String text) {
-    return ListTile(
-        leading: Icon(Icons.location_on),
-        title: new Text(text, style: TextStyle(fontSize: 15)));
   }
 
   void validarEnvio() {
@@ -60,6 +53,7 @@ class _EnvioPageState extends State<EnvioPage> {
     if (errorSobre.length == 0 &&
         errorBandeja.length == 0 &&
         _sobreController.text.length != 0) {
+          desenfocarInputfx(context);
       validarEnvio();
     }
   }
@@ -132,9 +126,9 @@ class _EnvioPageState extends State<EnvioPage> {
   }
 
   Future _traerdatosescanerbandeja() async {
-    qrbarra = await getDataFromCamera(context);
+    _bandejaController.text = await getDataFromCamera(context);
     setState(() {
-      _bandejaController.text = qrbarra;
+      _bandejaController.text = _bandejaController.text;
     });
     enfocarCodigoBandejaByCamera(_bandejaController.text);
   }
@@ -213,7 +207,9 @@ class _EnvioPageState extends State<EnvioPage> {
   @override
   Widget build(BuildContext context) {
     Widget errorsobre(String contenido) {
-      return Text(contenido, style: TextStyle(color: Colors.red, fontSize: 15));
+      return Text(contenido,
+          style: TextStyle(
+              color: StylesThemeData.LETTER_ERROR_COLOR, fontSize: 15));
     }
 
     final observacion = TextFormField(
@@ -270,7 +266,9 @@ class _EnvioPageState extends State<EnvioPage> {
                         Container(
                             margin: const EdgeInsets.only(left: 10),
                             child: Text("Para: ${usuarioFrecuente.nombre}",
-                                style: TextStyle(fontSize: 15)))
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: StylesThemeData.LETTER_COLOR)))
                       ],
                     )),
                 Container(
@@ -293,7 +291,9 @@ class _EnvioPageState extends State<EnvioPage> {
                                     usuarioFrecuente.area +
                                     " - " +
                                     usuarioFrecuente.sede,
-                                style: TextStyle(fontSize: 15)))
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: StylesThemeData.LETTER_COLOR)))
                       ],
                     )),
                 InputCameraWidget(
@@ -327,6 +327,7 @@ class _EnvioPageState extends State<EnvioPage> {
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     child: ButtonWidget(
+                      iconoButton: IconsData.ICON_SEND,
                         onPressed: onPressEnviarButton,
                         colorParam: errorSobre.length != 0 ||
                                 errorBandeja.length != 0 ||

@@ -11,16 +11,16 @@ class EnviosActivosController {
       new EnvioProvider(), new PaqueteProvider(), new BandejaProvider());
 
   Future<List<EnvioModel>> listarActivosController(
-      int switched, List<int> estadosids) async {
+      bool porRecibir, List<int> estadosids) async {
     List<EnvioModel> entregas = new List();
     if (estadosids.length == 0) {
       List<EstadoEnvio> estados = await envioInterface.listarEstadosEnvios();
       estados.forEach((element) {
         estadosids.add(element.id);
       });
-      entregas = await envioInterface.listarActivos(switched,estadosids);
+      entregas = await envioInterface.listarActivos(porRecibir,estadosids);
     } else {
-      entregas = await envioInterface.listarActivos(switched,estadosids);
+      entregas = await envioInterface.listarActivos(porRecibir,estadosids);
     }
     return entregas;
   }

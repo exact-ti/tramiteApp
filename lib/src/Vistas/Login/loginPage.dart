@@ -5,7 +5,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'loginController.dart';
 
 class LoginPage extends StatefulWidget {

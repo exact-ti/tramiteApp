@@ -28,9 +28,8 @@ class RutaImpl implements RutaInterface {
   }
 
   @override
-  Future<List<DetalleRutaModel>> listarDetalleMiRuta(
-      int modo, String areaId, int recorridoId) async {
-    if (modo == 0) {
+  Future<List<DetalleRutaModel>> listarDetalleMiRuta(bool enEntregar, String areaId, int recorridoId) async {
+    if (enEntregar) {
       return await ruta.listarDetalleMiRutaEntrega(areaId,recorridoId);
     } else {
       return await ruta.listarDetalleMiRutaRecojo(areaId,recorridoId);

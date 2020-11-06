@@ -2,16 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/CargoModel.dart';
 import 'package:tramiteapp/src/ModelDto/TrackingModel.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 
-Future<bool> informacionCargo(BuildContext context, String titulo,
+Future<bool> informacionCargo(String titulo,
     CargoModel cargo, TrackingModel trackingModel) async {
   String rutaImagen = cargo.valor;
   String tipoCargo = cargo.tipoCargoModel.nombre;
   bool respuesta = await showDialog(
       barrierDismissible: false,
-      context: context,
+      context: navigatorKey.currentContext,
       builder: (context) {
         return AlertDialog(
           titlePadding: EdgeInsets.all(0),

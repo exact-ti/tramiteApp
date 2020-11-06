@@ -7,9 +7,12 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ItemConsultWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ConsultaEnvioController.dart';
 
 class ConsultaEnvioPage extends StatefulWidget {
@@ -116,6 +119,10 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       ));
     }
 
+    void onPressedCode(dynamic indiceListEnvios) {
+      trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+    }
+
     Widget mainscaffold() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -141,29 +148,30 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
                   child: InputWidget(
-                          methodOnPressed: _validarRemitenteText,
-                          controller: _remitenteController,
-                          focusInput: f2remitente,
-                          iconPrefix: IconsData.ICON_USER,
-                          align: null,
-                          hinttext: "De")),
+                      methodOnPressed: _validarRemitenteText,
+                      controller: _remitenteController,
+                      focusInput: f2remitente,
+                      iconPrefix: IconsData.ICON_USER,
+                      align: null,
+                      hinttext: "De")),
               Container(
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
                   child: InputWidget(
-                          methodOnPressed: _validarRemitenteText,
-                          controller: _destinatarioController,
-                          focusInput: f3destinatario,
-                          iconPrefix: IconsData.ICON_USER,
-                          align: null,
-                          hinttext: "Para")),
+                      methodOnPressed: _validarRemitenteText,
+                      controller: _destinatarioController,
+                      focusInput: f3destinatario,
+                      iconPrefix: IconsData.ICON_USER,
+                      align: null,
+                      hinttext: "Para")),
               Container(
-                  margin: const EdgeInsets.only(top: 20,bottom: 20),
+                  margin: const EdgeInsets.only(top: 20, bottom: 20),
                   width: double.infinity,
                   child: ButtonWidget(
-                          onPressed: onPresssedBuscarButton,
-                          colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                          texto: "Buscar")),
+                      iconoButton: IconsData.ICON_SEARCH,
+                      onPressed: onPresssedBuscarButton,
+                      colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                      texto: "Buscar")),
             ],
           )),
           button == true
@@ -174,7 +182,32 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   child: mostrarText(activo),
                 ))
               : Container(),
-          Expanded(child: ItemsConsultWidget(enviosModel: this.listaEnvios)),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: listaEnvios.length,
+                  itemBuilder: (context, i) => ItemWidget(
+                      itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+                      iconPrimary: null,
+                      iconSend: null,
+                      itemIndice: i,
+                      methodAction: null,
+                      colorItem: i % 2 == 0
+                          ? StylesThemeData.ITEM_UNSHADED_COLOR
+                          : StylesThemeData.ITEM_SHADED_COLOR,
+                      titulo: listaEnvios[i].remitente != null
+                          ? "De: ${listaEnvios[i].remitente}"
+                          : "De : Envío importado",
+                      subtitulo: "Para: ${listaEnvios[i].destinatario}",
+                      subSecondtitulo: listaEnvios[i].codigoPaquete,
+                      styleTitulo: StylesTitleData.STYLE_TITLE,
+                      styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+                      styleSubSecondtitulo:
+                          StylesTitleData.STYLE_SUBTILE_OnPressed,
+                      onPressedCode: onPressedCode,
+                      subThirdtitulo: null,
+                      subFourtitulo: null,
+                      subFivetitulo: listaEnvios[i].codigoUbicacion,
+                      iconColor: StylesThemeData.ICON_COLOR))),
         ],
       );
     }

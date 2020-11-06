@@ -7,7 +7,11 @@ import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class PaqueteExternoPage extends StatefulWidget {
   @override
@@ -15,127 +19,64 @@ class PaqueteExternoPage extends StatefulWidget {
 }
 
 class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
+  PaqueteExternoController paqueteExternoController =
+      new PaqueteExternoController();
+  List<TipoPaqueteModel> listPaquetes = new List();
 
-  PaqueteExternoController paqueteExternoController = new PaqueteExternoController();
-
-  Widget _subtitulo() {
-    return Container(
-      alignment: Alignment.centerLeft,
-      margin: EdgeInsets.only(top: 20,bottom: 20),
-      width: double.infinity,
-      child: Text('Elige el tipo de paquete', style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
-    );
+  void setList(List<dynamic> listPaquetes) {
+    this.listPaquetes = listPaquetes;
   }
 
-  Widget _crearListaTipoPaquete() {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        child: FutureBuilder(
-            future: paqueteExternoController.listarPaquetesPorTipo(false),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<TipoPaqueteModel>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
-                case ConnectionState.waiting:
-                  return Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: loadingGet(),
-                  ));
-                default:
-                  if (snapshot.hasError) {
-                    return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
-                  } else {
-                    if (snapshot.hasData) {
-                      final tipoPaquetes = snapshot.data;
-                      if (tipoPaquetes.length == 0) {
-                        return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                      } else {
-                        return ListView.builder(
-                            itemCount: tipoPaquetes.length,
-                            itemBuilder: (context, i) =>
-                                _crearItem(tipoPaquetes[i]));
-                      }
-                    } else {
-                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                    }
-                  }
-              }
-            }),
-      ),
-    );
-  }
-
-  Widget _crearItem(TipoPaqueteModel item) {
-    return Container(
-        decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-        margin: EdgeInsets.only(bottom: 5),
-        child: InkWell(
-            onTap: () {
-              _selectPaquete(item);
-            },
-            child: Container(
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                  Expanded(
-                    child: _informacionItem(item),
-                    flex: 5,
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                                height: 80,
-                                child: Icon(Icons.keyboard_arrow_right,
-                                    color: StylesThemeData.LETTER_COLOR, size: 50))
-                          ]))
-                ]))));
-  }
-
-  void _selectPaquete(TipoPaqueteModel item) {
+  void _selectPaquete(dynamic item) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImportarArchivoPage(tipoPaqueteModel: item),
+        builder: (context) =>
+            ImportarArchivoPage(tipoPaqueteModel: this.listPaquetes[item]),
       ),
     );
-  }
-
-  Widget _informacionItem(TipoPaqueteModel item) {
-    return Container(
-        child: ListView(shrinkWrap: true, children: <Widget>[
-      Container(
-          child: ListTile(
-        title: Text("${item.nombre}"),
-        leading: Icon(
-          Icons.description,
-          color:  StylesThemeData.LETTER_COLOR,
-        ),
-      )),
-    ]));
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget mainscaffold() {
-      return Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[_subtitulo(), _crearListaTipoPaquete()],
-            ),
-          ));
+    Widget paqueteWidget(dynamic indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+        iconPrimary: IconsData.ICON_FILE,
+        iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+        itemIndice: indice,
+        methodAction: _selectPaquete,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: this.listPaquetes[indice].nombre,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+      );
     }
 
     return Scaffold(
         appBar: CustomAppBar(text: "Custodia de documentos externos"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    width: double.infinity,
+                    child: Text('Elige el tipo de paquete',
+                        style: TextStyle(color: StylesThemeData.LETTER_COLOR)),
+                  ),
+                ),
+                FutureItemWidget(
+                    itemWidget: paqueteWidget,
+                    setList: setList,
+                    futureList:
+                        paqueteExternoController.listarPaquetesPorTipo(false))
+              ],
+            ),
+            context));
   }
 }

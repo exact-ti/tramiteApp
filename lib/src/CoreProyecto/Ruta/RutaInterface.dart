@@ -7,6 +7,6 @@ abstract class RutaInterface {
 
   Future<bool> opcionRecorrido(RecorridoModel recorrido);
 
-  Future<List<DetalleRutaModel>> listarDetalleMiRuta(int modo,String areaId, int recorridoId);
+  Future<List<DetalleRutaModel>> listarDetalleMiRuta(bool enEntregar,String areaId, int recorridoId);
 
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class ItemsConsultWidget extends StatelessWidget {
   final List<EnvioModel> enviosModel;

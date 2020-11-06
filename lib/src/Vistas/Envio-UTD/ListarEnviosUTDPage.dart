@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarEnviosUTDController.dart';
 
 class ListarEnviosUTDPage extends StatefulWidget {
@@ -23,45 +26,9 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(EnvioModel entrega) {
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("${entrega.destinatario}"),
-                  )
-                ],
-              ))),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("${entrega.codigoPaquete}",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                          trackingPopUp(context, entrega.id);
-                        },
-                      )),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text("${entrega.observacion}")))
-                ],
-              )))
-            ],
-          ));
+
+    void onPressedCodePaquete(dynamic indice){
+          trackingPopUp(context, this.envios[indice].id);
     }
 
     Widget _crearListado() {
@@ -71,7 +38,8 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
               (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_EMPTY);
+                return sinResultados("No hay conexión con el servidor",
+                    IconsData.ICON_ERROR_EMPTY);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -80,47 +48,61 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_EMPTY);
+                  return sinResultados(
+                      "Ha surgido un problema", IconsData.ICON_ERROR_EMPTY);
                 } else {
                   if (snapshot.hasData) {
-                    final envios = snapshot.data;
-                    if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
+                    this.envios = snapshot.data;
+                    if (this.envios.length == 0) {
+                      return sinResultados("No se han encontrado resultados",
+                          IconsData.ICON_ERROR_EMPTY);
                     } else {
                       return ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) => crearItem(envios[i]));
+                          itemCount: this.envios.length,
+                          itemBuilder: (context, i) => ItemWidget(
+                              itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+                              iconPrimary: null,
+                              iconSend: null,
+                              itemIndice: i,
+                              methodAction: null,
+                              colorItem: i % 2 == 0
+                                      ? StylesThemeData.ITEM_UNSHADED_COLOR
+                                      : StylesThemeData.ITEM_SHADED_COLOR,
+                              titulo: this.envios[i].destinatario,
+                              subtitulo: null,
+                              subSecondtitulo: this.envios[i].codigoPaquete,
+                              styleTitulo: null,
+                              styleSubTitulo: null,
+                              styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+                              subFivetitulo: this.envios[i].observacion,
+                              onPressedCode: onPressedCodePaquete,
+                              iconColor: null));
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
           });
     }
 
-    Widget mainscaffold() {
-      return Padding(
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado()),
-            )
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
         appBar: CustomAppBar(text: "Envíos en UTD"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5, top: 5, bottom: 5),
+                      alignment: Alignment.bottomCenter,
+                      child: _crearListado()),
+                )
+              ],
+            ),
+            context));
   }
 }

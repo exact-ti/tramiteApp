@@ -6,8 +6,9 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -74,6 +75,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
                         return ListView.builder(
                             itemCount: this.listusuarios.length,
                             itemBuilder: (context, i) => ItemWidget(
+                                                              itemHeight:
+                                  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
                                 iconPrimary: IconsData.ICON_USER,
                                 iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
                                 itemIndice: i,
@@ -85,8 +88,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
                                 subtitulo:
                                     "${this.listusuarios[i].area} - ${this.listusuarios[i].sede}",
                                 subSecondtitulo: null,
-                                styleTitulo: TextStyle(fontSize: 15),
-                                styleSubTitulo: TextStyle(fontSize: 12),
+                                styleTitulo: TextStyle(fontSize: 15,color: StylesThemeData.LETTER_COLOR),
+                                styleSubTitulo: TextStyle(fontSize: 12,color: StylesThemeData.LETTER_SECUNDARY_COLOR),
                                 styleSubSecondtitulo: null,
                                 iconColor: StylesThemeData.ICON_COLOR));
                       }
@@ -130,7 +133,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
                         : Text("Usuarios frecuentes",
                             style: TextStyle(
                                 fontSize: 15,
-                                color: StylesThemeData.LETTER_COLOR))),
+                                color: StylesThemeData.LETTER_SECUNDARY_COLOR))),
               ])),
           Expanded(
             child: Container(

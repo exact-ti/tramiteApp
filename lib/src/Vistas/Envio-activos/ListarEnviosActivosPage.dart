@@ -5,8 +5,13 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarEnviosActivosController.dart';
 
 class ListarEnviosActivosPage extends StatefulWidget {
@@ -21,11 +26,16 @@ class ListarEnviosActivosPage extends StatefulWidget {
 class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   dynamic objetoModo;
   _ListarEnviosActivosPageState(this.objetoModo);
-  EnviosActivosController enviosActivosController = new EnviosActivosController();
+  EnviosActivosController enviosActivosController =
+      new EnviosActivosController();
   List<EstadoEnvio> estadosSave = new List();
+  List<EnvioModel> listEnviosPorRecibir;
+  List<EnvioModel> listEnviosEnviados;
   List<EnvioModel> envios = new List();
   List<int> estadosIds = new List();
   List<bool> isSelected;
+  bool porRecibir = true;
+
   int indexSwitch = 0;
 
   @override
@@ -45,56 +55,65 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
         indexSwitch = 0;
       }
     }
+    listarEnviosIntersedes();
     super.initState();
+  }
+
+  void listarEnviosIntersedes() async {
+    listEnviosPorRecibir = await enviosActivosController
+        .listarActivosController(porRecibir, estadosIds);
+    listEnviosEnviados = await enviosActivosController.listarActivosController(
+        !porRecibir, estadosIds);
+    if (this.mounted) {
+      setState(() {
+        listEnviosPorRecibir = listEnviosPorRecibir;
+        listEnviosEnviados = listEnviosEnviados;
+      });
+    }
+  }
+
+  String obtenerTituloInRecibidos(dynamic indice) {
+    return listEnviosPorRecibir[indice].destinatario;
+  }
+
+  String obtenerSubSecondTituloInRecibidos(dynamic indice) {
+    return listEnviosPorRecibir[indice].codigoPaquete;
+  }
+
+  String obtenerSubThirdTituloInRecibidos(dynamic indice) {
+    return listEnviosPorRecibir[indice].fecha;
+  }
+
+  String obtenerSubFiveTituloInRecibidos(dynamic indice) {
+    return listEnviosPorRecibir[indice].observacion;
+  }
+
+  String obtenerTituloInEnviados(dynamic indice) {
+    return listEnviosEnviados[indice].destinatario;
+  }
+
+  String obtenerSubSecondTituloInEnviados(dynamic indice) {
+    return listEnviosEnviados[indice].codigoPaquete;
+  }
+
+  String obtenerSubThirdTituloInEnviados(dynamic indice) {
+    return listEnviosEnviados[indice].fecha;
+  }
+
+  String obtenerSubFiveTituloInEnviados(dynamic indice) {
+    return listEnviosEnviados[indice].observacion;
+  }
+
+  void onPressedPopUPRecibidos(dynamic indice) {
+    trackingPopUp(context, listEnviosPorRecibir[indice].id);
+  }
+
+  void onPressedPopUPEnviados(dynamic indice) {
+    trackingPopUp(context, listEnviosEnviados[indice].id);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(EnvioModel entrega) {
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("${entrega.destinatario}"),
-                  ),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text("${entrega.fecha}")))
-                ],
-              ))),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("${entrega.codigoPaquete}",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                          trackingPopUp(context, entrega.id);
-                        },
-                      )),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text("${entrega.observacion}")))
-                ],
-              )))
-            ],
-          ));
-    }
-
     Widget listTagSave(List<int> idsparam) {
       List<EstadoEnvio> listaparam = new List();
       listaparam = estadosSave
@@ -124,7 +143,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               AsyncSnapshot<List<EstadoEnvio>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
+                return sinResultados("No hay conexión con el servidor",
+                    IconsData.ICON_ERROR_SERVIDOR);
               case ConnectionState.waiting:
                 return Center(
                     child: Padding(
@@ -133,7 +153,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                 ));
               default:
                 if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
+                  return sinResultados(
+                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
                     estadosSave = snapshot.data;
@@ -174,7 +195,8 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
                       return Container();
                     }
                   } else {
-                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }
@@ -189,78 +211,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
         return listTagSave(estadosidsparam);
       }
     }
-
-    Widget _crearListado(int switched) {
-      envios.clear();
-      return FutureBuilder(
-          future:
-              enviosActivosController.listarActivosController(switched, estadosIds),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",IconsData.ICON_ERROR_SERVIDOR);
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema",IconsData.ICON_ERROR_PROBLEM);
-                } else {
-                  if (snapshot.hasData) {
-                    final envios = snapshot.data;
-                    if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                    } else {
-                      return ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(envios[i]));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                  }
-                }
-            }
-          });
-    }
-
-    Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTER_COLOR,
-      fillColor: StylesThemeData.LETTER_COLOR,
-      borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTER_COLOR,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Enviados',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por recibir',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
 
     Future<List<int>> popupEstados(
         BuildContext context, String titulo, List<int> idsestado) async {
@@ -398,50 +348,70 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
       }
     }
 
-    Widget estadoButton = ButtonTheme(
-      minWidth: 130.0,
-      height: 40.0,
-      child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          onPressed: () async {
-            estadosIds = await popupEstados(context, "EXACT", estadosIds);
-            setState(() {
-              estadosIds = estadosIds;
-            });
-          },
-          color: Color(0xFF2C6983),
-          child: Text('Estado', style: TextStyle(color: Colors.white))),
-    );
+    void onPressedButon() async {
+      estadosIds = await popupEstados(context, "EXACT", estadosIds);
+      setState(() {
+        estadosIds = estadosIds;
+      });
+    }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: estadoButton),
-            Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  child: listarTags(estadosSave, estadosIds)),
-            Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: tabs),
-            Expanded(child: Container(
-                  decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado(indexSwitch)))
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Container(
+            margin: const EdgeInsets.only(bottom: 10,top: 10),
+            child: FilaButtonWidget(
+                firsButton: ButtonWidget(
+                    onPressed: onPressedButon,
+                    colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                    texto: "Estado")),
+          )),
+          Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              alignment: Alignment.center,
+              width: double.infinity,
+              child: listarTags(estadosSave, estadosIds)),
+          Expanded(
+              child: Container(
+            child: TabSectionWidget(
+              itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+              iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+              iconSecondTap: IconsData.ICON_ENVIADOS,
+              namePrimerTap: "Por recibir",
+              nameSecondTap: "Enviados",
+              listPrimerTap: listEnviosPorRecibir,
+              listSecondTap: listEnviosEnviados,
+              methodPrimerTap: null,
+              methodSecondTap: null,
+              primerIconWiget: null,
+              obtenerSecondIconWigetInPrimerTap: null,
+              obtenerSecondIconWigetInSecondTap: null,
+              obtenerTituloInPrimerTap: obtenerTituloInRecibidos,
+              obtenerSubTituloInPrimerTap: null,
+              obtenerSubSecondtituloInPrimerTap:
+                  obtenerSubSecondTituloInRecibidos,
+              obtenerSubThirdtituloInPrimerTap:
+                  obtenerSubThirdTituloInRecibidos,
+              obtenerSubFourdtituloInPrimerTap: null,
+              obtenerSubFivetituloInPrimerTap: obtenerSubFiveTituloInRecibidos,
+              obtenerTituloInSecondTap: obtenerTituloInEnviados,
+              obtenerSubTituloInSecondTap: null,
+              obtenerSubSecondtituloInSecondTap:
+                  obtenerSubSecondTituloInEnviados,
+              obtenerSubThirdtituloInSecondTap: obtenerSubThirdTituloInEnviados,
+              obtenerSubFourdtituloInSecondTap: null,
+              obtenerSubFivetituloInSecondTap: obtenerSubFiveTituloInEnviados,
+              methodCodePrimerTap: onPressedPopUPRecibidos,
+              methodCodeSecondTap: onPressedPopUPEnviados,
+              styleTitulo: StylesTitleData.STYLE_TITLE,
+              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+              styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+              iconWidgetColor: StylesThemeData.ICON_COLOR,
+            ),
+            margin: const EdgeInsets.only(bottom: 5),
+          ))
+        ],
       );
     }
 

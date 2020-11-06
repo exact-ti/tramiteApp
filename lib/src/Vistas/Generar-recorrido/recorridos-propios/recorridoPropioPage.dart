@@ -6,9 +6,10 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEn
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class RecorridosPropiosPage extends StatefulWidget {
   @override
@@ -69,6 +70,8 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                       return ListView.builder(
                           itemCount: listRecorridos.length,
                           itemBuilder: (context, i) => ItemWidget(
+                              itemHeight:
+                                  StylesItemData.ITEM_HEIGHT_THREE_TITLE,
                               iconPrimary: IconsData.ICON_USER,
                               iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
                               itemIndice: i,

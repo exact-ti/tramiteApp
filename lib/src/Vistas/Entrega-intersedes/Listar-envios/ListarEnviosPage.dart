@@ -6,10 +6,12 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'ListarEnviosController.dart';
 
 class ListarEnviosPage extends StatefulWidget {
@@ -129,6 +131,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
           Expanded(
               flex: 5,
               child: ButtonWidget(
+                  iconoButton: IconsData.ICON_NEW,
                   onPressed: actionButtonNuevo,
                   colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
                   texto: "Nuevo")),
@@ -137,6 +140,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
               child: Container(
                   margin: const EdgeInsets.only(left: 5),
                   child: ButtonWidget(
+                      iconoButton: IconsData.ICON_RECEIVE,
                       onPressed: actionButtonRecepcionar,
                       colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
                       texto: "Recepcionar"))),
@@ -162,8 +166,9 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                       )),
                   Expanded(
                       child: TabSectionWidget(
-                    iconPrimerTap: Icons.call_received,
-                    iconSecondTap: Icons.screen_share,
+                    itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+                    iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+                    iconSecondTap: IconsData.ICON_ENVIADOS,
                     namePrimerTap: "Por recibir",
                     nameSecondTap: "Enviados",
                     listPrimerTap: listEnviosPorRecibir,

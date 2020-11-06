@@ -8,10 +8,12 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'NuevaEntregaExternaController.dart';
 
 class NuevoEntregaExternaPage extends StatefulWidget {
@@ -161,78 +163,74 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget crearItem(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          iconPrimary: FontAwesomeIcons.qrcode,
+          iconSend: listaEnvios[indice].estado
+              ? IconsData.ICON_ENVIO_CONFIRMADO
+              : null,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnvios[indice].codigoPaquete,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
+    }
+
     return Scaffold(
         appBar: CustomAppBar(text: "Entregas externas"),
         drawer: DrawerPage(),
         body: scaffoldbody(
-            Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(top: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Column(
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(top: 20),
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: InputCameraWidget(
+                          inputParam: InputWidget(
+                              iconPrefix: IconsData.ICON_SOBRE,
+                              controller: _codigoValijaController,
+                              focusInput: focusValija,
+                              hinttext: "Código de valija",
+                              methodOnPressed: _listarCodEnviosByValija),
+                          iconData: Icons.camera_alt,
+                          onPressed: _getDataCameraCodValija,
+                        )),
+                    Container(
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
                       child: InputCameraWidget(
-                        inputParam: InputWidget(
-                            iconPrefix: IconsData.ICON_SOBRE,
-                            controller: _codigoValijaController,
-                            focusInput: focusValija,
-                            hinttext: "Código de valija",
-                            methodOnPressed: _listarCodEnviosByValija),
-                        iconData: Icons.camera_alt,
-                        onPressed: _getDataCameraCodValija,
-                      )),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: double.infinity,
-                    child: InputCameraWidget(
-                        inputParam: InputWidget(
-                            iconPrefix: IconsData.ICON_SOBRE,
-                            controller: _codigoEnvioController,
-                            focusInput: focusEnvio,
-                            hinttext: "Código de sobre",
-                            methodOnPressed: _validarCodEnvio),
-                        iconData: Icons.camera_alt,
-                        onPressed: _getDataCameraCodEnvio),
-                    margin: const EdgeInsets.only(bottom: 20),
-                  ),
-                  Expanded(
-                    child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: ListView.builder(
-                            itemCount: listaEnvios.length,
-                            itemBuilder: (context, i) => ItemWidget(
-                                iconPrimary: FontAwesomeIcons.qrcode,
-                                iconSend: listaEnvios[i].estado
-                                    ? IconsData.ICON_ENVIO_CONFIRMADO
-                                    : null,
-                                itemIndice: i,
-                                methodAction: null,
-                                colorItem: i % 2 == 0
-                                    ? StylesThemeData.ITEM_SHADED_COLOR
-                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                titulo: listaEnvios[i].codigoPaquete,
-                                subtitulo: null,
-                                subSecondtitulo: null,
-                                styleTitulo: StylesTitleData.STYLE_TITLE,
-                                styleSubTitulo: null,
-                                styleSubSecondtitulo: null,
-                                iconColor: StylesThemeData.ICON_COLOR))),
-                  ),
-                  listaEnvios.isNotEmpty
-                      ? Container(
-                          margin: const EdgeInsets.only(top: 10, bottom: 30),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          child: ButtonWidget(
-                              onPressed: onPressRegistrarButton,
-                              colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                              texto: "Registrar"))
-                      : Container(),
-                ],
-              ),
+                          inputParam: InputWidget(
+                              iconPrefix: IconsData.ICON_SOBRE,
+                              controller: _codigoEnvioController,
+                              focusInput: focusEnvio,
+                              hinttext: "Código de sobre",
+                              methodOnPressed: _validarCodEnvio),
+                          iconData: Icons.camera_alt,
+                          onPressed: _getDataCameraCodEnvio),
+                      margin: const EdgeInsets.only(bottom: 20),
+                    ),
+                  ],
+                )),
+                ListItemWidget(itemWidget: crearItem, listItems: listaEnvios),
+                listaEnvios.isNotEmpty
+                    ? paddingWidget(Container(
+                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: ButtonWidget(
+                            iconoButton: IconsData.ICON_REGISTER,
+                            onPressed: onPressRegistrarButton,
+                            colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                            texto: "Registrar")))
+                    : Container(),
+              ],
             ),
             context));
   }

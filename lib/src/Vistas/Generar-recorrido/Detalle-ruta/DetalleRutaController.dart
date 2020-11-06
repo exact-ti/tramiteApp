@@ -7,8 +7,8 @@ import 'package:tramiteapp/src/Providers/rutas/impl/RutaProvider.dart';
 class DetalleRutaController {
 
  RutaInterface rutaInterface = new RutaImpl(new RutaProvider());
-  Future<List<DetalleRutaModel>> listarDetalleRuta(int switched,int areaId,int recorrido) async {
-    List<DetalleRutaModel> entregas = await rutaInterface.listarDetalleMiRuta(switched,areaId.toString(), recorrido);
+  Future<List<DetalleRutaModel>> listarDetalleRuta(bool enEntregar,int areaId,int recorrido) async {
+    List<DetalleRutaModel> entregas = await rutaInterface.listarDetalleMiRuta(enEntregar,areaId.toString(), recorrido);
     return entregas;
   }
 

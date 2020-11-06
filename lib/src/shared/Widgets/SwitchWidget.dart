@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class SwitchWidget extends StatelessWidget {
   final VoidCallback onPressed;

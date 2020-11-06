@@ -9,7 +9,7 @@ import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'AppBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {

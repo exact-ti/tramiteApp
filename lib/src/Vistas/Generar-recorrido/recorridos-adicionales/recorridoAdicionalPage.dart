@@ -7,9 +7,10 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class RecorridosAdicionalesPage extends StatefulWidget {
   @override
@@ -81,6 +82,8 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                       return ListView.builder(
                           itemCount: listasRecorridos.length,
                           itemBuilder: (context, i) => ItemWidget(
+                              itemHeight:
+                                  StylesItemData.ITEM_HEIGHT_THREE_TITLE,
                               iconPrimary: IconsData.ICON_USER,
                               iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
                               itemIndice: i,
@@ -99,9 +102,8 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                               iconColor: StylesThemeData.ICON_COLOR));
                     }
                   } else {
-                    return sinResultados(
-                        "No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
+                    return sinResultados("No se han encontrado resultados",
+                        IconsData.ICON_ERROR_EMPTY);
                   }
                 }
             }

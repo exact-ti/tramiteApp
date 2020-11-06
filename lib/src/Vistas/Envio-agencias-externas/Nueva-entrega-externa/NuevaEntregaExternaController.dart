@@ -65,7 +65,7 @@ class NuevoEntregaExternaController {
               "Se ha registrado correctamente el envio");
           if (respuestatrue != null) {
             if (respuestatrue) {
-              Navigator.of(context).pushNamed('/envios-agencia');
+              Navigator.of(context).pushNamedAndRemoveUntil('/envios-agencia', (Route<dynamic> route) => false);
             }
           }
         } else {

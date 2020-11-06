@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class CambiarPasswordPage extends StatefulWidget {
   @override
@@ -334,6 +335,7 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
                 alignment: Alignment.center,
                 width: double.infinity,
                 child: ButtonWidget(
+                  iconoButton: IconsData.ICON_CHANGE,
                     onPressed: onPressedCambiarButton,
                     colorParam: validarSend(actualPassword)
                         ? Color(0xFF2C6983)

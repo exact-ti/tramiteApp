@@ -7,9 +7,10 @@ import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Generar-Firma/GenerarFirmaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarTipoPersonalizadaController.dart';
 
 class ListarTipoPersonalizadaPage extends StatefulWidget {
@@ -53,16 +54,15 @@ class _ListarTipoPersonalizadaPageState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  paddingWidget(
-                  Container(
-                    margin: EdgeInsets.only(left: 20, right: 20,top: 20,bottom: 20),
+                  paddingWidget(Container(
+                    margin: EdgeInsets.only(
+                        left: 20, right: 20, top: 20, bottom: 20),
                     child: Text(
                       "Escoger un tipo de entrega",
                       style: TextStyle(
                           fontSize: 15, color: StylesThemeData.LETTER_COLOR),
                     ),
-                  )
-                  ),
+                  )),
                   Container(child: _crearListaTipoPaquete())
                 ],
               ),
@@ -103,6 +103,8 @@ class _ListarTipoPersonalizadaPageState
                         return ListView.builder(
                             itemCount: listTipoEntrega.length,
                             itemBuilder: (context, i) => ItemWidget(
+                                itemHeight:
+                                    StylesItemData.ITEM_HEIGHT_TWO_TITLE,
                                 iconPrimary: IconsData.ICON_USER,
                                 iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
                                 itemIndice: i,

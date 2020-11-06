@@ -11,7 +11,7 @@ import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class ListaEntregaLotePage extends StatefulWidget {
   @override
@@ -227,6 +227,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           Expanded(
               flex: 5,
               child: ButtonWidget(
+                iconoButton: IconsData.ICON_NEW,
                   onPressed: onPressedNuevoButton,
                   colorParam: StylesThemeData.PRIMARY_COLOR,
                   texto: 'Nuevo')),
@@ -234,6 +235,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
             child: Container(
               margin: EdgeInsets.only(left: 5),
               child:ButtonWidget(
+                iconoButton: IconsData.ICON_RECEIVE,
                 onPressed: onPressedRecepcionarButton,
                 colorParam: StylesThemeData.DISABLE_COLOR,
                 texto: 'Recepcionar')),

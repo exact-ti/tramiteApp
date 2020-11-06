@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'DetalleRutaController.dart';
 
 class DetalleRutaPage extends StatefulWidget {
@@ -26,69 +29,59 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   DetalleRutaController principalcontroller = new DetalleRutaController();
   List<DetalleRutaModel> detallesRuta = new List();
   List<bool> isSelected;
+  bool porEntregar = true;
   int indexSwitch = 0;
+  List<DetalleRutaModel> listDetallesEntregar;
+  List<DetalleRutaModel> listDetallesRecoger;
 
   @override
   void initState() {
     isSelected = [true, false];
     this.recorridoID = objetoModo["recorridoId"];
     this.rutaModel = objetoModo["ruta"];
+    listarEnviosIntersedes();
     super.initState();
+  }
+
+  void listarEnviosIntersedes() async {
+    listDetallesEntregar = await principalcontroller.listarDetalleRuta(
+        porEntregar, rutaModel.id, recorridoID);
+    listDetallesRecoger = await principalcontroller.listarDetalleRuta(
+        !porEntregar, rutaModel.id, recorridoID);
+    if (this.mounted) {
+      setState(() {
+        listDetallesEntregar = listDetallesEntregar;
+        listDetallesRecoger = listDetallesRecoger;
+      });
+    }
+  }
+
+  String obtenerTituloInEntregas(dynamic intersedeIndice) {
+    return listDetallesEntregar[intersedeIndice].destinatario;
+  }
+
+  String obtenerTituloInRecojos(dynamic intersedeIndice) {
+    return listDetallesRecoger[intersedeIndice].destinatario;
+  }
+
+  String obtenerSubTituloInEntregas(dynamic intersedeIndice) {
+    return listDetallesEntregar[intersedeIndice].paqueteId;
+  }
+
+  String obtenerSubTituloInRecojos(dynamic intersedeIndice) {
+    return listDetallesRecoger[intersedeIndice].paqueteId;
+  }
+
+  void methodPopUpInEntregas(dynamic intersedeIndice) {
+    trackingPopUp(context, listDetallesEntregar[intersedeIndice].id);
+  }
+
+  void methodPopUpInRecojos(dynamic intersedeIndice) {
+    trackingPopUp(context, listDetallesRecoger[intersedeIndice].id);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(DetalleRutaModel detalleRutaModel, int switched,
-        int indiceItem, Color colorItem) {
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: colorItem,
-            border: indiceItem == 0
-                ? Border(
-                    top: BorderSide(
-                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
-                    bottom: BorderSide(
-                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
-                  )
-                : Border(
-                    bottom: BorderSide(
-                        width: 0.8, color: StylesThemeData.ITEM_LINE_COLOR),
-                  ),
-          ),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("${detalleRutaModel.destinatario}"),
-                  )
-                ],
-              ))),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("${detalleRutaModel.paqueteId}",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                          trackingPopUp(context, detalleRutaModel.id);
-                        },
-                      ))
-                ],
-              )))
-            ],
-          ));
-    }
-
     Widget informacionArea() {
       return Container(
           child: new Column(
@@ -141,87 +134,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       ));
     }
 
-    Widget _crearListado(int switched) {
-      detallesRuta.clear();
-      return FutureBuilder(
-          future: principalcontroller.listarDetalleRuta(
-              switched, rutaModel.id, recorridoID),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<DetalleRutaModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",
-                    IconsData.ICON_ERROR_SERVIDOR);
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados(
-                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
-                } else {
-                  if (snapshot.hasData) {
-                    detallesRuta = snapshot.data;
-                    if (detallesRuta.length == 0) {
-                      return sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
-                    } else {
-                      return ListView.builder(
-                          itemCount: detallesRuta.length,
-                          itemBuilder: (context, i) => crearItem(
-                              detallesRuta[i],
-                              switched,
-                              i,
-                              i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados",
-                        IconsData.ICON_ERROR_EMPTY);
-                  }
-                }
-            }
-          });
-    }
-
-    Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LETTER_COLOR,
-      fillColor: StylesThemeData.LETTER_COLOR,
-      borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LETTER_COLOR,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por Entregar',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por recoger',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
-
     Widget mainscaffold() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,15 +143,35 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
               Container(
                   margin: const EdgeInsets.only(bottom: 10, top: 10),
                   child: informacionArea()),
-              Container(child: tabs),
             ],
           )),
           Expanded(
-            child: Container(
-                decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
-                alignment: Alignment.bottomCenter,
-                child: _crearListado(indexSwitch)),
-          )
+              child: TabSectionWidget(
+            itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+            iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+            iconSecondTap: IconsData.ICON_ENVIADOS,
+            namePrimerTap: "Por entregar",
+            nameSecondTap: "Por recoger",
+            listPrimerTap: listDetallesEntregar,
+            listSecondTap: listDetallesRecoger,
+            methodPrimerTap: null,
+            methodSecondTap: null,
+            primerIconWiget: null,
+            obtenerSecondIconWigetInPrimerTap: null,
+            obtenerSecondIconWigetInSecondTap: null,
+            obtenerTituloInPrimerTap: obtenerTituloInEntregas,
+            obtenerSubTituloInPrimerTap: null,
+            obtenerSubSecondtituloInPrimerTap: obtenerSubTituloInEntregas,
+            obtenerTituloInSecondTap: obtenerTituloInRecojos,
+            obtenerSubTituloInSecondTap: null,
+            methodCodePrimerTap: methodPopUpInEntregas,
+            methodCodeSecondTap: methodPopUpInRecojos,
+            obtenerSubSecondtituloInSecondTap: obtenerSubTituloInRecojos,
+            styleTitulo: StylesTitleData.STYLE_TITLE,
+            styleSubTitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+            styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+            iconWidgetColor: StylesThemeData.ICON_COLOR,
+          ))
         ],
       );
     }

@@ -7,9 +7,10 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'RegistrarEntregaPersonalizadaController.dart';
 
 class RegistrarEntregapersonalizadoPage extends StatefulWidget {
@@ -147,6 +148,8 @@ class _RegistrarEntregapersonalizadoPageState
                     child: ListView.builder(
                         itemCount: listaEnvios.length,
                         itemBuilder: (context, i) => ItemWidget(
+                           itemHeight:
+                                  StylesItemData.ITEM_HEIGHT_ONE_TITLE,
                             iconPrimary: FontAwesomeIcons.qrcode,
                             iconSend: listaEnvios[i].estado
                                 ? IconsData.ICON_ENVIO_CONFIRMADO

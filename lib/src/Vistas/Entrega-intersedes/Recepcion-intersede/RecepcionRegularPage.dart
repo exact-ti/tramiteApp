@@ -9,12 +9,13 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'RecepcionRegularController.dart';
 
 class RecepcionInterPage extends StatefulWidget {
@@ -253,6 +254,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                     child: ListView.builder(
                         itemCount: listaEnvios.length,
                         itemBuilder: (context, i) => ItemWidget(
+                            itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
                             iconPrimary: FontAwesomeIcons.qrcode,
                             iconSend: listaEnvios[i].estado
                                 ? IconsData.ICON_ENVIO_CONFIRMADO
@@ -274,6 +276,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                     margin: const EdgeInsets.only(bottom: 20, top: 10),
                     alignment: Alignment.center,
                     child: ButtonWidget(
+                      iconoButton: IconsData.ICON_FINISH,
                         onPressed: sendButton,
                         colorParam: StylesThemeData.PRIMARY_COLOR,
                         texto: "Terminar"))

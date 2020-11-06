@@ -8,9 +8,12 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'HistoricoController.dart';
 
 class HistoricoPage extends StatefulWidget {
@@ -35,128 +38,91 @@ class _HistoricoPageState extends State<HistoricoPage> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    void listarEnvios() async {
-      _navigationService.showModal();
-      this.listaEnviosEntrada =
-          await principalcontroller.listarHistoricosController(
-              _inicioController.text, _finController.text, 0);
-      this.listaEnviosSalida =
-          await principalcontroller.listarHistoricosController(
-              _inicioController.text, _finController.text, 1);
-      this.pressButton = true;
-      _navigationService.goBack();
+  String obtenerTituloInEntradas(dynamic indiceEntrada) {
+    return "De: ${listaEnviosEntrada[indiceEntrada].remitente}";
+  }
+
+  String obtenerSubTituloInEntradas(dynamic indiceEntrada) {
+    return "Para: ${listaEnviosEntrada[indiceEntrada].destinatario}";
+  }
+
+  String obtenerSubFivetituloInPrimerTap(dynamic indiceEntrada) {
+    return "${listaEnviosEntrada[indiceEntrada].observacion}";
+  }
+
+  String obtenerSubFivetituloInSecondTap(dynamic indiceEntrada) {
+    return "${listaEnviosSalida[indiceEntrada].observacion}";
+  }
+
+  String obtenerSecondSubTituloInEntradas(dynamic indiceEntrada) {
+    return "${listaEnviosEntrada[indiceEntrada].codigoPaquete}";
+  }
+
+  String obtenerTituloInSalidas(dynamic indiceEntrada) {
+    return "De: ${listaEnviosSalida[indiceEntrada].remitente}";
+  }
+
+  String obtenerSubTituloInSalidas(dynamic indiceEntrada) {
+    return "Para: ${listaEnviosSalida[indiceEntrada].destinatario}";
+  }
+
+  String obtenerSecondSubTituloInSalidas(dynamic indiceEntrada) {
+    return "${listaEnviosSalida[indiceEntrada].codigoPaquete}";
+  }
+
+  void onPressedCodeEntrada(dynamic indiceListEnvios) {
+    trackingPopUp(context, listaEnviosEntrada[indiceListEnvios].id);
+  }
+
+  void onPressedCodeSalida(dynamic indiceListEnvios) {
+    trackingPopUp(context, listaEnviosSalida[indiceListEnvios].id);
+  }
+
+  void listarEnvios() async {
+    _navigationService.showModal();
+    this.listaEnviosEntrada =
+        await principalcontroller.listarHistoricosController(
+            _inicioController.text, _finController.text, 0);
+
+    this.listaEnviosSalida =
+        await principalcontroller.listarHistoricosController(
+            _inicioController.text, _finController.text, 1);
+    if (mounted) {
+      setState(() {
+        this.listaEnviosEntrada = this.listaEnviosEntrada;
+        this.listaEnviosSalida = this.listaEnviosSalida;
+      });
     }
 
-    pressConsulta() {
-      if (_inicioController.text != "" && _finController.text != "") {
-        DateTime finicio =
-            new DateFormat("dd/MM/yyyy").parse(_inicioController.text);
-        DateTime ffin = new DateFormat("dd/MM/yyyy").parse(_finController.text);
-        var difference = ffin.difference(finicio).inDays;
-        if (difference >= 0) {
-          listarEnvios();
-        } else {
-          notificacion(context, "error", "EXACT",
-              "La fecha inicial no debe ser mayor a la final");
-          setState(() {
-            this.pressButton = false;
-          });
-        }
+    this.pressButton = true;
+    _navigationService.goBack();
+  }
+
+  pressConsulta() {
+    if (_inicioController.text != "" && _finController.text != "") {
+      DateTime finicio =
+          new DateFormat("dd/MM/yyyy").parse(_inicioController.text);
+      DateTime ffin = new DateFormat("dd/MM/yyyy").parse(_finController.text);
+      var difference = ffin.difference(finicio).inDays;
+      if (difference >= 0) {
+        listarEnvios();
       } else {
-        notificacion(context, "error", "EXACT", "Se debe completar los datos");
+        notificacion(context, "error", "EXACT",
+            "La fecha inicial no debe ser mayor a la final");
         setState(() {
           this.pressButton = false;
         });
       }
+    } else {
+      notificacion(context, "error", "EXACT", "Se debe completar los datos");
+      setState(() {
+        this.pressButton = false;
+      });
     }
+  }
 
-    Widget crearItem(EnvioModel envio) {
-      return Container(
-          decoration: myBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20, left: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text('De ',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 15)),
-                        ),
-                        flex: 1,
-                      ),
-                      Expanded(
-                        child: Text(
-                            envio.remitente == null
-                                ? "Envío importado"
-                                : envio.remitente,
-                            style: TextStyle(color: Colors.black)),
-                        flex: 5,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text('Para',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 15)),
-                        ),
-                        flex: 1,
-                      ),
-                      Expanded(
-                        child: Text(envio.destinatario,
-                            style: TextStyle(color: Colors.black)),
-                        flex: 5,
-                      ),
-                    ],
-                  )),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                            margin: const EdgeInsets.only(left: 10, bottom: 10),
-                            alignment: Alignment.centerLeft,
-                            child: new GestureDetector(
-                              onTap: () {
-                                trackingPopUp(context, envio.id);
-                              },
-                              child: Text(envio.codigoPaquete,
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 15)),
-                            )),
-                        flex: 3,
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10, right: 10),
-                          width: double.infinity,
-                          alignment: Alignment.centerRight,
-                          child: Text(envio.observacion,
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        flex: 6,
-                      ),
-                    ],
-                  )),
-            ],
-          ));
-    }
-
+  @override
+  Widget build(BuildContext context) {
     var fechainicio = InkWell(
         onTap: () async {
           DateTime date = DateTime(1900);
@@ -242,7 +208,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
           decoration: InputDecoration(
             hintText: "Hasta",
             prefix: Icon(FontAwesomeIcons.calendarCheck),
-            contentPadding:new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+            contentPadding:
+                new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             filled: true,
             fillColor: Color(0xFFEAEFF2),
             errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
@@ -259,63 +226,6 @@ class _HistoricoPageState extends State<HistoricoPage> {
             ),
           ),
         ));
-
-    Widget _crearListadoAgregar(int tab) {
-      List<EnvioModel> listaEnvios = new List();
-      if (tab == 0) {
-        listaEnvios = listaEnviosSalida;
-      } else {
-        listaEnvios = listaEnviosEntrada;
-      }
-      if (listaEnvios.length == 0) {
-        return Container(
-          decoration: myBigBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          alignment: Alignment.center,
-          child: Center(
-              child: sinResultados(
-                  "No se encontraron resultados", IconsData.ICON_ERROR_EMPTY)),
-        );
-      } else {
-        return ListView.builder(
-            itemCount: listaEnvios.length,
-            itemBuilder: (context, i) => crearItem(listaEnvios[i]));
-      }
-    }
-
-    Widget tabs = ToggleButtons(
-      borderColor: StylesThemeData.LIST_BORDER_COLOR,
-      fillColor: StylesThemeData.LIST_BORDER_COLOR,
-      borderWidth: 1,
-      selectedBorderColor: StylesThemeData.LIST_BORDER_COLOR,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Salida',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Entrada',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
 
     Widget mainscaffold() {
       return Column(
@@ -334,7 +244,9 @@ class _HistoricoPageState extends State<HistoricoPage> {
                   child: fechafin),
               Container(
                   width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 20),
                   child: ButtonWidget(
+                      iconoButton: IconsData.ICON_SEARCH,
                       onPressed: pressConsulta,
                       colorParam: StylesThemeData.PRIMARY_COLOR,
                       texto: 'Buscar')),
@@ -342,15 +254,45 @@ class _HistoricoPageState extends State<HistoricoPage> {
           )),
           !pressButton
               ? Container()
-              : Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  alignment: Alignment.bottomLeft,
-                  child: tabs),
-          !pressButton
-              ? Container()
               : Expanded(
                   child: Container(
-                  child: _crearListadoAgregar(indexSwitch),
+                  child: TabSectionWidget(
+                    itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+                    iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+                    iconSecondTap: IconsData.ICON_ENVIADOS,
+                    namePrimerTap: "Entradas",
+                    nameSecondTap: "Salidas",
+                    listPrimerTap: listaEnviosEntrada,
+                    listSecondTap: listaEnviosSalida,
+                    methodPrimerTap: null,
+                    methodSecondTap: null,
+                    primerIconWiget: null,
+                    obtenerSecondIconWigetInPrimerTap: null,
+                    obtenerSecondIconWigetInSecondTap: null,
+                    obtenerTituloInPrimerTap: obtenerTituloInEntradas,
+                    obtenerSubTituloInPrimerTap: obtenerSubTituloInEntradas,
+                    obtenerSubSecondtituloInPrimerTap:
+                        obtenerSecondSubTituloInEntradas,
+                    obtenerSubThirdtituloInPrimerTap: null,
+                    obtenerSubFourdtituloInPrimerTap: null,
+                    obtenerSubFivetituloInPrimerTap:
+                        obtenerSubFivetituloInPrimerTap,
+                    obtenerTituloInSecondTap: obtenerTituloInSalidas,
+                    obtenerSubTituloInSecondTap: obtenerSubTituloInSalidas,
+                    obtenerSubSecondtituloInSecondTap:
+                        obtenerSecondSubTituloInSalidas,
+                    obtenerSubThirdtituloInSecondTap: null,
+                    obtenerSubFourdtituloInSecondTap: null,
+                    obtenerSubFivetituloInSecondTap:
+                        obtenerSubFivetituloInSecondTap,
+                    methodCodePrimerTap: onPressedCodeEntrada,
+                    methodCodeSecondTap: onPressedCodeSalida,
+                    styleTitulo: StylesTitleData.STYLE_TITLE,
+                    styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+                    styleSubSecondtitulo:
+                        StylesTitleData.STYLE_SUBTILE_OnPressed,
+                    iconWidgetColor: StylesThemeData.ICON_COLOR,
+                  ),
                   margin: const EdgeInsets.only(bottom: 5),
                 )),
         ],

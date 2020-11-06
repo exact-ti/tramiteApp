@@ -5,9 +5,11 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarTurnosController.dart';
 
 class ListarTurnosPage extends StatefulWidget {
@@ -74,6 +76,8 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                               subtitulo: listasRecorridos[i].usuario,
                               subSecondtitulo:
                                   listasRecorridos[i].estado.nombreEstado,
+                              itemHeight:
+                                  StylesItemData.ITEM_HEIGHT_THREE_TITLE,
                               styleTitulo: StylesTitleData.STYLE_TITLE,
                               styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
                               styleSubSecondtitulo:
@@ -95,12 +99,13 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         children: <Widget>[
           paddingWidget(Container(
               margin: const EdgeInsets.only(top: 20, bottom: 20),
-              alignment: Alignment.centerLeft,
               width: double.infinity,
-              child: ButtonWidget(
-                  onPressed: redirectButtom,
-                  colorParam: StylesThemeData.PRIMARY_COLOR,
-                  texto: "Nuevo Recorrido"))),
+              child: FilaButtonWidget(
+                  firsButton: ButtonWidget(
+                      iconoButton: IconsData.ICON_NEW,
+                      onPressed: redirectButtom,
+                      colorParam: StylesThemeData.PRIMARY_COLOR,
+                      texto: "Nuevo recorrido"),))),
           Expanded(
             child: Container(
                 alignment: Alignment.bottomCenter, child: _crearListado()),

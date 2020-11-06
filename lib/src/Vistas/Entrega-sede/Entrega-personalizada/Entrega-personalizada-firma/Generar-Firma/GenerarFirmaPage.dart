@@ -6,8 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega-personalizada-firma/Registrar-firma/RegistrarEntregaPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class GenerarFirmaPage extends StatefulWidget {
   @override
@@ -50,6 +51,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
         child: Container(
             padding: const EdgeInsets.only(left: 1, right: 1),
             child: ButtonWidget(
+                iconoButton: IconsData.ICON_SAVE,
                 onPressed: onPressSaveButton,
                 colorParam: StylesThemeData.PRIMARY_COLOR,
                 texto: "Guardar")),
@@ -58,6 +60,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
         child: Container(
             padding: const EdgeInsets.only(left: 1, right: 1),
             child: ButtonWidget(
+                iconoButton: IconsData.ICON_CLEAR,
                 onPressed: onPressClearButton,
                 colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
                 texto: 'Limpiar')),

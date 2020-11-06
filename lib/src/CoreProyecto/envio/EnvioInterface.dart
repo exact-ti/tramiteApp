@@ -12,7 +12,7 @@ abstract class EnvioInterface {
 
   Future<List<EnvioInterSedeModel>> listarAgenciasUsuario();
 
-  Future<List<EnvioModel>> listarActivos(int switched, List<int> estadosids);
+  Future<List<EnvioModel>> listarActivos(bool porRecibir, List<int> estadosids);
 
   Future<List<EstadoEnvio>> listarEstadosEnvios();
 

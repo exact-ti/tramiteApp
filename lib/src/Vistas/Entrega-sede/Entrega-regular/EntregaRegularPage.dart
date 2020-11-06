@@ -8,12 +8,13 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/SwitchWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
-import 'package:tramiteapp/src/styles/title_style.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'EntregaRegularController.dart';
 
 class EntregaRegularPage extends StatefulWidget {
@@ -291,131 +292,136 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     ]);
 
-    Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: SwitchWidget(
-                  onPressed: changeSwitch,
-                  switchValue: enRecojo,
-                  textEnabled: "En entrega",
-                  textDisabled: "En recojo"),
-              margin: const EdgeInsets.only(bottom: 10, top: 10),
-            ),
-            Container(
-                alignment: Alignment.centerLeft,
-                width: double.infinity,
-                child: InputCameraWidget(
-                    iconData: Icons.camera_alt,
-                    onPressed: _traerdatosescanerBandeja,
-                    inputParam: InputWidget(
-                      iconPrefix: IconsData.ICON_SOBRE,
-                      methodOnPressed: _validarBandejaText,
-                      controller: _bandejaController,
-                      focusInput: focusBandeja,
-                      hinttext: "Código de bandeja",
-                    ))),
-            Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: InputCameraWidget(
-                  iconData: Icons.camera_alt,
-                  onPressed: _traerdatosescanerSobre,
-                  inputParam: InputWidget(
-                    iconPrefix: IconsData.ICON_SOBRE,
-                    methodOnPressed: _validarSobreText,
-                    controller: _sobreController,
-                    focusInput: focusEnvio,
-                    hinttext: "Código de sobre",
-                  )),
-              margin: const EdgeInsets.only(bottom: 20),
-            ),
-            mensaje.length == 0
-                ? Container()
-                : Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      child: Container(
-                          child: codigoMostrar.length != 0
-                              ? Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Center(
-                                          child: Container(
-                                        margin: EdgeInsets.only(right: 20),
-                                        alignment: Alignment.center,
-                                        child: Text("$codigoMostrar",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14)),
-                                      )),
-                                      flex: 2,
-                                    ),
-                                    Expanded(
-                                      child: Center(
-                                          child: Container(
-                                        margin: EdgeInsets.only(right: 20),
-                                        alignment: Alignment.center,
-                                        child: Center(
-                                            child: Text("$mensaje",
-                                                style:
-                                                    TextStyle(fontSize: 14))),
-                                      )),
-                                      flex: 3,
-                                    )
-                                  ],
-                                )
-                              : Center(
-                                  child: Container(
-                                  alignment: Alignment.center,
-                                  child: Center(child: Text("$mensaje")),
-                                ))),
-                      margin: const EdgeInsets.only(bottom: 10),
-                    ),
-                  ),
-            Expanded(
-                child: _bandejaController.text == ""
-                    ? Container()
-                    : Container(
-                        child: ListView.builder(
-                            itemCount: listaEnvios.length,
-                            itemBuilder: (context, i) => ItemWidget(
-                                iconPrimary: FontAwesomeIcons.qrcode,
-                                iconSend: listaEnvios[i].estado
-                                    ? IconsData.ICON_ENVIO_CONFIRMADO
-                                    : null,
-                                itemIndice: i,
-                                methodAction: null,
-                                colorItem: i % 2 == 0
-                                    ? StylesThemeData.ITEM_SHADED_COLOR
-                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                titulo: listaEnvios[i].codigoPaquete,
-                                subtitulo: null,
-                                subSecondtitulo: null,
-                                styleTitulo: StylesTitleData.STYLE_TITLE,
-                                styleSubTitulo: null,
-                                styleSubSecondtitulo: null,
-                                iconColor: StylesThemeData.ICON_COLOR)))),
-            Container(
-                margin: EdgeInsets.only(bottom: 20, top: 10),
-                alignment: Alignment.center,
-                width: double.infinity,
-                child: botonesinferiores),
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
         appBar: CustomAppBar(text: "Entrega ${recorridoUsuario.id} en sede"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      width: double.infinity,
+                      child: SwitchWidget(
+                          onPressed: changeSwitch,
+                          switchValue: enRecojo,
+                          textEnabled: "En entrega",
+                          textDisabled: "En recojo"),
+                      margin: const EdgeInsets.only(bottom: 10, top: 10),
+                    ),
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: InputCameraWidget(
+                            iconData: Icons.camera_alt,
+                            onPressed: _traerdatosescanerBandeja,
+                            inputParam: InputWidget(
+                              iconPrefix: IconsData.ICON_SOBRE,
+                              methodOnPressed: _validarBandejaText,
+                              controller: _bandejaController,
+                              focusInput: focusBandeja,
+                              hinttext: "Código de bandeja",
+                            ))),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      width: double.infinity,
+                      child: InputCameraWidget(
+                          iconData: Icons.camera_alt,
+                          onPressed: _traerdatosescanerSobre,
+                          inputParam: InputWidget(
+                            iconPrefix: IconsData.ICON_SOBRE,
+                            methodOnPressed: _validarSobreText,
+                            controller: _sobreController,
+                            focusInput: focusEnvio,
+                            hinttext: "Código de sobre",
+                          )),
+                      margin: const EdgeInsets.only(bottom: 20),
+                    ),
+                    mensaje.length == 0
+                        ? Container()
+                        : Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              child: Container(
+                                  child: codigoMostrar.length != 0
+                                      ? Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Center(
+                                                  child: Container(
+                                                margin:
+                                                    EdgeInsets.only(right: 20),
+                                                alignment: Alignment.center,
+                                                child: Text("$codigoMostrar",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 14)),
+                                              )),
+                                              flex: 2,
+                                            ),
+                                            Expanded(
+                                              child: Center(
+                                                  child: Container(
+                                                margin:
+                                                    EdgeInsets.only(right: 20),
+                                                alignment: Alignment.center,
+                                                child: Center(
+                                                    child: Text("$mensaje",
+                                                        style: TextStyle(
+                                                            fontSize: 14))),
+                                              )),
+                                              flex: 3,
+                                            )
+                                          ],
+                                        )
+                                      : Center(
+                                          child: Container(
+                                          alignment: Alignment.center,
+                                          child:
+                                              Center(child: Text("$mensaje")),
+                                        ))),
+                              margin: const EdgeInsets.only(bottom: 10),
+                            ),
+                          ),
+                  ],
+                )),
+                Expanded(
+                    child: _bandejaController.text == ""
+                        ? Container()
+                        : Container(
+                            child: ListView.builder(
+                                itemCount: listaEnvios.length,
+                                itemBuilder: (context, i) => ItemWidget(
+                                    itemHeight:
+                                        StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+                                    iconPrimary: FontAwesomeIcons.qrcode,
+                                    iconSend: listaEnvios[i].estado
+                                        ? IconsData.ICON_ENVIO_CONFIRMADO
+                                        : null,
+                                    itemIndice: i,
+                                    methodAction: null,
+                                    colorItem: i % 2 == 0
+                                        ? StylesThemeData.ITEM_SHADED_COLOR
+                                        : StylesThemeData.ITEM_UNSHADED_COLOR,
+                                    titulo: listaEnvios[i].codigoPaquete,
+                                    subtitulo: null,
+                                    subSecondtitulo: null,
+                                    styleTitulo: StylesTitleData.STYLE_TITLE,
+                                    styleSubTitulo: null,
+                                    styleSubSecondtitulo: null,
+                                    iconColor: StylesThemeData.ICON_COLOR)))),
+                paddingWidget(Container(
+                    margin: EdgeInsets.only(bottom: 20, top: 10),
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    child: botonesinferiores)),
+              ],
+            ),
+            context));
   }
 }

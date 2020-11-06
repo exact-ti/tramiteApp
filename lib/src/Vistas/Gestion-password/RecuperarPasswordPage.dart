@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/styles/theme_data.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class RecuperarPasswordPage extends StatefulWidget {
   @override
@@ -111,6 +112,7 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
                 alignment: Alignment.center,
                 width: double.infinity,
                 child: ButtonWidget(
+                  iconoButton: IconsData.ICON_SEND,
                     onPressed: buttonPress,
                     colorParam: StylesThemeData.PRIMARY_COLOR,
                     texto: 'Enviar'))
