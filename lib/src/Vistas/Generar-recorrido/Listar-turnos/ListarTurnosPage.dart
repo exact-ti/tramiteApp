@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -34,63 +35,29 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
         context, listasRecorridos[indiceRecorrido]);
   }
 
+  setList(List<dynamic> listRecorridos) {
+    this.listasRecorridos = listRecorridos;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarentregasController(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<EntregaModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",
-                    IconsData.ICON_ERROR_SERVIDOR);
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados(
-                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
-                } else {
-                  if (snapshot.hasData) {
-                    listasRecorridos = snapshot.data;
-                    if (listasRecorridos.length == 0) {
-                      return sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
-                    } else {
-                      return ListView.builder(
-                          itemCount: listasRecorridos.length,
-                          itemBuilder: (context, i) => ItemWidget(
-                              iconPrimary: IconsData.ICON_USER,
-                              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-                              itemIndice: i,
-                              methodAction: onPressRecorrido,
-                              colorItem: i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
-                              titulo: listasRecorridos[i].nombreTurno,
-                              subtitulo: listasRecorridos[i].usuario,
-                              subSecondtitulo:
-                                  listasRecorridos[i].estado.nombreEstado,
-                              itemHeight:
-                                  StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-                              styleTitulo: StylesTitleData.STYLE_TITLE,
-                              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-                              styleSubSecondtitulo:
-                                  StylesTitleData.STYLE_SECOND_SUBTILE,
-                              iconColor: StylesThemeData.ICON_COLOR));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados",
-                        IconsData.ICON_ERROR_EMPTY);
-                  }
-                }
-            }
-          });
+    Widget listWidget(dynamic indice) {
+      return ItemWidget(
+          iconPrimary: IconsData.ICON_USER,
+          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          itemIndice: indice,
+          methodAction: onPressRecorrido,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listasRecorridos[indice].nombreTurno,
+          subtitulo: listasRecorridos[indice].usuario,
+          subSecondtitulo: listasRecorridos[indice].estado.nombreEstado,
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     Widget mainscaffold() {
@@ -101,15 +68,16 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
               margin: const EdgeInsets.only(top: 20, bottom: 20),
               width: double.infinity,
               child: FilaButtonWidget(
-                  firsButton: ButtonWidget(
-                      iconoButton: IconsData.ICON_NEW,
-                      onPressed: redirectButtom,
-                      colorParam: StylesThemeData.PRIMARY_COLOR,
-                      texto: "Nuevo recorrido"),))),
-          Expanded(
-            child: Container(
-                alignment: Alignment.bottomCenter, child: _crearListado()),
-          )
+                firsButton: ButtonWidget(
+                    iconoButton: IconsData.ICON_NEW,
+                    onPressed: redirectButtom,
+                    colorParam: StylesThemeData.PRIMARY_COLOR,
+                    texto: "Nuevo recorrido"),
+              ))),
+          FutureItemWidget(
+              itemWidget: listWidget,
+              setList: setList,
+              futureList: principalcontroller.listarRecorridosController())
         ],
       );
     }

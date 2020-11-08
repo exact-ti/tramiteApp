@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'ClasificacionController.dart';
 
@@ -135,14 +135,13 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
           children: <Widget>[
             Container(
                 margin: const EdgeInsets.only(top: 20),
-                child: InputCameraWidget(
-                    iconData: Icons.camera_alt,
-                    onPressed: _traerdatosescanerbandeja,
-                    inputParam: InputWidget(
+                child: InputWidget(
+                      iconSufix: IconsData.ICON_CAMERA,
+                      methodOnPressedSufix: _traerdatosescanerbandeja,
                         methodOnPressed: _validarText,
                         controller: _sobreController,
                         focusInput: f1,
-                        hinttext: "Ingresar código",align: TextAlign.center,))),
+                        hinttext: "Ingresar código",align: TextAlign.center,)),
             Expanded(
               child: _sobreController.text == ""
                   ? Container()

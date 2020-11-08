@@ -5,9 +5,9 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -25,10 +25,11 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   final _paqueteController = TextEditingController();
   final _remitenteController = TextEditingController();
   ConsultaEnvioController principalcontroller = new ConsultaEnvioController();
-  List<EnvioModel> listaEnvios = new List();
+  List<EnvioModel> listaEnvios;
   FocusNode f1paquete = FocusNode();
   FocusNode f2remitente = FocusNode();
   FocusNode f3destinatario = FocusNode();
+  bool pressButton = false;
   bool activo = false;
   bool button = false;
 
@@ -87,6 +88,10 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
     }
   }
 
+  void onPressedCode(dynamic indiceListEnvios) {
+    trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget mostrarText(bool opcion) {
@@ -119,13 +124,33 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
       ));
     }
 
-    void onPressedCode(dynamic indiceListEnvios) {
-      trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+    Widget itemEnvio(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          iconPrimary: null,
+          iconSend: null,
+          itemIndice: indice,
+          methodAction: null,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_UNSHADED_COLOR
+              : StylesThemeData.ITEM_SHADED_COLOR,
+          titulo: listaEnvios[indice].remitente != null
+              ? "De: ${listaEnvios[indice].remitente}"
+              : "De : Envío importado",
+          subtitulo: "Para: ${listaEnvios[indice].destinatario}",
+          subSecondtitulo: listaEnvios[indice].codigoPaquete,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+          onPressedCode: onPressedCode,
+          subThirdtitulo: null,
+          subFourtitulo: null,
+          subFivetitulo: listaEnvios[indice].codigoUbicacion,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     Widget mainscaffold() {
       return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           paddingWidget(Column(
@@ -134,16 +159,15 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   margin: const EdgeInsets.only(top: 10),
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
-                  child: InputCameraWidget(
-                      iconData: Icons.camera_alt,
-                      onPressed: _traerdatosescanerPaquete,
-                      inputParam: InputWidget(
-                          methodOnPressed: _validarPaqueteText,
-                          controller: _paqueteController,
-                          iconPrefix: IconsData.ICON_SOBRE,
-                          focusInput: f1paquete,
-                          align: null,
-                          hinttext: "Código de paquete"))),
+                  child: InputWidget(
+                      iconSufix: IconsData.ICON_CAMERA,
+                      methodOnPressedSufix: _traerdatosescanerPaquete,
+                      methodOnPressed: _validarPaqueteText,
+                      controller: _paqueteController,
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      focusInput: f1paquete,
+                      align: null,
+                      hinttext: "Código de paquete")),
               Container(
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
@@ -174,7 +198,7 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                       texto: "Buscar")),
             ],
           )),
-          button == true
+          button
               ? paddingWidget(Container(
                   margin: const EdgeInsets.only(bottom: 5),
                   alignment: Alignment.centerLeft,
@@ -182,32 +206,13 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
                   child: mostrarText(activo),
                 ))
               : Container(),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: listaEnvios.length,
-                  itemBuilder: (context, i) => ItemWidget(
-                      itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-                      iconPrimary: null,
-                      iconSend: null,
-                      itemIndice: i,
-                      methodAction: null,
-                      colorItem: i % 2 == 0
-                          ? StylesThemeData.ITEM_UNSHADED_COLOR
-                          : StylesThemeData.ITEM_SHADED_COLOR,
-                      titulo: listaEnvios[i].remitente != null
-                          ? "De: ${listaEnvios[i].remitente}"
-                          : "De : Envío importado",
-                      subtitulo: "Para: ${listaEnvios[i].destinatario}",
-                      subSecondtitulo: listaEnvios[i].codigoPaquete,
-                      styleTitulo: StylesTitleData.STYLE_TITLE,
-                      styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-                      styleSubSecondtitulo:
-                          StylesTitleData.STYLE_SUBTILE_OnPressed,
-                      onPressedCode: onPressedCode,
-                      subThirdtitulo: null,
-                      subFourtitulo: null,
-                      subFivetitulo: listaEnvios[i].codigoUbicacion,
-                      iconColor: StylesThemeData.ICON_COLOR))),
+          button
+              ? ListItemWidget(
+                  itemWidget: itemEnvio,
+                  listItems: listaEnvios,
+                  mostrarMensaje: true,
+                )
+              : Container()
         ],
       );
     }

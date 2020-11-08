@@ -8,7 +8,8 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -36,38 +37,6 @@ class _HistoricoPageState extends State<HistoricoPage> {
   void initState() {
     isSelected = [true, false];
     super.initState();
-  }
-
-  String obtenerTituloInEntradas(dynamic indiceEntrada) {
-    return "De: ${listaEnviosEntrada[indiceEntrada].remitente}";
-  }
-
-  String obtenerSubTituloInEntradas(dynamic indiceEntrada) {
-    return "Para: ${listaEnviosEntrada[indiceEntrada].destinatario}";
-  }
-
-  String obtenerSubFivetituloInPrimerTap(dynamic indiceEntrada) {
-    return "${listaEnviosEntrada[indiceEntrada].observacion}";
-  }
-
-  String obtenerSubFivetituloInSecondTap(dynamic indiceEntrada) {
-    return "${listaEnviosSalida[indiceEntrada].observacion}";
-  }
-
-  String obtenerSecondSubTituloInEntradas(dynamic indiceEntrada) {
-    return "${listaEnviosEntrada[indiceEntrada].codigoPaquete}";
-  }
-
-  String obtenerTituloInSalidas(dynamic indiceEntrada) {
-    return "De: ${listaEnviosSalida[indiceEntrada].remitente}";
-  }
-
-  String obtenerSubTituloInSalidas(dynamic indiceEntrada) {
-    return "Para: ${listaEnviosSalida[indiceEntrada].destinatario}";
-  }
-
-  String obtenerSecondSubTituloInSalidas(dynamic indiceEntrada) {
-    return "${listaEnviosSalida[indiceEntrada].codigoPaquete}";
   }
 
   void onPressedCodeEntrada(dynamic indiceListEnvios) {
@@ -175,7 +144,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
           ),
         ));
 
-    var fechafin = InkWell(
+    Widget fechafin = InkWell(
         onTap: () async {
           DateTime date = DateTime(1900);
           FocusScope.of(context).requestFocus(new FocusNode());
@@ -227,6 +196,44 @@ class _HistoricoPageState extends State<HistoricoPage> {
           ),
         ));
 
+    Widget itemEntradas(dynamic indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+        itemIndice: indice,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: "De: ${listaEnviosEntrada[indice].remitente}",
+        subtitulo: "Para ${listaEnviosEntrada[indice].destinatario}",
+        subSecondtitulo: "${listaEnviosEntrada[indice].codigoPaquete}",
+        subFivetitulo: "${listaEnviosEntrada[indice].observacion}",
+        onPressedCode: onPressedCodeEntrada,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+        iconColor: StylesThemeData.ICON_COLOR
+      );
+    }
+
+    Widget itemSalidas(dynamic indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+        itemIndice: indice,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: "De: ${listaEnviosSalida[indice].remitente}",
+        subtitulo: "Para ${listaEnviosSalida[indice].destinatario}",
+        subSecondtitulo: "${listaEnviosSalida[indice].codigoPaquete}",
+        subFivetitulo: "${listaEnviosSalida[indice].observacion}",
+        onPressedCode: onPressedCodeSalida,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+        iconColor: StylesThemeData.ICON_COLOR
+      );
+    }
+
     Widget mainscaffold() {
       return Column(
         children: <Widget>[
@@ -256,42 +263,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
               ? Container()
               : Expanded(
                   child: Container(
-                  child: TabSectionWidget(
-                    itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+                  child: TabSectionWidget2(
                     iconPrimerTap: IconsData.ICON_POR_RECIBIR,
                     iconSecondTap: IconsData.ICON_ENVIADOS,
                     namePrimerTap: "Entradas",
                     nameSecondTap: "Salidas",
                     listPrimerTap: listaEnviosEntrada,
                     listSecondTap: listaEnviosSalida,
-                    methodPrimerTap: null,
-                    methodSecondTap: null,
-                    primerIconWiget: null,
-                    obtenerSecondIconWigetInPrimerTap: null,
-                    obtenerSecondIconWigetInSecondTap: null,
-                    obtenerTituloInPrimerTap: obtenerTituloInEntradas,
-                    obtenerSubTituloInPrimerTap: obtenerSubTituloInEntradas,
-                    obtenerSubSecondtituloInPrimerTap:
-                        obtenerSecondSubTituloInEntradas,
-                    obtenerSubThirdtituloInPrimerTap: null,
-                    obtenerSubFourdtituloInPrimerTap: null,
-                    obtenerSubFivetituloInPrimerTap:
-                        obtenerSubFivetituloInPrimerTap,
-                    obtenerTituloInSecondTap: obtenerTituloInSalidas,
-                    obtenerSubTituloInSecondTap: obtenerSubTituloInSalidas,
-                    obtenerSubSecondtituloInSecondTap:
-                        obtenerSecondSubTituloInSalidas,
-                    obtenerSubThirdtituloInSecondTap: null,
-                    obtenerSubFourdtituloInSecondTap: null,
-                    obtenerSubFivetituloInSecondTap:
-                        obtenerSubFivetituloInSecondTap,
-                    methodCodePrimerTap: onPressedCodeEntrada,
-                    methodCodeSecondTap: onPressedCodeSalida,
-                    styleTitulo: StylesTitleData.STYLE_TITLE,
-                    styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-                    styleSubSecondtitulo:
-                        StylesTitleData.STYLE_SUBTILE_OnPressed,
-                    iconWidgetColor: StylesThemeData.ICON_COLOR,
+                    itemPrimerTapWidget: itemEntradas,
+                    itemSecondTapWidget: itemSalidas,
                   ),
                   margin: const EdgeInsets.only(bottom: 5),
                 )),

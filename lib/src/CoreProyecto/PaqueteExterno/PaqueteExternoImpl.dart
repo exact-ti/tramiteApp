@@ -29,7 +29,7 @@ class PaqueteExternoImpl implements PaqueteExternoInterface {
   }
 
   @override
-  Future<bool> custodiarPaquete(PaqueteExterno paquete) async {
+  Future<bool> custodiarPaquete(String paquete) async {
     return await paqueteExterno.custodiarPaquete(paquete);
   }
 

@@ -9,6 +9,7 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemColumnWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'GenerarRutaController.dart';
@@ -26,7 +27,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   RecorridoModel recorridoUsuario;
   _GenerarRutaPageState(this.recorridoUsuario);
   GenerarRutaController principalcontroller = new GenerarRutaController();
-  int cantidad = 0;
   List<RutaModel> lisRutas = new List();
 
   @override
@@ -40,7 +40,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
 
   void actionButton() async {
     if (recorridoUsuario.indicepagina != 1) {
-      if (this.cantidad != 0) {
+      if (this.lisRutas.length != 0) {
         bool respuestabool = await confirmacion(
             context, "success", "EXACT", "Tienes pendientes ¿Desea Continuar?");
         if (respuestabool) {
@@ -52,6 +52,10 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     } else {
       principalcontroller.opcionRecorrido(recorridoUsuario, context);
     }
+  }
+
+  void setList(List<dynamic> listDynamic) {
+    this.lisRutas = listDynamic;
   }
 
   @override
@@ -69,57 +73,20 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           ));
     }
 
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarMiRuta(recorridoUsuario.id),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<RutaModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",
-                    IconsData.ICON_ERROR_SERVIDOR);
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados(
-                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
-                } else {
-                  if (snapshot.hasData) {
-                    this.lisRutas = snapshot.data;
-                    if (this.lisRutas.length == 0) {
-                      return sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
-                    } else {
-                      this.cantidad = this.lisRutas.length;
-                      return ListView.builder(
-                          itemCount: this.lisRutas.length,
-                          itemBuilder: (context, i) => ItemColumnWidget(
-                              itemHeight: 80.0,
-                              iconPrimary: IconsData.ICON_LOCATION,
-                              itemIndice: i,
-                              methodAction: onPressedRuta,
-                              colorItem: i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
-                              titulo: lisRutas[i].nombre,
-                              secondTitulo: "Para recoger",
-                              thirdTitulo: "Para entrega",
-                              subThirdtitulo: "${lisRutas[i].cantidadEntrega}",
-                              subSecondTitulo:
-                                  "${lisRutas[i].cantidadRecojo}"));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados",
-                        IconsData.ICON_ERROR_EMPTY);
-                  }
-                }
-            }
-          });
+    Widget itemRuta(dynamic indice) {
+      return ItemColumnWidget(
+          itemHeight: 80.0,
+          iconPrimary: IconsData.ICON_LOCATION,
+          itemIndice: indice,
+          methodAction: onPressedRuta,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: lisRutas[indice].nombre,
+          secondTitulo: "Para recoger",
+          thirdTitulo: "Para entrega",
+          subThirdtitulo: "${lisRutas[indice].cantidadEntrega}",
+          subSecondTitulo: "${lisRutas[indice].cantidadRecojo}");
     }
 
     Widget filaBotones = Container(
@@ -159,11 +126,11 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                         style: TextStyle(
                             fontSize: 20,
                             color: StylesThemeData.LETTER_COLOR)))),
-                Expanded(
-                  child: Container(
-                      alignment: Alignment.bottomCenter,
-                      child: _crearListado()),
-                ),
+                FutureItemWidget(
+                    itemWidget: itemRuta,
+                    setList: setList,
+                    futureList:
+                        principalcontroller.listarMiRuta(recorridoUsuario.id)),
                 paddingWidget(Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.only(top: 10, bottom: 40),

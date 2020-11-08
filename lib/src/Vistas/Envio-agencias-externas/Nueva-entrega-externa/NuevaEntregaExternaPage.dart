@@ -6,7 +6,6 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
@@ -192,28 +191,25 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
                         margin: EdgeInsets.only(top: 20),
                         alignment: Alignment.centerLeft,
                         width: double.infinity,
-                        child: InputCameraWidget(
-                          inputParam: InputWidget(
-                              iconPrefix: IconsData.ICON_SOBRE,
-                              controller: _codigoValijaController,
-                              focusInput: focusValija,
-                              hinttext: "Código de valija",
-                              methodOnPressed: _listarCodEnviosByValija),
-                          iconData: Icons.camera_alt,
-                          onPressed: _getDataCameraCodValija,
-                        )),
+                        child: InputWidget(
+                            iconSufix: IconsData.ICON_CAMERA,
+                            methodOnPressedSufix: _getDataCameraCodValija,
+                            iconPrefix: IconsData.ICON_SOBRE,
+                            controller: _codigoValijaController,
+                            focusInput: focusValija,
+                            hinttext: "Código de valija",
+                            methodOnPressed: _listarCodEnviosByValija)),
                     Container(
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
-                      child: InputCameraWidget(
-                          inputParam: InputWidget(
-                              iconPrefix: IconsData.ICON_SOBRE,
-                              controller: _codigoEnvioController,
-                              focusInput: focusEnvio,
-                              hinttext: "Código de sobre",
-                              methodOnPressed: _validarCodEnvio),
-                          iconData: Icons.camera_alt,
-                          onPressed: _getDataCameraCodEnvio),
+                      child: InputWidget(
+                          iconSufix: IconsData.ICON_CAMERA,
+                          methodOnPressedSufix: _getDataCameraCodEnvio,
+                          iconPrefix: IconsData.ICON_SOBRE,
+                          controller: _codigoEnvioController,
+                          focusInput: focusEnvio,
+                          hinttext: "Código de sobre",
+                          methodOnPressed: _validarCodEnvio),
                       margin: const EdgeInsets.only(bottom: 20),
                     ),
                   ],

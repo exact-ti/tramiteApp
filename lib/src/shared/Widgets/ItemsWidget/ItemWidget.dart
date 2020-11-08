@@ -50,7 +50,7 @@ class ItemWidget extends StatelessWidget {
       child: Row(children: <Widget>[
         Container(
             alignment: Alignment.centerRight,
-            margin: EdgeInsets.only(left: 20),
+            margin: EdgeInsets.only(left: 20,right: 20),
             height: itemHeight,
             child: iconPrimary != null
                 ? Center(
@@ -159,7 +159,7 @@ class ItemWidget extends StatelessWidget {
           flex: 3,
         ),
         Container(
-            margin: EdgeInsets.only(right: 20),
+            margin: EdgeInsets.only(right: 20,left: 20),
             height: itemHeight,
             child: iconSend != null
                 ? Center(

@@ -8,10 +8,12 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarEnviosController.dart';
 
 class ListarEnviosPage extends StatefulWidget {
@@ -123,6 +125,53 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         : null;
   }
 
+  Widget itemRecepcion(dynamic indice) {
+    return ItemWidget(
+      itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+      itemIndice: indice,
+      iconPrimary: FontAwesomeIcons.cube,
+      iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+      iconColor: StylesThemeData.ICON_COLOR,
+      methodAction: recepcionarEnvio,
+      colorItem: indice % 2 == 0
+          ? StylesThemeData.ITEM_SHADED_COLOR
+          : StylesThemeData.ITEM_UNSHADED_COLOR,
+      titulo: "${listEnviosPorRecibir[indice].destino}",
+      subtitulo: "${listEnviosPorRecibir[indice].codigo}",
+      subSecondtitulo: listEnviosPorRecibir[indice].numdocumentos == 1
+          ? "${listEnviosPorRecibir[indice].numdocumentos} envío"
+          : "${listEnviosPorRecibir[indice].numdocumentos} envíos",
+      styleTitulo: StylesTitleData.STYLE_TITLE,
+      styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+    );
+  }
+
+  Widget itemEnviados(dynamic indice) {
+    return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+        itemIndice: indice,
+        iconPrimary: FontAwesomeIcons.cube,
+        methodAction: iniciarEnvio,
+        iconSend: listEnviosEnviados[indice].estadoEnvio.id == creado
+            ? IconsData.ICON_ITEM_WIDGETRIGHT
+            : null,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: "${listEnviosEnviados[indice].destino}",
+        subtitulo: listEnviosEnviados[indice].numvalijas == 1
+            ? "${listEnviosEnviados[indice].numvalijas} valija"
+            : "${listEnviosEnviados[indice].numvalijas} valijas",
+        subSecondtitulo: listEnviosEnviados[indice].numdocumentos == 1
+            ? "${listEnviosEnviados[indice].numdocumentos} envío"
+            : "${listEnviosEnviados[indice].numdocumentos} envíos",
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+        iconColor: StylesThemeData.ICON_COLOR);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget filaBotones = Container(
@@ -151,49 +200,29 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         appBar: CustomAppBar(text: "Entregas interUTD"),
         drawer: DrawerPage(),
         body: scaffoldbody(
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 20, bottom: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[filaBotones],
-                      )),
-                  Expanded(
-                      child: TabSectionWidget(
-                    itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-                    iconPrimerTap: IconsData.ICON_POR_RECIBIR,
-                    iconSecondTap: IconsData.ICON_ENVIADOS,
-                    namePrimerTap: "Por recibir",
-                    nameSecondTap: "Enviados",
-                    listPrimerTap: listEnviosPorRecibir,
-                    listSecondTap: listEnviosEnviados,
-                    methodPrimerTap: recepcionarEnvio,
-                    methodSecondTap: iniciarEnvio,
-                    primerIconWiget: FontAwesomeIcons.cube,
-                    obtenerSecondIconWigetInPrimerTap: obtenerIconInRecepciones,
-                    obtenerSecondIconWigetInSecondTap: obtenerIconInEnviados,
-                    obtenerTituloInPrimerTap: obtenerTituloInRecepciones,
-                    obtenerSubTituloInPrimerTap: obtenerSubTituloInRecepciones,
-                    obtenerSubSecondtituloInPrimerTap:
-                        obtenerSecondSubTituloInRecepciones,
-                    obtenerTituloInSecondTap: obtenerTituloInEnviados,
-                    obtenerSubTituloInSecondTap: obtenerSubTituloInEnviados,
-                    obtenerSubSecondtituloInSecondTap:
-                        obtenerSecondSubTituloInEnviados,
-                    styleTitulo:
-                        TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    styleSubTitulo: TextStyle(fontSize: 10),
-                    styleSubSecondtitulo: TextStyle(fontSize: 10),
-                    iconWidgetColor: StylesThemeData.ICON_COLOR,
-                  ))
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 20, bottom: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[filaBotones],
+                    ))),
+                Expanded(
+                    child: TabSectionWidget2(
+                  iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+                  iconSecondTap: IconsData.ICON_ENVIADOS,
+                  namePrimerTap: "Por recibir",
+                  nameSecondTap: "Enviados",
+                  listPrimerTap: listEnviosPorRecibir,
+                  listSecondTap: listEnviosEnviados,
+                  itemPrimerTapWidget: itemRecepcion,
+                  itemSecondTapWidget: itemEnviados,
+                ))
+              ],
             ),
             context));
   }

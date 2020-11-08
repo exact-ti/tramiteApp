@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -39,63 +40,30 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
     );
   }
 
+  setList(List<dynamic> listRecorridos) {
+    this.listRecorridos = listRecorridos;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarentregasController(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<RecorridoModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor",
-                    IconsData.ICON_ERROR_SERVIDOR);
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados(
-                      "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
-                } else {
-                  if (snapshot.hasData) {
-                    listRecorridos = snapshot.data;
-                    if (listRecorridos.length == 0) {
-                      return sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
-                    } else {
-                      return ListView.builder(
-                          itemCount: listRecorridos.length,
-                          itemBuilder: (context, i) => ItemWidget(
-                              itemHeight:
-                                  StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-                              iconPrimary: IconsData.ICON_USER,
-                              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-                              itemIndice: i,
-                              methodAction: onPressRecorrido,
-                              colorItem: i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
-                              titulo: listRecorridos[i].nombre,
-                              subtitulo: listRecorridos[i].usuario,
-                              subSecondtitulo:
-                                  "${listRecorridos[i].horaInicio} - ${listRecorridos[i].horaFin}",
-                              styleTitulo: StylesTitleData.STYLE_TITLE,
-                              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-                              styleSubSecondtitulo:
-                                  StylesTitleData.STYLE_SECOND_SUBTILE,
-                              iconColor: StylesThemeData.ICON_COLOR));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados",
-                        IconsData.ICON_ERROR_EMPTY);
-                  }
-                }
-            }
-          });
+    Widget itemWidget(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          iconPrimary: IconsData.ICON_USER,
+          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          itemIndice: indice,
+          methodAction: onPressRecorrido,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listRecorridos[indice].nombre,
+          subtitulo: listRecorridos[indice].usuario,
+          subSecondtitulo:
+              "${listRecorridos[indice].horaInicio} - ${listRecorridos[indice].horaFin}",
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     return Scaffold(
@@ -130,11 +98,11 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
                                 ),
                               )),
                         ]))),
-                Expanded(
-                  child: Container(
-                      alignment: Alignment.bottomCenter,
-                      child: _crearListado()),
-                )
+                FutureItemWidget(
+                    itemWidget: itemWidget,
+                    setList: setList,
+                    futureList:
+                        principalcontroller.listarRecorridosController())
               ],
             ),
             context));

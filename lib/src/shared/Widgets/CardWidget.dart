@@ -23,8 +23,8 @@ class CardWidget extends StatelessWidget {
               margin: const EdgeInsets.only(top: 10),
               child: Row(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
+                   Expanded(
+                    child:Container(
                       margin: const EdgeInsets.only(right: 20),
                       alignment: Alignment.bottomLeft,
                       child: Text('$clave',
@@ -33,8 +33,7 @@ class CardWidget extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontSize: 15)),
                     ),
-                    flex: 2,
-                  ),
+                    flex: 3,),
                   Expanded(
                     child: Text(valor,
                         style: TextStyle(color: StylesThemeData.LETTER_COLOR)),

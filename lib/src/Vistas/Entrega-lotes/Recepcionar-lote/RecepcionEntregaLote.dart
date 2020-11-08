@@ -8,9 +8,9 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
@@ -84,6 +84,8 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             listValijas = listValijas;
           });
         } else {
+          popuptoinput(context, focusCodValija, "success", "EXACT",
+              "Se registró la valija");
           setState(() {
             _codValijaController.text = codigo;
             listValijas = listValijas;
@@ -245,6 +247,21 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
   }
 
+  Widget envioLoteWidget(indice) {
+    return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+        iconPrimary: FontAwesomeIcons.qrcode,
+        iconSend:
+            listValijas[indice].estado ? IconsData.ICON_ENVIO_CONFIRMADO : null,
+        itemIndice: indice,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: listValijas[indice].codigoPaquete,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        iconColor: StylesThemeData.ICON_COLOR);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -260,52 +277,31 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
                       padding: const EdgeInsets.only(top: 20),
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
-                      child: InputCameraWidget(
-                          iconData: Icons.camera_alt,
-                          onPressed: _getDataCameraCodLote,
-                          inputParam: InputWidget(
-                            iconPrefix: IconsData.ICON_SOBRE,
-                            controller: _codLoteController,
-                            focusInput: focusCodLote,
-                            hinttext: "Código de lote",
-                            methodOnPressed: _listarValijasByCodLote,
-                          ))),
+                      child: InputWidget(
+                        iconSufix: IconsData.ICON_CAMERA,
+                        methodOnPressedSufix: _getDataCameraCodLote,
+                        iconPrefix: IconsData.ICON_SOBRE,
+                        controller: _codLoteController,
+                        focusInput: focusCodLote,
+                        hinttext: "Código de lote",
+                        methodOnPressed: _listarValijasByCodLote,
+                      )),
                   Container(
                     alignment: Alignment.centerLeft,
                     width: double.infinity,
-                    child: InputCameraWidget(
-                        iconData: Icons.camera_alt,
-                        onPressed: _getDataCameraCodValija,
-                        inputParam: InputWidget(
-                          iconPrefix: IconsData.ICON_SOBRE,
-                          controller: _codValijaController,
-                          focusInput: focusCodValija,
-                          hinttext: "Código de valija",
-                          methodOnPressed: _validarCodValija,
-                        )),
+                    child: InputWidget(
+                      iconSufix: IconsData.ICON_CAMERA,
+                      methodOnPressedSufix: _getDataCameraCodValija,
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      controller: _codValijaController,
+                      focusInput: focusCodValija,
+                      hinttext: "Código de valija",
+                      methodOnPressed: _validarCodValija,
+                    ),
                     margin: const EdgeInsets.only(bottom: 20),
                   ),
-                  Expanded(
-                      child: ListView.builder(
-                          itemCount: listValijas.length,
-                          itemBuilder: (context, i) => ItemWidget(
-                              itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
-                              iconPrimary: FontAwesomeIcons.qrcode,
-                              iconSend: listValijas[i].estado
-                                  ? IconsData.ICON_ENVIO_CONFIRMADO
-                                  : null,
-                              itemIndice: i,
-                              methodAction: null,
-                              colorItem: i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
-                              titulo: listValijas[i].codigoPaquete,
-                              subtitulo: null,
-                              subSecondtitulo: null,
-                              styleTitulo: StylesTitleData.STYLE_TITLE,
-                              styleSubTitulo: null,
-                              styleSubSecondtitulo: null,
-                              iconColor: StylesThemeData.ICON_COLOR))),
+                  ListItemWidget(
+                      itemWidget: envioLoteWidget, listItems: listValijas),
                   listValijas.isNotEmpty
                       ? Container(
                           margin: const EdgeInsets.only(bottom: 30, top: 10),

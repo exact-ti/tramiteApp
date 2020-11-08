@@ -57,7 +57,7 @@ class DrawerPage extends StatelessWidget {
         child: Container(),
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/original.jpg'), fit: BoxFit.cover)),
+                image: AssetImage('assets/images/imagen-menu.jpg'), fit: BoxFit.cover)),
       ));
       for (Menu men in listmenu) {
         list.add(ListTile(

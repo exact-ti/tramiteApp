@@ -7,8 +7,10 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class PrincipalPage extends StatefulWidget {
   @override
@@ -45,60 +47,38 @@ class _PrincipalPageState extends State<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _crearListadoporfiltro(String texto) {
+    Widget itemWidget(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          iconPrimary: IconsData.ICON_USER,
+          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          itemIndice: indice,
+          methodAction: onPressedItemWidget,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: this.listusuarios[indice].nombre,
+          subtitulo:
+              "${this.listusuarios[indice].area} - ${this.listusuarios[indice].sede}",
+          subSecondtitulo: null,
+          styleTitulo:StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+          styleSubSecondtitulo: null,
+          iconColor: StylesThemeData.ICON_COLOR);
+    }
+
+    setList(List<dynamic> listUsuarios) {
+      this.listusuarios = listUsuarios;
+    }
+
+    Widget listUsuariosByNombre(String texto) {
       if (this.cantidad > texto.length && texto.length > 0) {
         return Container();
       } else {
-        return FutureBuilder(
-            future: principalcontroller.listarUsuariosporFiltro(texto),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<UsuarioFrecuente>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Center(
-                      child: new Text('No hay conexión con el servidor'));
-                case ConnectionState.waiting:
-                  return Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: loadingGet(),
-                  ));
-                default:
-                  if (snapshot.hasError) {
-                    return Center(child: new Text('Ha surgido un problema'));
-                  } else {
-                    if (snapshot.hasData) {
-                      this.listusuarios = snapshot.data;
-                      if (this.listusuarios.length == 0) {
-                        return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                      } else {
-                        return ListView.builder(
-                            itemCount: this.listusuarios.length,
-                            itemBuilder: (context, i) => ItemWidget(
-                                                              itemHeight:
-                                  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
-                                iconPrimary: IconsData.ICON_USER,
-                                iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-                                itemIndice: i,
-                                methodAction: onPressedItemWidget,
-                                colorItem: i % 2 == 0
-                                    ? StylesThemeData.ITEM_SHADED_COLOR
-                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                titulo: this.listusuarios[i].nombre,
-                                subtitulo:
-                                    "${this.listusuarios[i].area} - ${this.listusuarios[i].sede}",
-                                subSecondtitulo: null,
-                                styleTitulo: TextStyle(fontSize: 15,color: StylesThemeData.LETTER_COLOR),
-                                styleSubTitulo: TextStyle(fontSize: 12,color: StylesThemeData.LETTER_SECUNDARY_COLOR),
-                                styleSubSecondtitulo: null,
-                                iconColor: StylesThemeData.ICON_COLOR));
-                      }
-                    } else {
-                      return sinResultados("No se han encontrado resultados",IconsData.ICON_ERROR_EMPTY);
-                    }
-                  }
-              }
-            });
+        return FutureItemWidget(
+            itemWidget: itemWidget,
+            setList: setList,
+            futureList: principalcontroller.listarUsuariosporFiltro(texto));
       }
     }
 
@@ -113,33 +93,45 @@ class _PrincipalPageState extends State<PrincipalPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          paddingWidget(Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                 Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(bottom: 10),
-                    width: double.infinity,
-                    child: InputWidget(
-                      controller: _usuarioController,
-                      focusInput: focusUsuario,
-                      hinttext: 'Ingrese destinatario',
-                      methodOnChange: onchangeTextForm,
-                      iconPrefix: Icons.search,
-                    )), 
-                Container(
-                    child: textdestinatario != ""
-                        ? Container()
-                        : Text("Usuarios frecuentes",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: StylesThemeData.LETTER_SECUNDARY_COLOR))),
-              ])),
-          Expanded(
-            child: Container(
-                alignment: Alignment.bottomCenter,
-                child: _crearListadoporfiltro(textdestinatario)),
-          )
+          paddingWidget(
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      width: double.infinity,
+                      child: InputWidget(
+                        controller: _usuarioController,
+                        focusInput: focusUsuario,
+                        hinttext: 'Ingrese destinatario',
+                        methodOnChange: onchangeTextForm,
+                        iconPrefix: Icons.search,
+                      )),
+                 /*  Container(
+                      child: textdestinatario != ""
+                          ? Container()
+                          : Text("Usuarios frecuentes",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color:
+                                      StylesThemeData.LETTER_SECUNDARY_COLOR))) */
+                ]),
+          ),
+          Container(
+              child: textdestinatario != ""
+                  ? Container()
+                  : Card(
+                      color: StylesThemeData.CARD_COLOR2,
+                      margin: EdgeInsets.all(0),
+                      child: Container(
+                          height: 30,
+                          child: Center(
+                            child: Text("Usuarios frecuentes",
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.white)),
+                          )))),
+          listUsuariosByNombre(textdestinatario)
         ],
       ),
     );

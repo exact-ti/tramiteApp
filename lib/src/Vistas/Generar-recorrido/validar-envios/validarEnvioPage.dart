@@ -8,9 +8,9 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -30,7 +30,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   RecorridoModel recorridoUsuario;
   _ValidacionEnvioPageState(this.recorridoUsuario);
   final _sobreController = TextEditingController();
-  List<EnvioModel> listaEnvios = new List();
+  List<EnvioModel> listaEnvios;
   ValidacionController validacionController = new ValidacionController();
   FocusNode focusSobre = FocusNode();
 
@@ -41,8 +41,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   }
 
   void listarEnviosToValidar() async {
-    listaEnvios = await validacionController
-        .validacionEnviosController(this.recorridoUsuario.id);
+    listaEnvios = await validacionController.validacionEnviosController(this.recorridoUsuario.id);
     if (this.mounted) {
       setState(() {
         listaEnvios = listaEnvios;
@@ -122,6 +121,22 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget itemEnvios(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          iconPrimary: FontAwesomeIcons.qrcode,
+          iconSend: listaEnvios[indice].estado
+              ? IconsData.ICON_ENVIO_CONFIRMADO
+              : null,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnvios[indice].codigoPaquete,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
+    }
+
     return Scaffold(
         appBar: CustomAppBar(text: "Validación de documentos"),
         drawer: DrawerPage(),
@@ -134,44 +149,17 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(top: 30, bottom: 20),
                       width: double.infinity,
-                      child: InputCameraWidget(
-                          iconData: Icons.camera_alt,
-                          onPressed: _traerdatosescanerbandeja,
-                          inputParam: InputWidget(
+                      child: InputWidget(
+                            iconSufix: IconsData.ICON_CAMERA,
+                            methodOnPressedSufix: _traerdatosescanerbandeja,
                             methodOnPressed: _validarText,
                             controller: _sobreController,
                             focusInput: focusSobre,
-                            hinttext: "",
-                          ))),
+                            hinttext: "Ingrese código",
+                          )),
                 ),
-                Expanded(
-                    child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: listaEnvios.isEmpty
-                      ? sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY)
-                      : ListView.builder(
-                          itemCount: listaEnvios.length,
-                          itemBuilder: (context, i) => ItemWidget(
-                              itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
-                              iconPrimary: FontAwesomeIcons.qrcode,
-                              iconSend: listaEnvios[i].estado
-                                  ? IconsData.ICON_ENVIO_CONFIRMADO
-                                  : null,
-                              itemIndice: i,
-                              methodAction: null,
-                              colorItem: i % 2 == 0
-                                  ? StylesThemeData.ITEM_SHADED_COLOR
-                                  : StylesThemeData.ITEM_UNSHADED_COLOR,
-                              titulo: listaEnvios[i].codigoPaquete,
-                              subtitulo: null,
-                              subSecondtitulo: null,
-                              styleTitulo: StylesTitleData.STYLE_TITLE,
-                              styleSubTitulo: null,
-                              styleSubSecondtitulo: null,
-                              iconColor: StylesThemeData.ICON_COLOR)),
-                )),
-                paddingWidget(Container(
+                ListItemWidget(itemWidget: itemEnvios, listItems: listaEnvios,mostrarMensaje: true,),
+                listaEnvios!=null?paddingWidget(Container(
                     alignment: Alignment.center,
                     width: double.infinity,
                     margin: EdgeInsets.only(bottom: 40),
@@ -183,7 +171,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                         colorParam: StylesThemeData.PRIMARY_COLOR,
                         texto: listaEnvios.length == 0
                             ? 'Crear solo recojo'
-                            : 'Crear recorrido')))
+                            : 'Crear recorrido'))):Container()
               ],
             ),
             context));

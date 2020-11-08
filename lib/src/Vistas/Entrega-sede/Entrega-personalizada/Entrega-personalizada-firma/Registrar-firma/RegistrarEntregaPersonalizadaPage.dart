@@ -5,9 +5,9 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -48,48 +48,48 @@ class _RegistrarEntregapersonalizadoPageState
     scaffoldkey.currentState.showSnackBar(snack);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    void _validarSobre(dynamic valuesobreController) async {
-      if (valuesobreController != "") {
-        if (listaEnvios
-            .where((envio) => envio.codigoPaquete == valuesobreController)
-            .toList()
-            .isEmpty) {
-          dynamic respuesta = await personalizadacontroller.guardarEntrega(
-              context, imagenFirma, valuesobreController);
-          if (respuesta.containsValue("success")) {
-            desenfocarInputfx(context);
-            EnvioModel envioModel = new EnvioModel();
-            envioModel.codigoPaquete = valuesobreController;
-            envioModel.estado = true;
-            setState(() {
-              listaEnvios.add(envioModel);
-            });
-            notifierAccion(
-                "Se registró la entrega", StylesThemeData.PRIMARY_COLOR);
-          } else {
-            setState(() {
-              _sobreController.text = "";
-            });
-            notifierAccion(respuesta["message"], Colors.red);
-          }
+  void _validarSobre(dynamic valuesobreController) async {
+    if (valuesobreController != "") {
+      if (listaEnvios
+          .where((envio) => envio.codigoPaquete == valuesobreController)
+          .toList()
+          .isEmpty) {
+        dynamic respuesta = await personalizadacontroller.guardarEntrega(
+            context, imagenFirma, valuesobreController);
+        if (respuesta.containsValue("success")) {
+          desenfocarInputfx(context);
+          EnvioModel envioModel = new EnvioModel();
+          envioModel.codigoPaquete = valuesobreController;
+          envioModel.estado = true;
+          setState(() {
+            listaEnvios.add(envioModel);
+          });
+          notifierAccion(
+              "Se registró la entrega", StylesThemeData.PRIMARY_COLOR);
         } else {
-          notifierAccion("Código ya se encuentra validado", Colors.red);
+          setState(() {
+            _sobreController.text = "";
+          });
+          notifierAccion(respuesta["message"], Colors.red);
         }
       } else {
-        notifierAccion("el código de sobre es obligatorio", Colors.red);
+        notifierAccion("Código ya se encuentra validado", Colors.red);
       }
+    } else {
+      notifierAccion("el código de sobre es obligatorio", Colors.red);
     }
+  }
 
-    Future _getDataCameraSobre() async {
-      _sobreController.text = await getDataFromCamera(context);
-      setState(() {
-        _sobreController.text = _sobreController.text;
-      });
-      _validarSobre(_sobreController.text);
-    }
+  Future _getDataCameraSobre() async {
+    _sobreController.text = await getDataFromCamera(context);
+    setState(() {
+      _sobreController.text = _sobreController.text;
+    });
+    _validarSobre(_sobreController.text);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     Widget campodetextoandIconoFIRMA = Container(
       child: LimitedBox(
           maxHeight: screenHeightExcludingToolbar(context, dividedBy: 5),
@@ -100,6 +100,22 @@ class _RegistrarEntregapersonalizadoPageState
                       child: Image.memory(
                           Base64Decoder().convert(imagenFirma)))))),
     );
+
+    Widget itemWidget(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          iconPrimary: FontAwesomeIcons.qrcode,
+          iconSend: listaEnvios[indice].estado
+              ? IconsData.ICON_ENVIO_CONFIRMADO
+              : null,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnvios[indice].codigoPaquete,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
+    }
 
     return Scaffold(
         appBar: CustomAppBar(text: "Entrega personalizada"),
@@ -128,45 +144,20 @@ class _RegistrarEntregapersonalizadoPageState
                   Container(
                     alignment: Alignment.centerLeft,
                     width: double.infinity,
-                    child: InputCameraWidget(
-                        iconData: Icons.camera_alt,
-                        onPressed: _getDataCameraSobre,
-                        inputParam: InputWidget(
-                          iconPrefix: IconsData.ICON_SOBRE,
-                          controller: _sobreController,
-                          focusInput: focusSobre,
-                          hinttext: "Código de sobre",
-                          methodOnPressed: _validarSobre,
-                        )),
+                    child: InputWidget(
+                      iconSufix: IconsData.ICON_CAMERA,
+                      methodOnPressedSufix: _getDataCameraSobre,
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      controller: _sobreController,
+                      focusInput: focusSobre,
+                      hinttext: "Código de sobre",
+                      methodOnPressed: _validarSobre,
+                    ),
                     margin: const EdgeInsets.only(bottom: 20),
                   ),
                 ],
               )),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: ListView.builder(
-                        itemCount: listaEnvios.length,
-                        itemBuilder: (context, i) => ItemWidget(
-                           itemHeight:
-                                  StylesItemData.ITEM_HEIGHT_ONE_TITLE,
-                            iconPrimary: FontAwesomeIcons.qrcode,
-                            iconSend: listaEnvios[i].estado
-                                ? IconsData.ICON_ENVIO_CONFIRMADO
-                                : null,
-                            itemIndice: i,
-                            methodAction: null,
-                            colorItem: i % 2 == 0
-                                ? StylesThemeData.ITEM_SHADED_COLOR
-                                : StylesThemeData.ITEM_UNSHADED_COLOR,
-                            titulo: listaEnvios[i].codigoPaquete,
-                            subtitulo: null,
-                            subSecondtitulo: null,
-                            styleTitulo: StylesTitleData.STYLE_TITLE,
-                            styleSubTitulo: null,
-                            styleSubSecondtitulo: null,
-                            iconColor: StylesThemeData.ICON_COLOR))),
-              ),
+              ListItemWidget(itemWidget: itemWidget, listItems: listaEnvios),
             ],
           ),
         )));

@@ -39,18 +39,6 @@ String titulosPage(int pos) {
   }
 }
 
-/* void eliminarpreferences(BuildContext context) async {
-  SharedPreferences sharedPreferences;
-  sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =1;
-  sharedPreferences.clear();
-  if (context != null) {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false);
-  }
-}
- */
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();

@@ -16,7 +16,7 @@ class CustodiaController {
     return tipoPaqueteList;
   }
 
-  Future<bool> custodiarPaquete(PaqueteExterno paquete) async {
+  Future<bool> custodiarPaquete(String paquete) async {
     _navigationService.showModal();
     bool resp = await paqueteExterno.custodiarPaquete(paquete);
     _navigationService.goBack();

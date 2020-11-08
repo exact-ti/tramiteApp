@@ -6,12 +6,14 @@ class FutureItemWidget extends StatelessWidget {
   final Widget Function(dynamic) itemWidget;
   final Future<List<dynamic>> futureList;
   final Function(List<dynamic>) setList;
+  final String mensajeEmpty;
 
   const FutureItemWidget({
     Key key,
     @required this.itemWidget,
     @required this.futureList,
-    this.setList
+    this.setList,
+    this.mensajeEmpty
   }) : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class FutureItemWidget extends StatelessWidget {
                       final listDynamic = snapshot.data;
                       setList(snapshot.data);
                       if (listDynamic.length == 0) {
-                        return sinResultados("No se han encontrado resultados",
+                        return sinResultados(mensajeEmpty==null?"No se han encontrado resultados":mensajeEmpty,
                             IconsData.ICON_ERROR_EMPTY);
                       } else {
                         return ListView.builder(
@@ -52,7 +54,7 @@ class FutureItemWidget extends StatelessWidget {
                                 itemWidget(i));
                       }
                     } else {
-                      return sinResultados("No se han encontrado resultados",
+                      return sinResultados(mensajeEmpty==null?"No se han encontrado resultados":mensajeEmpty,
                           IconsData.ICON_ERROR_EMPTY);
                     }
                   }

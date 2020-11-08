@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -54,22 +55,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
         listDetallesRecoger = listDetallesRecoger;
       });
     }
-  }
-
-  String obtenerTituloInEntregas(dynamic intersedeIndice) {
-    return listDetallesEntregar[intersedeIndice].destinatario;
-  }
-
-  String obtenerTituloInRecojos(dynamic intersedeIndice) {
-    return listDetallesRecoger[intersedeIndice].destinatario;
-  }
-
-  String obtenerSubTituloInEntregas(dynamic intersedeIndice) {
-    return listDetallesEntregar[intersedeIndice].paqueteId;
-  }
-
-  String obtenerSubTituloInRecojos(dynamic intersedeIndice) {
-    return listDetallesRecoger[intersedeIndice].paqueteId;
   }
 
   void methodPopUpInEntregas(dynamic intersedeIndice) {
@@ -134,6 +119,37 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       ));
     }
 
+    Widget itemEntregar(dynamic indice) {
+      return ItemWidget(
+          itemHeight:  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listDetallesEntregar[indice].destinatario,
+          subSecondtitulo: listDetallesEntregar[indice].paqueteId,
+          iconSend: IconsData.ICON_MAIL,
+          onPressedCode: methodPopUpInEntregas,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed);
+    }
+
+    Widget itemRecoger(dynamic indice) {
+      return ItemWidget(
+          itemHeight:  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listDetallesRecoger[indice].destinatario,
+          subSecondtitulo: listDetallesRecoger[indice].paqueteId,
+          iconSend: IconsData.ICON_MAIL,
+          onPressedCode: methodPopUpInRecojos,
+          iconColor: StylesThemeData.ICON_COLOR,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed);
+    }
+
     Widget mainscaffold() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,31 +162,15 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
             ],
           )),
           Expanded(
-              child: TabSectionWidget(
-            itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+              child: TabSectionWidget2(
             iconPrimerTap: IconsData.ICON_POR_RECIBIR,
             iconSecondTap: IconsData.ICON_ENVIADOS,
             namePrimerTap: "Por entregar",
             nameSecondTap: "Por recoger",
             listPrimerTap: listDetallesEntregar,
             listSecondTap: listDetallesRecoger,
-            methodPrimerTap: null,
-            methodSecondTap: null,
-            primerIconWiget: null,
-            obtenerSecondIconWigetInPrimerTap: null,
-            obtenerSecondIconWigetInSecondTap: null,
-            obtenerTituloInPrimerTap: obtenerTituloInEntregas,
-            obtenerSubTituloInPrimerTap: null,
-            obtenerSubSecondtituloInPrimerTap: obtenerSubTituloInEntregas,
-            obtenerTituloInSecondTap: obtenerTituloInRecojos,
-            obtenerSubTituloInSecondTap: null,
-            methodCodePrimerTap: methodPopUpInEntregas,
-            methodCodeSecondTap: methodPopUpInRecojos,
-            obtenerSubSecondtituloInSecondTap: obtenerSubTituloInRecojos,
-            styleTitulo: StylesTitleData.STYLE_TITLE,
-            styleSubTitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-            styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-            iconWidgetColor: StylesThemeData.ICON_COLOR,
+            itemPrimerTapWidget: itemEntregar,
+            itemSecondTapWidget: itemRecoger,
           ))
         ],
       );

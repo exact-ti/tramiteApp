@@ -4,7 +4,6 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/styles/Icon_style.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -53,7 +52,7 @@ class _EnvioPageState extends State<EnvioPage> {
     if (errorSobre.length == 0 &&
         errorBandeja.length == 0 &&
         _sobreController.text.length != 0) {
-          desenfocarInputfx(context);
+      desenfocarInputfx(context);
       validarEnvio();
     }
   }
@@ -296,27 +295,25 @@ class _EnvioPageState extends State<EnvioPage> {
                                     color: StylesThemeData.LETTER_COLOR)))
                       ],
                     )),
-                InputCameraWidget(
-                    iconData: IconsData.ICON_CAMERA,
-                    onPressed: _traerdatosescanersobre,
-                    inputParam: InputWidget(
-                        controller: _sobreController,
-                        focusInput: focusSobre,
-                        iconPrefix: IconsData.ICON_SOBRE,
-                        methodOnChange: evaluarSobre,
-                        methodOnPressed: enfocarcodigoSobre,
-                        hinttext: "Código de sobre")),
+                InputWidget(
+                    iconSufix: IconsData.ICON_CAMERA,
+                    methodOnPressedSufix: _traerdatosescanersobre,
+                    controller: _sobreController,
+                    focusInput: focusSobre,
+                    iconPrefix: IconsData.ICON_SOBRE,
+                    methodOnChange: evaluarSobre,
+                    methodOnPressed: enfocarcodigoSobre,
+                    hinttext: "Código de sobre"),
                 errorSobre.length == 0 ? Container() : errorsobre(errorSobre),
-                InputCameraWidget(
-                    iconData: IconsData.ICON_CAMERA,
-                    onPressed: _traerdatosescanerbandeja,
-                    inputParam: InputWidget(
-                        controller: _bandejaController,
-                        focusInput: focusBandeja,
-                        iconPrefix: IconsData.ICON_SOBRE,
-                        methodOnChange: evaluarBandeja,
-                        methodOnPressed: enfocarCodigoBandeja,
-                        hinttext: "Código de bandeja (Opcional)")),
+                InputWidget(
+                    iconSufix: IconsData.ICON_CAMERA,
+                    methodOnPressedSufix: _traerdatosescanerbandeja,
+                    controller: _bandejaController,
+                    focusInput: focusBandeja,
+                    iconPrefix: IconsData.ICON_SOBRE,
+                    methodOnChange: evaluarBandeja,
+                    methodOnPressed: enfocarCodigoBandeja,
+                    hinttext: "Código de bandeja (Opcional)"),
                 errorBandeja.length == 0
                     ? Container()
                     : errorsobre(errorBandeja),
@@ -327,7 +324,7 @@ class _EnvioPageState extends State<EnvioPage> {
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     child: ButtonWidget(
-                      iconoButton: IconsData.ICON_SEND,
+                        iconoButton: IconsData.ICON_SEND,
                         onPressed: onPressEnviarButton,
                         colorParam: errorSobre.length != 0 ||
                                 errorBandeja.length != 0 ||

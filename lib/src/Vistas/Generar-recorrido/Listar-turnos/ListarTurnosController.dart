@@ -11,7 +11,7 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRuta
 class ListarTurnosController {
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());
 
-  Future<List<EntregaModel>> listarentregasController() async {
+  Future<List<EntregaModel>> listarRecorridosController() async {
     List<EntregaModel> entregas = await entregaInterface.listarEntregas();
     return entregas;
   }

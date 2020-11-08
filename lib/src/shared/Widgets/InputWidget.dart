@@ -12,6 +12,7 @@ class InputWidget extends StatelessWidget {
   final String hinttext;
   final TextAlign align;
   final String title;
+  final VoidCallback methodOnPressedSufix;
 
   const InputWidget(
       {Key key,
@@ -23,7 +24,8 @@ class InputWidget extends StatelessWidget {
       this.align,
       this.iconSufix,
       this.iconPrefix,
-      this.title})
+      this.title,
+      this.methodOnPressedSufix})
       : super(key: key);
 
   @override
@@ -61,30 +63,45 @@ class InputWidget extends StatelessWidget {
                       methodOnChange(value);
                     },
               decoration: InputDecoration(
-                prefixIcon: iconPrefix == null ? null : Icon(iconPrefix,color: StylesThemeData.INPUT_PREFIX_COLOR,),
-                suffixIcon: iconSufix == null ? null : Icon(iconSufix),
-                contentPadding:
-                    new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                filled: true,
-                fillColor: StylesThemeData.INPUT_COLOR,
-                errorStyle: TextStyle(
-                    color: StylesThemeData.INPUT_ERROR_COLOR, fontSize: 15.0),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide:
-                      BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    color: StylesThemeData.INPUT_BORDER_COLOR,
-                    width: 0.0,
+                  prefixIcon: iconPrefix == null
+                      ? null
+                      : Icon(
+                          iconPrefix,
+                          color: StylesThemeData.INPUT_PREFIX_COLOR,
+                        ),
+                  suffixIcon: iconSufix == null
+                      ? null
+                      : GestureDetector(
+                          onTap: () {
+                            if (methodOnPressedSufix != null)
+                              methodOnPressedSufix();
+                          },
+                          child: Icon(iconSufix,
+                            size: 20,
+                            color: StylesThemeData.PRIMARY_COLOR,
+                          ),
+                        ),
+                  contentPadding:
+                      new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                  filled: true,
+                  fillColor: StylesThemeData.INPUT_COLOR,
+                  errorStyle: TextStyle(
+                      color: StylesThemeData.INPUT_ERROR_COLOR, fontSize: 15.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
                   ),
-                ),
-                hintText: hinttext,
-                hintStyle: TextStyle(
-                    color: StylesThemeData.INPUT_HINT_COLOR)
-              ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: StylesThemeData.INPUT_BORDER_COLOR,
+                      width: 0.0,
+                    ),
+                  ),
+                  hintText: hinttext,
+                  hintStyle:
+                      TextStyle(color: StylesThemeData.INPUT_HINT_COLOR)),
             ))
       ],
     ));

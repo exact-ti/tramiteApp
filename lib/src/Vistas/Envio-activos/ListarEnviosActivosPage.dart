@@ -1,4 +1,5 @@
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
@@ -7,7 +8,8 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TabSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -355,12 +357,52 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
       });
     }
 
+    Widget itemRecepcion(dynamic indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+        itemIndice: indice,
+        iconPrimary: FontAwesomeIcons.cube,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: "${listEnviosPorRecibir[indice].destinatario}",
+        subSecondtitulo: listEnviosPorRecibir[indice].codigoPaquete,
+        subThirdtitulo: listEnviosPorRecibir[indice].fecha,
+        subFivetitulo: listEnviosPorRecibir[indice].observacion,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+        onPressedCode: onPressedPopUPRecibidos,
+        iconColor: StylesThemeData.ICON_COLOR,
+      );
+    }
+
+    Widget itemEnviados(dynamic indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+        itemIndice: indice,
+        iconPrimary: FontAwesomeIcons.cube,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: listEnviosEnviados[indice].destinatario,
+        subSecondtitulo: listEnviosEnviados[indice].codigoPaquete,
+        subThirdtitulo: listEnviosEnviados[indice].fecha,
+        subFivetitulo: listEnviosEnviados[indice].observacion,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+        onPressedCode: onPressedPopUPEnviados,
+        iconColor: StylesThemeData.ICON_COLOR,
+      );
+    }
+
     Widget mainscaffold() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           paddingWidget(Container(
-            margin: const EdgeInsets.only(bottom: 10,top: 10),
+            margin: const EdgeInsets.only(bottom: 10, top: 10),
             child: FilaButtonWidget(
                 firsButton: ButtonWidget(
                     onPressed: onPressedButon,
@@ -374,40 +416,16 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
               child: listarTags(estadosSave, estadosIds)),
           Expanded(
               child: Container(
-            child: TabSectionWidget(
-              itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+            child: TabSectionWidget2(
               iconPrimerTap: IconsData.ICON_POR_RECIBIR,
               iconSecondTap: IconsData.ICON_ENVIADOS,
               namePrimerTap: "Por recibir",
               nameSecondTap: "Enviados",
               listPrimerTap: listEnviosPorRecibir,
               listSecondTap: listEnviosEnviados,
-              methodPrimerTap: null,
-              methodSecondTap: null,
-              primerIconWiget: null,
-              obtenerSecondIconWigetInPrimerTap: null,
-              obtenerSecondIconWigetInSecondTap: null,
-              obtenerTituloInPrimerTap: obtenerTituloInRecibidos,
-              obtenerSubTituloInPrimerTap: null,
-              obtenerSubSecondtituloInPrimerTap:
-                  obtenerSubSecondTituloInRecibidos,
-              obtenerSubThirdtituloInPrimerTap:
-                  obtenerSubThirdTituloInRecibidos,
-              obtenerSubFourdtituloInPrimerTap: null,
-              obtenerSubFivetituloInPrimerTap: obtenerSubFiveTituloInRecibidos,
-              obtenerTituloInSecondTap: obtenerTituloInEnviados,
-              obtenerSubTituloInSecondTap: null,
-              obtenerSubSecondtituloInSecondTap:
-                  obtenerSubSecondTituloInEnviados,
-              obtenerSubThirdtituloInSecondTap: obtenerSubThirdTituloInEnviados,
-              obtenerSubFourdtituloInSecondTap: null,
-              obtenerSubFivetituloInSecondTap: obtenerSubFiveTituloInEnviados,
-              methodCodePrimerTap: onPressedPopUPRecibidos,
-              methodCodeSecondTap: onPressedPopUPEnviados,
-              styleTitulo: StylesTitleData.STYLE_TITLE,
-              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-              styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-              iconWidgetColor: StylesThemeData.ICON_COLOR,
+              itemPrimerTapWidget: itemRecepcion,
+              itemSecondTapWidget: itemEnviados,
+
             ),
             margin: const EdgeInsets.only(bottom: 5),
           ))

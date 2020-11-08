@@ -9,10 +9,14 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRuta
 import 'package:tramiteapp/src/shared/modals/information.dart';
 
 class ValidacionController {
+
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());
   Future<List<EnvioModel>> validacionEnviosController(int recorridoId) async {
+
     List<EnvioModel> envios =
         await entregaInterface.listarEnviosValidacion(recorridoId);
+ 
+
     return envios;
   }
 
@@ -33,7 +37,8 @@ class ValidacionController {
     }
   }
 
-  Future<EnvioModel> validarCodigo(String codigo, int id, BuildContext context) async {
+  Future<EnvioModel> validarCodigo(
+      String codigo, int id, BuildContext context) async {
     return await entregaInterface.validarCodigo(codigo, id);
   }
 }

@@ -51,6 +51,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
             : StylesThemeData.ITEM_UNSHADED_COLOR,
         titulo: this.listPaquetes[indice].nombre,
         styleTitulo: StylesTitleData.STYLE_TITLE,
+        iconColor: StylesThemeData.ICON_COLOR
       );
     }
 

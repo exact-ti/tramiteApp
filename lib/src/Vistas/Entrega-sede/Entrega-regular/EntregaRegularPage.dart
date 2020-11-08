@@ -9,8 +9,8 @@ import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/SwitchWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -292,6 +292,22 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       ),
     ]);
 
+    Widget itemEnvio(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          iconPrimary: FontAwesomeIcons.qrcode,
+          iconSend: listaEnvios[indice].estado
+              ? IconsData.ICON_ENVIO_CONFIRMADO
+              : null,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnvios[indice].codigoPaquete,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
+    }
+
     return Scaffold(
         appBar: CustomAppBar(text: "Entrega ${recorridoUsuario.id} en sede"),
         drawer: DrawerPage(),
@@ -314,29 +330,27 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                     Container(
                         alignment: Alignment.centerLeft,
                         width: double.infinity,
-                        child: InputCameraWidget(
-                            iconData: Icons.camera_alt,
-                            onPressed: _traerdatosescanerBandeja,
-                            inputParam: InputWidget(
-                              iconPrefix: IconsData.ICON_SOBRE,
-                              methodOnPressed: _validarBandejaText,
-                              controller: _bandejaController,
-                              focusInput: focusBandeja,
-                              hinttext: "Código de bandeja",
-                            ))),
+                        child: InputWidget(
+                          iconSufix: IconsData.ICON_CAMERA,
+                          methodOnPressedSufix: _traerdatosescanerBandeja,
+                          iconPrefix: IconsData.ICON_SOBRE,
+                          methodOnPressed: _validarBandejaText,
+                          controller: _bandejaController,
+                          focusInput: focusBandeja,
+                          hinttext: "Código de bandeja",
+                        )),
                     Container(
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
-                      child: InputCameraWidget(
-                          iconData: Icons.camera_alt,
-                          onPressed: _traerdatosescanerSobre,
-                          inputParam: InputWidget(
-                            iconPrefix: IconsData.ICON_SOBRE,
-                            methodOnPressed: _validarSobreText,
-                            controller: _sobreController,
-                            focusInput: focusEnvio,
-                            hinttext: "Código de sobre",
-                          )),
+                      child: InputWidget(
+                        iconSufix: IconsData.ICON_CAMERA,
+                        methodOnPressedSufix: _traerdatosescanerSobre,
+                        iconPrefix: IconsData.ICON_SOBRE,
+                        methodOnPressed: _validarSobreText,
+                        controller: _sobreController,
+                        focusInput: focusEnvio,
+                        hinttext: "Código de sobre",
+                      ),
                       margin: const EdgeInsets.only(bottom: 20),
                     ),
                     mensaje.length == 0
@@ -390,31 +404,12 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
                           ),
                   ],
                 )),
-                Expanded(
-                    child: _bandejaController.text == ""
-                        ? Container()
-                        : Container(
-                            child: ListView.builder(
-                                itemCount: listaEnvios.length,
-                                itemBuilder: (context, i) => ItemWidget(
-                                    itemHeight:
-                                        StylesItemData.ITEM_HEIGHT_ONE_TITLE,
-                                    iconPrimary: FontAwesomeIcons.qrcode,
-                                    iconSend: listaEnvios[i].estado
-                                        ? IconsData.ICON_ENVIO_CONFIRMADO
-                                        : null,
-                                    itemIndice: i,
-                                    methodAction: null,
-                                    colorItem: i % 2 == 0
-                                        ? StylesThemeData.ITEM_SHADED_COLOR
-                                        : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                    titulo: listaEnvios[i].codigoPaquete,
-                                    subtitulo: null,
-                                    subSecondtitulo: null,
-                                    styleTitulo: StylesTitleData.STYLE_TITLE,
-                                    styleSubTitulo: null,
-                                    styleSubSecondtitulo: null,
-                                    iconColor: StylesThemeData.ICON_COLOR)))),
+                _bandejaController.text == ""
+                    ? Expanded(child: Container())
+                    : ListItemWidget(
+                        itemWidget: itemEnvio,
+                        listItems: listaEnvios,
+                      ),
                 paddingWidget(Container(
                     margin: EdgeInsets.only(bottom: 20, top: 10),
                     alignment: Alignment.center,

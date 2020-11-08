@@ -9,6 +9,6 @@ abstract class IPaqueteExternoProvider{
 
   Future<List<PaqueteExterno>> listarPaquetesExternosCreados();
 
-  Future<bool> custodiarPaquete(PaqueteExterno paqueteExterno);
+  Future<bool> custodiarPaquete(String paqueteExterno);
 
 }

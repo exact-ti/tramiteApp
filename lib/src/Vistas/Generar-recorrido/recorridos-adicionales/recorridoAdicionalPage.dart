@@ -114,29 +114,26 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
         appBar: CustomAppBar(text: "Nueva entrega en sede"),
         drawer: DrawerPage(),
         body: scaffoldbody(
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 30, bottom: 30),
-                      width: double.infinity,
-                      child: InputWidget(
-                          iconPrefix: Icons.search,
-                          methodOnPressed: null,
-                          methodOnChange: onChanged,
-                          controller: _destinatarioController,
-                          focusInput: f1Destinatario,
-                          hinttext: 'Ingresar nombre')),
-                  Expanded(
-                    child: Container(
-                        alignment: Alignment.bottomCenter,
-                        child: _crearListadoporfiltro(textdestinatario)),
-                  )
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 30, bottom: 30),
+                    width: double.infinity,
+                    child: InputWidget(
+                        iconPrefix: Icons.search,
+                        methodOnPressed: null,
+                        methodOnChange: onChanged,
+                        controller: _destinatarioController,
+                        focusInput: f1Destinatario,
+                        hinttext: 'Ingresar nombre'))),
+                Expanded(
+                  child: Container(
+                      alignment: Alignment.bottomCenter,
+                      child: _crearListadoporfiltro(textdestinatario)),
+                )
+              ],
             ),
             context));
   }

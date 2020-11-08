@@ -164,6 +164,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
               itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
               itemIndice: indice,
               methodAction: onPressTap,
+              iconColor: StylesThemeData.ICON_COLOR,
               iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
               colorItem: colorSelect(indice, validados["$codigoUtd"]),
               titulo: enviosvalidados[indice].destino,
@@ -199,7 +200,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                   child: loadingGet(),
                 ))))
               : ListItemWidget(
-                  itemWidget: crearItem, listItems: enviosvalidados),
+                  itemWidget: crearItem, listItems: enviosvalidados,mostrarMensaje: true,),
           paddingWidget(
             validados.containsValue(true)
                 ? Container(
@@ -207,10 +208,10 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     child: ButtonWidget(
-                        iconoButton: IconsData.ICON_FINISH,
+                        iconoButton: IconsData.ICON_SEND,
                         onPressed: registrarlista,
                         colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                        texto: "Terminar"))
+                        texto: "Enviar"))
                 : Container(),
           )
         ],

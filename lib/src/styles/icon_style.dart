@@ -1,4 +1,4 @@
 
 class StylesIconData {
-  static const ICON_SIZE = 18.0;
+  static const ICON_SIZE = 20.0;
 }

@@ -8,6 +8,7 @@ import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Entrega
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -44,6 +45,25 @@ class _ListarTipoPersonalizadaPageState
     }
   }
 
+  Widget itemPaqueteWidget(dynamic indice) {
+    return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+        iconPrimary: IconsData.ICON_USER,
+        iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+        itemIndice: indice,
+        methodAction: _onSearchButtonPressed,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR,
+        titulo: listTipoEntrega[indice].descripcion,
+        styleTitulo: StylesTitleData.STYLE_TITLE,
+        iconColor: StylesThemeData.ICON_COLOR);
+  }
+
+  void setList(List<dynamic> listaTipos) {
+    this.listTipoEntrega = listaTipos;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,71 +83,16 @@ class _ListarTipoPersonalizadaPageState
                           fontSize: 15, color: StylesThemeData.LETTER_COLOR),
                     ),
                   )),
-                  Container(child: _crearListaTipoPaquete())
+                  Container(
+                      child: FutureItemWidget(
+                    itemWidget: itemPaqueteWidget,
+                    futureList: paqueteExternoController
+                        .listarTiposEntregasPersonalizadas(),
+                    setList: setList,
+                  ))
                 ],
               ),
             ),
             context));
-  }
-
-  Widget _crearListaTipoPaquete() {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        child: FutureBuilder(
-            future:
-                paqueteExternoController.listarTiposEntregasPersonalizadas(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<TipoEntregaPersonalizadaModel>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return sinResultados("No hay conexión con el servidor",
-                      IconsData.ICON_ERROR_SERVIDOR);
-                case ConnectionState.waiting:
-                  return Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: loadingGet(),
-                  ));
-                default:
-                  if (snapshot.hasError) {
-                    return sinResultados(
-                        "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
-                  } else {
-                    if (snapshot.hasData) {
-                      listTipoEntrega = snapshot.data;
-                      if (listTipoEntrega.length == 0) {
-                        return sinResultados("No se han encontrado resultados",
-                            IconsData.ICON_ERROR_EMPTY);
-                      } else {
-                        return ListView.builder(
-                            itemCount: listTipoEntrega.length,
-                            itemBuilder: (context, i) => ItemWidget(
-                                itemHeight:
-                                    StylesItemData.ITEM_HEIGHT_TWO_TITLE,
-                                iconPrimary: IconsData.ICON_USER,
-                                iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-                                itemIndice: i,
-                                methodAction: _onSearchButtonPressed,
-                                colorItem: i % 2 == 0
-                                    ? StylesThemeData.ITEM_SHADED_COLOR
-                                    : StylesThemeData.ITEM_UNSHADED_COLOR,
-                                titulo: listTipoEntrega[i].descripcion,
-                                subtitulo: null,
-                                subSecondtitulo: null,
-                                styleTitulo: StylesTitleData.STYLE_TITLE,
-                                styleSubTitulo: null,
-                                styleSubSecondtitulo: null,
-                                iconColor: StylesThemeData.ICON_COLOR));
-                      }
-                    } else {
-                      return sinResultados("No se han encontrado resultados",
-                          IconsData.ICON_ERROR_EMPTY);
-                    }
-                  }
-              }
-            }),
-      ),
-    );
   }
 }

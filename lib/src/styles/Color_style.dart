@@ -31,6 +31,7 @@ class StylesThemeData {
   static const BUTTON_DISABLE_COLOR = Colors.grey;
 
    static const CARD_COLOR = Color(0xFFEAEFF2);
+   static const CARD_COLOR2 = Color(0xFF2C6983);
 
 }
 

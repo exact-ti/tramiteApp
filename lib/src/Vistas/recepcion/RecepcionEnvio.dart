@@ -7,7 +7,6 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/InputCameraWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
@@ -108,6 +107,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
             styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
             onPressedCode: onPressedCode,
             methodAction: onpressedTap,
+            iconColor: StylesThemeData.ICON_COLOR
           ));
     }
 
@@ -182,18 +182,16 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         children: <Widget>[
           paddingWidget(
             Container(
-                margin: const EdgeInsets.only(bottom: 30),
+                margin: const EdgeInsets.only(bottom: 30,top: 20),
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: InputCameraWidget(
-                  inputParam: InputWidget(
+                child: InputWidget(
+                    iconSufix:  IconsData.ICON_CAMERA,
+                    methodOnPressedSufix: _traerdatosescanerBandeja,
                       controller: _bandejaController,
                       focusInput: f1,
                       methodOnPressed: _validarBandejaText,
-                      hinttext: "Envío"),
-                  onPressed: _traerdatosescanerBandeja,
-                  iconData: Icons.camera_alt,
-                )),
+                      hinttext: "Envío")),
           ),
           !respuestaBack
               ? Expanded(
