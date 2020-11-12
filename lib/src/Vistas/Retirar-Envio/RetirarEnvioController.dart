@@ -34,8 +34,8 @@ class ConsultaEnvioController {
     return enviosAsociados;
   }
 
-  Future<dynamic> retirarEnvio(EnvioModel envio, String motivo) async {
-    dynamic repuesta = await envioCore.retirarEnvio(envio, motivo);
+  Future<dynamic> retirarEnvio(String envioId, String motivo) async {
+    dynamic repuesta = await envioCore.retirarEnvio(envioId, motivo);
     return repuesta;
   }
 }

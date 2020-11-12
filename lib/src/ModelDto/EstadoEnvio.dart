@@ -16,6 +16,7 @@ class EstadoEnvio {
            EstadoEnvio  envio = new EstadoEnvio();
             envio.id = json["id"];
             envio.nombre = json["nombre"];
+            envio.estado = true;
             enviosEstado.add(envio);
         }
           return enviosEstado;

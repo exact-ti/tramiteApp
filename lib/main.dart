@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         title: 'Componentes App',
         debugShowCheckedModeBanner: false,
         initialRoute: '/login',
-        routes: getAplicationRoutes(),
+        routes: getAplicationRoutes(null),
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],
         supportedLocales: [const Locale('en'), const Locale('es')],
         onGenerateRoute: (settings) {

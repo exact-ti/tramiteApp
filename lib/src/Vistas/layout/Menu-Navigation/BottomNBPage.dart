@@ -7,9 +7,8 @@ import 'package:tramiteapp/src/Util/utils.dart';
 
 class TopLevelWidget extends StatefulWidget {
   final String rutaPage;
-  TopLevelWidget({
-    this.rutaPage,
-  });
+  final dynamic datainfo;
+  TopLevelWidget({this.rutaPage, this.datainfo});
   @override
   _TopLevelWidgetState createState() => _TopLevelWidgetState();
 }
@@ -21,8 +20,11 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
   Menu menuu = new Menu();
   List<Menu> listMenu = new List();
   String menuinicio = "";
+  dynamic dataEnvio;
+
   @override
   void initState() {
+    dataEnvio = widget.datainfo;
     listarMenuBottomNavBar();
     super.initState();
   }
@@ -34,6 +36,9 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
         menuinicio = "/dashboard";
       } else {
         menuinicio = widget.rutaPage;
+/*         if (widget.rutaPage == "/envios-activos") {
+          dataEnvio = widget.datainfo;
+        } */
       }
       int ordenprueba = listmen
           .where((element) => element.link == menuinicio)
@@ -71,7 +76,8 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           initialRoute: menuinicio,
           localizationsDelegates: [GlobalMaterialLocalizations.delegate],
           supportedLocales: [const Locale('en'), const Locale('es')],
-          routes: getAplicationRoutes(),
+          routes: getAplicationRoutes(
+              menuinicio == "/envios-activos" ? dataEnvio : null),
         );
 
     _buildBottomNavigationBarItem(name, icon) => BottomNavigationBarItem(
@@ -107,6 +113,13 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           setState(() {
             currentIndex = routeIndex;
           });
+
+          if (nombre == "/envios-activos") {
+            setState(() {
+              dataEnvio = null;
+            });
+          }
+
           navigatorKey.currentState.pushNamed(nombre).whenComplete(() {
             setState(() {
               currentIndex = routepasada;

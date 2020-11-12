@@ -5,8 +5,6 @@ import 'package:tramiteapp/src/CoreProyecto/Entrega/EntregaInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Providers/entregas/impl/EntregaProvider.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
-import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
 
 class ListarTurnosController {
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());
@@ -21,19 +19,15 @@ class ListarTurnosController {
     recorridoModel.id = entrega.id;
     recorridoModel.indicepagina = entrega.estado.id;
     if (entrega.estado.id == 1) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                GenerarRutaPage(recorridopage: recorridoModel),
-          ));
+      Navigator.of(context).pushNamed('/miruta', arguments: {
+        'indicepagina': entrega.estado.id,
+        'recorridoId': entrega.id,
+      });
     } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                EntregaRegularPage(recorridopage: recorridoModel),
-          ));
+      Navigator.of(context).pushNamed('/entrega-regular', arguments: {
+        'indicepagina': entrega.estado.id,
+        'recorridoId': entrega.id,
+      });
     }
   }
 }

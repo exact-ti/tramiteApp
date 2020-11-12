@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'customArrowClipper.dart';
 
 class SimpleAccountMenu extends StatefulWidget {
@@ -75,7 +76,7 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
       key: _key,
       child: IconButton(
         icon: Icon(
-          Icons.notifications,
+          IconsData.ICON_NOTIFICATIONS,
           color: Colors.white,
           size: 30,
         ),

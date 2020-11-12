@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
+import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'loginController.dart';
@@ -40,12 +45,16 @@ class _LoginPageState extends State<LoginPage> {
     if (sharedPreferences.getString("token") != null) {
       if (boolIfPerfil()) {
         if (sharedPreferences.getString("buzon") != null) {
+          BuzonModel buzonModel = buzonPrincipal();
+          Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = buzonModel.nombre; 
           Navigator.of(context).pushNamedAndRemoveUntil(
               '/menuBottom', (Route<dynamic> route) => false);
         }
       } else {
         if (sharedPreferences.getString("utd") != null ||
             sharedPreferences.getString("buzon") != null) {
+          UtdModel utdModel = obtenerUTD();
+          Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = utdModel.nombre;
           Navigator.of(context).pushNamedAndRemoveUntil(
               rutaPrincipal(), (Route<dynamic> route) => false);
         }
@@ -94,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         labelText: "Usuario",
         prefixIcon: Icon(
-          Icons.account_circle,
+          IconsData.ICON_USERCICLE,
           size: 20,
           color: StylesThemeData.PRIMARY_COLOR,
         ),
@@ -154,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         labelText: "Contraseña",
         prefixIcon: Icon(
-          Icons.lock,
+          IconsData.ICON_PADLOCK,
           size: 20,
           color: StylesThemeData.PRIMARY_COLOR,
         ),
@@ -165,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
             });
           },
           child: Icon(
-            !passwordVisible ? Icons.visibility_off : Icons.visibility,
+            !passwordVisible ? IconsData.ICON_EYE_DISABLED : IconsData.ICON_EYE_ENABLED,
             size: 20,
             color: StylesThemeData.PRIMARY_COLOR,
           ),

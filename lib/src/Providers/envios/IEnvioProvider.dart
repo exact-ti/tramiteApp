@@ -21,5 +21,5 @@ abstract class IEnvioProvider{
 
   Future<List<EnvioModel>> listarEnviosHistoricosSalida(String fechaInicio,String fechaFin); 
 
-  Future<dynamic> retirarEnvioProvider(EnvioModel envioModel,String motivo);
+  Future<dynamic> retirarEnvioProvider(String envioModelId,String motivo);
 }

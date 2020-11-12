@@ -128,23 +128,36 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     if (codigo != "") {
       listaEnvios =
           await principalcontroller.listarEnviosEntrega(context, codigo);
-      if (listaEnvios.isNotEmpty) {
-        setState(() {
-          listaEnvios = listaEnvios;
-          _sobreController.text = "";
-        });
-        enfocarInputfx(context, focusSobre);
-      } else {
-        bool respuestatrue = await notificacion(
-            context, "error", "EXACT", "No es posible procesar el código");
-        setState(() {
-          _sobreController.text = "";
-          listaEnvios = [];
-          _valijaController.text = codigo;
-        });
-        if (respuestatrue) {
-          enfocarInputfx(context, focusValija);
+      if (listaEnvios != null) {
+        if (listaEnvios.isNotEmpty) {
+          setState(() {
+            listaEnvios = listaEnvios;
+            _sobreController.text = "";
+          });
+          enfocarInputfx(context, focusSobre);
+        } else {
+          bool respuestatrue = await notificacion(
+              context, "error", "EXACT", "No cuenta con envíos asociados");
+          setState(() {
+            _sobreController.text = "";
+            listaEnvios = [];
+            _valijaController.text = codigo;
+          });
+          if (respuestatrue) {
+            enfocarInputfx(context, focusValija);
+          }
         }
+      } else {
+      bool respuestatrue = await notificacion(
+          context, "error", "EXACT", "No es posible procesar el código");
+          setState(() {
+            _sobreController.text = "";
+            listaEnvios = [];
+            _valijaController.text = codigo;
+          });
+          if (respuestatrue) {
+            enfocarInputfx(context, focusValija);
+          }
       }
     } else {
       bool respuestatrue = await notificacion(
@@ -190,50 +203,51 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
     }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(top: 20),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Column(
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  child: InputWidget(
+                      iconSufix: IconsData.ICON_CAMERA,
+                      methodOnPressedSufix: _traerdatosescanerBandeja,
+                      iconPrefix: IconsData.ICON_SOBRE,
+                      methodOnPressed: validarListaByBandeja,
+                      controller: _valijaController,
+                      focusInput: focusValija,
+                      hinttext: "Código de valija")),
+              Container(
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
                 child: InputWidget(
                     iconSufix: IconsData.ICON_CAMERA,
-                    methodOnPressedSufix: _traerdatosescanerBandeja,
+                    methodOnPressedSufix: _traerdatosescanerSobre,
                     iconPrefix: IconsData.ICON_SOBRE,
-                    methodOnPressed: validarListaByBandeja,
-                    controller: _valijaController,
-                    focusInput: focusValija,
-                    hinttext: "Código de valija")),
-            Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: InputWidget(
-                  iconSufix: IconsData.ICON_CAMERA,
-                  methodOnPressedSufix: _traerdatosescanerSobre,
-                  iconPrefix: IconsData.ICON_SOBRE,
-                  methodOnPressed: _validarSobreText,
-                  controller: _sobreController,
-                  focusInput: focusSobre,
-                  hinttext: "Código de sobre"),
-              margin: const EdgeInsets.only(bottom: 30),
-            ),
-            ListItemWidget(
-                itemWidget: envioIntersedeWidget, listItems: listaEnvios),
-            listaEnvios.where((envio) => envio.estado).toList().isNotEmpty
-                ? Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(bottom: 30, top: 10),
-                    child: ButtonWidget(
-                        iconoButton: IconsData.ICON_REGISTER,
-                        onPressed: sendPress,
-                        colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                        texto: "Registrar"))
-                : Container(),
-          ],
-        ),
+                    methodOnPressed: _validarSobreText,
+                    controller: _sobreController,
+                    focusInput: focusSobre,
+                    hinttext: "Código de sobre"),
+                margin: const EdgeInsets.only(bottom: 30),
+              ),
+            ],
+          )),
+          ListItemWidget(
+              itemWidget: envioIntersedeWidget, listItems: listaEnvios),
+          listaEnvios.where((envio) => envio.estado).toList().isNotEmpty
+              ? paddingWidget(Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.only(bottom: 30, top: 10),
+                  child: ButtonWidget(
+                      iconoButton: IconsData.ICON_REGISTER,
+                      onPressed: sendPress,
+                      colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
+                      texto: "Registrar")))
+              : Container(),
+        ],
       );
     }
 

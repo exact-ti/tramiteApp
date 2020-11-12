@@ -47,7 +47,7 @@ class _ListarTipoPersonalizadaPageState
 
   Widget itemPaqueteWidget(dynamic indice) {
     return ItemWidget(
-        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+        itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
         iconPrimary: IconsData.ICON_USER,
         iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
         itemIndice: indice,

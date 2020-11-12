@@ -91,6 +91,7 @@ class ItemTimeLineWidget extends StatelessWidget {
               subSecondtitulo == null
                   ? Container()
                   : Container(
+                      margin: const EdgeInsets.only(bottom: 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[

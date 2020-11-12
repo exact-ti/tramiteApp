@@ -107,13 +107,12 @@ class EnvioProvider implements IEnvioProvider {
 
   @override
   Future<dynamic> retirarEnvioProvider(
-      EnvioModel envioModel, String motivo) async {
-    String envioId = envioModel.id.toString();
+      String envioModelId, String motivo) async {
     final Map<String, dynamic> parametros = {
       "motivo": motivo,
     };
     Response resp = await req.put(
-        "/servicio-tramite/envios/$envioId/retiro", null, parametros);
+        "/servicio-tramite/envios/$envioModelId/retiro", null, parametros);
     return resp.data;
   }
 }

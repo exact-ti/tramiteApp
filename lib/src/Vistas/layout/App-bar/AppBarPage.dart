@@ -7,6 +7,7 @@ import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -106,7 +107,7 @@ class _CustomAppBarState extends State<CustomAppBar>
         child: Stack(
           children: [
             Icon(
-              Icons.notifications,
+              IconsData.ICON_NOTIFICATIONS,
               color: Colors.white,
               size: 30,
             ),
@@ -172,7 +173,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                 : false,
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle, size: 30),
+            icon: Icon(IconsData.ICON_USERCICLE, size: 30),
             onPressed: () async {
               Navigator.push(
                 context,

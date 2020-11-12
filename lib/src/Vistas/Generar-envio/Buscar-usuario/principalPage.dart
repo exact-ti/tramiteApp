@@ -2,7 +2,6 @@ import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
@@ -30,12 +29,14 @@ class _PrincipalPageState extends State<PrincipalPage> {
   }
 
   void onPressedItemWidget(dynamic indiceUsuario) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            EnvioPage(usuariopage: listusuarios[indiceUsuario]),
-      ),
+    Navigator.of(context).pushNamed(
+      '/crear-envio',
+      arguments: {
+        'id': listusuarios[indiceUsuario].id,
+        'area': listusuarios[indiceUsuario].area,
+        'nombre': listusuarios[indiceUsuario].nombre,
+        'sede': listusuarios[indiceUsuario].sede,
+      },
     );
   }
 
@@ -61,7 +62,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
           subtitulo:
               "${this.listusuarios[indice].area} - ${this.listusuarios[indice].sede}",
           subSecondtitulo: null,
-          styleTitulo:StylesTitleData.STYLE_TITLE,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
           styleSubTitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
           styleSubSecondtitulo: null,
           iconColor: StylesThemeData.ICON_COLOR);
@@ -107,18 +108,19 @@ class _PrincipalPageState extends State<PrincipalPage> {
                         hinttext: 'Ingrese destinatario',
                         methodOnChange: onchangeTextForm,
                         iconPrefix: Icons.search,
+                        modoLabel: false,
                       )),
-                 /*  Container(
+                   Container(
                       child: textdestinatario != ""
                           ? Container()
                           : Text("Usuarios frecuentes",
                               style: TextStyle(
                                   fontSize: 15,
                                   color:
-                                      StylesThemeData.LETTER_SECUNDARY_COLOR))) */
+                                      StylesThemeData.LETTER_SECUNDARY_COLOR)))
                 ]),
           ),
-          Container(
+         /*  Container(
               child: textdestinatario != ""
                   ? Container()
                   : Card(
@@ -130,7 +132,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
                             child: Text("Usuarios frecuentes",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.white)),
-                          )))),
+                          )))), */
           listUsuariosByNombre(textdestinatario)
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';
@@ -21,7 +22,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    const LetraColor = const Color(0xFF68A1C8);
  
     return Scaffold(
       appBar: CustomAppBar(text: "Bienvenido"),
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text("EXACT",
                     style: TextStyle(
                         fontSize: 30,
-                        color: LetraColor,
+                        color: StylesThemeData.PRIMARY_COLOR,
                         fontWeight: FontWeight.bold))),
             Center(
                 child: Text("Expertos en Gestion Documental",

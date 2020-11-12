@@ -28,10 +28,12 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   ConsultaEnvioController principalcontroller = new ConsultaEnvioController();
   bool activo = false;
   bool button = false;
+  String codigoToDelete = "";
   FocusNode f1paquete = FocusNode();
   FocusNode f2remitente = FocusNode();
   FocusNode f3destinatario = FocusNode();
-
+  String mensajeError = "";
+  final _observacionController = TextEditingController();
   void initState() {
     super.initState();
   }
@@ -73,9 +75,9 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   }
 
   Future<bool> retirarEnvioController(
-      EnvioModel envioModel, String motivo) async {
+      String envioModelId, String motivo) async {
     dynamic respuesta =
-        await principalcontroller.retirarEnvio(envioModel, motivo);
+        await principalcontroller.retirarEnvio(envioModelId, motivo);
     desenfocarInputfx(context);
     if (respuesta.containsValue("success")) {
       FocusScope.of(context).unfocus();
@@ -96,10 +98,38 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     _validarPaqueteText(_paqueteController.text);
   }
 
+  
+
+/*   void onPressedObservacion(valueObservacion) async {
+    if (valueObservacion.length == 0) {
+      setState(() {
+        mensajeError = "El mótivo del retiro es obligatorio";
+      });
+    } else {
+      bool respuesta = await retirarEnvioController(
+          codigoToDelete, _observacionController.text);
+      if (respuesta) {
+        Navigator.pop(context, true);
+      }
+    }
+  }
+
+  void onChangedObservacion(valueObservacion) {
+    if (valueObservacion.length == 0) {
+      setState(() {
+        mensajeError = "El mótivo del retiro es obligatorio";
+      });
+    } else {
+      setState(() {
+        valueObservacion=valueObservacion;
+        mensajeError = "";
+      });
+    }
+  } */
+
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
       String title, String description, EnvioModel envioModel) async {
-    String mensajeError = "";
-    final _observacionController = TextEditingController();
+    this.codigoToDelete = envioModel.id.toString();
     bool respuesta = await showDialog(
         context: context,
         barrierDismissible: false,
@@ -143,7 +173,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                   padding: const EdgeInsets.only(right: 20, left: 20, top: 10),
                 ),
                 Container(
-                  child: TextFormField(
+                  child:   TextFormField(
                     maxLines: 6,
                     controller: _observacionController,
                     textInputAction: TextInputAction.done,
@@ -169,7 +199,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         });
                       } else {
                         bool respuesta = await retirarEnvioController(
-                            envioModel, _observacionController.text);
+                            codigoToDelete, _observacionController.text);
                         if (respuesta) {
                           Navigator.pop(context, true);
                         }
@@ -186,7 +216,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         });
                       }
                     },
-                  ),
+                  )
+                  ,
                   padding: const EdgeInsets.only(right: 20, left: 20),
                 ),
                 mensajeError.length == 0
@@ -210,7 +241,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                 });
                               } else {
                                 bool respuesta = await retirarEnvioController(
-                                    envioModel, _observacionController.text);
+                                    envioModel.id.toString(),
+                                    _observacionController.text);
                                 if (respuesta) {
                                   Navigator.pop(context, true);
                                 }
@@ -231,8 +263,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                     ),
                                     child: Container(
                                       child: Text('Aceptar',
-                                          style: _observacionController
-                                                      .text.length ==
+                                          style: _observacionController.text.length ==
                                                   0
                                               ? TextStyle(color: Colors.grey)
                                               : TextStyle(color: Colors.black)),
@@ -309,6 +340,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
         _remitenteController.text = "";
         _destinatarioController.text = "";
         listaEnvios = [];
+        mensajeError="";
         button = false;
       });
     }

@@ -41,6 +41,3 @@ class TrackingModel {
           return trackingModel;
     }   
 }
-
-class DateFormat {
-}

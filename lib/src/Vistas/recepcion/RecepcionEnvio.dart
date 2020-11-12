@@ -202,7 +202,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                   child: loadingGet(),
                 ))))
               : ListItemWidget(
-                  itemWidget: crearItem, listItems: listaEnviosModel),
+                  itemWidget: crearItem, listItems: listaEnviosModel,mostrarMensaje: true,),
           validados.containsValue(true)
               ? paddingWidget(Container(
                   margin: const EdgeInsets.only(bottom: 20),

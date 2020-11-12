@@ -2,7 +2,6 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Generar-recorrido/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
@@ -28,10 +27,23 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   _GenerarRutaPageState(this.recorridoUsuario);
   GenerarRutaController principalcontroller = new GenerarRutaController();
   List<RutaModel> lisRutas = new List();
-
+  int recorridoId;
+  int indicePagina;
   @override
   void initState() {
+       WidgetsBinding.instance
+        .addPostFrameCallback((_) => inicializarParametros());
     super.initState();
+  }
+
+  void inicializarParametros() {
+    if (mounted) {
+      Map recorrido = ModalRoute.of(context).settings.arguments;
+      setState(() {
+        recorridoId = recorrido["recorridoId"];
+        indicePagina = recorrido["indicepagina"];
+      });
+    }
   }
 
   void onPresBack() {
@@ -39,18 +51,19 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   }
 
   void actionButton() async {
-    if (recorridoUsuario.indicepagina != 1) {
+    if (indicePagina != 1) {
       if (this.lisRutas.length != 0) {
         bool respuestabool = await confirmacion(
             context, "success", "EXACT", "Tienes pendientes ¿Desea Continuar?");
         if (respuestabool) {
-          principalcontroller.opcionRecorrido(recorridoUsuario, context);
+          principalcontroller.opcionRecorrido(
+              recorridoId, indicePagina, context);
         }
       } else {
-        principalcontroller.opcionRecorrido(recorridoUsuario, context);
+        principalcontroller.opcionRecorrido(recorridoId, indicePagina, context);
       }
     } else {
-      principalcontroller.opcionRecorrido(recorridoUsuario, context);
+      principalcontroller.opcionRecorrido(recorridoId, indicePagina, context);
     }
   }
 
@@ -62,15 +75,19 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   Widget build(BuildContext context) {
     void onPressedRuta(dynamic indiceRutas) {
       RutaModel ruta = this.lisRutas[indiceRutas];
-      Map<String, Object> objetoSend = {
-        'ruta': ruta,
-        'recorridoId': this.recorridoUsuario.id
-      };
-      Navigator.push(
+
+      Navigator.of(context).pushNamed(
+        '/detalleruta',
+        arguments: {
+          'ruta': ruta,
+          'recorridoId': this.recorridoId,
+        },
+      );
+/*       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => DetalleRutaPage(objetoModo: objetoSend),
-          ));
+          )); */
     }
 
     Widget itemRuta(dynamic indice) {
@@ -92,23 +109,17 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
     Widget filaBotones = Container(
         child: FilaButtonWidget(
       firsButton: ButtonWidget(
-          iconoButton: recorridoUsuario.indicepagina == 1
-              ? IconsData.ICON_STAR
-              : IconsData.ICON_BACK,
+          iconoButton:
+              indicePagina == 1 ? IconsData.ICON_STAR : IconsData.ICON_BACK,
           onPressed: onPresBack,
           colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
-          texto: recorridoUsuario.indicepagina == 1
-              ? "Empezar recorrido"
-              : "Retroceder"),
+          texto: indicePagina == 1 ? "Empezar recorrido" : "Retroceder"),
       secondButton: ButtonWidget(
-          iconoButton: recorridoUsuario.indicepagina == 1
-              ? IconsData.ICON_STAR
-              : IconsData.ICON_FINISH,
+          iconoButton:
+              indicePagina == 1 ? IconsData.ICON_STAR : IconsData.ICON_FINISH,
           onPressed: actionButton,
           colorParam: StylesThemeData.PRIMARY_COLOR,
-          texto: recorridoUsuario.indicepagina == 1
-              ? 'Empezar recorrido'
-              : 'Terminar'),
+          texto: indicePagina == 1 ? 'Empezar recorrido' : 'Terminar'),
     ));
 
     return Scaffold(
@@ -129,21 +140,20 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                 FutureItemWidget(
                     itemWidget: itemRuta,
                     setList: setList,
-                    futureList:
-                        principalcontroller.listarMiRuta(recorridoUsuario.id)),
+                    futureList: principalcontroller.listarMiRuta(recorridoId)),
                 paddingWidget(Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.only(top: 10, bottom: 40),
                     width: double.infinity,
-                    child: recorridoUsuario.indicepagina != 1
+                    child: indicePagina != 1
                         ? filaBotones
                         : ButtonWidget(
-                            iconoButton: recorridoUsuario.indicepagina == 1
+                            iconoButton: indicePagina == 1
                                 ? IconsData.ICON_STAR
                                 : IconsData.ICON_FINISH,
                             onPressed: actionButton,
                             colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                            texto: recorridoUsuario.indicepagina == 1
+                            texto: indicePagina == 1
                                 ? 'Empezar recorrido'
                                 : 'Terminar'))),
               ],

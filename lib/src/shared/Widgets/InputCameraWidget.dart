@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 
 class InputCameraWidget extends StatelessWidget {
   final IconData iconData;
@@ -47,7 +48,7 @@ class InputCameraWidget extends StatelessWidget {
                         opacity: 0.0,
                         child: Container(
                           margin: const EdgeInsets.only(left: 15),
-                          child: Icon(Icons.camera_alt),
+                          child: Icon(IconsData.ICON_CAMERA),
                         ))),
           ]))
     ]);

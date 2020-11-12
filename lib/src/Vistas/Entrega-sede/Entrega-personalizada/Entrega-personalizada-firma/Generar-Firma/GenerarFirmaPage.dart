@@ -79,7 +79,7 @@ class _MyHomePageState extends State<GenerarFirmaPage> {
                     alignment: Alignment.bottomRight,
                     child: IconButton(
                         icon: FaIcon(
-                          FontAwesomeIcons.windowClose,
+                          IconsData.ICON_CLOSE,
                           color: StylesThemeData.ICON_COLOR,
                           size: 25,
                         ),

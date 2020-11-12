@@ -3,13 +3,13 @@ import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Recepcion-intersede/RecepcionRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -25,15 +25,27 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   ListarEnviosController listarEnviosController = new ListarEnviosController();
   List<EnvioInterSedeModel> listEnviosPorRecibir;
   List<EnvioInterSedeModel> listEnviosEnviados;
+  bool buttonNuevo = false;
   bool porRecibir = true;
-  List<bool> isSelected;
-  int indexSwitch = 0;
+  int indexTabSection = 0;
 
   @override
   void initState() {
-    isSelected = [true, false];
+    indexTabSection = 0;
     listarEnviosIntersedes();
     super.initState();
+  }
+
+  void setValueButton(dynamic indexTab) {
+    if (indexTab == 0) {
+      setState(() {
+        buttonNuevo = false;
+      });
+    } else {
+      setState(() {
+        buttonNuevo = true;
+      });
+    }
   }
 
   void listarEnviosIntersedes() async {
@@ -94,25 +106,20 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         : "${listEnviosEnviados[intersedeIndice].numdocumentos} envíos";
   }
 
-  void actionButtonNuevo() {
-    Navigator.of(context).pushNamed('/nueva-entrega-intersede');
-  }
-
-  void actionButtonRecepcionar() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecepcionInterPage(recorridopage: null),
-        )).whenComplete(listarEnviosIntersedes);
+  void actionButton() {
+    if (!buttonNuevo) {
+      Navigator.of(context).pushNamed('/recepcionar-valija', arguments: {
+        'codValija': null,
+      }).whenComplete(listarEnviosIntersedes);
+    } else {
+      Navigator.of(context).pushNamed('/nueva-entrega-intersede');
+    }
   }
 
   void recepcionarEnvio(dynamic intersedeIndice) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecepcionInterPage(
-              recorridopage: listEnviosPorRecibir[intersedeIndice]),
-        )).whenComplete(listarEnviosIntersedes);
+    Navigator.of(context).pushNamed('/recepcionar-valija', arguments: {
+      'codValija': listEnviosPorRecibir[intersedeIndice].codigo,
+    }).whenComplete(listarEnviosIntersedes);
   }
 
   IconData obtenerIconInRecepciones(dynamic intersedeIndice) {
@@ -126,10 +133,13 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   }
 
   Widget itemRecepcion(dynamic indice) {
+    String subtituloItem = listEnviosPorRecibir[indice].numdocumentos == 1
+        ? "${listEnviosPorRecibir[indice].codigo} (${listEnviosPorRecibir[indice].numdocumentos} envío)"
+        : "${listEnviosPorRecibir[indice].codigo} (${listEnviosPorRecibir[indice].numdocumentos} envíos)";
     return ItemWidget(
-      itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+      itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
       itemIndice: indice,
-      iconPrimary: FontAwesomeIcons.cube,
+      iconPrimary: IconsData.ICON_LOTE_VALIJA,
       iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
       iconColor: StylesThemeData.ICON_COLOR,
       methodAction: recepcionarEnvio,
@@ -137,21 +147,24 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
           ? StylesThemeData.ITEM_SHADED_COLOR
           : StylesThemeData.ITEM_UNSHADED_COLOR,
       titulo: "${listEnviosPorRecibir[indice].destino}",
-      subtitulo: "${listEnviosPorRecibir[indice].codigo}",
-      subSecondtitulo: listEnviosPorRecibir[indice].numdocumentos == 1
-          ? "${listEnviosPorRecibir[indice].numdocumentos} envío"
-          : "${listEnviosPorRecibir[indice].numdocumentos} envíos",
+      subtitulo: subtituloItem,
       styleTitulo: StylesTitleData.STYLE_TITLE,
       styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-        styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
     );
   }
 
   Widget itemEnviados(dynamic indice) {
+    String subtituloItem = listEnviosEnviados[indice].numvalijas == 1
+        ? listEnviosEnviados[indice].numdocumentos == 1
+            ? "${listEnviosEnviados[indice].numvalijas} valija (${listEnviosEnviados[indice].numdocumentos} envío)"
+            : "${listEnviosEnviados[indice].numvalijas} valija (${listEnviosEnviados[indice].numdocumentos} envíos)"
+        : listEnviosEnviados[indice].numdocumentos == 1
+            ? "${listEnviosEnviados[indice].numvalijas} valijas (${listEnviosEnviados[indice].numdocumentos} envío)"
+            : "${listEnviosEnviados[indice].numvalijas} valijas (${listEnviosEnviados[indice].numdocumentos} envíos)";
     return ItemWidget(
-        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
         itemIndice: indice,
-        iconPrimary: FontAwesomeIcons.cube,
+        iconPrimary: IconsData.ICON_LOTE_VALIJA,
         methodAction: iniciarEnvio,
         iconSend: listEnviosEnviados[indice].estadoEnvio.id == creado
             ? IconsData.ICON_ITEM_WIDGETRIGHT
@@ -160,42 +173,14 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
             ? StylesThemeData.ITEM_SHADED_COLOR
             : StylesThemeData.ITEM_UNSHADED_COLOR,
         titulo: "${listEnviosEnviados[indice].destino}",
-        subtitulo: listEnviosEnviados[indice].numvalijas == 1
-            ? "${listEnviosEnviados[indice].numvalijas} valija"
-            : "${listEnviosEnviados[indice].numvalijas} valijas",
-        subSecondtitulo: listEnviosEnviados[indice].numdocumentos == 1
-            ? "${listEnviosEnviados[indice].numdocumentos} envío"
-            : "${listEnviosEnviados[indice].numdocumentos} envíos",
+        subtitulo: subtituloItem,
         styleTitulo: StylesTitleData.STYLE_TITLE,
         styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-        styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
         iconColor: StylesThemeData.ICON_COLOR);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget filaBotones = Container(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              flex: 5,
-              child: ButtonWidget(
-                  iconoButton: IconsData.ICON_NEW,
-                  onPressed: actionButtonNuevo,
-                  colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                  texto: "Nuevo")),
-          Expanded(
-              flex: 5,
-              child: Container(
-                  margin: const EdgeInsets.only(left: 5),
-                  child: ButtonWidget(
-                      iconoButton: IconsData.ICON_RECEIVE,
-                      onPressed: actionButtonRecepcionar,
-                      colorParam: StylesThemeData.BUTTON_SECUNDARY_COLOR,
-                      texto: "Recepcionar"))),
-        ],
-      ),
-    );
     return Scaffold(
         appBar: CustomAppBar(text: "Entregas interUTD"),
         drawer: DrawerPage(),
@@ -206,13 +191,18 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                 paddingWidget(Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(top: 20, bottom: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[filaBotones],
-                    ))),
+                    child: FilaButtonWidget(
+                        firsButton: ButtonWidget(
+                            iconoButton: !buttonNuevo
+                                ? IconsData.ICON_RECEIVE
+                                : IconsData.ICON_NEW,
+                            onPressed: actionButton,
+                            colorParam: !buttonNuevo
+                                ? StylesThemeData.BUTTON_SECUNDARY_COLOR
+                                : StylesThemeData.BUTTON_PRIMARY_COLOR,
+                            texto: !buttonNuevo ? "Recepcionar" : "Nuevo")))),
                 Expanded(
-                    child: TabSectionWidget2(
+                    child: TabSectionWidget(
                   iconPrimerTap: IconsData.ICON_POR_RECIBIR,
                   iconSecondTap: IconsData.ICON_ENVIADOS,
                   namePrimerTap: "Por recibir",
@@ -221,6 +211,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
                   listSecondTap: listEnviosEnviados,
                   itemPrimerTapWidget: itemRecepcion,
                   itemSecondTapWidget: itemEnviados,
+                  onTapTabSection: setValueButton,
+                  initstateIndex: indexTabSection,
                 ))
               ],
             ),

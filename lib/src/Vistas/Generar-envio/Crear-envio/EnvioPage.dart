@@ -35,8 +35,23 @@ class _EnvioPageState extends State<EnvioPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => inicializarUsuario());
     minvalor = obtenerCantidadMinima();
     super.initState();
+  }
+
+  void inicializarUsuario() {
+    if (this.mounted) {
+      Map usuario = ModalRoute.of(context).settings.arguments;
+      UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
+      usuarioFrecuente.area = usuario['area'];
+      usuarioFrecuente.id = usuario['id'];
+      usuarioFrecuente.nombre = usuario['nombre'];
+      usuarioFrecuente.sede = usuario['sede'];
+      setState(() {
+        this.usuarioFrecuente = usuarioFrecuente;
+      });
+    }
   }
 
   void validarEnvio() {
@@ -45,7 +60,7 @@ class _EnvioPageState extends State<EnvioPage> {
         usuarioFrecuente.id,
         _sobreController.text,
         _bandejaController.text,
-        _observacionController.text);
+        _observacionController.text,usuarioFrecuente);
   }
 
   void onPressEnviarButton() {
@@ -203,6 +218,14 @@ class _EnvioPageState extends State<EnvioPage> {
     enfocarcodigoSobreByCamera(_sobreController.text);
   }
 
+  void onPressedObservacion(dynamic valueObservacion) {
+    if (errorSobre.length == 0 &&
+        errorBandeja.length == 0 &&
+        _sobreController.text.length != 0) {
+      validarEnvio();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget errorsobre(String contenido) {
@@ -210,37 +233,6 @@ class _EnvioPageState extends State<EnvioPage> {
           style: TextStyle(
               color: StylesThemeData.LETTER_ERROR_COLOR, fontSize: 15));
     }
-
-    final observacion = TextFormField(
-      maxLines: 6,
-      controller: _observacionController,
-      focusNode: focusObservacion,
-      textInputAction: TextInputAction.done,
-      decoration: InputDecoration(
-        hintText: "Observación (Opcional)",
-        hintStyle: TextStyle(color: StylesThemeData.INPUT_HINT_COLOR),
-        filled: true,
-        fillColor: StylesThemeData.INPUT_COLOR,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: StylesThemeData.INPUT_BORDER_COLOR,
-            width: 0.0,
-          ),
-        ),
-      ),
-      onFieldSubmitted: (value) async {
-        if (errorSobre.length == 0 &&
-            errorBandeja.length == 0 &&
-            _sobreController.text.length != 0) {
-          validarEnvio();
-        }
-      },
-    );
 
     mainscaffold() {
       return Form(
@@ -264,7 +256,10 @@ class _EnvioPageState extends State<EnvioPage> {
                         ),
                         Container(
                             margin: const EdgeInsets.only(left: 10),
-                            child: Text("Para: ${usuarioFrecuente.nombre}",
+                            child: Text(
+                                usuarioFrecuente == null
+                                    ? ""
+                                    : "Para: ${usuarioFrecuente.nombre}",
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: StylesThemeData.LETTER_COLOR)))
@@ -286,10 +281,12 @@ class _EnvioPageState extends State<EnvioPage> {
                         Container(
                             margin: const EdgeInsets.only(left: 10),
                             child: Text(
-                                "Área: " +
-                                    usuarioFrecuente.area +
-                                    " - " +
-                                    usuarioFrecuente.sede,
+                                usuarioFrecuente == null
+                                    ? ""
+                                    : "Área: " +
+                                        usuarioFrecuente.area +
+                                        " - " +
+                                        usuarioFrecuente.sede,
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: StylesThemeData.LETTER_COLOR)))
@@ -318,8 +315,12 @@ class _EnvioPageState extends State<EnvioPage> {
                     ? Container()
                     : errorsobre(errorBandeja),
                 Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: observacion,
+                  child: InputWidget(
+                      linesInput: 6,
+                      controller: _observacionController,
+                      focusInput: focusObservacion,
+                      methodOnPressed: onPressedObservacion,
+                      hinttext: "Observación (Opcional)"),
                 ),
                 Container(
                     margin: const EdgeInsets.only(top: 20),

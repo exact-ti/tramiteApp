@@ -16,7 +16,8 @@ class InterSedeProvider implements IInterSedeProvider {
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioByUsuario() async {
     int utdId = obtenerUTDid();
-    Response resp = await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
+    Response resp =
+        await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
     return sedeModel.fromJsonValidar(resp.data);
   }
 
@@ -33,7 +34,7 @@ class InterSedeProvider implements IInterSedeProvider {
     int utdId = obtenerUTDid();
     Response resp = await req.get(
         '/servicio-tramite/utds/$utdId/tipospaquetes/$valijaId/paquetes/$codigo/envios');
-    if (resp.data == "") return null;
+    if (resp.data == "" || resp.data == null) return null;
     return envioModel.fromJsonValidar(resp.data);
   }
 

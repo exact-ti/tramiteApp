@@ -12,7 +12,11 @@ class InputWidget extends StatelessWidget {
   final String hinttext;
   final TextAlign align;
   final String title;
+  final int linesInput;
   final VoidCallback methodOnPressedSufix;
+  final bool visibilityTextForm;
+  final String Function(dynamic) validadorInput;
+  final bool modoLabel;
 
   const InputWidget(
       {Key key,
@@ -25,7 +29,10 @@ class InputWidget extends StatelessWidget {
       this.iconSufix,
       this.iconPrefix,
       this.title,
-      this.methodOnPressedSufix})
+      this.methodOnPressedSufix,
+      this.visibilityTextForm,
+      this.validadorInput,
+      this.linesInput, this.modoLabel})
       : super(key: key);
 
   @override
@@ -42,9 +49,15 @@ class InputWidget extends StatelessWidget {
         Container(
             margin: title == null ? const EdgeInsets.only(top: 10) : null,
             child: TextFormField(
-              keyboardType: TextInputType.text,
+              keyboardType: linesInput == null
+                  ? TextInputType.text
+                  : TextInputType.multiline,
               autofocus: false,
+              maxLines: linesInput == null ? 1 : linesInput,
+              validator: validadorInput,
               controller: controller,
+              obscureText:
+                  visibilityTextForm == null ? false : visibilityTextForm,
               textInputAction: TextInputAction.done,
               textAlign: align == null ? TextAlign.start : TextAlign.center,
               textCapitalization: TextCapitalization.sentences,
@@ -76,7 +89,8 @@ class InputWidget extends StatelessWidget {
                             if (methodOnPressedSufix != null)
                               methodOnPressedSufix();
                           },
-                          child: Icon(iconSufix,
+                          child: Icon(
+                            iconSufix,
                             size: 20,
                             color: StylesThemeData.PRIMARY_COLOR,
                           ),
@@ -92,6 +106,11 @@ class InputWidget extends StatelessWidget {
                     borderSide:
                         BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
                   ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        BorderSide(color: StylesThemeData.INPUT_ERROR_COLOR),
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: BorderSide(
@@ -99,7 +118,8 @@ class InputWidget extends StatelessWidget {
                       width: 0.0,
                     ),
                   ),
-                  hintText: hinttext,
+                  labelText: this.modoLabel==null || this.modoLabel==false? null:hinttext,
+                  hintText:this.modoLabel==null || this.modoLabel==false? hinttext:null,
                   hintStyle:
                       TextStyle(color: StylesThemeData.INPUT_HINT_COLOR)),
             ))

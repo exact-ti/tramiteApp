@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
@@ -76,20 +75,16 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     }
   }
 
-      Color colorSelect(dynamic indice, bool seleccionado) {
+  Color colorSelect(dynamic indice, bool seleccionado) {
     return seleccionado == null || seleccionado == false
-        ?indice % 2 == 0
+        ? indice % 2 == 0
             ? StylesThemeData.ITEM_SHADED_COLOR
             : StylesThemeData.ITEM_UNSHADED_COLOR
         : StylesThemeData.ITEM_SELECT_COLOR;
   }
 
   void onPressedNuevaButton() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NuevoEntregaExternaPage(),
-        ));
+    Navigator.of(context).pushNamed('/nuevo-agencia');
   }
 
   void registrarlista() async {
@@ -151,9 +146,15 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget crearItem(dynamic indice) {
       String codigoUtd = enviosvalidados[indice].utdId.toString();
+      String subtitulo = enviosvalidados[indice].numdocumentos == 1
+          ? enviosvalidados[indice].numvalijas == 1
+              ? "${enviosvalidados[indice].numdocumentos} destino (${enviosvalidados[indice].numvalijas} valija)"
+              : "${enviosvalidados[indice].numdocumentos} destino (${enviosvalidados[indice].numvalijas} valijas)"
+          : enviosvalidados[indice].numvalijas == 1
+              ? "${enviosvalidados[indice].numdocumentos} destinos (${enviosvalidados[indice].numvalijas} valija)"
+              : "${enviosvalidados[indice].numdocumentos} destinos (${enviosvalidados[indice].numvalijas} valijas)";
       return GestureDetector(
           onLongPress: () {
             setState(() {
@@ -161,18 +162,18 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             });
           },
           child: ItemWidget(
-              itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
-              itemIndice: indice,
-              methodAction: onPressTap,
-              iconColor: StylesThemeData.ICON_COLOR,
-              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-              colorItem: colorSelect(indice, validados["$codigoUtd"]),
-              titulo: enviosvalidados[indice].destino,
-              subtitulo: "${enviosvalidados[indice].numdocumentos} destinos",
-              subThirdtitulo: "${enviosvalidados[indice].numvalijas} valijas",
-              styleTitulo: StylesTitleData.STYLE_TITLE,
-              styleSubTitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
-              iconPrimary: IconsData.ICON_SEDE,));
+            itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+            itemIndice: indice,
+            methodAction: onPressTap,
+            iconColor: StylesThemeData.ICON_COLOR,
+            iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+            colorItem: colorSelect(indice, validados["$codigoUtd"]),
+            titulo: enviosvalidados[indice].destino,
+            subtitulo: subtitulo,
+            styleTitulo: StylesTitleData.STYLE_TITLE,
+            styleSubTitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+            iconPrimary: IconsData.ICON_SEDE,
+          ));
     }
 
     Widget mainscaffold() {
@@ -200,7 +201,10 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
                   child: loadingGet(),
                 ))))
               : ListItemWidget(
-                  itemWidget: crearItem, listItems: enviosvalidados,mostrarMensaje: true,),
+                  itemWidget: crearItem,
+                  listItems: enviosvalidados,
+                  mostrarMensaje: true,
+                ),
           paddingWidget(
             validados.containsValue(true)
                 ? Container(
@@ -232,6 +236,4 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
           : StylesThemeData.SELECTION_COLOR_2,
     );
   }
-
-
 }

@@ -1,2 +1,2 @@
-int entrada=1;
-int salida=2;
+int entrada=0;
+int salida=1;

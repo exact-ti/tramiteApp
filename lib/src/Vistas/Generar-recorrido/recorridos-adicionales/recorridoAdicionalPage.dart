@@ -2,7 +2,6 @@ import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-adicionales/recorridoAdicionalController.dart';
-import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
@@ -38,12 +37,18 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
   }
 
   void onPressRecorrido(dynamic indiceRecorrido) {
-    Navigator.push(
+/*     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ValidacionEnvioPage(
             recorridopage: listasRecorridos[indiceRecorrido]),
       ),
+    ); */
+    Navigator.of(context).pushNamed(
+      '/entregas-pisos-validacion',
+      arguments: {
+        'recorridoId': listasRecorridos[indiceRecorrido].id,
+      },
     );
   }
 

@@ -20,6 +20,6 @@ abstract class EnvioInterface {
 
   Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio, String fechaFin, int opcion);
 
-  Future<dynamic> retirarEnvio(EnvioModel envioModel, String motivo);
+  Future<dynamic> retirarEnvio(String envioId, String motivo);
   
 }

@@ -26,8 +26,10 @@ class SwitchWidget extends StatelessWidget {
             onChanged: (value) {
               onPressed();
             },
-            activeTrackColor: StylesThemeData.SWITCH_COLOR,
+            activeTrackColor: StylesThemeData.SWITCH_COLOR_PRIMARY,
             activeColor: StylesThemeData.PRIMARY_COLOR,
+            inactiveTrackColor: StylesThemeData.SWITCH_COLOR_SECONDARY_BODY,
+            inactiveThumbColor:StylesThemeData.SWITCH_COLOR_SECONDARY ,
           ),
         ),
         Expanded(

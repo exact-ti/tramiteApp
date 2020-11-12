@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-TipoPersonalizada/ListarTipoPersonalizadaPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
@@ -44,7 +43,20 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
 
   @override
   void initState() {
+           WidgetsBinding.instance
+        .addPostFrameCallback((_) => initializarRecorrido());
     super.initState();
+  }
+
+  initializarRecorrido() {
+    if (mounted) {
+      Map recorrido = ModalRoute.of(context).settings.arguments;
+      RecorridoModel recorridoModel = new RecorridoModel();
+      recorridoModel.id = recorrido['recorridoId'];
+      setState(() {
+        recorridoUsuario = recorridoModel;
+      });
+    }
   }
 
   Future _traerdatosescanerSobre() async {
@@ -265,12 +277,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       Expanded(
         child: InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ListarTipoPersonalizadaPage(),
-              ),
-            );
+            Navigator.pushNamed(context,'/entrega-personalizada');
           },
           child: Text(
             'Entrega Personalizada',
@@ -309,7 +316,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Entrega ${recorridoUsuario.id} en sede"),
+        appBar: CustomAppBar(text: recorridoUsuario==null?"":"Entrega ${recorridoUsuario.id} en sede"),
         drawer: DrawerPage(),
         body: scaffoldbody(
             Column(

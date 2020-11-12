@@ -6,7 +6,9 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -29,28 +31,29 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   _DetalleRutaPagePageState(this.objetoModo);
   DetalleRutaController principalcontroller = new DetalleRutaController();
   List<DetalleRutaModel> detallesRuta = new List();
-  List<bool> isSelected;
   bool porEntregar = true;
-  int indexSwitch = 0;
   List<DetalleRutaModel> listDetallesEntregar;
   List<DetalleRutaModel> listDetallesRecoger;
 
   @override
   void initState() {
-    isSelected = [true, false];
-    this.recorridoID = objetoModo["recorridoId"];
-    this.rutaModel = objetoModo["ruta"];
-    listarEnviosIntersedes();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => listarEnviosIntersedes());
     super.initState();
   }
 
   void listarEnviosIntersedes() async {
-    listDetallesEntregar = await principalcontroller.listarDetalleRuta(
-        porEntregar, rutaModel.id, recorridoID);
-    listDetallesRecoger = await principalcontroller.listarDetalleRuta(
-        !porEntregar, rutaModel.id, recorridoID);
     if (this.mounted) {
+      Map recorrido = ModalRoute.of(context).settings.arguments;
+      this.recorridoID = recorrido["recorridoId"];
+      this.rutaModel = recorrido["ruta"];
+      listDetallesEntregar = await principalcontroller.listarDetalleRuta(
+          porEntregar, rutaModel.id, recorridoID);
+      listDetallesRecoger = await principalcontroller.listarDetalleRuta(
+          !porEntregar, rutaModel.id, recorridoID);
       setState(() {
+        rutaModel = rutaModel;
+        recorridoID = recorridoID;
         listDetallesEntregar = listDetallesEntregar;
         listDetallesRecoger = listDetallesRecoger;
       });
@@ -63,6 +66,22 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
 
   void methodPopUpInRecojos(dynamic intersedeIndice) {
     trackingPopUp(context, listDetallesRecoger[intersedeIndice].id);
+  }
+
+  void onPressItemRecojo(dynamic intersedeIndice) async {
+    bool respuestaConfirmacion = await confirmacion(context, "succes", "EXACT",
+        "El documento ${listDetallesRecoger[intersedeIndice].paqueteId} no se encuentra. ¿Deseas enviar una notificación?");
+    if (respuestaConfirmacion) {
+      dynamic responseNotificacion = await principalcontroller
+          .enviarNotificacion(listDetallesRecoger[intersedeIndice].paqueteId);
+      if (responseNotificacion["status"] == "success") {
+        notificacion(
+            context, "success", "EXACT", "La notificación fue realizada");
+      } else {
+        notificacion(
+            context, "error", "EXACT", responseNotificacion["message"]);
+      }
+    }
   }
 
   @override
@@ -89,7 +108,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('${rutaModel.nombre}'),
+                    child: Text(rutaModel == null ? "" : '${rutaModel.nombre}'),
                     flex: 5,
                   ),
                 ],
@@ -110,7 +129,8 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('${rutaModel.ubicacion}'),
+                    child:
+                        Text(rutaModel == null ? "" : '${rutaModel.ubicacion}'),
                     flex: 5,
                   ),
                 ],
@@ -121,7 +141,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
 
     Widget itemEntregar(dynamic indice) {
       return ItemWidget(
-          itemHeight:  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
           itemIndice: indice,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR
@@ -136,14 +156,15 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
 
     Widget itemRecoger(dynamic indice) {
       return ItemWidget(
-          itemHeight:  StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
           itemIndice: indice,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR
               : StylesThemeData.ITEM_UNSHADED_COLOR,
           titulo: listDetallesRecoger[indice].destinatario,
           subSecondtitulo: listDetallesRecoger[indice].paqueteId,
-          iconSend: IconsData.ICON_MAIL,
+          methodAction: onPressItemRecojo,
+          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
           onPressedCode: methodPopUpInRecojos,
           iconColor: StylesThemeData.ICON_COLOR,
           styleTitulo: StylesTitleData.STYLE_TITLE,
@@ -162,7 +183,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
             ],
           )),
           Expanded(
-              child: TabSectionWidget2(
+              child: TabSectionWidget(
             iconPrimerTap: IconsData.ICON_POR_RECIBIR,
             iconSecondTap: IconsData.ICON_ENVIADOS,
             namePrimerTap: "Por entregar",
@@ -171,6 +192,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
             listSecondTap: listDetallesRecoger,
             itemPrimerTapWidget: itemEntregar,
             itemSecondTapWidget: itemRecoger,
+            initstateIndex: 0,
           ))
         ],
       );

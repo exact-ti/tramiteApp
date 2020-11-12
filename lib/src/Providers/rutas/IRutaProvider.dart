@@ -13,4 +13,6 @@ abstract class IRutaProvider {
   Future<bool> iniciarRecorrido(int recorridoId);
 
   Future<bool> terminarRecorrido(int recorridoId);
+
+  Future<dynamic> enviarNotificacionToAusencia(String paqueteId);
 }

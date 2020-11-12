@@ -32,16 +32,36 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   EnvioInterSedeModel recorridoUsuario;
   _RecepcionInterPageState(this.recorridoUsuario);
   final _sobreController = TextEditingController();
-  final _bandejaController = TextEditingController();
-  List<EnvioModel> listaEnvios = new List();
+  final _valijaController = TextEditingController();
+  List<EnvioModel> listaEnvios;
   RecepcionInterController principalcontroller = new RecepcionInterController();
   String mensajeconfirmation = "";
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
+  FocusNode focusValija = FocusNode();
+  FocusNode focusSobre = FocusNode();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => inicializarEnvios());
+    super.initState();
+  }
+
+  void inicializarEnvios() {
+    if (this.mounted) {
+      Map valija = ModalRoute.of(context).settings.arguments;
+      if (valija["codValija"] != null) {
+        _valijaController.text = valija['codValija'];
+        mostrarenviosiniciales();
+      } else {
+        setState(() {
+          listaEnvios = [];
+        });
+      }
+    }
+  }
 
   mostrarenviosiniciales() async {
-    listaEnvios = await principalcontroller.listarEnvios(
-        context, _bandejaController.text);
+    listaEnvios =
+        await principalcontroller.listarEnvios(context, _valijaController.text);
     if (listaEnvios != null) {
       if (listaEnvios.length == 0) {
         setState(() {
@@ -57,15 +77,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
         listaEnvios = [];
       });
     }
-  }
-
-  @override
-  void initState() {
-    if (recorridoUsuario != null) {
-      _bandejaController.text = recorridoUsuario.codigo;
-      mostrarenviosiniciales();
-    }
-    super.initState();
   }
 
   void sendButton() async {
@@ -100,11 +111,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   }
 
   void _validarSobreText(dynamic valueSobreController) async {
-    if (_bandejaController.text == "" || listaEnvios.length == 0) {
+    if (_valijaController.text == "" || listaEnvios.length == 0) {
       setState(() {
         _sobreController.text = "";
       });
-      popuptoinput(context, f1, "error", "EXACT",
+      popuptoinput(context, focusValija, "error", "EXACT",
           "Primero debe ingresar el codigo de la valija");
     } else {
       String value = valueSobreController;
@@ -115,7 +126,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
             .isNotEmpty;
         if (perteneceLista) {
           dynamic respuestaValidar = await principalcontroller.recogerdocumento(
-              context, _bandejaController.text, value, true);
+              context, _valijaController.text, value, true);
           if (respuestaValidar["status"] == "success") {
             listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
             if (listaEnvios.length == 0) {
@@ -137,33 +148,32 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               _sobreController.text = value;
             });
           }
-          enfocarInputfx(context, f2);
+          enfocarInputfx(context, focusSobre);
         } else {
           bool respuestaPopUp = await confirmacion(context, "success", "EXACT",
               "El código $value no se encuentra en la lista. ¿Desea continuar?");
           if (respuestaPopUp) {
-            dynamic respuestaValidar =
-                await principalcontroller.recogerdocumento(
-                    context, _bandejaController.text, value, true);
+            dynamic respuestaValidar = await principalcontroller
+                .recogerdocumento(context, _valijaController.text, value, true);
             if (respuestaValidar["status"] != "success") {
               setState(() {
                 mensajeconfirmation = "No es posible procesar el código";
                 _sobreController.text = value;
               });
-              enfocarInputfx(context, f2);
+              enfocarInputfx(context, focusSobre);
             } else {
               setState(() {
                 mensajeconfirmation = "El sobre $value fue recepcionado";
                 _sobreController.text = value;
               });
-              enfocarInputfx(context, f2);
+              enfocarInputfx(context, focusSobre);
             }
           } else {
-            enfocarInputfx(context, f2);
+            enfocarInputfx(context, focusSobre);
           }
         }
       } else {
-        popuptoinput(context, f1, "error", "EXACT",
+        popuptoinput(context, focusValija, "error", "EXACT",
             "El ingreso del código de sobre es obligatorio");
       }
     }
@@ -178,19 +188,19 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           mensajeconfirmation = "";
           listaEnvios = listaEnvios;
         });
-        enfocarInputfx(context, f2);
+        enfocarInputfx(context, focusSobre);
       } else {
         setState(() {
           mensajeconfirmation = "";
           listaEnvios = [];
-          _bandejaController.text = value;
+          _valijaController.text = value;
         });
-        popuptoinput(
-            context, f1, "error", "EXACT", "No es posible procesar el código");
+        popuptoinput(context, focusValija, "error", "EXACT",
+            "No es posible procesar el código");
       }
     } else {
-      popuptoinput(
-          context, f1, "error", "EXACT", "El código del lote es obligatorio");
+      popuptoinput(context, focusValija, "error", "EXACT",
+          "El código del lote es obligatorio");
     }
   }
 
@@ -203,11 +213,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   }
 
   Future _traerdatosescanerBandeja() async {
-    _bandejaController.text = await getDataFromCamera(context);
+    _valijaController.text = await getDataFromCamera(context);
     setState(() {
-      _bandejaController.text = _bandejaController.text;
+      _valijaController.text = _valijaController.text;
     });
-    _validarBandejaText(_bandejaController.text);
+    _validarBandejaText(_valijaController.text);
   }
 
   @override
@@ -235,6 +245,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           paddingWidget(Column(
             children: <Widget>[
               Container(
+                  margin: EdgeInsets.only(top: 20),
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
                   child: InputWidget(
@@ -242,8 +253,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                       methodOnPressedSufix: _traerdatosescanerBandeja,
                       iconPrefix: IconsData.ICON_SOBRE,
                       methodOnPressed: _validarBandejaText,
-                      controller: _bandejaController,
-                      focusInput: f1,
+                      controller: _valijaController,
+                      focusInput: focusValija,
                       hinttext: "Código de valija")),
               Container(
                 alignment: Alignment.centerLeft,
@@ -254,7 +265,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                     iconPrefix: IconsData.ICON_SOBRE,
                     methodOnPressed: _validarSobreText,
                     controller: _sobreController,
-                    focusInput: f2,
+                    focusInput: focusSobre,
                     hinttext: "Código de sobre"),
                 margin: const EdgeInsets.only(bottom: 20),
               ),
@@ -266,15 +277,15 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                   margin: const EdgeInsets.only(bottom: 20),
                   child: Center(child: Text(mensajeconfirmation))),
           ListItemWidget(itemWidget: itemInterSede, listItems: listaEnvios),
-          listaEnvios.length > 0
-              ? Container(
+          listaEnvios != null && listaEnvios.length > 0
+              ? paddingWidget(Container(
                   margin: const EdgeInsets.only(bottom: 20, top: 10),
                   alignment: Alignment.center,
                   child: ButtonWidget(
                       iconoButton: IconsData.ICON_FINISH,
                       onPressed: sendButton,
                       colorParam: StylesThemeData.PRIMARY_COLOR,
-                      texto: "Terminar"))
+                      texto: "Terminar")))
               : Container(),
         ],
       );

@@ -34,6 +34,25 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
 
   ImportarArchivoController imp = new ImportarArchivoController();
 
+TipoPaqueteModel tipoPaquete;
+    @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => inicializarPaquete());
+    super.initState();
+  }
+
+  void inicializarPaquete() {
+    if (this.mounted) {
+    Map paquete = ModalRoute.of(context).settings.arguments;
+      if (paquete != null) {        
+        tipoPaquete = paquete['tipoPaquete'];
+        setState(() {
+          tipoPaquete=tipoPaquete;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -318,7 +337,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         dynamic resp = await imp.importarPaquetesExternos(
-            paqueteExternoList, widget.tipoPaqueteModel);
+            paqueteExternoList, tipoPaquete);
 
         if (resp["status"] == "success") {
           notificacion(
@@ -357,7 +376,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
         }
 
         dynamic resp = await imp.importarPaquetesExternos(
-            paqueteExternoList, widget.tipoPaqueteModel);
+            paqueteExternoList, tipoPaquete);
 
         if (resp["status"] == "success") {
           notificacion(
@@ -437,7 +456,7 @@ class _ImportarArchivoPageState extends State<ImportarArchivoPage> {
   Future<List<PaqueteExternoBuzonModel>> _generateListFromDecoderData(
       BuildContext context) async {
     var decoder = await getDecoderDataFromExcelFile();
-    String sheetName = widget.tipoPaqueteModel.nombre.toUpperCase();
+    String sheetName = tipoPaquete.nombre.toUpperCase();
     List<PaqueteExternoBuzonModel> paquetesBuzonValidar =
         new List<PaqueteExternoBuzonModel>();
 

@@ -44,13 +44,20 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
 
   @override
   void initState() {
-    if (entregaLote != null) {
-      _codLoteController.text = entregaLote.paqueteId;
-      iniciarlistValijas();
-    } else {
-      listValijas = [];
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => inicializar());
     super.initState();
+  }
+
+  void inicializar() {
+    if (this.mounted) {
+      Map lote = ModalRoute.of(context).settings.arguments;
+      if (lote != null) {
+        _codLoteController.text = lote["codLote"];
+        iniciarlistValijas();
+      } else {
+        listValijas = [];
+      }
+    }
   }
 
   void iniciarlistValijas() async {
@@ -268,53 +275,54 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
         appBar: CustomAppBar(text: "Recibir Lotes"),
         drawer: DrawerPage(),
         body: scaffoldbody(
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                      padding: const EdgeInsets.only(top: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Column(
+                  children: <Widget>[
+                    Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: InputWidget(
+                          iconSufix: IconsData.ICON_CAMERA,
+                          methodOnPressedSufix: _getDataCameraCodLote,
+                          iconPrefix: IconsData.ICON_SOBRE,
+                          controller: _codLoteController,
+                          focusInput: focusCodLote,
+                          hinttext: "Código de lote",
+                          methodOnPressed: _listarValijasByCodLote,
+                        )),
+                    Container(
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
                       child: InputWidget(
                         iconSufix: IconsData.ICON_CAMERA,
-                        methodOnPressedSufix: _getDataCameraCodLote,
+                        methodOnPressedSufix: _getDataCameraCodValija,
                         iconPrefix: IconsData.ICON_SOBRE,
-                        controller: _codLoteController,
-                        focusInput: focusCodLote,
-                        hinttext: "Código de lote",
-                        methodOnPressed: _listarValijasByCodLote,
-                      )),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: double.infinity,
-                    child: InputWidget(
-                      iconSufix: IconsData.ICON_CAMERA,
-                      methodOnPressedSufix: _getDataCameraCodValija,
-                      iconPrefix: IconsData.ICON_SOBRE,
-                      controller: _codValijaController,
-                      focusInput: focusCodValija,
-                      hinttext: "Código de valija",
-                      methodOnPressed: _validarCodValija,
+                        controller: _codValijaController,
+                        focusInput: focusCodValija,
+                        hinttext: "Código de valija",
+                        methodOnPressed: _validarCodValija,
+                      ),
+                      margin: const EdgeInsets.only(bottom: 20),
                     ),
-                    margin: const EdgeInsets.only(bottom: 20),
-                  ),
-                  ListItemWidget(
-                      itemWidget: envioLoteWidget, listItems: listValijas),
-                  listValijas.isNotEmpty
-                      ? Container(
-                          margin: const EdgeInsets.only(bottom: 30, top: 10),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          child: ButtonWidget(
-                              iconoButton: IconsData.ICON_FINISH,
-                              onPressed: onPressedTerminarButton,
-                              colorParam: StylesThemeData.PRIMARY_COLOR,
-                              texto: "Terminar"))
-                      : Container(),
-                ],
-              ),
+                  ],
+                )),
+                ListItemWidget(
+                    itemWidget: envioLoteWidget, listItems: listValijas),
+                listValijas.isNotEmpty
+                    ? paddingWidget(Container(
+                        margin: const EdgeInsets.only(bottom: 30, top: 10),
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: ButtonWidget(
+                            iconoButton: IconsData.ICON_FINISH,
+                            onPressed: onPressedTerminarButton,
+                            colorParam: StylesThemeData.PRIMARY_COLOR,
+                            texto: "Terminar")))
+                    : Container(),
+              ],
             ),
             context));
   }

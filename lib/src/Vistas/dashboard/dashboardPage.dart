@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Enumerator/TipoEstadoEnum.dart';
+import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/Indicador.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'dashboardController.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -15,16 +17,14 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   DashboardController dashboardController = new DashboardController();
   Indicador indicadorModel = new Indicador();
+  final _prefs = new PreferenciasUsuario();
+
   @override
   void initState() {
     super.initState();
   }
 
   Widget tick(Indicador indicador, int modalidad) {
-    Map<String, Object> objetoSend = {
-      'modalidad': modalidad,
-      'estadoid': indicador.id
-    };
     return Expanded(
         child: Container(
             alignment: Alignment.center,
@@ -36,18 +36,39 @@ class _DashboardPageState extends State<DashboardPage> {
                   Text(indicador.cantidad.toString()),
                   InkWell(
                       onTap: () {
-                        Navigator.push(
+                        if (_prefs.tipoperfil == cliente) {
+                          Map<String, Object> dataEnvio = {
+                            'modalidad': modalidad,
+                            'estadoid': indicador.id
+                          };
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => new TopLevelWidget(
+                                        rutaPage: '/envios-activos',
+                                        datainfo: dataEnvio,
+                                      )));
+                        } else {
+                          Navigator.of(context).pushNamed(
+                            '/envios-activos',
+                            arguments: {
+                              'modalidad': modalidad,
+                              'estadoid': indicador.id
+                            },
+                          );
+                        }
+
+/*                         Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ListarEnviosActivosPage(
                                   objetoModo: objetoSend),
-                            ));
+                            )); */
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
                         child: ClipOval(
                           child: Material(
-                            color: Colors.blue, 
+                            color: Colors.blue,
                             child: SizedBox(width: 35, height: 35),
                           ),
                         ),
@@ -92,16 +113,19 @@ class _DashboardPageState extends State<DashboardPage> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               return Center(
-                  child: sinResultados('No hay conexión con el servidor', IconsData.ICON_ERROR_SERVIDOR)); 
+                  child: sinResultados('No hay conexión con el servidor',
+                      IconsData.ICON_ERROR_SERVIDOR));
             case ConnectionState.waiting:
               return Center(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: loadingGet(), 
+                child: loadingGet(),
               ));
             default:
               if (snapshot.hasError)
-                return Center(child: sinResultados('Ha surgido un problema', IconsData.ICON_ERROR_PROBLEM));
+                return Center(
+                    child: sinResultados('Ha surgido un problema',
+                        IconsData.ICON_ERROR_PROBLEM));
               return futurowidget(snapshot.data);
           }
         });
@@ -159,7 +183,10 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(text: "Dashboard",leadingbool: boolIfPerfil()?false:true,),
+        appBar: CustomAppBar(
+          text: "Dashboard",
+          leadingbool: boolIfPerfil() ? false : true,
+        ),
         drawer: drawerIfPerfil(),
         backgroundColor: Colors.white,
         body: mainscaffold());

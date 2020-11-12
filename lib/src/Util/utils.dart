@@ -241,11 +241,28 @@ int obtenerUTDid() {
   }
 }
 
+UtdModel obtenerUTD() {
+  UtdModel utdModel = new UtdModel();
+  if (_prefs.utd != null) {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    return umodel;
+  } else {
+    return null;
+  }
+}
+
 int obtenerBuzonid() {
   BuzonModel buzonModel = new BuzonModel();
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
   BuzonModel bmodel = buzonModel.fromPreferencs(buzon);
   return bmodel.id;
+}
+
+BuzonModel buzonPrincipal(){
+    BuzonModel buzonModel = new BuzonModel();
+  Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+  return  buzonModel.fromPreferencs(buzon);
 }
 
 Widget drawerIfPerfil() {
@@ -285,6 +302,28 @@ void navegarHomeExact(BuildContext context) {
   }
 }
 
+void navegarEnviosActivos(BuildContext context) {
+  Menu menu = new Menu();
+  if (_prefs.menus != null) {
+    List<dynamic> menus = json.decode(_prefs.menus);
+    List<Menu> listmenu = menu.fromPreferencs(menus);
+    for (Menu men in listmenu) {
+      if (men.home) {
+        if (_prefs.tipoperfil == cliente) {
+          Navigator.of(context, rootNavigator: true).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) =>
+                      new TopLevelWidget(rutaPage: men.link)));
+        } else {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              men.link, (Route<dynamic> route) => false);
+        }
+      }
+    }
+  }
+}
+
+
 void navegarNotificaciones(BuildContext context) {
   if (_prefs.tipoperfil == cliente) {
     Navigator.of(context, rootNavigator: true).pushReplacement(
@@ -297,7 +336,7 @@ void navegarNotificaciones(BuildContext context) {
   }
 }
 
-String validateEmail(String value) {
+String validateEmail(dynamic value) {
   if (value == "") {
     return null;
   } else {
@@ -321,3 +360,5 @@ String rutaPrincipal() {
       .toList()
       .first;
 }
+
+

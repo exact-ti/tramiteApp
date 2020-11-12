@@ -128,13 +128,13 @@ class Requester {
 
   dynamic errorInterceptor(DioError dioError) async {
     dynamic data = dioError.response.data;
-    if (data!=null) {
+    if (data != null) {
       Response response;
       final resp = await refreshToken(
           "/servicio-auth/auth/refresh", _prefs.refreshToken);
       if (resp.statusCode == 200) {
         dynamic refreshdata = resp.data;
-        dynamic dataCore = refreshdata["data"]; 
+        dynamic dataCore = refreshdata["data"];
         _prefs.token = dataCore['access_token'];
         _prefs.refreshToken = dataCore['refresh_token'];
         RequestOptions request = dioError.request;

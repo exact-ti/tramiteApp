@@ -6,10 +6,12 @@ import 'package:tramiteapp/src/Providers/trackingProvider/impl/TrackingProvider.
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/tracking/TrackingInterface.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/CardWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemTimeLineWidget.dart';
-import 'package:tramiteapp/src/shared/modals/trackingCargo.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
+  final NavigationService _navigationService = locator<NavigationService>();
 
 String obtenerTextoCargo(dynamic detalleCargo) {
   String textCargo = "";
@@ -27,27 +29,44 @@ String obtenerTextoCargo(dynamic detalleCargo) {
   return textCargo;
 }
 
+
+IconData obtenerIcono(dynamic detalleCargo) {
+  IconData iconoCargo;
+  if (detalleCargo == null) return null;
+  switch (detalleCargo.tipoCargoModel.id) {
+    case 1:
+      iconoCargo = IconsData.ICON_CARD;
+      break;
+    case 2:
+      iconoCargo =IconsData.ICON_FIRM;
+      break;
+    default:
+      iconoCargo = IconsData.ICON_FIRM;
+  }
+  return iconoCargo;
+}
+
 TextStyle obtenerStyleCargo(dynamic detalleCargo) {
   TextStyle textStyleCargo;
   if (detalleCargo == null) return null;
   switch (detalleCargo.tipoCargoModel.id) {
     case 1:
-      textStyleCargo = TextStyle(fontSize: 15);
+      textStyleCargo = TextStyle(fontSize: 12);
       break;
     case 2:
       textStyleCargo = TextStyle(
           color: Colors.blue,
-          fontSize: 15,
+          fontSize: 12,
           decoration: TextDecoration.underline);
       break;
     default:
-      textStyleCargo = TextStyle(fontSize: 15);
+      textStyleCargo = TextStyle(fontSize: 12);
   }
   return textStyleCargo;
 }
 
 void onPressedrWidget(dynamic indiceWidget, dynamic trackingModel) {
-  informacionCargo(
+  _navigationService.informacionCargo(
       "EXACT", trackingModel.detalles[indiceWidget].cargo, trackingModel);
 }
 
@@ -106,7 +125,7 @@ void trackingPopUp(BuildContext context, int codigo) async {
                                     iconTitulo: IconsData.ICON_CALENDAR,
                                     iconSubtitulo: IconsData.ICON_USER,
                                     iconSubSecondtitulo: IconsData.ICON_SEDE,
-                                    iconSubThirdtitulo: IconsData.ICON_CARD,
+                                    iconSubThirdtitulo: obtenerIcono(detalles[i].cargo),
                                     itemIndice: i,
                                     titulo: detalles[i].fecha,
                                     subtitulo: detalles[i].estado,

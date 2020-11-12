@@ -33,17 +33,22 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   List<EnvioModel> listaEnvios;
   ValidacionController validacionController = new ValidacionController();
   FocusNode focusSobre = FocusNode();
-
+  int recorridoId;
   @override
   void initState() {
-    listarEnviosToValidar();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => listarEnviosToValidar());
     super.initState();
   }
 
   void listarEnviosToValidar() async {
-    listaEnvios = await validacionController.validacionEnviosController(this.recorridoUsuario.id);
     if (this.mounted) {
+      Map recorrido = ModalRoute.of(context).settings.arguments;
+      recorridoId = recorrido['recorridoId'];
+      listaEnvios = await validacionController
+          .validacionEnviosController(this.recorridoId);
       setState(() {
+        recorridoId = recorridoId;
         listaEnvios = listaEnvios;
       });
     }
@@ -66,7 +71,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
         });
       } else {
         EnvioModel envioModel = await validacionController.validarCodigo(
-            value, recorridoUsuario.id, context);
+            value, this.recorridoId, context);
         if (envioModel != null) {
           envioModel.estado = true;
           setState(() {
@@ -102,7 +107,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
   void onPressed() async {
     if (listaEnvios.where((envio) => !envio.estado).toList().isEmpty) {
       validacionController.confirmacionDocumentosValidados(
-          listaEnvios, context, recorridoUsuario.id);
+          listaEnvios, context, recorridoId);
     } else {
       bool respuestaarray = await confirmarArray(
           context,
@@ -114,7 +119,7 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
         validacionController.confirmacionDocumentosValidados(
             listaEnvios.where((envio) => envio.estado).toList(),
             context,
-            recorridoUsuario.id);
+            recorridoId);
       }
     }
   }
@@ -150,28 +155,35 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
                       margin: EdgeInsets.only(top: 30, bottom: 20),
                       width: double.infinity,
                       child: InputWidget(
-                            iconSufix: IconsData.ICON_CAMERA,
-                            methodOnPressedSufix: _traerdatosescanerbandeja,
-                            methodOnPressed: _validarText,
-                            controller: _sobreController,
-                            focusInput: focusSobre,
-                            hinttext: "Ingrese código",
-                          )),
+                        iconSufix: IconsData.ICON_CAMERA,
+                        methodOnPressedSufix: _traerdatosescanerbandeja,
+                        methodOnPressed: _validarText,
+                        controller: _sobreController,
+                        focusInput: focusSobre,
+                        hinttext: "Ingrese código",
+                        iconPrefix: IconsData.ICON_SOBRE,
+                      )),
                 ),
-                ListItemWidget(itemWidget: itemEnvios, listItems: listaEnvios,mostrarMensaje: true,),
-                listaEnvios!=null?paddingWidget(Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    margin: EdgeInsets.only(bottom: 40),
-                    child: ButtonWidget(
-                        iconoButton: listaEnvios.length == 0
-                            ? IconsData.ICON_RECOJO
-                            : IconsData.ICON_NEW,
-                        onPressed: onPressed,
-                        colorParam: StylesThemeData.PRIMARY_COLOR,
-                        texto: listaEnvios.length == 0
-                            ? 'Crear solo recojo'
-                            : 'Crear recorrido'))):Container()
+                ListItemWidget(
+                  itemWidget: itemEnvios,
+                  listItems: listaEnvios,
+                  mostrarMensaje: true,
+                ),
+                listaEnvios != null
+                    ? paddingWidget(Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        margin: EdgeInsets.only(bottom: 40),
+                        child: ButtonWidget(
+                            iconoButton: listaEnvios.length == 0
+                                ? IconsData.ICON_RECOJO
+                                : IconsData.ICON_NEW,
+                            onPressed: onPressed,
+                            colorParam: StylesThemeData.PRIMARY_COLOR,
+                            texto: listaEnvios.length == 0
+                                ? 'Crear solo recojo'
+                                : 'Crear recorrido')))
+                    : Container()
               ],
             ),
             context));

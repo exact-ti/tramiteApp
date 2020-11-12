@@ -1,6 +1,3 @@
-
-
-
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
@@ -11,19 +8,16 @@ import 'package:tramiteapp/src/Providers/paquetes/IPaqueteProvider.dart';
 import 'EnvioInterface.dart';
 
 class EnvioImpl implements EnvioInterface {
-  
   IEnvioProvider envio;
   IPaqueteProvider paquete;
   IBandejaProvider bandeja;
 
-
-  EnvioImpl(IEnvioProvider envio,IPaqueteProvider paquete,IBandejaProvider bandeja) {
+  EnvioImpl(IEnvioProvider envio, IPaqueteProvider paquete,
+      IBandejaProvider bandeja) {
     this.envio = envio;
-    this.paquete =paquete;
+    this.paquete = paquete;
     this.bandeja = bandeja;
   }
-
-
 
   @override
   Future<bool> crearEnvio(EnvioModel envioModel) {
@@ -41,17 +35,18 @@ class EnvioImpl implements EnvioInterface {
   }
 
   @override
-  Future<List<EnvioInterSedeModel>> listarAgenciasUsuario()async {
-      return await envio.listarEnvioAgenciasByUsuario();
+  Future<List<EnvioInterSedeModel>> listarAgenciasUsuario() async {
+    return await envio.listarEnvioAgenciasByUsuario();
   }
 
   @override
-  Future<List<EnvioModel>> listarActivos(bool porRecibir,List<int> estadosids) async{
-      if(porRecibir){
+  Future<List<EnvioModel>> listarActivos(
+      bool porRecibir, List<int> estadosids) async {
+    if (porRecibir) {
+      return await envio.listarRecepcionesActivas(estadosids);
+    } else {
       return await envio.listarEnviosActivosByUsuario(estadosids);
-      }else{
-       return await envio.listarRecepcionesActivas(estadosids);       
-      }
+    }
   }
 
   @override
@@ -62,22 +57,20 @@ class EnvioImpl implements EnvioInterface {
   @override
   Future<List<EnvioModel>> listarEnviosUTD() async {
     return await envio.listarEnviosUTD();
-
   }
 
   @override
-  Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio, String fechaFin, int opcion) async {
-      if(opcion==0){
-      return await envio.listarEnviosHistoricosEntrada(fechaInicio,fechaFin);
-      }else{
-       return await envio.listarEnviosHistoricosSalida(fechaInicio,fechaFin);       
-      }
+  Future<List<EnvioModel>> listarEnviosHistoricos(
+      String fechaInicio, String fechaFin, int opcion) async {
+    if (opcion == 0) {
+      return await envio.listarEnviosHistoricosEntrada(fechaInicio, fechaFin);
+    } else {
+      return await envio.listarEnviosHistoricosSalida(fechaInicio, fechaFin);
+    }
   }
 
   @override
-  Future retirarEnvio(EnvioModel envioModel,String motivo) async {
-    return await envio.retirarEnvioProvider(envioModel,motivo);
+  Future retirarEnvio(String envioModelId, String motivo) async {
+    return await envio.retirarEnvioProvider(envioModelId, motivo);
   }
-
-
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +8,7 @@ import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget2.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -29,13 +28,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
   List<EnvioModel> listaEnviosEntrada = new List();
   List<EnvioModel> listaEnviosSalida = new List();
   HistoricoController principalcontroller = new HistoricoController();
-  List<bool> isSelected;
-  int indexSwitch = 0;
   FocusNode f1inicio = FocusNode();
   FocusNode f2fin = FocusNode();
   bool pressButton = false;
   void initState() {
-    isSelected = [true, false];
     super.initState();
   }
 
@@ -116,32 +112,37 @@ class _HistoricoPageState extends State<HistoricoPage> {
           }
         },
         child: TextFormField(
-          enabled: false,
-          keyboardType: TextInputType.text,
-          autofocus: false,
-          focusNode: f1inicio,
           controller: _inicioController,
+          obscureText: false,
+          enabled: false,
+          focusNode: f1inicio,
+          cursorColor: StylesThemeData.PRIMARY_COLOR,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            hintText: "Desde",
-            prefix: Icon(FontAwesomeIcons.calendarCheck),
-            contentPadding:
-                new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-            filled: true,
-            fillColor: Color(0xFFEAEFF2),
-            errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.blue),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(
-                color: Color(0xFFEAEFF2),
-                width: 0.0,
+              suffixIcon: Icon(IconsData.ICON_CALENDAR),
+              filled: true,
+              fillColor: StylesThemeData.INPUT_COLOR,
+              errorStyle: TextStyle(
+                  color: StylesThemeData.INPUT_ERROR_COLOR, fontSize: 15.0),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide:
+                    BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
               ),
-            ),
-          ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide:
+                    BorderSide(color: StylesThemeData.INPUT_ERROR_COLOR),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: StylesThemeData.INPUT_BORDER_COLOR,
+                  width: 0.0,
+                ),
+              ),
+              hintText: "Desde",
+              hintStyle: TextStyle(color: StylesThemeData.INPUT_HINT_COLOR)),
         ));
 
     Widget fechafin = InkWell(
@@ -168,70 +169,77 @@ class _HistoricoPageState extends State<HistoricoPage> {
           }
         },
         child: TextFormField(
-          keyboardType: TextInputType.text,
-          autofocus: false,
+          controller: _finController,
+          obscureText: false,
           enabled: false,
           focusNode: f2fin,
-          controller: _finController,
+          cursorColor: StylesThemeData.PRIMARY_COLOR,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            hintText: "Hasta",
-            prefix: Icon(FontAwesomeIcons.calendarCheck),
-            contentPadding:
-                new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-            filled: true,
-            fillColor: Color(0xFFEAEFF2),
-            errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.blue),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(
-                color: Colors.blue,
-                width: 0.0,
+              suffixIcon: Icon(IconsData.ICON_CALENDAR),
+              filled: true,
+              fillColor: StylesThemeData.INPUT_COLOR,
+              errorStyle: TextStyle(
+                  color: StylesThemeData.INPUT_ERROR_COLOR, fontSize: 15.0),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide:
+                    BorderSide(color: StylesThemeData.INPUT_ENFOQUE_COLOR),
               ),
-            ),
-          ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide:
+                    BorderSide(color: StylesThemeData.INPUT_ERROR_COLOR),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: StylesThemeData.INPUT_BORDER_COLOR,
+                  width: 0.0,
+                ),
+              ),
+              hintText: "Hasta",
+              hintStyle: TextStyle(color: StylesThemeData.INPUT_HINT_COLOR)),
         ));
 
     Widget itemEntradas(dynamic indice) {
       return ItemWidget(
-        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-        itemIndice: indice,
-        colorItem: indice % 2 == 0
-            ? StylesThemeData.ITEM_SHADED_COLOR
-            : StylesThemeData.ITEM_UNSHADED_COLOR,
-        titulo: "De: ${listaEnviosEntrada[indice].remitente}",
-        subtitulo: "Para ${listaEnviosEntrada[indice].destinatario}",
-        subSecondtitulo: "${listaEnviosEntrada[indice].codigoPaquete}",
-        subFivetitulo: "${listaEnviosEntrada[indice].observacion}",
-        onPressedCode: onPressedCodeEntrada,
-        styleTitulo: StylesTitleData.STYLE_TITLE,
-        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-        iconColor: StylesThemeData.ICON_COLOR
-      );
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnviosEntrada[indice].remitente == null
+              ? "De: Envío importado"
+              : "De: ${listaEnviosEntrada[indice].remitente}",
+          subtitulo: "Para ${listaEnviosEntrada[indice].destinatario}",
+          subSecondtitulo: "${listaEnviosEntrada[indice].codigoPaquete}",
+          subFivetitulo: "${listaEnviosEntrada[indice].observacion}",
+          onPressedCode: onPressedCodeEntrada,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     Widget itemSalidas(dynamic indice) {
       return ItemWidget(
-        itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
-        itemIndice: indice,
-        colorItem: indice % 2 == 0
-            ? StylesThemeData.ITEM_SHADED_COLOR
-            : StylesThemeData.ITEM_UNSHADED_COLOR,
-        titulo: "De: ${listaEnviosSalida[indice].remitente}",
-        subtitulo: "Para ${listaEnviosSalida[indice].destinatario}",
-        subSecondtitulo: "${listaEnviosSalida[indice].codigoPaquete}",
-        subFivetitulo: "${listaEnviosSalida[indice].observacion}",
-        onPressedCode: onPressedCodeSalida,
-        styleTitulo: StylesTitleData.STYLE_TITLE,
-        styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-        iconColor: StylesThemeData.ICON_COLOR
-      );
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listaEnviosSalida[indice].remitente == null
+              ? "De: Envío importado"
+              : "De: ${listaEnviosSalida[indice].remitente}",
+          subtitulo: "Para ${listaEnviosSalida[indice].destinatario}",
+          subSecondtitulo: "${listaEnviosSalida[indice].codigoPaquete}",
+          subFivetitulo: "${listaEnviosSalida[indice].observacion}",
+          onPressedCode: onPressedCodeSalida,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     Widget mainscaffold() {
@@ -263,7 +271,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
               ? Container()
               : Expanded(
                   child: Container(
-                  child: TabSectionWidget2(
+                  child: TabSectionWidget(
                     iconPrimerTap: IconsData.ICON_POR_RECIBIR,
                     iconSecondTap: IconsData.ICON_ENVIADOS,
                     namePrimerTap: "Entradas",
@@ -272,6 +280,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
                     listSecondTap: listaEnviosSalida,
                     itemPrimerTapWidget: itemEntradas,
                     itemSecondTapWidget: itemSalidas,
+                    initstateIndex: 0,
                   ),
                   margin: const EdgeInsets.only(bottom: 5),
                 )),

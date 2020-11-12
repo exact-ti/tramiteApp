@@ -22,7 +22,6 @@ class EntregaregularController {
     _navigationService.showModal();
     List<EnvioModel> recorridos =
         await intersedeInterface.listarEnviosByCodigo(codigo);
-    if (recorridos == null) recorridos = [];
     _navigationService.goBack();
     return recorridos;
   }

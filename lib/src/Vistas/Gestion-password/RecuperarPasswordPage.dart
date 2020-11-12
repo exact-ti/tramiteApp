@@ -3,6 +3,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
@@ -24,7 +25,6 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-
     void envioValidar(BuildContext context) async {
       desenfocarInputfx(context);
       if (_emailController.text.length == 0) {
@@ -46,49 +46,9 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
       }
     }
 
-    var formEmail = Form(
-        key: _formKey,
-        autovalidate: true,
-        child: TextFormField(
-          onChanged: (String val) => setState(() => email = val),
-          keyboardType: TextInputType.text,
-          validator: validateEmail,
-          autofocus: false,
-          controller: _emailController,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (value) {},
-          decoration: InputDecoration(
-            helperStyle: TextStyle(fontSize: 5),
-            hintStyle: TextStyle(fontSize: 5),
-            contentPadding:
-                new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-            filled: true,
-            fillColor: Color(0xFFEAEFF2),
-            errorStyle: TextStyle(color: Colors.red, fontSize: 12.0),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.blue),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.red),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(
-                color: Color(0xFFEAEFF2),
-                width: 0.0,
-              ),
-            ),
-          ),
-        ));
-
-    final campodetextoandIconoBandeja = Row(children: <Widget>[
-      Expanded(
-        child: formEmail,
-        flex: 5,
-      )
-    ]);
+    void onChangeTextForm(valueForm) {
+      setState(() => email = valueForm);
+    }
 
     mainscaffold() {
       return Padding(
@@ -106,13 +66,22 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
                 margin: const EdgeInsets.only(bottom: 30),
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
-                child: campodetextoandIconoBandeja),
+                child: Form(
+                    key: _formKey,
+                    autovalidate: true,
+                    child: InputWidget(
+                        validadorInput: validateEmail,
+                        controller: _emailController,
+                        iconPrefix: IconsData.ICON_MAIL,
+                        focusInput: null,
+                        methodOnChange: onChangeTextForm,
+                        hinttext: 'Correo'))),
             Container(
                 margin: const EdgeInsets.only(bottom: 20),
                 alignment: Alignment.center,
                 width: double.infinity,
                 child: ButtonWidget(
-                  iconoButton: IconsData.ICON_SEND,
+                    iconoButton: IconsData.ICON_SEND,
                     onPressed: buttonPress,
                     colorParam: StylesThemeData.PRIMARY_COLOR,
                     texto: 'Enviar'))

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoController.dart';
-import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/ModelDto/TipoPaqueteModel.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
@@ -28,31 +27,26 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
   }
 
   void _selectPaquete(dynamic item) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ImportarArchivoPage(tipoPaqueteModel: this.listPaquetes[item]),
-      ),
-    );
+    Navigator.of(context).pushNamed('/importar-paquete', arguments: {
+      'tipoPaquete': this.listPaquetes[item],
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget paqueteWidget(dynamic indice) {
       return ItemWidget(
-        itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
-        iconPrimary: IconsData.ICON_FILE,
-        iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
-        itemIndice: indice,
-        methodAction: _selectPaquete,
-        colorItem: indice % 2 == 0
-            ? StylesThemeData.ITEM_SHADED_COLOR
-            : StylesThemeData.ITEM_UNSHADED_COLOR,
-        titulo: this.listPaquetes[indice].nombre,
-        styleTitulo: StylesTitleData.STYLE_TITLE,
-        iconColor: StylesThemeData.ICON_COLOR
-      );
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          iconPrimary: IconsData.ICON_FILE,
+          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          itemIndice: indice,
+          methodAction: _selectPaquete,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: this.listPaquetes[indice].nombre,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
     return Scaffold(

@@ -7,9 +7,11 @@ class StylesThemeData {
   static const SUCCESS_COLOR = Color(0xFF466C7A);
   static const PRIMARY_COLOR = Color(0xFF2C6983);
   static const BORDER_COLOR = Color(0xFFD2E3EA);
-  static const ERROR_COLOR = Color(0xFFFF7375);
+  static const ERROR_COLOR = Colors.red;
   static const DISABLE_COLOR = Color(0xFFCCCCCC);
-  static const SWITCH_COLOR = Color(0xFF6698AE);
+  static const SWITCH_COLOR_PRIMARY = Color(0xFF6698AE);
+  static const SWITCH_COLOR_SECONDARY = Color(0xFF2C6983);
+  static const SWITCH_COLOR_SECONDARY_BODY = Color(0xFF2C6983);
   static const BORDER_ERROR_COLOR = Color(0xFFBF8888);
   static const LIST_BORDER_COLOR = Color(0xFFDCE5EB);
   static const SELECTION_COLOR = Color(0xFFB7DCEE);

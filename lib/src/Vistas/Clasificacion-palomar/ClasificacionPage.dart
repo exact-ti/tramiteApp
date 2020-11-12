@@ -1,4 +1,4 @@
-import 'package:tramiteapp/src/ModelDto/palomarModel.dart';
+import 'package:tramiteapp/src/ModelDto/PalomarModel.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
@@ -15,6 +15,7 @@ class ClasificacionPage extends StatefulWidget {
 class _ClasificacionPageState extends State<ClasificacionPage> {
   ClasificacionController principalcontroller = new ClasificacionController();
   final _sobreController = TextEditingController();
+  PalomarModel palomarModel = new PalomarModel();
   List<PalomarModel> listapalomar = [];
   FocusNode f1 = FocusNode();
 
@@ -25,19 +26,22 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
   void _validarText(dynamic valueSobreController) async {
     desenfocarInputfx(context);
-    listapalomar = await principalcontroller.listarpalomarByCodigo(context, valueSobreController);
-    if (listapalomar.isNotEmpty) {
+    dynamic palomarData = await principalcontroller.listarpalomarByCodigo(
+        context, valueSobreController);
+    if (palomarData["status"] == "success") {
+      dynamic datapalomar = palomarData["data"];
+      PalomarModel palomar = this.palomarModel.fromOneJson(datapalomar);
+      listapalomar.clear();
       setState(() {
         _sobreController.text = valueSobreController;
-        listapalomar = listapalomar;
+        listapalomar.add(palomar);
       });
     } else {
+      popuptoinput(context, f1, "error", "EXACT", palomarData["message"]);
       setState(() {
         _sobreController.text = valueSobreController;
-        listapalomar = [];
+        listapalomar.clear();
       });
-      popuptoinput(context, f1, "error", "EXACT",
-          "El sobre no existe en la base de datos");
     }
   }
 
@@ -51,7 +55,6 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget crearItem(PalomarModel palomar) {
       return Container(
           child: new Column(
@@ -136,12 +139,15 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
             Container(
                 margin: const EdgeInsets.only(top: 20),
                 child: InputWidget(
-                      iconSufix: IconsData.ICON_CAMERA,
-                      methodOnPressedSufix: _traerdatosescanerbandeja,
-                        methodOnPressed: _validarText,
-                        controller: _sobreController,
-                        focusInput: f1,
-                        hinttext: "Ingresar código",align: TextAlign.center,)),
+                  iconSufix: IconsData.ICON_CAMERA,
+                  iconPrefix: IconsData.ICON_SOBRE,
+                  methodOnPressedSufix: _traerdatosescanerbandeja,
+                  methodOnPressed: _validarText,
+                  controller: _sobreController,
+                  focusInput: f1,
+                  hinttext: "Ingresar código",
+                  align: TextAlign.center,
+                )),
             Expanded(
               child: _sobreController.text == ""
                   ? Container()
