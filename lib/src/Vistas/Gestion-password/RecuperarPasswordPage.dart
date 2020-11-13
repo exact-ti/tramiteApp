@@ -28,8 +28,7 @@ class _RecuperarPasswordPageState extends State<RecuperarPasswordPage> {
     void envioValidar(BuildContext context) async {
       desenfocarInputfx(context);
       if (_emailController.text.length == 0) {
-        notificacion(
-            context, "error", "EXACT", "Ingrese el correo electrónico");
+        notificacion(context, "error", "EXACT", "Ingrese el correo electrónico");
       } else {
         await passwordController.submitEmail(_emailController.text);
         bool respuestaPopUP = await notificacion(context, "success", "EXACT",
