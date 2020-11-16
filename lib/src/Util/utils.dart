@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +18,10 @@ import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/Widgets/LoadingWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'dart:convert';
-import 'loader.dart';
 
 EnvioController envioController = new EnvioController();
 Menu menu = new Menu();
@@ -150,7 +152,7 @@ Widget loadingGet() {
     mainAxisSize: MainAxisSize.min,
     children: [
       Container(
-        child: ColorLoader3(
+        child: LoadingWidget(
           radius: 40.0,
           dotRadius: 10.0,
         ),
@@ -222,12 +224,12 @@ int obtenerCantidadMinimaCodigoPaquete() {
   return cantidad;
 }
 
-List<Menu> listMenuUtil(){
-    List<dynamic> menus = json.decode(_prefs.menus);
-    List<Menu> listmenu = menu.fromPreferencs(menus);
-    listmenu.sort((a, b) => a.orden.compareTo(b.orden));
-    listmenu.reversed;
-    return listmenu;
+List<Menu> listMenuUtil() {
+  List<dynamic> menus = json.decode(_prefs.menus);
+  List<Menu> listmenu = menu.fromPreferencs(menus);
+  listmenu.sort((a, b) => a.orden.compareTo(b.orden));
+  listmenu.reversed;
+  return listmenu;
 }
 
 int obtenerUTDid() {
@@ -259,10 +261,10 @@ int obtenerBuzonid() {
   return bmodel.id;
 }
 
-BuzonModel buzonPrincipal(){
-    BuzonModel buzonModel = new BuzonModel();
+BuzonModel buzonPrincipal() {
+  BuzonModel buzonModel = new BuzonModel();
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
-  return  buzonModel.fromPreferencs(buzon);
+  return buzonModel.fromPreferencs(buzon);
 }
 
 Widget drawerIfPerfil() {
@@ -323,7 +325,6 @@ void navegarEnviosActivos(BuildContext context) {
   }
 }
 
-
 void navegarNotificaciones(BuildContext context) {
   if (_prefs.tipoperfil == cliente) {
     Navigator.of(context, rootNavigator: true).pushReplacement(
@@ -361,4 +362,40 @@ String rutaPrincipal() {
       .first;
 }
 
+Color colorByEstadoDocumento(String nombreEstadoDocumento) {
+  Color color = Colors.white;
+  switch (nombreEstadoDocumento) {
+    case 'Creado':
+      color = Color(0xff004885);
+      break;
+    case 'En ruta':
+      color = Color(0xff1161A4);
+      break;
+    case 'Custodiado':
+      color = Color(0xff269FC0);
+      break;
+    case 'Clasificado':
+      color = StylesThemeData.PRIMARY_COLOR;
+      break;
+    default:
+      color = StylesThemeData.PRIMARY_COLOR;
+      break;
+  }
 
+  return color;
+}
+
+double redondearDouble(double val, int places){ 
+   double mod = pow(10.0, places); 
+   return ((val * mod).round().toDouble() / mod); 
+}
+
+void showNotification( v, flp) async {
+  var android = AndroidNotificationDetails(
+      'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+      priority: Priority.High, importance: Importance.Max, ticker: 'ticker');
+  var iOS = IOSNotificationDetails();
+  var platform = NotificationDetails(android, iOS);
+  await flp.show(0, 'EXACT', '$v', platform,
+      payload: '$v');
+}

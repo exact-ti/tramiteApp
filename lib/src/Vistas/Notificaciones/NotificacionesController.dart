@@ -10,7 +10,7 @@ import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
-import 'package:tramiteapp/src/Util/local_notification.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'dart:async';

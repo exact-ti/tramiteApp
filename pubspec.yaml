@@ -49,6 +49,8 @@ dependencies:
   settings_ui: ^0.4.0
   timeline_tile: ^1.0.0
   path: ^1.6.4
+  charts_flutter: ^0.9.0
+  fl_chart: ^0.12.0
   
 dev_dependencies:
   flutter_driver:
@@ -80,7 +82,6 @@ flutter:
     - assets/logoExact.PNG
     - assets/images/logoprincipal.PNG
     - assets/images/logo-header.PNG
-    - assets/images/imagen-menu.jpg
     - assets/images/header.png
 
   # To add assets to your application, add an assets section, like this:

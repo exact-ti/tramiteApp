@@ -8,7 +8,7 @@ import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -271,7 +271,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
               ? Container()
               : Expanded(
                   child: Container(
-                  child: TabSectionWidget(
+                  child: TabSectionListWidget(
                     iconPrimerTap: IconsData.ICON_POR_RECIBIR,
                     iconSecondTap: IconsData.ICON_ENVIADOS,
                     namePrimerTap: "Entradas",

@@ -6,7 +6,7 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/shared/modals/tracking.dart';
@@ -183,7 +183,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
             ],
           )),
           Expanded(
-              child: TabSectionWidget(
+              child: TabSectionListWidget(
             iconPrimerTap: IconsData.ICON_POR_RECIBIR,
             iconSecondTap: IconsData.ICON_ENVIADOS,
             namePrimerTap: "Por entregar",

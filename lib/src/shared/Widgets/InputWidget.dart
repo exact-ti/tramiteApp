@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/widgets/testFormUppCase.dart';
+import 'package:tramiteapp/src/Util/Classes/testFormUppCase.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class InputWidget extends StatelessWidget {

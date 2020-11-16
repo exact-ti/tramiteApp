@@ -2,17 +2,17 @@ import "package:flutter/material.dart";
 import 'dart:math';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
-class ColorLoader3 extends StatefulWidget {
+class LoadingWidget extends StatefulWidget {
   final double radius;
   final double dotRadius;
 
-  ColorLoader3({this.radius = 30.0, this.dotRadius = 3.0});
+  LoadingWidget({this.radius = 30.0, this.dotRadius = 3.0});
 
   @override
-  _ColorLoader3State createState() => _ColorLoader3State();
+  _LoadingWidgetState createState() => _LoadingWidgetState();
 }
 
-class _ColorLoader3State extends State<ColorLoader3>
+class _LoadingWidgetState extends State<LoadingWidget>
     with SingleTickerProviderStateMixin {
   // ignore: non_constant_identifier_names
   Animation<double> animation_rotation;

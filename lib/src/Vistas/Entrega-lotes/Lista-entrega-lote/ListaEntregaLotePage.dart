@@ -9,7 +9,7 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
-import 'package:tramiteapp/src/shared/Widgets/TapSectionWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -162,7 +162,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
                 )),
           ),
           Expanded(
-              child: TabSectionWidget(
+              child: TabSectionListWidget(
             iconPrimerTap: IconsData.ICON_POR_RECIBIR,
             iconSecondTap: IconsData.ICON_ENVIADOS,
             namePrimerTap: "Por recibir",

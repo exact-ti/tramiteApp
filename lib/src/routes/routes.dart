@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
 import 'package:tramiteapp/src/Vistas/Consulta-Envio/ConsultaEnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/Dashboard-Cliente/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Nueva-intersede/EntregaInterPage.dart';
@@ -26,6 +27,7 @@ import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-adicionales/r
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-propios/recorridoPropioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
+import 'package:tramiteapp/src/Vistas/Dashboard-Operacion/DashboardOperacionPage.dart';
 import 'package:tramiteapp/src/Vistas/Home/HomePage.dart';
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
@@ -33,7 +35,6 @@ import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/Custod
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Elegir-paquete/PaqueteExternoPage.dart';
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Importar-archivo/ImportarArchivoPage.dart';
 import 'package:tramiteapp/src/Vistas/Retirar-Envio/RetirarEnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/dashboard/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 
@@ -45,6 +46,7 @@ Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
 
     //==================Menu principal====================================
     '/home': (BuildContext context) => HomePage(),
+    '/dashboard-operación': (BuildContext context) => DashboardOperacionPage(),
     '/generar-envio': (BuildContext context) => PrincipalPage(),
     '/recorridos': (BuildContext context) => ListarTurnosPage(),
     '/clasificar-envio': (BuildContext context) => ClasificacionPage(),

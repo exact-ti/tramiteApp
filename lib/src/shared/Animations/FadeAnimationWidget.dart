@@ -3,11 +3,11 @@ import 'package:simple_animations/simple_animations.dart';
 
 enum AnimationType { opacity, translateX }
 
-class FadeAnimation extends StatelessWidget {
+class FadeAnimationWidget extends StatelessWidget {
   final double delay;
   final Widget child;
 
-  FadeAnimation(this.delay, this.child, {AssetImage image});
+  FadeAnimationWidget(this.delay, this.child, {AssetImage image});
 
   @override
   Widget build(BuildContext context) {

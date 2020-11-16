@@ -5,10 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/Animations/FadeAnimationWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'loginController.dart';
@@ -265,9 +265,9 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FadeAnimation(1.7, titulo),
+                FadeAnimationWidget(1.7, titulo),
                 SizedBox(height: 20.0),
-                FadeAnimation(1.7, logo),
+                FadeAnimationWidget(1.7, logo),
               ],
             ),
           ),
@@ -277,13 +277,13 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 24.0),
-                      FadeAnimation(1.7, email),
+                      FadeAnimationWidget(1.7, email),
                       SizedBox(height: 8.0),
-                      FadeAnimation(1.7, password),
+                      FadeAnimationWidget(1.7, password),
                       SizedBox(height: 24.0),
-                      FadeAnimation(1.7, loginButton),
+                      FadeAnimationWidget(1.7, loginButton),
                       SizedBox(height: 8.0),
-                      FadeAnimation(1.7, enlace),
+                      FadeAnimationWidget(1.7, enlace),
                     ],
                   )))
         ],

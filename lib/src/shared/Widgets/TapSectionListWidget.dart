@@ -3,7 +3,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
-class TabSectionWidget extends StatelessWidget {
+class TabSectionListWidget extends StatelessWidget {
   final IconData iconPrimerTap;
   final IconData iconSecondTap;
   final String namePrimerTap;
@@ -15,7 +15,7 @@ class TabSectionWidget extends StatelessWidget {
   final int initstateIndex;
   final Function(dynamic) onTapTabSection;
 
-  const TabSectionWidget({
+  const TabSectionListWidget({
     Key key,
     @required this.iconPrimerTap,
     @required this.iconSecondTap,

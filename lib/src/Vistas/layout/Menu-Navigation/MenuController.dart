@@ -30,7 +30,8 @@ class MenuController {
     'activos': FontAwesomeIcons.fileExport,
     'confirmar': FontAwesomeIcons.clipboardCheck,
     'historico': FontAwesomeIcons.history,
-    'retiro': FontAwesomeIcons.solidMinusSquare
+    'retiro': FontAwesomeIcons.solidMinusSquare,
+    'HomeDashboard': FontAwesomeIcons.home
   };
 
   List<String> listRutasRecorridos = [
