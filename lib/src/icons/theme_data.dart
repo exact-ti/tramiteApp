@@ -47,5 +47,6 @@ class IconsData {
   static const ICON_PASSWORD =  FontAwesomeIcons.key;
   static const ICON_FIRM =  FontAwesomeIcons.penAlt;
 
+
   
 }

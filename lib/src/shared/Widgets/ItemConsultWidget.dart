@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class ItemsConsultWidget extends StatelessWidget {
@@ -14,8 +14,7 @@ class ItemsConsultWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget itemConsult(EnvioModel envioModel){
+    Widget itemConsult(EnvioModel envioModel) {
       return Container(
           decoration: myBoxDecoration(StylesThemeData.LIST_BORDER_COLOR),
           margin: EdgeInsets.only(bottom: 5),
@@ -76,13 +75,19 @@ class ItemsConsultWidget extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: new GestureDetector(
                               onTap: () {
-                                trackingPopUp(context, envioModel.id);
+                                showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return TrackingModal(
+                                        paqueteId: envioModel.id,
+                                      );
+                                    });
                               },
                               child: Text(envioModel.codigoPaquete,
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 15)),
                             )),
-                            flex: 2,
+                        flex: 2,
                       ),
                       Expanded(
                         child: Container(
@@ -90,7 +95,8 @@ class ItemsConsultWidget extends StatelessWidget {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: Text(envioModel.codigoUbicacion,
-                              style: TextStyle(color: Colors.black,fontSize: 15)),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
                         ),
                         flex: 3,
                       ),
@@ -100,9 +106,10 @@ class ItemsConsultWidget extends StatelessWidget {
           ));
     }
 
-
-    return enviosModel.isEmpty?Container():ListView.builder(
-          itemCount: this.enviosModel.length,
-          itemBuilder: (context, i) => itemConsult(this.enviosModel[i]));
+    return enviosModel.isEmpty
+        ? Container()
+        : ListView.builder(
+            itemCount: this.enviosModel.length,
+            itemBuilder: (context, i) => itemConsult(this.enviosModel[i]));
   }
 }

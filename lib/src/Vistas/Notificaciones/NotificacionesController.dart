@@ -30,8 +30,8 @@ class NotificacionController {
 
 
   Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
-    List<NotificacionModel> notificacionespendientes =
-        await notificacionCore.listarNotificacionesPendientes();
+    List<NotificacionModel> notificacionespendientes = await notificacionCore.listarNotificacionesPendientes();
+    notificacionespendientes.sort((a, b) => b.fecha.compareTo(a.fecha));
     return notificacionespendientes;
   }
 
@@ -40,6 +40,7 @@ class NotificacionController {
         await notificacionCore.revisarNotificacion(notificacionId);
     return notificacionVisitada;
   }
+
 
   Future<dynamic> verNotificaciones() async {
     dynamic notificacionVisitada = await notificacionCore.verNotificaciones();

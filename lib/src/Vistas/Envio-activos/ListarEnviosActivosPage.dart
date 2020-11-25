@@ -7,7 +7,7 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -39,15 +39,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
 
   @override
   void initState() {
-/*     if (objetoModo == null) {
-      indexSwitch = 0;
-    } else {
-      estadosIds.add(objetoModo["estadoid"]);
-      if (objetoModo["modalidad"] == 1) {
-      } else {
-        indexSwitch = 0;
-      }
-    } */
     listarEnviosActivos();
     super.initState();
   }
@@ -154,11 +145,23 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
   }
 
   void onPressedPopUPRecibidos(dynamic indice) {
-    trackingPopUp(context, listEnviosPorRecibir[indice].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listEnviosPorRecibir[indice].id,
+          );
+        });
   }
 
   void onPressedPopUPEnviados(dynamic indice) {
-    trackingPopUp(context, listEnviosEnviados[indice].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listEnviosEnviados[indice].id,
+          );
+        });
   }
 
   @override
@@ -205,14 +208,6 @@ class _ListarEnviosActivosPageState extends State<ListarEnviosActivosPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-/*           paddingWidget(Container(
-            margin: const EdgeInsets.only(bottom: 10, top: 10),
-            child: FilaButtonWidget(
-                firsButton: ButtonWidget(
-                    onPressed: onPressedButon,
-                    colorParam: StylesThemeData.BUTTON_PRIMARY_COLOR,
-                    texto: "Estado")),
-          )), */
           Container(
               margin: const EdgeInsets.only(bottom: 10, top: 20),
               child: Tags(

@@ -9,7 +9,6 @@ import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
-import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'AppBarController.dart';
 
@@ -98,8 +97,6 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   Widget build(BuildContext context) {
-    final int cantidad =
-        Provider.of<NotificationInfo>(context).cantidadNotificacion;
     Widget myAppBarIcon() {
       return Container(
         width: 30,
@@ -111,8 +108,8 @@ class _CustomAppBarState extends State<CustomAppBar>
               color: Colors.white,
               size: 30,
             ),
-            cantidad < 100
-                ? cantidad != 0
+            Provider.of<NotificationInfo>(context).cantidadNotificacion < 100
+                ? Provider.of<NotificationInfo>(context).cantidadNotificacion != 0
                     ? Container(
                         width: 30,
                         height: 30,
@@ -129,7 +126,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                             padding: const EdgeInsets.all(0.0),
                             child: Center(
                               child: Text(
-                                cantidad.toString(),
+                                "${Provider.of<NotificationInfo>(context).cantidadNotificacion}",
                                 style: TextStyle(fontSize: 10),
                               ),
                             ),
@@ -153,7 +150,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            cantidad.toString(),
+                            "${Provider.of<NotificationInfo>(context).cantidadNotificacion}",
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -187,22 +184,23 @@ class _CustomAppBarState extends State<CustomAppBar>
           IconButton(
             icon: myAppBarIcon(),
             onPressed: () async {
-              dynamic respuestaBack =
+              /*   dynamic respuestaBack =
                   await appBarController.verNotificaciones();
-              if (respuestaBack["status"] == "success") {
-                Provider.of<NotificationInfo>(context, listen: false)
-                    .cantidadNotificacion = 0;
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: NotificacionesPage(),
-                  ),
-                ).whenComplete(gestionNotificaciones);
-              } else {
+               if (respuestaBack["status"] == "success") {
+ */
+              Provider.of<NotificationInfo>(context, listen: false)
+                  .cantidadNotificacion = 0;
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: NotificacionesPage(),
+                ),
+              ).whenComplete(gestionNotificaciones);
+              /*     } else {
                 notificacion(
                     context, "error", "EXACT", "Ha surgido un problema");
-              }
+              } */
             },
           )
         ],

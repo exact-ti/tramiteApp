@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class StylesThemeData {
   static const LETTER_COLOR = Colors.black;
   static const LETTER_SECUNDARY_COLOR = Color(0xFF767676);
-  static const LETTER_ERROR_COLOR = Color(0xFF800001);
+  static const LETTER_ERROR_COLOR = Color(0xFF832C2C);
   static const SUCCESS_COLOR = Color(0xFF466C7A);
   static const PRIMARY_COLOR = Color(0xFF2C6983);
   static const BORDER_COLOR = Color(0xFFD2E3EA);
-  static const ERROR_COLOR = Colors.red;
+  static const ERROR_COLOR = Color(0xFF832C2C);
   static const DISABLE_COLOR = Color(0xFFCCCCCC);
   static const SWITCH_COLOR_PRIMARY = Color(0xFF6698AE);
   static const SWITCH_COLOR_SECONDARY = Color(0xFF2C6983);
@@ -34,6 +34,8 @@ class StylesThemeData {
 
    static const CARD_COLOR = Color(0xFFEAEFF2);
    static const CARD_COLOR2 = Color(0xFF2C6983);
+
+
 
 }
 

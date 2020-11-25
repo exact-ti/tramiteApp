@@ -8,8 +8,8 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -98,35 +98,6 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
     _validarPaqueteText(_paqueteController.text);
   }
 
-  
-
-/*   void onPressedObservacion(valueObservacion) async {
-    if (valueObservacion.length == 0) {
-      setState(() {
-        mensajeError = "El mótivo del retiro es obligatorio";
-      });
-    } else {
-      bool respuesta = await retirarEnvioController(
-          codigoToDelete, _observacionController.text);
-      if (respuesta) {
-        Navigator.pop(context, true);
-      }
-    }
-  }
-
-  void onChangedObservacion(valueObservacion) {
-    if (valueObservacion.length == 0) {
-      setState(() {
-        mensajeError = "El mótivo del retiro es obligatorio";
-      });
-    } else {
-      setState(() {
-        valueObservacion=valueObservacion;
-        mensajeError = "";
-      });
-    }
-  } */
-
   Future<bool> retirarEnvioModal(BuildContext context, String tipo,
       String title, String description, EnvioModel envioModel) async {
     this.codigoToDelete = envioModel.id.toString();
@@ -173,7 +144,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                   padding: const EdgeInsets.only(right: 20, left: 20, top: 10),
                 ),
                 Container(
-                  child:   TextFormField(
+                  child: TextFormField(
                     maxLines: 6,
                     controller: _observacionController,
                     textInputAction: TextInputAction.done,
@@ -216,8 +187,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                         });
                       }
                     },
-                  )
-                  ,
+                  ),
                   padding: const EdgeInsets.only(right: 20, left: 20),
                 ),
                 mensajeError.length == 0
@@ -263,7 +233,8 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                                     ),
                                     child: Container(
                                       child: Text('Aceptar',
-                                          style: _observacionController.text.length ==
+                                          style: _observacionController
+                                                      .text.length ==
                                                   0
                                               ? TextStyle(color: Colors.grey)
                                               : TextStyle(color: Colors.black)),
@@ -323,7 +294,13 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
   }
 
   void onPressedCode(dynamic indiceListEnvios) {
-    trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listaEnvios[indiceListEnvios].id,
+          );
+        });
   }
 
   void onPressedWidget(dynamic indiceListEnvios) async {
@@ -340,7 +317,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
         _remitenteController.text = "";
         _destinatarioController.text = "";
         listaEnvios = [];
-        mensajeError="";
+        mensajeError = "";
         button = false;
       });
     }

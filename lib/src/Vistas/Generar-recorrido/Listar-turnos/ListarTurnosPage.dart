@@ -72,7 +72,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
                     iconoButton: IconsData.ICON_NEW,
                     onPressed: redirectButtom,
                     colorParam: StylesThemeData.PRIMARY_COLOR,
-                    texto: "Nuevo recorrido"),
+                    texto: "Nuevo"),
               ))),
           FutureItemWidget(
               itemWidget: listWidget,

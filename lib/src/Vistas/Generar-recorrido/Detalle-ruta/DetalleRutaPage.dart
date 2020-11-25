@@ -7,9 +7,9 @@ import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -61,11 +61,23 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   }
 
   void methodPopUpInEntregas(dynamic intersedeIndice) {
-    trackingPopUp(context, listDetallesEntregar[intersedeIndice].id);
+        showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listDetallesEntregar[intersedeIndice].id,
+          );
+        });
   }
 
   void methodPopUpInRecojos(dynamic intersedeIndice) {
-    trackingPopUp(context, listDetallesRecoger[intersedeIndice].id);
+        showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listDetallesRecoger[intersedeIndice].id,
+          );
+        });
   }
 
   void onPressItemRecojo(dynamic intersedeIndice) async {

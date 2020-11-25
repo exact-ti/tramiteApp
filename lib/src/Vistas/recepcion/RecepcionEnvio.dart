@@ -10,8 +10,8 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -55,7 +55,13 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     if (validados["$codigopaquete"] == null ||
         validados["$codigopaquete"] == false) {
       if (!validados.containsValue(true)) {
-        trackingPopUp(context, listaEnviosModel[indice].id);
+            showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listaEnviosModel[indice].id,
+          );
+        });
       }
     }
   }

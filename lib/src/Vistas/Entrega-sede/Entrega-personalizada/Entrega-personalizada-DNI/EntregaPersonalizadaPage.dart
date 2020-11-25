@@ -37,7 +37,7 @@ class _EntregapersonalizadoPageDNIState
 
   void notifierAccion(String mensaje, String color) {
     final snack = new SnackBar(
-      content: new Text("Se registró el envío"),
+      content: new Text(mensaje),
       backgroundColor: StylesThemeData.PRIMARY_COLOR,
     );
     scaffoldkey.currentState.showSnackBar(snack);

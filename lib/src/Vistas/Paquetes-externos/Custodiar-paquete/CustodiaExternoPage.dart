@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Entity/PaqueteExterno.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Vistas/Paquetes-externos/Custodiar-paquete/CustodiaExternoController.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
@@ -22,7 +21,6 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   List<PaqueteExterno> listPaqueteExternos;
   final _codigoController = TextEditingController();
   FocusNode f1 = FocusNode();
-  String mensajeRecepcion = "";
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -43,14 +41,14 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
 
   void notifierAccion(String mensaje, Color colorNotifier) {
     final snack = new SnackBar(
-      content: new Text("Se registró el envío"),
+      content: new Text(mensaje),
       backgroundColor: colorNotifier,
     );
     scaffoldkey.currentState.showSnackBar(snack);
   }
 
   void _custodiarConCamara() async {
-    _codigoController.text = await sd.getDataFromCamera(context);
+    _codigoController.text = await getDataFromCamera(context);
     setState(() {
       _codigoController.text = _codigoController.text;
     });
@@ -60,8 +58,8 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   void _validarCodigoPaquete(dynamic value) async {
     desenfocarInputfx(context);
     if (value != "") {
-      bool custodiado = await custodiaController.custodiarPaquete(value);
-      if (custodiado) {
+      dynamic custodiado = await custodiaController.custodiarPaquete(value);
+      if (custodiado["status"]=="success") {
         bool perteneceLista = listPaqueteExternos
             .where((paqueteExterno) => paqueteExterno.paqueteId == value)
             .toList()
@@ -74,13 +72,12 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
         }
         setState(() {
           _codigoController.clear();
-          mensajeRecepcion = "El envío $value fue custodiado";
         });
         notifierAccion(
-            "El envío $value fue custodiado", StylesThemeData.PRIMARY_COLOR);
+            "Se ha custodiado el envío", StylesThemeData.PRIMARY_COLOR);
       } else {
         notifierAccion(
-            "El envío no se ha podido custodiar", StylesThemeData.ERROR_COLOR);
+            custodiado["message"], StylesThemeData.ERROR_COLOR);
       }
     } else {
       notifierAccion(
@@ -111,7 +108,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                sd.paddingWidget(
+                paddingWidget(
                   Container(
                     margin: EdgeInsets.only(top: 20, bottom: 20),
                     child: InputWidget(

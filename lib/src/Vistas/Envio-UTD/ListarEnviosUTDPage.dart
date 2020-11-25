@@ -5,7 +5,7 @@ import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -33,7 +33,13 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
   @override
   Widget build(BuildContext context) {
     void onPressedCodePaquete(dynamic indice) {
-      trackingPopUp(context, this.envios[indice].id);
+          showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: this.envios[indice].id,
+          );
+        });
     }
 
     Widget itemEnvioUTD(indice) {

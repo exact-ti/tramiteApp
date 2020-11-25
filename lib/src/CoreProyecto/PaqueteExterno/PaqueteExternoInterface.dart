@@ -10,6 +10,6 @@ abstract class PaqueteExternoInterface {
 
   Future<List<PaqueteExterno>> listarPaquetesExternosCreados();
 
-  Future<bool> custodiarPaquete(String paqueteExterno);
+  Future<dynamic> custodiarPaquete(String paqueteExterno);
   
 }

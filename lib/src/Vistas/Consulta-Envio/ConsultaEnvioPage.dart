@@ -8,8 +8,8 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -89,7 +89,13 @@ class _ConsultaEnvioPageState extends State<ConsultaEnvioPage> {
   }
 
   void onPressedCode(dynamic indiceListEnvios) {
-    trackingPopUp(context, listaEnvios[indiceListEnvios].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listaEnvios[indiceListEnvios].id,
+          );
+        });
   }
 
   @override

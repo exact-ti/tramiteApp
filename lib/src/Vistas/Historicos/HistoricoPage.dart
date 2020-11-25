@@ -9,8 +9,8 @@ import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
-import 'package:tramiteapp/src/shared/modals/tracking.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -36,11 +36,23 @@ class _HistoricoPageState extends State<HistoricoPage> {
   }
 
   void onPressedCodeEntrada(dynamic indiceListEnvios) {
-    trackingPopUp(context, listaEnviosEntrada[indiceListEnvios].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listaEnviosEntrada[indiceListEnvios].id,
+          );
+        });
   }
 
   void onPressedCodeSalida(dynamic indiceListEnvios) {
-    trackingPopUp(context, listaEnviosSalida[indiceListEnvios].id);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listaEnviosSalida[indiceListEnvios].id,
+          );
+        });
   }
 
   void listarEnvios() async {
