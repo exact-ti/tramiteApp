@@ -17,8 +17,7 @@ class RecorridosPropiosPage extends StatefulWidget {
 }
 
 class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
-  RecorridoPropioController principalcontroller =
-      new RecorridoPropioController();
+  RecorridoPropioController principalcontroller = new RecorridoPropioController();
   List<RecorridoModel> listRecorridos = new List();
   @override
   void initState() {
@@ -30,13 +29,6 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
   }
 
   void onPressRecorrido(dynamic indiceRecorrido) {
-/*     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ValidacionEnvioPage(recorridopage: listRecorridos[indiceRecorrido]),
-      ),
-    ); */
     Navigator.of(context).pushNamed(
       '/entregas-pisos-validacion',
       arguments: {

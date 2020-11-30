@@ -73,8 +73,7 @@ class Requester {
     Map<String, dynamic> header = {
       'Authorization': '$token',
     };
-    EventSource eventSource =
-        await EventSource.connect(properties['API'] + url, headers: header);
+    EventSource eventSource =  await EventSource.connect(properties['API'] + url, headers: header);
     return eventSource;
   }
 
@@ -127,6 +126,7 @@ class Requester {
   }
 
   dynamic errorInterceptor(DioError dioError) async {
+    if(dioError.response==null) return dioError;
     dynamic data = dioError.response.data;
     if (data != null) {
       Response response;

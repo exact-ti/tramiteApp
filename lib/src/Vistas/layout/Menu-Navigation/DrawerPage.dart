@@ -20,7 +20,7 @@ class DrawerPage extends StatelessWidget {
     final _prefs = new PreferenciasUsuario();
     if (_prefs.token != "") {
       Menu menuu = new Menu();
-      List<dynamic> menus = json.decode(_prefs.menus);
+      List<dynamic> menus = _prefs.menus==null?[]: json.decode(_prefs.menus);
       List<Menu> listmenu = menuu.fromPreferencs(menus);
       listmenu.sort((a, b) => a.orden.compareTo(b.orden));
       listmenu.reversed;

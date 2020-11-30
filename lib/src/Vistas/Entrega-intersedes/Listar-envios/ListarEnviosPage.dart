@@ -10,6 +10,7 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -63,6 +64,9 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
 
   void iniciarEnvio(dynamic intersedeIndice) async {
     if (listEnviosEnviados[intersedeIndice].estadoEnvio.id == creado) {
+            bool confirmarInicio = await confirmacion(context, "success", "EXACT",
+          "¿Desea iniciar el envío de la valija a la UTD ${listEnviosEnviados[intersedeIndice].destino}?");
+      if (confirmarInicio) {
       bool respuesta = await listarEnviosController.onSearchButtonPressed(
           context, listEnviosEnviados[intersedeIndice]);
       if (respuesta) {
@@ -73,6 +77,8 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         notificacion(
             context, "error", "EXACT", "No se pudo iniciar la entrega");
       }
+      }
+
     }
   }
 

@@ -35,10 +35,10 @@ class _EntregapersonalizadoPageDNIState
     super.initState();
   }
 
-  void notifierAccion(String mensaje, String color) {
+  void notifierAccion(String mensaje, Color color) {
     final snack = new SnackBar(
       content: new Text(mensaje),
-      backgroundColor: StylesThemeData.PRIMARY_COLOR,
+      backgroundColor: color,
     );
     scaffoldkey.currentState.showSnackBar(snack);
   }
@@ -61,23 +61,22 @@ class _EntregapersonalizadoPageDNIState
             envioModel.codigoPaquete = valueSobreController;
             envioModel.estado = true;
             setState(() {
-              _sobreController.text = "";
               listaEnvios.add(envioModel);
             });
-            notifierAccion(
-                "El envío $valueSobreController fue entregado correctamente",
-                "38CE00");
+            selectionText(_sobreController, focusSobre, context);
+            notifierAccion("El envío $valueSobreController fue entregado correctamente",
+                StylesThemeData.BUTTON_PRIMARY_COLOR);
           } else {
-            popuptoinput(context, focusSobre, "error", "EXACT",
-                "El código no existe, por favor intente nuevamente");
+            selectionText(_sobreController, focusSobre, context);
+            popupToInputShade(context, _sobreController, focusSobre, "error",
+                "EXACT", "El código no existe, por favor intente nuevamente");
           }
         } else {
-          popuptoinput(context, focusSobre, "error", "EXACT",
-              "Código ya se encuentra validado");
+          selectionText(_sobreController, focusSobre, context);
+          notifierAccion("Código ya se encuentra validado", StylesThemeData.ERROR_COLOR);
         }
       } else {
-        popuptoinput(context, focusSobre, "error", "EXACT",
-            "El código de sobre es obligatorio");
+        notifierAccion("el código de sobre es obligatorio", StylesThemeData.ERROR_COLOR);
       }
     }
   }

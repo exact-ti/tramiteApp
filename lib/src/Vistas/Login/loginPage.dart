@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
-import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/Animations/FadeAnimationWidget.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -19,23 +15,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  SharedPreferences sharedPreferences;
   bool pressbutton = true;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
+  LoginController logincontroller = new LoginController();
+  SharedPreferences sharedPreferences;
+  FocusNode focusUsername = FocusNode();
+  FocusNode focusPassword = FocusNode();
   bool passwordVisible = true;
   String password = "";
-    FocusNode _focusNode;
 
   @override
   void initState() {
-        _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _usernameController.clear();
-      if (_focusNode.hasFocus) _passwordController.clear();
-    });
     super.initState();
     checkLoginStatus();
   }
@@ -45,18 +36,11 @@ class _LoginPageState extends State<LoginPage> {
     if (sharedPreferences.getString("token") != null) {
       if (boolIfPerfil()) {
         if (sharedPreferences.getString("buzon") != null) {
-          BuzonModel buzonModel = buzonPrincipal();
-          Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = buzonModel.nombre; 
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/menuBottom', (Route<dynamic> route) => false);
-        }
+            logincontroller.openAppPerfilCliente(context);
+        } 
       } else {
-        if (sharedPreferences.getString("utd") != null ||
-            sharedPreferences.getString("buzon") != null) {
-          UtdModel utdModel = obtenerUTD();
-          Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = utdModel.nombre;
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              rutaPrincipal(), (Route<dynamic> route) => false);
+        if (sharedPreferences.getString("utd") != null || sharedPreferences.getString("buzon") != null) {
+            logincontroller.openAppPerfilOperativo(context);
         }
       }
     }
@@ -64,8 +48,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    LoginController logincontroller = new LoginController();
-
     final logo = Image.asset(
       'assets/images/logo-header.PNG',
       width: 250.0,
@@ -73,13 +55,13 @@ class _LoginPageState extends State<LoginPage> {
 
     void enfocarcodigocontrasena() {
       FocusScope.of(context).unfocus();
-      enfocarInputfx(context, f2);
+      enfocarInputfx(context, focusPassword);
     }
 
     var email = TextFormField(
       controller: _usernameController,
       obscureText: false,
-      focusNode: f1,
+      focusNode: focusUsername,
       cursorColor: StylesThemeData.PRIMARY_COLOR,
       style: TextStyle(
         color: StylesThemeData.PRIMARY_COLOR,
@@ -127,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
     void enfocarUsuarioOrContrasena() {
       FocusScope.of(context).unfocus();
       if (_usernameController.text.length == 0) {
-        enfocarInputfx(context, f1);
+        enfocarInputfx(context, focusUsername);
       } else {
         if (pressbutton) {
           pressbutton = false;
@@ -139,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = TextFormField(
       obscureText: passwordVisible,
       controller: _passwordController,
-      focusNode: f2,
+      focusNode: focusPassword,
       cursorColor: StylesThemeData.PRIMARY_COLOR,
       style: TextStyle(
         color: StylesThemeData.PRIMARY_COLOR,
@@ -174,7 +156,9 @@ class _LoginPageState extends State<LoginPage> {
             });
           },
           child: Icon(
-            !passwordVisible ? IconsData.ICON_EYE_DISABLED : IconsData.ICON_EYE_ENABLED,
+            !passwordVisible
+                ? IconsData.ICON_EYE_DISABLED
+                : IconsData.ICON_EYE_ENABLED,
             size: 20,
             color: StylesThemeData.PRIMARY_COLOR,
           ),
@@ -295,3 +279,5 @@ class _LoginPageState extends State<LoginPage> {
         body: scaffoldbodyLogin(mainscaffold(), context));
   }
 }
+
+

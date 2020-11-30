@@ -17,7 +17,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   final _sobreController = TextEditingController();
   PalomarModel palomarModel = new PalomarModel();
   List<PalomarModel> listapalomar = [];
-  FocusNode f1 = FocusNode();
+  FocusNode focusPalomar = FocusNode();
 
   @override
   void initState() {
@@ -36,8 +36,9 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         _sobreController.text = valueSobreController;
         listapalomar.add(palomar);
       });
+      selectionText(_sobreController, focusPalomar, context);
     } else {
-      popuptoinput(context, f1, "error", "EXACT", palomarData["message"]);
+      popupToInputShade(context,_sobreController, focusPalomar, "error", "EXACT", palomarData["message"]);
       setState(() {
         _sobreController.text = valueSobreController;
         listapalomar.clear();
@@ -144,7 +145,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                   methodOnPressedSufix: _traerdatosescanerbandeja,
                   methodOnPressed: _validarText,
                   controller: _sobreController,
-                  focusInput: f1,
+                  focusInput: focusPalomar,
                   hinttext: "Ingresar código",
                   align: TextAlign.center,
                 )),

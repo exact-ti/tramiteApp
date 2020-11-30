@@ -43,8 +43,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
 
   @override
   void initState() {
-           WidgetsBinding.instance
-        .addPostFrameCallback((_) => initializarRecorrido());
+    WidgetsBinding.instance.addPostFrameCallback((_) => initializarRecorrido());
     super.initState();
   }
 
@@ -158,7 +157,14 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         }
       }
     }
-    enfocarInputfx(context, focusEnvio);
+    if (listaEnvios.isNotEmpty) {
+      selectionText(_sobreController, focusEnvio, context);
+    } else {
+      setState(() {
+        _sobreController.text="";
+      });
+      desenfocarInputfx(context);
+    }
   }
 
   void _validarSobreText(dynamic valueController) async {
@@ -277,7 +283,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       Expanded(
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context,'/entrega-personalizada');
+            Navigator.pushNamed(context, '/entrega-personalizada');
           },
           child: Text(
             'Entrega Personalizada',
@@ -316,7 +322,10 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: recorridoUsuario==null?"":"Entrega ${recorridoUsuario.id} en sede"),
+        appBar: CustomAppBar(
+            text: recorridoUsuario == null
+                ? ""
+                : "Entrega ${recorridoUsuario.id} en sede"),
         drawer: DrawerPage(),
         body: scaffoldbody(
             Column(

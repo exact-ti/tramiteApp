@@ -10,6 +10,7 @@ class ListarTurnosController {
   EntregaInterface entregaInterface = new EntregaImpl(new EntregaProvider());
 
   Future<List<EntregaModel>> listarRecorridosController() async {
+    /* if(obtenerBuzonid()==null) return []; */
     List<EntregaModel> entregas = await entregaInterface.listarEntregas();
     return entregas;
   }

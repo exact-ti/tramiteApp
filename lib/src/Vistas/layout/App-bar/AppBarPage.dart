@@ -61,6 +61,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   void dirigirHome() {
+    gestionNotificaciones();
     if (boolIfPerfil()) {
       if (idBuzonOrUTD != obtenerBuzonid()) {
         navegarHomeExact(context);
@@ -80,6 +81,8 @@ class _CustomAppBarState extends State<CustomAppBar>
         listanotificacionesSinVer = listanotificacionesPendientes
             .where((element) => element.notificacionEstadoModel.id == pendiente)
             .toList();
+        Provider.of<NotificationInfo>(context, listen: false)
+            .cantidadNotificacion = listanotificacionesSinVer.length;
       });
     }
   }
@@ -109,7 +112,8 @@ class _CustomAppBarState extends State<CustomAppBar>
               size: 30,
             ),
             Provider.of<NotificationInfo>(context).cantidadNotificacion < 100
-                ? Provider.of<NotificationInfo>(context).cantidadNotificacion != 0
+                ? Provider.of<NotificationInfo>(context).cantidadNotificacion !=
+                        0
                     ? Container(
                         width: 30,
                         height: 30,
@@ -184,10 +188,6 @@ class _CustomAppBarState extends State<CustomAppBar>
           IconButton(
             icon: myAppBarIcon(),
             onPressed: () async {
-              /*   dynamic respuestaBack =
-                  await appBarController.verNotificaciones();
-               if (respuestaBack["status"] == "success") {
- */
               Provider.of<NotificationInfo>(context, listen: false)
                   .cantidadNotificacion = 0;
               Navigator.push(
@@ -197,10 +197,6 @@ class _CustomAppBarState extends State<CustomAppBar>
                   child: NotificacionesPage(),
                 ),
               ).whenComplete(gestionNotificaciones);
-              /*     } else {
-                notificacion(
-                    context, "error", "EXACT", "Ha surgido un problema");
-              } */
             },
           )
         ],

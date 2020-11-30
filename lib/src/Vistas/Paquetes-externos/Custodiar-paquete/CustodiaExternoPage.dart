@@ -20,7 +20,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
   CustodiaController custodiaController = new CustodiaController();
   List<PaqueteExterno> listPaqueteExternos;
   final _codigoController = TextEditingController();
-  FocusNode f1 = FocusNode();
+  FocusNode focusCodigo = FocusNode();
   final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -59,7 +59,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     desenfocarInputfx(context);
     if (value != "") {
       dynamic custodiado = await custodiaController.custodiarPaquete(value);
-      if (custodiado["status"]=="success") {
+      if (custodiado["status"] == "success") {
         bool perteneceLista = listPaqueteExternos
             .where((paqueteExterno) => paqueteExterno.paqueteId == value)
             .toList()
@@ -70,16 +70,14 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                 (paqueteExterno) => paqueteExterno.paqueteId == value);
           });
         }
-        setState(() {
-          _codigoController.clear();
-        });
-        notifierAccion(
-            "Se ha custodiado el envío", StylesThemeData.PRIMARY_COLOR);
+        selectionText(_codigoController, focusCodigo, context);
+        notifierAccion("Se ha custodiado el envío", StylesThemeData.PRIMARY_COLOR);
       } else {
-        notifierAccion(
-            custodiado["message"], StylesThemeData.ERROR_COLOR);
+        selectionText(_codigoController, focusCodigo, context);
+        notifierAccion(custodiado["message"], StylesThemeData.ERROR_COLOR);
       }
     } else {
+      selectionText(_codigoController, focusCodigo, context);
       notifierAccion(
           "El código del envío es obligatorio", StylesThemeData.ERROR_COLOR);
     }
@@ -115,7 +113,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
                       iconSufix: IconsData.ICON_CAMERA,
                       methodOnPressedSufix: _custodiarConCamara,
                       controller: _codigoController,
-                      focusInput: f1,
+                      focusInput: focusCodigo,
                       hinttext: "Ingresar código",
                       methodOnPressed: _validarCodigoPaquete,
                     ),

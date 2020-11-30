@@ -11,6 +11,7 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -55,23 +56,29 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     List<String> listids = new List();
     int idutd = entrega.utdId;
     listids.add("$idutd");
-    bool respuesta = await principalcontroller.registrarlista(context, listids);
-    if (respuesta) {
-      notificacion(
-          context, "success", "EXACT", "Se inició la entrega correctamente");
-      _navigationService.showModal();
-      enviosvalidados =
-          await principalcontroller.listarAgenciasExternasController();
-      enviosvalidados.forEach((element) {
-        int cod = element.utdId;
-        validados["$cod"] = false;
-      });
-      _navigationService.goBack();
-      setState(() {
-        enviosvalidados = enviosvalidados;
-      });
-    } else {
-      notificacion(context, "error", "EXACT", "No se pudo iniciar la entrega");
+    bool confirmarInicio = await confirmacion(
+        context, "success", "EXACT", "¿Desea iniciar el envío?");
+    if (confirmarInicio) {
+      bool respuesta =
+          await principalcontroller.registrarlista(context, listids);
+      if (respuesta) {
+        notificacion(
+            context, "success", "EXACT", "Se inició el envío correctamente");
+        _navigationService.showModal();
+        enviosvalidados =
+            await principalcontroller.listarAgenciasExternasController();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        _navigationService.goBack();
+        setState(() {
+          enviosvalidados = enviosvalidados;
+        });
+      } else {
+        notificacion(
+            context, "error", "EXACT", "No se pudo iniciar el envío");
+      }
     }
   }
 
@@ -91,36 +98,41 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
     List<String> listid = new List();
     validados
         .forEach((k, v) => v == true ? listid.add(k) : print("no pertenece"));
+    bool confirmarInicio = await confirmacion(
+        context, "success", "EXACT", "¿Desea iniciar el envío de la valijas?");
+    if (confirmarInicio) {
+      bool respuesta =
+          await principalcontroller.registrarlista(context, listid);
+      if (respuesta) {
+        notificacion(context, "success", "EXACT",
+            "Se inició las entregas correctamente");
+        _navigationService.showModal();
 
-    bool respuesta = await principalcontroller.registrarlista(context, listid);
-    if (respuesta) {
-      notificacion(
-          context, "success", "EXACT", "Se inició la entrega correctamente");
-      _navigationService.showModal();
-
-      validados.clear();
-      enviosvalidados =
-          await principalcontroller.listarAgenciasExternasController();
-      enviosvalidados.forEach((element) {
-        int cod = element.utdId;
-        validados["$cod"] = false;
-      });
-      _navigationService.goBack();
-      setState(() {
-        enviosvalidados = enviosvalidados;
-        validados = validados;
-      });
-    } else {
-      validados.clear();
-      enviosvalidados.forEach((element) {
-        int cod = element.utdId;
-        validados["$cod"] = false;
-      });
-      setState(() {
-        enviosvalidados = enviosvalidados;
-        validados = validados;
-      });
-      notificacion(context, "error", "EXACT", "No se pudo iniciar la entrega");
+        validados.clear();
+        enviosvalidados =
+            await principalcontroller.listarAgenciasExternasController();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        _navigationService.goBack();
+        setState(() {
+          enviosvalidados = enviosvalidados;
+          validados = validados;
+        });
+      } else {
+        validados.clear();
+        enviosvalidados.forEach((element) {
+          int cod = element.utdId;
+          validados["$cod"] = false;
+        });
+        setState(() {
+          enviosvalidados = enviosvalidados;
+          validados = validados;
+        });
+        notificacion(
+            context, "error", "EXACT", "No se pudo iniciar la entrega");
+      }
     }
   }
 

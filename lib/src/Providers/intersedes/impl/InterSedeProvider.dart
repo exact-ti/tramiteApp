@@ -73,8 +73,7 @@ class InterSedeProvider implements IInterSedeProvider {
   @override
   Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo) async {
     int utdId = obtenerUTDid();
-    Response resp = await req
-        .get('/servicio-tramite/utds/$utdId/entregas/$codigo/recepcion');
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/entregas/$codigo/recepcion');
     if (resp.data == "") return [];
     return envioModel.fromJsonValidar(resp.data);
   }

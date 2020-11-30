@@ -10,6 +10,7 @@ import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -70,24 +71,27 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
   }
 
   void iniciarEnvioLote(indice) async {
-    if(listLotesPorEnviados[indice].estadoEnvio.id==creado){
-    bool respuesta = await listarLoteController.onSearchButtonPressed(
-        context, listLotesPorEnviados[indice]);
-    if (respuesta) {
-      notificacion(
-          context, "success", "EXACT", "Se ha iniciado el envío correctamente");
-      listarEnviosLotes();
-      setState(() {
-        modalidadTipoId = modalidadTipoId;
-      });
+    if (listLotesPorEnviados[indice].estadoEnvio.id == creado) {
+      bool confirmarInicio = await confirmacion(context, "success", "EXACT",
+          "¿Desea iniciar el envío del lote a la UTD ${listLotesPorEnviados[indice].udtNombre}?");
+      if (confirmarInicio) {
+        bool respuesta = await listarLoteController.onSearchButtonPressed(
+            context, listLotesPorEnviados[indice]);
+        if (respuesta) {
+          notificacion(context, "success", "EXACT",
+              "Se ha iniciado el envío correctamente");
+          listarEnviosLotes();
+          setState(() {
+            modalidadTipoId = modalidadTipoId;
+          });
+        } else {
+          notificacion(
+              context, "error", "EXACT", "No se pudo iniciar la entrega");
+        }
+      }
     } else {
-      notificacion(context, "error", "EXACT", "No se pudo iniciar la entrega");
-    }
-    }else{
       notificacion(context, "error", "EXACT", "El envío ya se ha enviado");
-
     }
-
   }
 
   void methodRecepcionarLote(indice) {
@@ -99,7 +103,9 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
   @override
   Widget build(BuildContext context) {
     Widget itemLotesEnviados(dynamic indice) {
-      String tituloItem = listLotesPorEnviados[indice].cantLotes == 1 ? "${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lote)":"${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lotes)";
+      String tituloItem = listLotesPorEnviados[indice].cantLotes == 1
+          ? "${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lote)"
+          : "${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lotes)";
       return ItemWidget(
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           itemIndice: indice,

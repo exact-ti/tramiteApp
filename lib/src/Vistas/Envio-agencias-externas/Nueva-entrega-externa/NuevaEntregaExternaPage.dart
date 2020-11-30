@@ -77,7 +77,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
               }
             });
           });
-          enfocarInputfx(context, focusEnvio);
+          selectionText(_codigoEnvioController, focusEnvio, context);
         } else {
           EnvioModel enviocontroller =
               await principalcontroller.validarCodigoEntrega(
@@ -88,10 +88,10 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             setState(() {
               listaEnvios.add(enviocontroller);
             });
-            popuptoinput(context, focusEnvio, "success", "EXACT",
+            popupToInputShade(context,_codigoEnvioController, focusEnvio, "success", "EXACT",
                 "Envío agregado a la entrega");
           } else {
-            popuptoinput(context, focusEnvio, "error", "EXACT",
+            popupToInputShade(context,_codigoEnvioController, focusEnvio, "error", "EXACT",
                 "No es posible procesar el código");
           }
         }

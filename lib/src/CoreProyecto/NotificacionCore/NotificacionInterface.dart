@@ -8,6 +8,9 @@ abstract class NotificacionInterface {
     Future<dynamic> revisarNotificacion(int notificacionId);
     
     Future<dynamic> verNotificaciones();
+
+    void inicializarStreamNotification();
+
     }
 
 

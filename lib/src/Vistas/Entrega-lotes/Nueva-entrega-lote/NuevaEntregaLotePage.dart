@@ -97,14 +97,13 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
         EnvioModel envioModel = await nuevoEntregaLotePageController
             .validarCodigo(_codValijaController.text, context, listValijas);
         if (envioModel != null) {
-          if (listValijas.length == 0) {
+          if (listValijas.isEmpty) {
             setState(() {
-              _codValijaController.text = "";
               listValijas.add(envioModel);
             });
+            selectionText(_codValijaController, focusCodValija, context);
           } else {
-            if (listValijas
-                .where(
+            if (listValijas.where(
                     (envio) => envio.codigoPaquete == _codValijaController.text)
                 .toList()
                 .isEmpty) {
@@ -112,12 +111,12 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
                 listValijas.add(envioModel);
               });
             } else {
-              popuptoinput(context, focusCodValija, "error", "EXACT",
+              popupToInputShade(context,_codValijaController , focusCodValija, "error", "EXACT",
                   "La valija ya fue agregada al lote");
             }
           }
         } else {
-          popuptoinput(context, focusCodValija, "error", "EXACT",
+          popupToInputShade(context,_codValijaController, focusCodValija, "error", "EXACT",
               "No es posible procesar el código");
         }
       }

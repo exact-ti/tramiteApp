@@ -31,7 +31,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   int indicePagina;
   @override
   void initState() {
-       WidgetsBinding.instance
+    WidgetsBinding.instance
         .addPostFrameCallback((_) => inicializarParametros());
     super.initState();
   }
@@ -83,11 +83,6 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
           'recorridoId': this.recorridoId,
         },
       );
-/*       Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetalleRutaPage(objetoModo: objetoSend),
-          )); */
     }
 
     Widget itemRuta(dynamic indice) {
@@ -137,10 +132,13 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                         style: TextStyle(
                             fontSize: 20,
                             color: StylesThemeData.LETTER_COLOR)))),
-                FutureItemWidget(
-                    itemWidget: itemRuta,
-                    setList: setList,
-                    futureList: principalcontroller.listarMiRuta(recorridoId)),
+                this.recorridoId == null
+                    ? Container()
+                    : FutureItemWidget(
+                        itemWidget: itemRuta,
+                        setList: setList,
+                        futureList:
+                            principalcontroller.listarMiRuta(this.recorridoId)),
                 paddingWidget(Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.only(top: 10, bottom: 40),

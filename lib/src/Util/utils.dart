@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
@@ -44,12 +43,21 @@ String titulosPage(int pos) {
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
-      1;
-  sharedPreferences.clear();
   if (context != null) {
-    Navigator.of(context, rootNavigator: true).pushReplacement(
-        MaterialPageRoute(builder: (context) => new LoginPage()));
+    if (!isCliente()) {
+      Provider.of<NotificationInfo>(context, listen: false)
+          .finalizarSubcripcion = 1;
+      sharedPreferences.clear();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    } else {
+      Provider.of<NotificationInfo>(context, listen: false)
+          .finalizarSubcripcion = 1;
+      sharedPreferences.clear();
+      Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => new LoginPage()));
+    }
   }
 }
 
@@ -101,6 +109,19 @@ void popuptoinput(BuildContext context, FocusNode fx, String tipo,
   bool respuestatrue = await notificacion(context, tipo, titulo, mensaje);
   if (respuestatrue) {
     enfocarInputfx(context, fx);
+  }
+}
+
+void popupToInputShade(
+    BuildContext context,
+    TextEditingController textEditingController,
+    FocusNode fx,
+    String tipo,
+    String titulo,
+    String mensaje) async {
+  bool respuestatrue = await notificacion(context, tipo, titulo, mensaje);
+  if (respuestatrue) {
+    selectionText(textEditingController, fx, context);
   }
 }
 
@@ -256,6 +277,7 @@ UtdModel obtenerUTD() {
 
 int obtenerBuzonid() {
   BuzonModel buzonModel = new BuzonModel();
+  if (_prefs.buzon == null) return null;
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
   BuzonModel bmodel = buzonModel.fromPreferencs(buzon);
   return bmodel.id;
@@ -276,6 +298,14 @@ Widget drawerIfPerfil() {
 }
 
 bool boolIfPerfil() {
+  if (_prefs.tipoperfil == cliente) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool isCliente() {
   if (_prefs.tipoperfil == cliente) {
     return true;
   } else {
@@ -385,17 +415,16 @@ Color colorByEstadoDocumento(String nombreEstadoDocumento) {
   return color;
 }
 
-double redondearDouble(double val, int places){ 
-   double mod = pow(10.0, places); 
-   return ((val * mod).round().toDouble() / mod); 
+double redondearDouble(double val, int places) {
+  double mod = pow(10.0, places);
+  return ((val * mod).round().toDouble() / mod);
 }
 
-void showNotification( v, flp) async {
-  var android = AndroidNotificationDetails(
-      'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
-      priority: Priority.High, importance: Importance.Max, ticker: 'ticker');
-  var iOS = IOSNotificationDetails();
-  var platform = NotificationDetails(android, iOS);
-  await flp.show(0, 'EXACT', '$v', platform,
-      payload: '$v');
+void selectionText(TextEditingController _controller, FocusNode focusInput,
+    BuildContext context) {
+  _controller.selection =
+      TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
+  FocusScope.of(context).unfocus();
+  new TextEditingController().clear();
+  FocusScope.of(context).requestFocus(focusInput);
 }

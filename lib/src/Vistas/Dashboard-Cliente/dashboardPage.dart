@@ -107,6 +107,11 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget contenidoItems() {
+/*     if (obtenerBuzonid() == null) {
+      return Center(
+          child: sinResultados(
+              'Ha surgido un problema', IconsData.ICON_ERROR_PROBLEM));
+    } */
     return FutureBuilder(
         future: dashboardController.listarItems(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

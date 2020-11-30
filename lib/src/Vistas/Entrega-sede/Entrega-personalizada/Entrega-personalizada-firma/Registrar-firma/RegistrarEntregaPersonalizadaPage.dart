@@ -64,19 +64,19 @@ class _RegistrarEntregapersonalizadoPageState
           setState(() {
             listaEnvios.add(envioModel);
           });
+          selectionText(_sobreController, focusSobre, context);
           notifierAccion(
               "Se registró la entrega", StylesThemeData.PRIMARY_COLOR);
         } else {
-          setState(() {
-            _sobreController.text = "";
-          });
-          notifierAccion(respuesta["message"], Colors.red);
+          selectionText(_sobreController, focusSobre, context);
+          notifierAccion(respuesta["message"], StylesThemeData.ERROR_COLOR);
         }
       } else {
-        notifierAccion("Código ya se encuentra validado", Colors.red);
+        selectionText(_sobreController, focusSobre, context);
+        notifierAccion("Código ya se encuentra validado", StylesThemeData.ERROR_COLOR);
       }
     } else {
-      notifierAccion("el código de sobre es obligatorio", Colors.red);
+      notifierAccion("el código de sobre es obligatorio", StylesThemeData.ERROR_COLOR);
     }
   }
 

@@ -32,19 +32,22 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
   void listarMenuBottomNavBar() async {
     List<Menu> listmen = listMenuUtil();
     if (widget.rutaPage != null) {
+      int ordenprueba = 0;
       if (widget.rutaPage == "/") {
         menuinicio = "/dashboard";
       } else {
-        menuinicio = widget.rutaPage;
-/*         if (widget.rutaPage == "/envios-activos") {
-          dataEnvio = widget.datainfo;
-        } */
+        if (widget.rutaPage == "/notificaciones") {
+          menuinicio = "/notificaciones";
+          ordenprueba = 0;
+        } else {
+          menuinicio = widget.rutaPage;
+          ordenprueba = listmen
+              .where((element) => element.link == menuinicio)
+              .map((e) => e.orden - 1)
+              .toList()
+              .first;
+        }
       }
-      int ordenprueba = listmen
-          .where((element) => element.link == menuinicio)
-          .map((e) => e.orden - 1)
-          .toList()
-          .first;
       if (this.mounted) {
         setState(() {
           listMenu = listmen;

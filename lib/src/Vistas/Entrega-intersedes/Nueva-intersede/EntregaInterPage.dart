@@ -86,21 +86,21 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
                 envio.estado = true;
               }
             });
-            _sobreController.text = "";
           });
-          enfocarInputfx(context, focusSobre);
+          if (listaEnvios.where((envio) => !envio.estado).toList().isNotEmpty) {
+            selectionText(_sobreController, focusSobre, context);
+          }
         } else {
           EnvioModel enviocontroller = await principalcontroller
               .validarCodigoEntrega(_valijaController.text, value, context);
           if (enviocontroller != null) {
             setState(() {
-              _sobreController.text = "";
               listaEnvios.add(enviocontroller);
             });
             bool respuestatrue = await notificacion(
                 context, "success", "EXACT", "Envío agregado a la entrega");
             if (respuestatrue) {
-              enfocarInputfx(context, focusSobre);
+              selectionText(_sobreController, focusSobre, context);
             }
           } else {
             setState(() {
@@ -109,7 +109,7 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
             bool respuestatrue = await notificacion(
                 context, "error", "EXACT", "No es posible procesar el código");
             if (respuestatrue) {
-              enfocarInputfx(context, focusSobre);
+              selectionText(_sobreController, focusSobre, context);
             }
           }
         }
@@ -148,16 +148,16 @@ class _NuevoIntersedePageState extends State<NuevoIntersedePage> {
           }
         }
       } else {
-      bool respuestatrue = await notificacion(
-          context, "error", "EXACT", "No es posible procesar el código");
-          setState(() {
-            _sobreController.text = "";
-            listaEnvios = [];
-            _valijaController.text = codigo;
-          });
-          if (respuestatrue) {
-            enfocarInputfx(context, focusValija);
-          }
+        bool respuestatrue = await notificacion(
+            context, "error", "EXACT", "No es posible procesar el código");
+        setState(() {
+          _sobreController.text = "";
+          listaEnvios = [];
+          _valijaController.text = codigo;
+        });
+        if (respuestatrue) {
+          enfocarInputfx(context, focusValija);
+        }
       }
     } else {
       bool respuestatrue = await notificacion(

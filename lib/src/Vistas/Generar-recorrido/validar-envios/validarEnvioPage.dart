@@ -69,6 +69,9 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
             }
           });
         });
+        if (listaEnvios.where((envio) => !envio.estado).toList().isNotEmpty) {
+          selectionText(_sobreController, focusSobre, context);
+        }
       } else {
         EnvioModel envioModel = await validacionController.validarCodigo(
             value, this.recorridoId, context);
@@ -77,18 +80,20 @@ class _ValidacionEnvioPageState extends State<ValidacionEnvioPage> {
           setState(() {
             listaEnvios.add(envioModel);
           });
-          await notificacion(
+          bool respuesta = await notificacion(
               context, "success", "EXACT", "El envío $value fue agregado");
+          if (respuesta) {
+            if (listaEnvios
+                .where((envio) => !envio.estado)
+                .toList()
+                .isNotEmpty) {
+              selectionText(_sobreController, focusSobre, context);
+            }
+          }
         } else {
-          await notificacion(context, "error", "EXACT",
-              "El envío $value no pertenece al recorrido");
+          popupToInputShade(context, _sobreController, focusSobre, "error",
+              "EXACT", "El envío $value no pertenece al recorrido");
         }
-      }
-      setState(() {
-        _sobreController.text = "";
-      });
-      if (listaEnvios.where((envio) => !envio.estado).toList().isNotEmpty) {
-        enfocarInputfx(context, focusSobre);
       }
     } else {
       popuptoinput(context, focusSobre, "error", "EXACT",

@@ -11,8 +11,7 @@ class RutaProvider implements IRutaProvider {
 
   @override
   Future<List<RutaModel>> listarMiRuta(int recorridoId) async {
-    Response resp =
-        await req.get('/servicio-tramite/recorridos/$recorridoId/areas');
+    Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/areas');
     return rutaModel.fromJson(resp.data);
   }
 

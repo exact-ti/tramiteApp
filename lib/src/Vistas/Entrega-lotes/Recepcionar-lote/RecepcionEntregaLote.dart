@@ -35,6 +35,9 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
   _RecepcionEntregaLotePageState(this.entregaLote);
   RecepcionControllerLote recepcionControllerLote =
       new RecepcionControllerLote();
+
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
+
   final _codValijaController = TextEditingController();
   final _codLoteController = TextEditingController();
   EnvioModel envioModel = new EnvioModel();
@@ -60,74 +63,21 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     }
   }
 
-  void iniciarlistValijas() async {
-    dynamic dataListEnvios = await recepcionControllerLote
-        .listarEnviosLotes(_codLoteController.text);
-    setState(() {
-      listValijas = envioModel.fromJsonValidar(dataListEnvios["data"]);
-    });
+  void notifierAccion(String mensaje, Color color) {
+    final snack = new SnackBar(
+      content: new Text(mensaje),
+      backgroundColor: color,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
   }
 
-  void contieneCodigo(codigo) async {
-    bool pertenecia = false;
-    for (EnvioModel envio in listValijas) {
-      if (envio.codigoPaquete == codigo) {
-        pertenecia = true;
-      }
-    }
-    if (pertenecia == true) {
-      bool respuesta = await recepcionControllerLote.recogerdocumentoLote(
-          context, _codLoteController.text, codigo);
-      if (respuesta) {
-        listValijas.removeWhere((value) => value.codigoPaquete == codigo);
-        if (listValijas.isEmpty) {
-          bool respuestatrue = await notificacion(
-              context, "success", "EXACT", "Se ha completado la recepción");
-          if (respuestatrue) {
-            Navigator.of(context).pushNamed('/envio-lote');
-          }
-          setState(() {
-            _codValijaController.text = codigo;
-            listValijas = listValijas;
-          });
-        } else {
-          popuptoinput(context, focusCodValija, "success", "EXACT",
-              "Se registró la valija");
-          setState(() {
-            _codValijaController.text = codigo;
-            listValijas = listValijas;
-          });
-          enfocarInputfx(context, focusCodValija);
-        }
-      } else {
-        setState(() {
-          _codValijaController.text = codigo;
-        });
-        popuptoinput(context, focusCodValija, "error", "EXACT",
-            "No es posible procesar el código");
-      }
-    } else {
-      bool respuestaPopUp = await confirmacion(
-          context, "success", "EXACT", "¿Desea custodiar el envío $codigo?");
-      if (respuestaPopUp) {
-        bool respuesta = await recepcionControllerLote.recogerdocumentoLote(
-            context, _codLoteController.text, codigo);
-        if (respuesta) {
-          setState(() {
-            _codValijaController.text = codigo;
-          });
-          popuptoinput(context, focusCodValija, "success", "EXACT",
-              "Se registró la valija");
-        } else {
-          setState(() {
-            _codValijaController.text = codigo;
-          });
-          popuptoinput(context, focusCodValija, "error", "EXACT",
-              "No es posible procesar el código");
-        }
-      } else {
-        enfocarInputfx(context, focusCodValija);
-      }
+  void iniciarlistValijas() async {
+    if (_codLoteController.text != "") {
+      dynamic dataListEnvios = await recepcionControllerLote
+          .listarEnviosLotes(_codLoteController.text);
+      setState(() {
+        listValijas = envioModel.fromJsonValidar(dataListEnvios["data"]);
+      });
     }
   }
 
@@ -160,11 +110,14 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
               setState(() {
                 listValijas = listValijas;
               });
-              enfocarInputfx(context, focusCodValija);
+              notifierAccion(
+                  "Se recepcionó la valija ${_codValijaController.text}",
+                  StylesThemeData.PRIMARY_COLOR);
+              selectionText(_codValijaController, focusCodValija, context);
             }
           } else {
-            popuptoinput(context, focusCodValija, "error", "EXACT",
-                "No es posible procesar el código");
+            popupToInputShade(context, _codValijaController, focusCodValija,
+                "error", "EXACT", "No es posible procesar el código");
           }
         } else {
           bool respuestaPopUp = await confirmacion(context, "success", "EXACT",
@@ -173,14 +126,19 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             bool respuesta = await recepcionControllerLote.recogerdocumentoLote(
                 context, _codLoteController.text, _codValijaController.text);
             if (respuesta) {
-              popuptoinput(context, focusCodValija, "success", "EXACT",
-                  "Se registró la valija");
+              notifierAccion(
+                  "Se recepcionó la valija ${_codValijaController.text}",
+                  StylesThemeData.PRIMARY_COLOR);
+              selectionText(_codValijaController, focusCodValija, context);
             } else {
-              popuptoinput(context, focusCodValija, "error", "EXACT",
-                  "No es posible procesar el código");
+              notifierAccion("No es posible procesar el código",
+                  StylesThemeData.ERROR_COLOR);
+              selectionText(_codValijaController, focusCodValija, context);
             }
           } else {
-            enfocarInputfx(context, focusCodValija);
+            notifierAccion("No es posible procesar el código",
+                StylesThemeData.ERROR_COLOR);
+            selectionText(_codValijaController, focusCodValija, context);
           }
         }
       } else {
@@ -274,6 +232,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
     return Scaffold(
         appBar: CustomAppBar(text: "Recibir Lotes"),
         drawer: DrawerPage(),
+        key: scaffoldkey,
         body: scaffoldbody(
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

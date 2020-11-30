@@ -129,7 +129,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               context, _valijaController.text, value, true);
           if (respuestaValidar["status"] == "success") {
             listaEnvios.removeWhere((envio) => envio.codigoPaquete == value);
-            if (listaEnvios.length == 0) {
+            if (listaEnvios.isEmpty) {
               desenfocarInputfx(context);
               bool respuestatrue = await notificacion(context, "success",
                   "EXACT", "Se ha recepcionado los documentos con éxito");
@@ -148,7 +148,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               _sobreController.text = value;
             });
           }
-          enfocarInputfx(context, focusSobre);
         } else {
           bool respuestaPopUp = await confirmacion(context, "success", "EXACT",
               "El código $value no se encuentra en la lista. ¿Desea continuar?");
@@ -160,17 +159,16 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
                 mensajeconfirmation = "No es posible procesar el código";
                 _sobreController.text = value;
               });
-              enfocarInputfx(context, focusSobre);
             } else {
               setState(() {
                 mensajeconfirmation = "El sobre $value fue recepcionado";
                 _sobreController.text = value;
               });
-              enfocarInputfx(context, focusSobre);
             }
-          } else {
-            enfocarInputfx(context, focusSobre);
           }
+        }
+        if (listaEnvios.isNotEmpty) {
+          selectionText(_sobreController, focusSobre, context);
         }
       } else {
         popuptoinput(context, focusValija, "error", "EXACT",

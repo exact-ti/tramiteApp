@@ -30,7 +30,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   Map<String, dynamic> validados = new HashMap();
   bool respuestaBack = false;
   final NavigationService _navigationService = locator<NavigationService>();
-  FocusNode f1 = FocusNode();
+  FocusNode focusBandeja = FocusNode();
   @override
   void initState() {
     inicializarEnviosRecepcion();
@@ -55,35 +55,34 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
     if (validados["$codigopaquete"] == null ||
         validados["$codigopaquete"] == false) {
       if (!validados.containsValue(true)) {
-            showDialog(
-        context: context,
-        builder: (_) {
-          return TrackingModal(
-            paqueteId: listaEnviosModel[indice].id,
-          );
-        });
+        showDialog(
+            context: context,
+            builder: (_) {
+              return TrackingModal(
+                paqueteId: listaEnviosModel[indice].id,
+              );
+            });
       }
     }
   }
 
-  void onpressedTap(dynamic indice){
+  void onpressedTap(dynamic indice) {
     String codigopaquete = listaEnviosModel[indice].codigoPaquete;
-            bool contienevalidados = validados.containsValue(true);
-            if (contienevalidados && validados["$codigopaquete"] == false) {
-              setState(() {
-                validados["$codigopaquete"] = true;
-              });
-            } else {
-              setState(() {
-                validados["$codigopaquete"] = false;
-              });
-            }
+    bool contienevalidados = validados.containsValue(true);
+    if (contienevalidados && validados["$codigopaquete"] == false) {
+      setState(() {
+        validados["$codigopaquete"] = true;
+      });
+    } else {
+      setState(() {
+        validados["$codigopaquete"] = false;
+      });
+    }
   }
 
-  
   Color colorSelect(dynamic indice, bool seleccionado) {
     return seleccionado == null || seleccionado == false
-        ?indice % 2 == 0
+        ? indice % 2 == 0
             ? StylesThemeData.ITEM_SHADED_COLOR
             : StylesThemeData.ITEM_UNSHADED_COLOR
         : StylesThemeData.ITEM_SELECT_COLOR;
@@ -100,59 +99,63 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
             });
           },
           child: ItemWidget(
-            itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
-            itemIndice: indice,
-            colorItem: colorSelect(indice, validados["$codigopaquete"]),
-            titulo: listaEnviosModel[indice].usuario == null
-                ? "De: Envío importado"
-                : "De: ${listaEnviosModel[indice].usuario}",
-            subSecondtitulo: listaEnviosModel[indice].codigoPaquete,
-            subFivetitulo: listaEnviosModel[indice].observacion,
-            styleTitulo: StylesTitleData.STYLE_TITLE,
-            styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
-            styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
-            onPressedCode: onPressedCode,
-            methodAction: onpressedTap,
-            iconColor: StylesThemeData.ICON_COLOR
-          ));
+              itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+              itemIndice: indice,
+              colorItem: colorSelect(indice, validados["$codigopaquete"]),
+              titulo: listaEnviosModel[indice].usuario == null
+                  ? "De: Envío importado"
+                  : "De: ${listaEnviosModel[indice].usuario}",
+              subSecondtitulo: listaEnviosModel[indice].codigoPaquete,
+              subFivetitulo: listaEnviosModel[indice].observacion,
+              styleTitulo: StylesTitleData.STYLE_TITLE,
+              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+              styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+              onPressedCode: onPressedCode,
+              methodAction: onpressedTap,
+              iconColor: StylesThemeData.ICON_COLOR));
     }
 
     void validarEnvio(List<String> listid, int cantidad) async {
       bool respuestaLista =
           await principalcontroller.guardarLista(context, listid);
       if (respuestaLista) {
-        notificacion(
+        bool respuesta = await notificacion(
             context,
             "success",
             "EXACT",
             cantidad == 1
                 ? "Se recepcionó el envío"
                 : "Se recepcionó los envíos");
-        _navigationService.showModal();
-        listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
-        validados.clear();
-        listaEnviosModel.forEach((element) {
-          String cod = element.codigoPaquete;
-          validados["$cod"] = false;
-        });
-        _navigationService.goBack();
-        setState(() {
-          validados = validados;
-          _bandejaController.text = "";
-          listaEnviosModel = listaEnviosModel;
-        });
+
+        if (respuesta) {
+          _navigationService.showModal();
+          listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
+          validados.clear();
+          listaEnviosModel.forEach((element) {
+            String cod = element.codigoPaquete;
+            validados["$cod"] = false;
+          });
+          _navigationService.goBack();
+          setState(() {
+            validados = validados;
+            listaEnviosModel = listaEnviosModel;
+          });
+          if (listaEnviosModel.isNotEmpty) {
+            selectionText(_bandejaController, focusBandeja, context);
+          }
+        }
       } else {
-        notificacion(
+        bool respuesta = await notificacion(
             context,
             "error",
             "EXACT",
             cantidad == 1
                 ? "No es posible procesar el código"
                 : "No es posible procesar los códigos");
-        validados.clear();
-        setState(() {
-          _bandejaController.text = "";
-        });
+        if (respuesta) {
+          validados.clear();
+          selectionText(_bandejaController, focusBandeja, context);
+        }
       }
     }
 
@@ -181,23 +184,22 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       validarEnvio(listid, 2);
     }
 
-
     mainscaffold() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           paddingWidget(
             Container(
-                margin: const EdgeInsets.only(bottom: 30,top: 20),
+                margin: const EdgeInsets.only(bottom: 30, top: 20),
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
                 child: InputWidget(
-                    iconSufix:  IconsData.ICON_CAMERA,
+                    iconSufix: IconsData.ICON_CAMERA,
                     methodOnPressedSufix: _traerdatosescanerBandeja,
-                      controller: _bandejaController,
-                      focusInput: f1,
-                      methodOnPressed: _validarBandejaText,
-                      hinttext: "Envío")),
+                    controller: _bandejaController,
+                    focusInput: focusBandeja,
+                    methodOnPressed: _validarBandejaText,
+                    hinttext: "Envío")),
           ),
           !respuestaBack
               ? Expanded(
@@ -208,7 +210,10 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                   child: loadingGet(),
                 ))))
               : ListItemWidget(
-                  itemWidget: crearItem, listItems: listaEnviosModel,mostrarMensaje: true,),
+                  itemWidget: crearItem,
+                  listItems: listaEnviosModel,
+                  mostrarMensaje: true,
+                ),
           validados.containsValue(true)
               ? paddingWidget(Container(
                   margin: const EdgeInsets.only(bottom: 20),
@@ -233,6 +238,4 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         resizeToAvoidBottomInset: false,
         body: mainscaffold());
   }
-
-
 }
