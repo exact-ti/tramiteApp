@@ -163,4 +163,9 @@ class NotificacionImpl implements NotificacionInterface {
       }
     }
   }
+
+  @override
+  Future enviarNotificacionEnAusenciaRecojo(String paqueteId) {
+    return notificacionProvider.enviarNotificacionEnAusenciaRecojo(paqueteId);
+  }
 }

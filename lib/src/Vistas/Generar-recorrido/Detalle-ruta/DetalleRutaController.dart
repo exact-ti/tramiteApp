@@ -14,7 +14,4 @@ class DetalleRutaController {
     return entregas;
   }
 
-  Future enviarNotificacion(String paqueteId) async {
-    return await rutaInterface.enviarNotificacionToAusencia(paqueteId);
-  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
 import 'package:tramiteapp/src/Vistas/Consulta-Envio/ConsultaEnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/Custodiar-agencias/CustodiarAgenciaPage.dart';
 import 'package:tramiteapp/src/Vistas/Dashboard-Cliente/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
@@ -55,7 +56,8 @@ Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
     '/envios-agencia': (BuildContext context) => ListarEnviosAgenciasPage(),
     '/confirmar-envios': (BuildContext context) => RecepcionEnvioPage(),
     '/consulta-envios': (BuildContext context) => ConsultaEnvioPage(),
-    '/envios-activos': (BuildContext context) => ListarEnviosActivosPage(objetoModo: data),
+    '/envios-activos': (BuildContext context) =>
+        ListarEnviosActivosPage(objetoModo: data),
     '/recepcionar-valija': (BuildContext context) =>
         RecepcionInterPage(recorridopage: null),
 
@@ -63,6 +65,8 @@ Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
     '/envios-en-utd': (BuildContext context) => ListarEnviosUTDPage(),
     '/envios-historicos': (BuildContext context) => HistoricoPage(),
     '/retirar-envio': (BuildContext context) => RetirarEnvioPage(),
+    '/custodiar-agencia': (BuildContext context) => CustodiarAgenciaPage(),
+
     //==================Menu secundario====================================
     '/crear-envio': (BuildContext context) => EnvioPage(),
     '/entregas-pisos-propios': (BuildContext context) =>
@@ -100,7 +104,5 @@ Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
         RecepcionEntregaLotePage(entregaLotepage: null),
 
     '/envio-confirmado': (BuildContext context) => EnvioConfirmadoPage(),
-
-        
   };
 }

@@ -35,9 +35,4 @@ class RutaImpl implements RutaInterface {
       return await rutaProvider.listarDetalleMiRutaRecojo(areaId, recorridoId);
     }
   }
-
-  @override
-  Future enviarNotificacionToAusencia(String paqueteId) async {
-    return await rutaProvider.enviarNotificacionToAusencia(paqueteId);
-  }
 }

@@ -10,6 +10,7 @@ import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/SwitchWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
@@ -29,12 +30,12 @@ class EntregaRegularPage extends StatefulWidget {
 class _EntregaRegularPageState extends State<EntregaRegularPage> {
   RecorridoModel recorridoUsuario;
   _EntregaRegularPageState(this.recorridoUsuario);
-  EntregaregularController envioController = new EntregaregularController();
+  EntregaregularController entregaregularController =
+      new EntregaregularController();
   final _sobreController = TextEditingController();
   final _bandejaController = TextEditingController();
   EnvioModel envioModel = new EnvioModel();
   List<EnvioModel> listaEnvios = new List();
-  EntregaregularController principalcontroller = new EntregaregularController();
   String mensaje = "";
   FocusNode focusBandeja = FocusNode();
   FocusNode focusEnvio = FocusNode();
@@ -81,12 +82,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
         .isNotEmpty;
     if (pertenecia) {
       if (enRecojo) {
-        dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
-            context,
-            recorridoUsuario.id,
-            _bandejaController.text,
-            documento,
-            enRecojo);
+        dynamic respuestaMap =
+            await entregaregularController.recogerdocumentoRecojo(
+                context,
+                recorridoUsuario.id,
+                _bandejaController.text,
+                documento,
+                enRecojo);
         if (respuestaMap.containsValue("success")) {
           dynamic respuestaMap2 = respuestaMap["data"];
           mensaje = respuestaMap2["destino"];
@@ -97,12 +99,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           mensaje = respuestaMap["message"];
         }
       } else {
-        dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
-            context,
-            recorridoUsuario.id,
-            _bandejaController.text,
-            documento,
-            enRecojo);
+        dynamic respuestaMap =
+            await entregaregularController.recogerdocumentoEntrega(
+                context,
+                recorridoUsuario.id,
+                _bandejaController.text,
+                documento,
+                enRecojo);
         if (respuestaMap["status"] == "success") {
           listaEnvios.removeWhere((value) => value.codigoPaquete == documento);
           mensaje = "Se registró la entrega";
@@ -119,12 +122,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       });
     } else {
       if (enRecojo) {
-        dynamic respuestaMap = await envioController.recogerdocumentoRecojo(
-            context,
-            recorridoUsuario.id,
-            _bandejaController.text,
-            documento,
-            enRecojo);
+        dynamic respuestaMap =
+            await entregaregularController.recogerdocumentoRecojo(
+                context,
+                recorridoUsuario.id,
+                _bandejaController.text,
+                documento,
+                enRecojo);
         if (respuestaMap.containsValue("success")) {
           dynamic respuestaMap2 = respuestaMap["data"];
           mensaje = respuestaMap2["destino"];
@@ -138,12 +142,13 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           mensaje = mensaje;
         });
       } else {
-        dynamic respuestaMap = await envioController.recogerdocumentoEntrega(
-            context,
-            recorridoUsuario.id,
-            _bandejaController.text,
-            documento,
-            enRecojo);
+        dynamic respuestaMap =
+            await entregaregularController.recogerdocumentoEntrega(
+                context,
+                recorridoUsuario.id,
+                _bandejaController.text,
+                documento,
+                enRecojo);
         if (respuestaMap["status"] == "success") {
           setState(() {
             codigoMostrar = documento;
@@ -161,7 +166,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       selectionText(_sobreController, focusEnvio, context);
     } else {
       setState(() {
-        _sobreController.text="";
+        _sobreController.text = "";
       });
       desenfocarInputfx(context);
     }
@@ -207,7 +212,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   void _validarBandejaText(dynamic value) async {
     if (value != "") {
       if (enRecojo) {
-        listaEnvios = await principalcontroller.listarEnviosRecojo(
+        listaEnvios = await entregaregularController.listarEnviosRecojo(
             context, recorridoUsuario.id, value);
         if (listaEnvios == null) {
           bool respuestaNotificacion = await notificacion(context, "error",
@@ -245,7 +250,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           }
         }
       } else {
-        dynamic respuesta = await principalcontroller.listarEnviosEntrega(
+        dynamic respuesta = await entregaregularController.listarEnviosEntrega(
             context, recorridoUsuario.id, value);
         if (respuesta["status"] == "success") {
           listaEnvios = envioModel.fromJsonValidar(respuesta["data"]);
@@ -277,6 +282,22 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     }
   }
 
+  void onPressItemRecojo(dynamic indice) async {
+    bool respuestaConfirmacion = await confirmacion(context, "succes", "EXACT",
+        "El documento ${listaEnvios[indice].codigoPaquete} no se encuentra. ¿Deseas enviar una notificación?");
+    if (respuestaConfirmacion) {
+      dynamic responseNotificacion = await entregaregularController
+          .enviarNotificacion(listaEnvios[indice].codigoPaquete);
+      if (responseNotificacion["status"] == "success") {
+        notificacion(
+            context, "success", "EXACT", "La notificación fue realizada");
+      } else {
+        notificacion(
+            context, "error", "EXACT", responseNotificacion["message"]);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget botonesinferiores = Row(children: [
@@ -295,7 +316,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       Expanded(
         child: InkWell(
           onTap: () {
-            envioController.redirectMiRuta(recorridoUsuario, context);
+            entregaregularController.redirectMiRuta(recorridoUsuario, context);
           },
           child: Text(
             'Mi ruta',
@@ -308,10 +329,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     Widget itemEnvio(dynamic indice) {
       return ItemWidget(
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          methodAction: this.enRecojo ? onPressItemRecojo : null,
           iconPrimary: FontAwesomeIcons.qrcode,
-          iconSend: listaEnvios[indice].estado
-              ? IconsData.ICON_ENVIO_CONFIRMADO
-              : null,
+          iconSend: this.enRecojo ? IconsData.ICON_ITEM_WIDGETRIGHT : null,
           itemIndice: indice,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR

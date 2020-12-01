@@ -14,4 +14,10 @@ abstract class IAgenciasExternasInterface {
   Future<bool> iniciarEntregaAgencia(EnvioInterSedeModel envio);
 
   Future<bool> iniciarEntregaListaAgencia(List<String> listaCodigos);
+
+ Future<List<EnvioModel>>  listarEnviosAgenciasToCustodia();  
+
+     Future<dynamic> custodiarPaquete(String paqueteId);  
+
+
 }

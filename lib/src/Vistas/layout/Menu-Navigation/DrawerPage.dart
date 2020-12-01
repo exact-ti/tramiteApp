@@ -141,6 +141,19 @@ class DrawerPage extends StatelessWidget {
                   Navigator.of(context).pushNamed(men.link);
                 })));
       }
+
+              list.add(Container(
+            decoration: new BoxDecoration(color: Colors.white),
+            child: ListTile(
+                leading: getICon("custodiar", StylesThemeData.SWITCH_COLOR_PRIMARY),
+                title: Text(
+                  "Custodiar agencia",
+                  style: TextStyle(color: StylesThemeData.LETTER_COLOR),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('/custodiar-agencia');
+                })));
+
     }
     return list;
   }

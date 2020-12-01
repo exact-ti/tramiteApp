@@ -81,4 +81,16 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
         '/servicio-tramite/utds/$utdId/inicio', null, parametros);
     return resp.data ? true : false;
   }
+
+  @override
+  Future<List<EnvioModel>> listarEnviosAgenciasToCustodia(int utdId) async {
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/envios/agencias?estadoId=1');
+    return envioModel.fromJsonValidarToCustodiarAgencia(resp.data);
+  }
+
+  @override
+  Future custodiarPaquete(String paqueteId, int utdId) async {
+    Response resp = await req.post('/servicio-tramite/utds/$utdId/paquetes/$paqueteId/custodia',null,null);
+    return resp.data;
+  }
 }

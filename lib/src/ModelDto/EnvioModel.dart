@@ -47,6 +47,19 @@ class EnvioModel {
     return envios;
   }
 
+  List<EnvioModel> fromJsonValidarToCustodiarAgencia(List<dynamic> jsons) {
+    List<EnvioModel> envios = new List();
+    for (Map<String, dynamic> json in jsons) {
+      EnvioModel envio = new EnvioModel();
+      envio.codigoPaquete = json["paqueteId"];
+      envio.observacion = json["tipoPaquete"];
+      envio.id = json["id"];
+      envios.add(envio);
+    }
+    return envios;
+  }
+
+
   List<EnvioModel> fromEnviadosActivos(List<dynamic> jsons) {
     List<EnvioModel> envios = new List();
     for (Map<String, dynamic> json in jsons) {

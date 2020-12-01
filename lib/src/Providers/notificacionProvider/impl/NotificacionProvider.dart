@@ -28,4 +28,13 @@ class NotificacionProvider implements INotificacionProvider {
     return response.data;
   }
 
+  @override
+  Future enviarNotificacionEnAusenciaRecojo(String paqueteId) async {
+    Response resp = await req.post(
+        '/servicio-tramite/envios/notificaciones/creadopendiente', null, {
+      "paqueteId": paqueteId,
+    });
+    return resp.data;
+  }
+
 }

@@ -8,6 +8,4 @@ abstract class RutaInterface {
 
   Future<List<DetalleRutaModel>> listarDetalleMiRuta(
       bool enEntregar, String areaId, int recorridoId);
-
-  Future enviarNotificacionToAusencia(String paqueteId);
 }

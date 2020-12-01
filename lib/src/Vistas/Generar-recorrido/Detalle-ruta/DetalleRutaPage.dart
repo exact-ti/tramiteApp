@@ -8,8 +8,6 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
 import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
-import 'package:tramiteapp/src/shared/modals/confirmation.dart';
-import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
@@ -29,8 +27,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   int recorridoID;
   RutaModel rutaModel;
   _DetalleRutaPagePageState(this.objetoModo);
-  DetalleRutaController principalcontroller = new DetalleRutaController();
-  List<DetalleRutaModel> detallesRuta = new List();
+  DetalleRutaController detalleRutaController = new DetalleRutaController();
   bool porEntregar = true;
   List<DetalleRutaModel> listDetallesEntregar;
   List<DetalleRutaModel> listDetallesRecoger;
@@ -47,9 +44,9 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       Map recorrido = ModalRoute.of(context).settings.arguments;
       this.recorridoID = recorrido["recorridoId"];
       this.rutaModel = recorrido["ruta"];
-      listDetallesEntregar = await principalcontroller.listarDetalleRuta(
+      listDetallesEntregar = await detalleRutaController.listarDetalleRuta(
           porEntregar, rutaModel.id, recorridoID);
-      listDetallesRecoger = await principalcontroller.listarDetalleRuta(
+      listDetallesRecoger = await detalleRutaController.listarDetalleRuta(
           !porEntregar, rutaModel.id, recorridoID);
       setState(() {
         rutaModel = rutaModel;
@@ -78,22 +75,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
             paqueteId: listDetallesRecoger[intersedeIndice].id,
           );
         });
-  }
-
-  void onPressItemRecojo(dynamic intersedeIndice) async {
-    bool respuestaConfirmacion = await confirmacion(context, "succes", "EXACT",
-        "El documento ${listDetallesRecoger[intersedeIndice].paqueteId} no se encuentra. ¿Deseas enviar una notificación?");
-    if (respuestaConfirmacion) {
-      dynamic responseNotificacion = await principalcontroller
-          .enviarNotificacion(listDetallesRecoger[intersedeIndice].paqueteId);
-      if (responseNotificacion["status"] == "success") {
-        notificacion(
-            context, "success", "EXACT", "La notificación fue realizada");
-      } else {
-        notificacion(
-            context, "error", "EXACT", responseNotificacion["message"]);
-      }
-    }
   }
 
   @override
@@ -175,8 +156,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
               : StylesThemeData.ITEM_UNSHADED_COLOR,
           titulo: listDetallesRecoger[indice].destinatario,
           subSecondtitulo: listDetallesRecoger[indice].paqueteId,
-          methodAction: onPressItemRecojo,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
           onPressedCode: methodPopUpInRecojos,
           iconColor: StylesThemeData.ICON_COLOR,
           styleTitulo: StylesTitleData.STYLE_TITLE,

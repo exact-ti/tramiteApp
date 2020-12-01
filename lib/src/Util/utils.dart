@@ -428,3 +428,11 @@ void selectionText(TextEditingController _controller, FocusNode focusInput,
   new TextEditingController().clear();
   FocusScope.of(context).requestFocus(focusInput);
 }
+
+  void notifierAccion(String mensaje, Color colorNotifier,GlobalKey<ScaffoldState> scaffoldkey) {
+    final snack = new SnackBar(
+      content: new Text(mensaje),
+      backgroundColor: colorNotifier,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
+  }
