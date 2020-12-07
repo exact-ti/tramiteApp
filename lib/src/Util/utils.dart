@@ -436,3 +436,12 @@ void selectionText(TextEditingController _controller, FocusNode focusInput,
     );
     scaffoldkey.currentState.showSnackBar(snack);
   }
+
+  String obtenerInicialesOfString(String cadena){
+    String inciales = "";
+     List<String> listCadena = cadena.split(" ");
+     listCadena.forEach((cadena) {
+       inciales=inciales+ cadena[0];
+     });
+     return inciales;
+  }

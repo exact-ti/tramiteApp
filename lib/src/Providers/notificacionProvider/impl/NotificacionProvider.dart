@@ -10,7 +10,7 @@ class NotificacionProvider implements INotificacionProvider {
   NotificacionModel notificacionModel = new NotificacionModel();
 
   @override
-  Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
+  Future<List<NotificacionModel>> listarNotificaciones() async {
     Response resp = await req.get('/servicio-tramite/notificaciones/pendientes');
     dynamic respuestaData = resp.data;
     return notificacionModel.fromJsonToNotificacion(respuestaData["data"]);

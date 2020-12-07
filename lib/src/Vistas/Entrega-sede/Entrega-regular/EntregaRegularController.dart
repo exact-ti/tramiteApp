@@ -14,7 +14,7 @@ import 'package:tramiteapp/src/services/navigation_service_file.dart';
 class EntregaregularController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
   final NavigationService _navigationService = locator<NavigationService>();
-  NotificacionInterface notificacionCore = NotificacionImpl(new NotificacionProvider());
+  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
 
 
   Future<List<EnvioModel>> listarEnviosRecojo(

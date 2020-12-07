@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:tramiteapp/src/CoreProyecto/Buzon/BuzonInterface.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/Providers/buzones/IBuzonProvider.dart';
@@ -41,6 +40,7 @@ class BuzonImpl implements BuzonInterface {
       buzonNuevoMap['id'] = buzonNuevo.id;
       buzonNuevoMap['nombre'] = buzonNuevo.nombre;
       _prefs.buzon = buzonNuevoMap;
+      _prefs.changedBuzon = true;
     }
   }
 

@@ -55,6 +55,7 @@ class AccesoImpl implements AccesoInterface {
       _prefs.token = authData['access_token'];
       _prefs.refreshToken = authData['refresh_token'];
       _prefs.perfil = authData['perfilId'].toString();
+      _prefs.changedBuzon = false;
       dynamic tipoPerfil = await perfilProvider.listarTipoPerfilByPerfil();
       _prefs.tipoperfil = tipoPerfil['id'];
       List<BuzonModel> buzones =

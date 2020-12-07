@@ -56,13 +56,6 @@ class _DashboardPageState extends State<DashboardPage> {
                             },
                           );
                         }
-
-/*                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ListarEnviosActivosPage(
-                                  objetoModo: objetoSend),
-                            )); */
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -107,11 +100,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget contenidoItems() {
-/*     if (obtenerBuzonid() == null) {
-      return Center(
-          child: sinResultados(
-              'Ha surgido un problema', IconsData.ICON_ERROR_PROBLEM));
-    } */
     return FutureBuilder(
         future: dashboardController.listarItems(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

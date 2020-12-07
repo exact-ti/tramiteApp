@@ -40,8 +40,7 @@ class LoginController {
       new UtdProvider(),
       new NotificacionProvider(),
       new PerfilProvider());
-  NotificacionInterface notificacionCore =
-      new NotificacionImpl(new NotificacionProvider());
+  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
   SseInterface sseInterface = new SseImpl(new SseProvider());
   NotificacionModel notificacionModel = new NotificacionModel();
   NotificacionController notificacioncontroller = new NotificacionController();

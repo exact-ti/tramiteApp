@@ -10,6 +10,7 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Icon_style.dart';
 import 'SettingsController.dart';
@@ -81,7 +82,17 @@ class _CountChangePageState extends State<CountChangePage> {
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
                       _prefs.buzon = buzonhash;
-                      Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = buzonhash['nombre']; 
+                      bool respuesta = await notificacion(
+                          context,
+                          "success",
+                          "EXACT",
+                          "Se modificó el buzón, su buzón actual es ${opcion.nombre}");
+                      if (respuesta) {
+                        Provider.of<NotificationInfo>(context, listen: false)
+                            .nombreUsuario = buzonhash['nombre'];
+                        settingscontroller.gestionNotificaciones(context);
+                        Navigator.of(context).pop();
+                      }
                     }
                   } else {
                     if (opcion.id == obtenerUTDid()) {
@@ -92,10 +103,18 @@ class _CountChangePageState extends State<CountChangePage> {
                       utdhash['id'] = opcion.id;
                       utdhash['nombre'] = opcion.nombre;
                       _prefs.utd = utdhash;
-                      Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = utdhash['nombre'];
+                      bool respuesta = await notificacion(
+                          context,
+                          "success",
+                          "EXACT",
+                          "Se modificó la UTD, su UTD actual es ${opcion.nombre}");
+                      if (respuesta) {
+                        Provider.of<NotificationInfo>(context, listen: false)
+                            .nombreUsuario = utdhash['nombre'];
+                        Navigator.of(context).pop();
+                      }
                     }
                   }
-                  Navigator.of(context).pop();
                 }
               }
             },

@@ -40,6 +40,9 @@ class _CustomAppBarState extends State<CustomAppBar>
     if (state.index != inactivo) {
       Provider.of<NotificationInfo>(context, listen: false).estadoApp =
           state.index;
+      if (state.index == resumed) {
+        appBarController.cancelarNotificacionPushByBuzon();
+      }
     }
   }
 

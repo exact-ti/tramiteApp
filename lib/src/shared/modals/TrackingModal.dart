@@ -27,7 +27,7 @@ class _TrackingModalState extends State<TrackingModal> {
 
   @override
   void initState() {
-    generateData(); 
+    generateData();
     super.initState();
   }
 
@@ -160,6 +160,12 @@ class _TrackingModalState extends State<TrackingModal> {
                                           obtenerTextoCargo(detalles[i].cargo),
                                       styleSubThirdtitulo:
                                           obtenerStyleCargo(detalles[i].cargo),
+                                      iconSubFourthtitulo:
+                                          IconsData.ICON_OBSERVATION,
+                                      subfourthtitulo: detalles[i].observacion,
+                                      styleSubFourthtitulo: TextStyle(
+                                          color: Color(0xFF22C0E8),
+                                          fontSize: 12),
                                     )))),
                   ],
                 ),

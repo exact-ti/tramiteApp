@@ -46,6 +46,7 @@ class IconsData {
   static const ICON_USER_EDIT =  FontAwesomeIcons.userEdit;
   static const ICON_PASSWORD =  FontAwesomeIcons.key;
   static const ICON_FIRM =  FontAwesomeIcons.penAlt;
+  static const ICON_OBSERVATION =  FontAwesomeIcons.exclamationCircle;
 
 
   

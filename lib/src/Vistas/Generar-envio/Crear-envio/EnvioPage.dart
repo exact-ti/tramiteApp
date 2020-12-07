@@ -43,14 +43,16 @@ class _EnvioPageState extends State<EnvioPage> {
   void inicializarUsuario() {
     if (this.mounted) {
       Map usuario = ModalRoute.of(context).settings.arguments;
-      UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
-      usuarioFrecuente.area = usuario['area'];
-      usuarioFrecuente.id = usuario['id'];
-      usuarioFrecuente.nombre = usuario['nombre'];
-      usuarioFrecuente.sede = usuario['sede'];
-      setState(() {
-        this.usuarioFrecuente = usuarioFrecuente;
-      });
+      if (usuario != null) {
+        UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
+        usuarioFrecuente.area = usuario['area'];
+        usuarioFrecuente.id = usuario['id'];
+        usuarioFrecuente.nombre = usuario['nombre'];
+        usuarioFrecuente.sede = usuario['sede'];
+        setState(() {
+          this.usuarioFrecuente = usuarioFrecuente;
+        });
+      }
     }
   }
 
@@ -60,7 +62,8 @@ class _EnvioPageState extends State<EnvioPage> {
         usuarioFrecuente.id,
         _sobreController.text,
         _bandejaController.text,
-        _observacionController.text,usuarioFrecuente);
+        _observacionController.text,
+        usuarioFrecuente);
   }
 
   void onPressEnviarButton() {

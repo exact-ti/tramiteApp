@@ -43,10 +43,12 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       String cod = element.codigoPaquete;
       validados["$cod"] = false;
     });
-    setState(() {
-      respuestaBack = true;
-      listaEnviosModel = listaEnviosModel;
-    });
+    if (mounted) {
+      setState(() {
+        respuestaBack = true;
+        listaEnviosModel = listaEnviosModel;
+      });
+    }
   }
 
   void onPressedCode(dynamic indice) {

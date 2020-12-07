@@ -26,6 +26,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   @override
   void initState() {
     gestionNotificaciones();
+/*     WidgetsBinding.instance
+        .addPostFrameCallback((_) => mostrarChangedBuzon()); */
     super.initState();
   }
 
@@ -35,10 +37,21 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     });
   }
 
+/*   void mostrarChangedBuzon() async {
+    if (_prefs.changedBuzon) {
+      BuzonModel buzon = buzonPrincipal();
+      bool respuesta = await notificacion(context, "success", "EXACT",
+          "El buzón actual es ${buzon.nombre}");
+      if (respuesta) {
+        _prefs.changedBuzon = false;
+      }
+    }
+  }
+ */
   void verNotificaciones() {
     notificacioncontroller.verNotificaciones();
-                  Provider.of<NotificationInfo>(context, listen: false)
-                  .cantidadNotificacion = 0;
+    Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
+        0;
   }
 
   void gestionNotificaciones() async {
@@ -215,7 +228,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                 } else {
                   if (snapshot.hasData) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                        verNotificaciones();
+                      verNotificaciones();
                     });
                     final notificaciones = snapshot.data;
                     if (notificaciones.length == 0) {

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tramiteapp/src/routes/routes.dart';
+import 'package:tramiteapp/src/ModelDto/UsuarioFrecuente.dart';
+import 'package:tramiteapp/src/Vistas/Dashboard-Cliente/dashboardPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioConfirmadoPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
+import 'package:tramiteapp/src/Vistas/Historicos/HistoricoPage.dart';
+import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 import 'MenuController.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 
@@ -79,8 +86,65 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           initialRoute: menuinicio,
           localizationsDelegates: [GlobalMaterialLocalizations.delegate],
           supportedLocales: [const Locale('en'), const Locale('es')],
-          routes: getAplicationRoutes(
-              menuinicio == "/envios-activos" ? dataEnvio : null),
+          routes: {
+            "/": (_) => DashboardPage(),
+          },
+          onGenerateRoute: (settings) {
+            if (settings.name == "/") {
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => DashboardPage(),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == "/generar-envio") {
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => PrincipalPage(),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == "/envios-historicos") {
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => HistoricoPage(),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == '/envios-activos') {
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => ListarEnviosActivosPage(
+                      objetoModo:
+                          menuinicio == "/envios-activos" ? dataEnvio : null),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == '/confirmar-envios') {
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => RecepcionEnvioPage(),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == '/crear-envio') {
+              UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
+              dynamic usuario = settings.arguments;
+              usuarioFrecuente.area = usuario['area'];
+              usuarioFrecuente.id = usuario['id'];
+              usuarioFrecuente.nombre = usuario['nombre'];
+              usuarioFrecuente.sede = usuario['sede'];
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => EnvioPage(
+                        usuariopage: usuarioFrecuente,
+                      ),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            if (settings.name == '/envio-confirmado') {
+              UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
+              dynamic usuario = settings.arguments;
+              usuarioFrecuente.area = usuario['area'];
+              usuarioFrecuente.id = usuario['id'];
+              usuarioFrecuente.nombre = usuario['nombre'];
+              usuarioFrecuente.sede = usuario['sede'];
+              return PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => EnvioConfirmadoPage(
+                        usuariopage: usuarioFrecuente,
+                      ),
+                  transitionDuration: Duration(milliseconds: 0));
+            }
+            return MaterialPageRoute(builder: (_) => DashboardPage());
+          },
         );
 
     _buildBottomNavigationBarItem(name, icon) => BottomNavigationBarItem(

@@ -1,15 +1,27 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
+import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
+import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class SettingsController {
+
+  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
+  final NavigationService _navigationService = locator<NavigationService>();
+
+
   Future<bool> modificarUtdOrBuzon(BuildContext context, int tipo) async {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
@@ -54,6 +66,7 @@ class SettingsController {
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
                       _prefs.buzon = buzonhash;
+
                     } else {
                       HashMap<String, dynamic> utdhash = new HashMap();
                       utdhash['id'] = opcion.id;
@@ -91,5 +104,11 @@ class SettingsController {
     }
 
     return respuesta;
+  }
+
+    void gestionNotificaciones(BuildContext context) async {
+    List<NotificacionModel> listanotificacionesPendientes = await notificacionCore.listarNotificacionesPendientes();
+    _navigationService.setCantidadNotificacion(listanotificacionesPendientes.where((notificacion) => notificacion.notificacionEstadoModel.id==pendiente && notificacion.buzonId==obtenerBuzonid()).toList().length);
+    notificacionCore.cerrarNotificacionPush();
   }
 }

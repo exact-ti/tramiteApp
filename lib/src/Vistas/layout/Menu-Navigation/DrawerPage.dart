@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/MenuController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
@@ -20,7 +21,8 @@ class DrawerPage extends StatelessWidget {
     final _prefs = new PreferenciasUsuario();
     if (_prefs.token != "") {
       Menu menuu = new Menu();
-      List<dynamic> menus = _prefs.menus==null?[]: json.decode(_prefs.menus);
+      List<dynamic> menus =
+          _prefs.menus == null ? [] : json.decode(_prefs.menus);
       List<Menu> listmenu = menuu.fromPreferencs(menus);
       listmenu.sort((a, b) => a.orden.compareTo(b.orden));
       listmenu.reversed;
@@ -43,7 +45,7 @@ class DrawerPage extends StatelessWidget {
                   child: Container(
                     child: Center(
                         child: Text(
-                      nombreUsuario[0],
+                      obtenerInicialesOfString(nombreUsuario),
                       style: TextStyle(fontSize: 50, color: Colors.white),
                     )),
                     width: 80,
@@ -141,19 +143,6 @@ class DrawerPage extends StatelessWidget {
                   Navigator.of(context).pushNamed(men.link);
                 })));
       }
-
-              list.add(Container(
-            decoration: new BoxDecoration(color: Colors.white),
-            child: ListTile(
-                leading: getICon("custodiar", StylesThemeData.SWITCH_COLOR_PRIMARY),
-                title: Text(
-                  "Custodiar agencia",
-                  style: TextStyle(color: StylesThemeData.LETTER_COLOR),
-                ),
-                onTap: () {
-                  Navigator.of(context).pushNamed('/custodiar-agencia');
-                })));
-
     }
     return list;
   }

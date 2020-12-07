@@ -8,14 +8,20 @@ import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:intl/intl.dart';
 
 class EnvioConfirmadoPage extends StatefulWidget {
+  final UsuarioFrecuente usuariopage;
+
+  const EnvioConfirmadoPage({Key key, this.usuariopage}) : super(key: key);
+
   @override
-  _EnvioConfirmadoPageState createState() => _EnvioConfirmadoPageState();
+  _EnvioConfirmadoPageState createState() =>
+      _EnvioConfirmadoPageState(this.usuariopage);
 }
 
 class _EnvioConfirmadoPageState extends State<EnvioConfirmadoPage> {
-  UsuarioFrecuente usuarioFrecuente = new UsuarioFrecuente();
-  String codigoEnviado;
-  String fecha;
+  UsuarioFrecuente usuarioFrecuente;
+
+  _EnvioConfirmadoPageState(this.usuarioFrecuente);
+  String fecha = "";
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => inicializarUsuario());
@@ -24,18 +30,25 @@ class _EnvioConfirmadoPageState extends State<EnvioConfirmadoPage> {
 
   void inicializarUsuario() {
     if (this.mounted) {
+      UsuarioFrecuente usuario = new UsuarioFrecuente();
       Map envio = ModalRoute.of(context).settings.arguments;
-      this.usuarioFrecuente.area = envio['area'];
-      this.usuarioFrecuente.id = envio['id'];
-      this.usuarioFrecuente.nombre = envio['nombre'];
-      this.usuarioFrecuente.sede = envio['sede'];
-      codigoEnviado = envio['codigo'];
       var now = new DateTime.now();
       fecha = new DateFormat('dd-M-yyyy HH:mm').format(now);
-      setState(() {
-        this.usuarioFrecuente = usuarioFrecuente;
-        fecha = fecha;
-      });
+      if (envio != null) {
+        usuario.area = envio['area'];
+        usuario.id = envio['id'];
+        usuario.nombre = envio['nombre'];
+        usuario.sede = envio['sede'];
+        setState(() {
+          this.usuarioFrecuente = usuario;
+          fecha = fecha;
+        });
+      } else {
+        setState(() {
+          this.usuarioFrecuente = this.usuarioFrecuente;
+          fecha = fecha;
+        });
+      }
     }
   }
 

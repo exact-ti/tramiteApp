@@ -81,7 +81,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
                 leading: CircleAvatar(
-                  child: Text(nombreCuenta[0]),
+                  child: Text(obtenerInicialesOfString(nombreCuenta)),
                 ),
                 trailing: Icon(
                   Icons.edit,

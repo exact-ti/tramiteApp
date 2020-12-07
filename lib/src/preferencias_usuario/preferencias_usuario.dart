@@ -86,6 +86,14 @@ class PreferenciasUsuario {
     _prefs.setString("utds", json.encode(utds));
   }
 
+  get changedBuzon {
+    return _prefs.getBool("changedBuzon")?? false ;
+  }
+
+  set changedBuzon(bool changedBuzon) {
+    _prefs.setBool("changedBuzon", changedBuzon);
+  }
+
   get menus {
     return _prefs.getString("menus");
   }

@@ -36,11 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     if (sharedPreferences.getString("token") != null) {
       if (boolIfPerfil()) {
         if (sharedPreferences.getString("buzon") != null) {
-            logincontroller.openAppPerfilCliente(context);
-        } 
+          logincontroller.openAppPerfilCliente(context);
+        }
       } else {
-        if (sharedPreferences.getString("utd") != null || sharedPreferences.getString("buzon") != null) {
-            logincontroller.openAppPerfilOperativo(context);
+        if (sharedPreferences.getString("utd") != null ||
+            sharedPreferences.getString("buzon") != null) {
+          logincontroller.openAppPerfilOperativo(context);
         }
       }
     }
@@ -279,5 +280,3 @@ class _LoginPageState extends State<LoginPage> {
         body: scaffoldbodyLogin(mainscaffold(), context));
   }
 }
-
-

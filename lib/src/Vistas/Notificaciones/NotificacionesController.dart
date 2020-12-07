@@ -6,7 +6,7 @@ import 'dart:async';
 
 class NotificacionController {
 
-  NotificacionInterface notificacionCore = new NotificacionImpl(new NotificacionProvider());
+  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
 
   Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
     List<NotificacionModel> notificacionespendientes =

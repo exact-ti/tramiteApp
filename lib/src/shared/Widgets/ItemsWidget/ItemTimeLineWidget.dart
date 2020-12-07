@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:tramiteapp/src/styles/Icon_style.dart';
@@ -8,12 +9,15 @@ class ItemTimeLineWidget extends StatelessWidget {
   final IconData iconSubtitulo;
   final IconData iconSubSecondtitulo;
   final IconData iconSubThirdtitulo;
+  final IconData iconSubFourthtitulo;
   final dynamic itemIndice;
   final String titulo;
   final String subtitulo;
   final String subSecondtitulo;
   final String subThirdtitulo;
+  final String subfourthtitulo;
   final TextStyle styleSubThirdtitulo;
+  final TextStyle styleSubFourthtitulo;
   final dynamic modal;
   final Function(dynamic, dynamic) actionWidget;
 
@@ -30,7 +34,10 @@ class ItemTimeLineWidget extends StatelessWidget {
       @required this.subThirdtitulo,
       @required this.styleSubThirdtitulo,
       @required this.actionWidget,
-      @required this.modal})
+      @required this.modal,
+      this.iconSubFourthtitulo,
+      this.subfourthtitulo,
+      this.styleSubFourthtitulo})
       : super(key: key);
 
   @override
@@ -60,10 +67,13 @@ class ItemTimeLineWidget extends StatelessWidget {
                               color: StylesThemeData.ICON_COLOR,
                             ),
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              child:
-                                  Text(titulo, style: TextStyle(fontSize: 12)))
+                          Expanded(
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Text(titulo,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: TextStyle(fontSize: 12))))
                         ],
                       ),
                     ),
@@ -81,10 +91,13 @@ class ItemTimeLineWidget extends StatelessWidget {
                               color: StylesThemeData.ICON_COLOR,
                             ),
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              child: Text(subtitulo,
-                                  style: TextStyle(fontSize: 12)))
+                          Expanded(
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Text(subtitulo,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: TextStyle(fontSize: 12))))
                         ],
                       ),
                     ),
@@ -102,10 +115,38 @@ class ItemTimeLineWidget extends StatelessWidget {
                               color: StylesThemeData.ICON_COLOR,
                             ),
                           ),
+                          Expanded(
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Text(subSecondtitulo,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: TextStyle(fontSize: 12))))
+                        ],
+                      ),
+                    ),
+              subfourthtitulo == null
+                  ? Container()
+                  : Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
                           Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              child: Text(subSecondtitulo,
-                                  style: TextStyle(fontSize: 12)))
+                            child: Icon(
+                              iconSubFourthtitulo,
+                              size: StylesIconData.ICON_SIZE,
+                              color: StylesThemeData.ICON_COLOR,
+                            ),
+                          ),
+                          Expanded(
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                      StringUtils.capitalize(subfourthtitulo),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: styleSubFourthtitulo)))
                         ],
                       ),
                     ),
