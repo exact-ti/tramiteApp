@@ -9,7 +9,7 @@ abstract class IInterSedeProvider {
 
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo);
 
-  Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo);
+  Future<dynamic> listarRecepcionByCodigo(String codigo);
 
   Future<EnvioModel> validarCodigoProvider(String codigo, String codigobandeja);
 

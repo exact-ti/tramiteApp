@@ -71,16 +71,14 @@ class InterSedeProvider implements IInterSedeProvider {
   }
 
   @override
-  Future<List<EnvioModel>> listarRecepcionByCodigo(String codigo) async {
+  Future<dynamic> listarRecepcionByCodigo(String codigo) async {
     int utdId = obtenerUTDid();
     Response resp = await req.get('/servicio-tramite/utds/$utdId/entregas/$codigo/recepcion');
-    if (resp.data == "") return [];
-    return envioModel.fromJsonValidar(resp.data);
-  }
+    return  resp.data;
+}
 
   @override
-  Future<dynamic> registrarRecojoIntersedeProvider(
-      String codigo, String codigopaquete) async {
+  Future<dynamic> registrarRecojoIntersedeProvider(String codigo, String codigopaquete) async {
     int utdId = obtenerUTDid();
     Response resp = await req.post(
         '/servicio-tramite/utds/$utdId/paquetes/$codigopaquete/custodia',

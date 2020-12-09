@@ -141,7 +141,6 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
               : StylesThemeData.ITEM_UNSHADED_COLOR,
           titulo: listDetallesEntregar[indice].destinatario,
           subSecondtitulo: listDetallesEntregar[indice].paqueteId,
-          iconSend: IconsData.ICON_MAIL,
           onPressedCode: methodPopUpInEntregas,
           styleTitulo: StylesTitleData.STYLE_TITLE,
           styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed);

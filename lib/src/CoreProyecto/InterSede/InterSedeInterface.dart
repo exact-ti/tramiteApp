@@ -6,7 +6,7 @@ abstract class InterSedeInterface {
 
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo);
 
-  Future<List<EnvioModel>> listarRecepcionesByCodigo(String codigo);
+  Future<dynamic> listarRecepcionesByCodigo(String codigo);
 
   Future<EnvioModel> validarCodigo(String codigo, String codigovalija);
 

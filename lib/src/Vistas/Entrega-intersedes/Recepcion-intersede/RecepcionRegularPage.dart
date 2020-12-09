@@ -34,6 +34,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   final _sobreController = TextEditingController();
   final _valijaController = TextEditingController();
   List<EnvioModel> listaEnvios;
+  EnvioModel _envioModel = new EnvioModel();
   RecepcionInterController principalcontroller = new RecepcionInterController();
   String mensajeconfirmation = "";
   FocusNode focusValija = FocusNode();
@@ -177,14 +178,18 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     }
   }
 
+  /*     return envioModel.fromJsonValidar(resp.data);
+ */
+
   void _validarBandejaText(dynamic valueBandejaController) async {
     String value = valueBandejaController;
     if (value != "") {
-      listaEnvios = await principalcontroller.listarEnvios(context, value);
-      if (listaEnvios.isNotEmpty) {
+      dynamic respuestaData =
+          await principalcontroller.listarEnvios(context, value);
+      if (respuestaData["status"] == "success") {
         setState(() {
           mensajeconfirmation = "";
-          listaEnvios = listaEnvios;
+          listaEnvios = _envioModel.fromJsonValidar(respuestaData["data"]);
         });
         enfocarInputfx(context, focusSobre);
       } else {
@@ -193,8 +198,8 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
           listaEnvios = [];
           _valijaController.text = value;
         });
-        popuptoinput(context, focusValija, "error", "EXACT",
-            "No es posible procesar el código");
+        popuptoinput(
+            context, focusValija, "error", "EXACT", respuestaData["message"]);
       }
     } else {
       popuptoinput(context, focusValija, "error", "EXACT",

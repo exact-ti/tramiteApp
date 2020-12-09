@@ -29,7 +29,7 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<List<EnvioModel>> listarRecepcionesByCodigo(String codigo) async{
+  Future<dynamic> listarRecepcionesByCodigo(String codigo) async{
       return await intersede.listarRecepcionByCodigo(codigo);
   }
 
