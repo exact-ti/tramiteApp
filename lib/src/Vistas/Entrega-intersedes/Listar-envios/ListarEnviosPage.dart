@@ -1,4 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoEntregaEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:flutter/material.dart';
@@ -63,22 +64,21 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   }
 
   void iniciarEnvio(dynamic intersedeIndice) async {
-    if (listEnviosEnviados[intersedeIndice].estadoEnvio.id == creado) {
-            bool confirmarInicio = await confirmacion(context, "success", "EXACT",
+    if (listEnviosEnviados[intersedeIndice].estadoEnvio.id == EstadoEntregaEnum.CREADA || listEnviosEnviados[intersedeIndice].estadoEnvio.id == EstadoEntregaEnum.TRANSITO) {
+      bool confirmarInicio = await confirmacion(context, "success", "EXACT",
           "¿Desea iniciar el envío de la valija a la UTD ${listEnviosEnviados[intersedeIndice].destino}?");
       if (confirmarInicio) {
-      bool respuesta = await listarEnviosController.onSearchButtonPressed(
-          context, listEnviosEnviados[intersedeIndice]);
-      if (respuesta) {
-        notificacion(context, "success", "EXACT",
-            "Se ha iniciado el envío correctamente");
-        listarEnviosIntersedes();
-      } else {
-        notificacion(
-            context, "error", "EXACT", "No se pudo iniciar la entrega");
+        bool respuesta = await listarEnviosController.iniciarEntrega(
+            context, listEnviosEnviados[intersedeIndice]);
+        if (respuesta) {
+          notificacion(context, "success", "EXACT",
+              "Se ha iniciado el envío correctamente");
+          listarEnviosIntersedes();
+        } else {
+          notificacion(
+              context, "error", "EXACT", "No se pudo iniciar la entrega");
+        }
       }
-      }
-
     }
   }
 
@@ -172,16 +172,17 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         itemIndice: indice,
         iconPrimary: IconsData.ICON_LOTE_VALIJA,
         methodAction: iniciarEnvio,
-        iconSend: listEnviosEnviados[indice].estadoEnvio.id == creado
-            ? IconsData.ICON_ITEM_WIDGETRIGHT
-            : null,
+        iconSend: listarEnviosController
+            .iconByEstadoEntrega(listEnviosEnviados[indice].estadoEnvio.id),
         colorItem: indice % 2 == 0
             ? StylesThemeData.ITEM_SHADED_COLOR
             : StylesThemeData.ITEM_UNSHADED_COLOR,
         titulo: "${listEnviosEnviados[indice].destino}",
         subtitulo: subtituloItem,
+        subSixtitulo: listEnviosEnviados[indice].estadoEnvio.nombre,
         styleTitulo: StylesTitleData.STYLE_TITLE,
         styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
         iconColor: StylesThemeData.ICON_COLOR);
   }
 

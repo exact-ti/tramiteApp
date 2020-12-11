@@ -49,7 +49,7 @@ class RecepcionImpl implements RecepcionInterface {
   }
 
   @override
-  Future<bool> recibirLote(String codigoLote, String codigoPaquete) async {
+  Future<dynamic> recibirLote(String codigoLote, String codigoPaquete) async {
     return await recepcion.recibirJumboProvider(codigoLote, codigoPaquete);
   }
 }

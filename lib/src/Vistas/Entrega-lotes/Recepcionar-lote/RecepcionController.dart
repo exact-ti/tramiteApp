@@ -11,24 +11,14 @@ class RecepcionControllerLote {
       new RecepcionImpl(new RecepcionProvider());
   final NavigationService _navigationService = locator<NavigationService>();
 
-  Widget labeltext(String mensaje) {
-    return Container(
-      child: Text("$mensaje"),
-      margin: const EdgeInsets.only(left: 15),
-    );
-  }
-
   Future listarEnviosLotes(String codigo) async {
     return await recepcionInterface.listarEnviosByLote(codigo);
   }
 
-  Future<bool> recogerdocumentoLote(
-      BuildContext context, String codigoLote, String codigoValija) async {
+  Future<dynamic> recogerdocumentoLote(BuildContext context, String codigoLote, String codigoValija) async {
     _navigationService.showModal();
-
-    bool respuesta = await recepcionInterface.recibirLote(codigoLote, codigoValija);
+    dynamic respuesta = await recepcionInterface.recibirLote(codigoLote, codigoValija);
     _navigationService.goBack();
-
     return respuesta;
   }
 }

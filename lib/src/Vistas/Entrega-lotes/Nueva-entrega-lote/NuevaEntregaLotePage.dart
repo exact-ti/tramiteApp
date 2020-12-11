@@ -103,21 +103,23 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
             });
             selectionText(_codValijaController, focusCodValija, context);
           } else {
-            if (listValijas.where(
+            if (listValijas
+                .where(
                     (envio) => envio.codigoPaquete == _codValijaController.text)
                 .toList()
                 .isEmpty) {
               setState(() {
                 listValijas.add(envioModel);
               });
+              selectionText(_codValijaController, focusCodValija, context);
             } else {
-              popupToInputShade(context,_codValijaController , focusCodValija, "error", "EXACT",
-                  "La valija ya fue agregada al lote");
+              popupToInputShade(context, _codValijaController, focusCodValija,
+                  "error", "EXACT", "La valija ya fue agregada al lote");
             }
           }
         } else {
-          popupToInputShade(context,_codValijaController, focusCodValija, "error", "EXACT",
-              "No es posible procesar el código");
+          popupToInputShade(context, _codValijaController, focusCodValija,
+              "error", "EXACT", "No es posible procesar el código");
         }
       }
     }
@@ -216,57 +218,58 @@ class _NuevoEntregaLotePageState extends State<NuevoEntregaLotePage> {
         appBar: CustomAppBar(text: "Entrega de lotes"),
         drawer: DrawerPage(),
         body: scaffoldbody(
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                paddingWidget(Column(
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: InputWidget(
+                          iconSufix: IconsData.ICON_CAMERA,
+                          methodOnPressedSufix: _getDataCameraCodLote,
+                          iconPrefix: IconsData.ICON_SOBRE,
+                          controller: _codLoteController,
+                          focusInput: focusCodLote,
+                          hinttext: "Código de lote",
+                          methodOnPressed: _listarTurnosByCodValija,
+                        )),
+                    Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: comboList(_codLoteController.text, listTurnos)),
+                    Container(
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
                       child: InputWidget(
                         iconSufix: IconsData.ICON_CAMERA,
-                        methodOnPressedSufix: _getDataCameraCodLote,
+                        methodOnPressedSufix: _getDataCameraCodValija,
+                        controller: _codValijaController,
+                        focusInput: focusCodValija,
                         iconPrefix: IconsData.ICON_SOBRE,
-                        controller: _codLoteController,
-                        focusInput: focusCodLote,
-                        hinttext: "Código de lote",
-                        methodOnPressed: _listarTurnosByCodValija,
-                      )),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      alignment: Alignment.centerLeft,
-                      width: double.infinity,
-                      child: comboList(_codLoteController.text, listTurnos)),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: double.infinity,
-                    child: InputWidget(
-                      iconSufix: IconsData.ICON_CAMERA,
-                      methodOnPressedSufix: _getDataCameraCodValija,
-                      controller: _codValijaController,
-                      focusInput: focusCodValija,
-                      iconPrefix: IconsData.ICON_SOBRE,
-                      hinttext: "Código de valija",
-                      methodOnPressed: _validarCodValija,
+                        hinttext: "Código de valija",
+                        methodOnPressed: _validarCodValija,
+                      ),
+                      margin: const EdgeInsets.only(bottom: 30),
                     ),
-                    margin: const EdgeInsets.only(bottom: 30),
-                  ),
-                  ListItemWidget(
-                      itemWidget: envioLoteWidget, listItems: listValijas),
-                  listValijas.length != 0
-                      ? Container(
-                          margin: const EdgeInsets.only(top: 20, bottom: 30),
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          child: ButtonWidget(
-                              iconoButton: IconsData.ICON_REGISTER,
-                              onPressed: onPressedRegistrarButton,
-                              colorParam: StylesThemeData.PRIMARY_COLOR,
-                              texto: "Registrar"))
-                      : Container(),
-                ],
-              ),
+                  ],
+                )),
+                ListItemWidget(
+                    itemWidget: envioLoteWidget, listItems: listValijas),
+                listValijas.length != 0
+                    ? paddingWidget(Container(
+                        margin: const EdgeInsets.only(top: 20, bottom: 30),
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: ButtonWidget(
+                            iconoButton: IconsData.ICON_REGISTER,
+                            onPressed: onPressedRegistrarButton,
+                            colorParam: StylesThemeData.PRIMARY_COLOR,
+                            texto: "Registrar")))
+                    : Container(),
+              ],
             ),
             context));
   }

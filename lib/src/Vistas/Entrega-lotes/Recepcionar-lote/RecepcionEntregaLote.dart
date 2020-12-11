@@ -92,9 +92,10 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             .toList()
             .isNotEmpty;
         if (perteneceLista) {
-          bool respuesta = await recepcionControllerLote.recogerdocumentoLote(
-              context, _codLoteController.text, _codValijaController.text);
-          if (respuesta) {
+          dynamic respuesta =
+              await recepcionControllerLote.recogerdocumentoLote(
+                  context, _codLoteController.text, _codValijaController.text);
+          if (respuesta.containsValue("success")) {
             listValijas.removeWhere(
                 (value) => value.codigoPaquete == _codValijaController.text);
             if (listValijas.isEmpty) {
@@ -117,22 +118,22 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
             }
           } else {
             popupToInputShade(context, _codValijaController, focusCodValija,
-                "error", "EXACT", "No es posible procesar el código");
+                "error", "EXACT", respuesta["message"]);
           }
         } else {
           bool respuestaPopUp = await confirmacion(context, "success", "EXACT",
               "¿Desea custodiar el envío ${_codValijaController.text}");
           if (respuestaPopUp) {
-            bool respuesta = await recepcionControllerLote.recogerdocumentoLote(
-                context, _codLoteController.text, _codValijaController.text);
-            if (respuesta) {
+            dynamic respuesta =
+                await recepcionControllerLote.recogerdocumentoLote(context,
+                    _codLoteController.text, _codValijaController.text);
+            if (respuesta.containsValue("success")) {
               notifierAccion(
                   "Se recepcionó la valija ${_codValijaController.text}",
                   StylesThemeData.PRIMARY_COLOR);
               selectionText(_codValijaController, focusCodValija, context);
             } else {
-              notifierAccion("No es posible procesar el código",
-                  StylesThemeData.ERROR_COLOR);
+              notifierAccion(respuesta["message"], StylesThemeData.ERROR_COLOR);
               selectionText(_codValijaController, focusCodValija, context);
             }
           } else {

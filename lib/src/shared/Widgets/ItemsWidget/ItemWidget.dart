@@ -16,6 +16,7 @@ class ItemWidget extends StatelessWidget {
   final String subThirdtitulo;
   final String subFourtitulo;
   final String subFivetitulo;
+  final String subSixtitulo;
   final TextStyle styleTitulo;
   final TextStyle styleSubTitulo;
   final TextStyle styleSubSecondtitulo;
@@ -42,7 +43,8 @@ class ItemWidget extends StatelessWidget {
       this.subThirdtitulo,
       this.subFourtitulo,
       this.iconSubSecondtitulo,
-      this.subFivetitulo})
+      this.subFivetitulo,
+      this.subSixtitulo})
       : super(key: key);
 
   Widget contenidoWidget() {
@@ -50,7 +52,7 @@ class ItemWidget extends StatelessWidget {
       child: Row(children: <Widget>[
         Container(
             alignment: Alignment.centerRight,
-            margin: EdgeInsets.only(left: 20,right: 20),
+            margin: EdgeInsets.only(left: 20, right: 20),
             height: itemHeight,
             child: iconPrimary != null
                 ? Center(
@@ -62,104 +64,111 @@ class ItemWidget extends StatelessWidget {
                 : Container()),
         Expanded(
           child: Container(
-              height: itemHeight,
-              child: Column(children: <Widget>[
-                titulo == null
-                    ? Container()
-                    : Expanded(
-                        child: Center(
-                            child: Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(left: 0),
-                            alignment: Alignment.centerLeft,
-                            child: Text("$titulo", style: styleTitulo),
-                          ),
-                          subThirdtitulo != null
-                              ? Expanded(
-                                  child: Container(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        "$subThirdtitulo",
-                                        style: styleSubTitulo,
-                                      )))
-                              : Container()
-                        ],
-                      ))),
-                subtitulo == null
-                    ? Container()
-                    : Expanded(
-                        child: Center(
-                            child: Row(children: <Widget>[
+            height: itemHeight,
+            child: Column(children: <Widget>[
+              titulo == null
+                  ? Container()
+                  : Expanded(
+                      child: Center(
+                          child: Row(
+                      children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(left: 0),
                           alignment: Alignment.centerLeft,
-                          child: Text("$subtitulo", style: styleSubTitulo),
+                          child: Text("$titulo", style: styleTitulo),
                         ),
-                        subFourtitulo != null
+                        subThirdtitulo != null
                             ? Expanded(
                                 child: Container(
                                     alignment: Alignment.centerRight,
-                                    child: Text("$subFourtitulo",
-                                        style: styleSubTitulo)))
+                                    child: Text(
+                                      "$subThirdtitulo",
+                                      style: styleSubTitulo,
+                                    )))
                             : Container()
-                      ]))),
-                subSecondtitulo == null
-                    ? Container()
-                    : Expanded(
-                        child: Center(
-                            child: Row(
-                        children: <Widget>[
-                          iconSubSecondtitulo != null
-                              ? Container(
-                                  height: 20,
-                                  child: ListTile(
-                                    title: onPressedCode == null
-                                        ? Text("$subSecondtitulo",
-                                            style: styleSubSecondtitulo)
-                                        : InkWell(
-                                            onTap: () {
-                                              onPressedCode(itemIndice);
-                                            },
-                                            child: Text("$subSecondtitulo",
-                                                style: styleSubSecondtitulo),
-                                          ),
-                                    leading: Icon(
-                                      iconSubSecondtitulo,
-                                      color: iconColor,
-                                    ),
-                                  ))
-                              : Center(
-                                  child: Container(
-                                  padding: EdgeInsets.only(left: 0),
-                                  alignment: Alignment.centerLeft,
-                                  child: onPressedCode == null
-                                      ? Text(
-                                          "$subSecondtitulo",
-                                          style: styleSubSecondtitulo,
-                                        )
-                                      : GestureDetector(
+                      ],
+                    ))),
+              subtitulo == null
+                  ? Container()
+                  : Expanded(
+                      child: Center(
+                          child: Row(children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(left: 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text("$subtitulo", style: styleSubTitulo),
+                      ),
+                      subFourtitulo != null
+                          ? Expanded(
+                              child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text("$subFourtitulo",
+                                      style: styleSubTitulo)))
+                          : Container()
+                    ]))),
+              subSecondtitulo == null
+                  ? Container()
+                  : Expanded(
+                      child: Center(
+                          child: Row(
+                      children: <Widget>[
+                        iconSubSecondtitulo != null
+                            ? Container(
+                                height: 20,
+                                child: ListTile(
+                                  title: onPressedCode == null
+                                      ? Text("$subSecondtitulo",
+                                          style: styleSubSecondtitulo)
+                                      : InkWell(
                                           onTap: () {
                                             onPressedCode(itemIndice);
                                           },
                                           child: Text("$subSecondtitulo",
                                               style: styleSubSecondtitulo),
                                         ),
-                                )),
-                          subFivetitulo != null
-                              ? Expanded(
-                                  child: Container(
-                                      alignment: Alignment.centerRight,
-                                      child: Text("$subFivetitulo",
-                                          style: styleSubTitulo)))
-                              : Container()
-                        ],
-                      ))),
-              ])),
+                                  leading: Icon(
+                                    iconSubSecondtitulo,
+                                    color: iconColor,
+                                  ),
+                                ))
+                            : Center(
+                                child: Container(
+                                padding: EdgeInsets.only(left: 0),
+                                alignment: Alignment.centerLeft,
+                                child: onPressedCode == null
+                                    ? Text(
+                                        "$subSecondtitulo",
+                                        style: styleSubSecondtitulo,
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          onPressedCode(itemIndice);
+                                        },
+                                        child: Text("$subSecondtitulo",
+                                            style: styleSubSecondtitulo),
+                                      ),
+                              )),
+                        subFivetitulo != null
+                            ? Expanded(
+                                child: Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Text("$subFivetitulo",
+                                        style: styleSubTitulo)))
+                            : Container()
+                      ],
+                    ))),
+            ]),
+          ),
           flex: 3,
         ),
+        this.subSixtitulo != null
+            ? Expanded(
+                child: Container(
+                    alignment: Alignment.centerRight,
+                    child: Text("$subSixtitulo", style: styleSubTitulo)))
+            : Container(),
         Container(
-            margin: EdgeInsets.only(right: 20,left: 20),
+            margin: EdgeInsets.only(right: 20, left: 20),
             height: itemHeight,
             child: iconSend != null
                 ? Center(

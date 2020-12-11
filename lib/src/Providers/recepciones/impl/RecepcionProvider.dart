@@ -36,14 +36,10 @@ class RecepcionProvider implements IRecepcionProvider {
   }
 
   @override
-  Future<bool> recibirJumboProvider(
-      String codigoLote, String codigopaquete) async {
+  Future<dynamic> recibirJumboProvider( String codigoLote, String codigopaquete) async {
     int utdId = obtenerUTDid();
-    Response resp = await req
-        .get('/servicio-tramite/utds/$utdId/entregas/$codigopaquete/recepcion');
-    if (resp.data == "") return false;
-    List<dynamic> envio = resp.data;
-    return envio.length != 0 ? true : false;
+    Response resp = await req.post('/servicio-tramite/utds/$utdId/entregas/$codigopaquete/validacion',null,null);
+    return resp.data;
   }
 
   @override

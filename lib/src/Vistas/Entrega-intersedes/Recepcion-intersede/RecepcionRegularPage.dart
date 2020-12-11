@@ -61,18 +61,11 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
   }
 
   mostrarenviosiniciales() async {
-    listaEnvios =
-        await principalcontroller.listarEnvios(context, _valijaController.text);
-    if (listaEnvios != null) {
-      if (listaEnvios.length == 0) {
+    dynamic respuestaData = await principalcontroller.listarEnvios(context, _valijaController.text);
+    if (respuestaData["status"] == "success") {
         setState(() {
-          listaEnvios = [];
+          listaEnvios =  _envioModel.fromJsonValidar(respuestaData["data"]);
         });
-      } else {
-        setState(() {
-          listaEnvios = listaEnvios;
-        });
-      }
     } else {
       setState(() {
         listaEnvios = [];

@@ -13,7 +13,7 @@ abstract class InterSedeInterface {
   Future<dynamic> listarEnviosValidadosInterSede(
       List<EnvioModel> envios, String codigo);
 
-  Future<bool> iniciarEntregaIntersede(int utdDestino);
+  Future<bool> iniciarEntregaIntersede( EnvioInterSedeModel entregaModel);
 
   Future<dynamic> registrarRecojoIntersedeProvider(
       String codigo, String codigopaquete);

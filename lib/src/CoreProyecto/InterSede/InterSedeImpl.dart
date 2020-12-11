@@ -44,8 +44,8 @@ class InterSedeImpl implements InterSedeInterface {
   }
 
   @override
-  Future<bool> iniciarEntregaIntersede(int utdDestino) async{
-    return await intersede.iniciarEntregaIntersede(utdDestino);
+  Future<bool> iniciarEntregaIntersede( EnvioInterSedeModel entregaModel) async{
+    return await intersede.iniciarEntregaIntersede(entregaModel);
   }
 
   @override
