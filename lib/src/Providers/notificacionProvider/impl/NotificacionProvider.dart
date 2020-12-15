@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import '../INotificacionProvider.dart';
 
 
@@ -18,7 +19,9 @@ class NotificacionProvider implements INotificacionProvider {
 
   @override
   Future modificarNotificacionesVistas() async {
-    Response response = await req.put("/servicio-tramite/notificaciones/visto", null, null);
+    Response response = await req.put("/servicio-tramite/notificaciones/visto", null, {
+      "buzonId":obtenerBuzonid()
+    });
     return response.data;
   }
 

@@ -184,9 +184,10 @@ class NotificacionImpl implements NotificacionInterface {
         _navigationService.setCantidadNotificacion(0);
         if (mapDataNotificacion["notificacionId"] != null) {
           await revisarNotificacion(mapDataNotificacion["notificacionId"]);
+          _navigationService.navigationToHome(mapDataNotificacion["ruta"]);
         } else {
           _navigationService
-              .navigationTo(mapDataNotificacion["ruta"])
+              .navigationToHome(mapDataNotificacion["ruta"])
               .whenComplete(() async {
             List<NotificacionModel> listNotificaciones =
                 await listarNotificacionesPendientes();

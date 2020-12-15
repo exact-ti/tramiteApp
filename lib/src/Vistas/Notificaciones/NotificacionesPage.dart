@@ -1,12 +1,10 @@
 import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
-import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
-import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -21,7 +19,6 @@ class NotificacionesPage extends StatefulWidget {
 class _NotificacionesPageState extends State<NotificacionesPage> {
   NotificacionController notificacioncontroller = new NotificacionController();
   NotificacionModel notificacionModel = new NotificacionModel();
-  final _prefs = new PreferenciasUsuario();
 
   @override
   void initState() {
@@ -76,15 +73,15 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
             dynamic respuestaController = await notificacioncontroller
                 .visitarNotificacion(notificacionModel.id);
             if (respuestaController["status"] == "success") {
-              if (_prefs.tipoperfil == cliente) {
+              if (isCliente()) {
                 Navigator.of(context, rootNavigator: true)
                     .pushReplacement(MaterialPageRoute(
                         builder: (context) => new TopLevelWidget(
                             rutaPage: notificacionModel.ruta)))
                     .whenComplete(retrieveData());
               } else {
-                Navigator.pushNamed(context, notificacionModel.ruta)
-                    .whenComplete(retrieveData());
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    notificacionModel.ruta, (Route<dynamic> route) => false);
               }
             } else {
               notificacion(context, "error", "EXACT", "Surgió un problema");
@@ -227,11 +224,13 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                       "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                 } else {
                   if (snapshot.hasData) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      verNotificaciones();
-                    });
                     final notificaciones = snapshot.data;
-                    if (notificaciones.length == 0) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (notificaciones.isNotEmpty) {
+                        verNotificaciones();
+                      }
+                    });
+                    if (notificaciones.isEmpty) {
                       return sinResultados("No hay notificaciones pendientes",
                           IconsData.ICON_ERROR_EMPTY);
                     } else {
