@@ -5,7 +5,7 @@ class IconsData {
   static const ICON_ERROR_PROBLEM = FontAwesomeIcons.exclamation;
   static const ICON_ERROR_SERVIDOR = FontAwesomeIcons.exclamationTriangle;
   static const ICON_USER = FontAwesomeIcons.userAlt;
-  static const ICON_ITEM_WIDGETRIGHT = FontAwesomeIcons.chevronRight;
+  static const ICON_SEND_ARROW = FontAwesomeIcons.chevronRight;
   static const ICON_CAMERA = FontAwesomeIcons.camera;
   static const ICON_SOBRE = FontAwesomeIcons.qrcode; //file_present //insert_drive_file//fileAlt
   static const ICON_ENVIO_CONFIRMADO = FontAwesomeIcons.check;
@@ -47,7 +47,6 @@ class IconsData {
   static const ICON_PASSWORD =  FontAwesomeIcons.key;
   static const ICON_FIRM =  FontAwesomeIcons.penAlt;
   static const ICON_OBSERVATION =  FontAwesomeIcons.exclamationCircle;
+  static const ICON_AUDIBLE=  FontAwesomeIcons.audible;
 
-
-  
 }

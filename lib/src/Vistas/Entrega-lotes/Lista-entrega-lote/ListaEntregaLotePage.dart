@@ -111,7 +111,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           itemIndice: indice,
           iconPrimary: IconsData.ICON_LOTE_VALIJA,
           iconSend: listLotesPorEnviados[indice].estadoEnvio.id == creado
-              ? IconsData.ICON_ITEM_WIDGETRIGHT
+              ? IconsData.ICON_SEND_ARROW
               : null,
           methodAction: iniciarEnvioLote,
           colorItem: indice % 2 == 0
@@ -128,7 +128,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           itemIndice: indice,
           iconPrimary: IconsData.ICON_LOTE_VALIJA,
           methodAction: methodRecepcionarLote,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          iconSend: IconsData.ICON_SEND_ARROW,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR
               : StylesThemeData.ITEM_UNSHADED_COLOR,

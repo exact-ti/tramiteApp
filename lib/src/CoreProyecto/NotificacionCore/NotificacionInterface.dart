@@ -12,4 +12,7 @@ abstract class NotificacionInterface {
   Future<dynamic> enviarNotificacionEnAusenciaRecojo(String paqueteId);
 
   void cerrarNotificacionPush();
+
+  Future<dynamic> notificarMasivoRecojo(int recorridoId);
+
 }

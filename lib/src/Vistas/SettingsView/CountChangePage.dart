@@ -125,7 +125,7 @@ class _CountChangePageState extends State<CountChangePage> {
                   ),
                 ),
                 child: ListTile(
-                  trailing: Icon(IconsData.ICON_ITEM_WIDGETRIGHT,
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
                       size: StylesIconData.ICON_SIZE,
                       color: _prefs.tipoperfil == cliente
                           ? opcion.id == obtenerBuzonid()

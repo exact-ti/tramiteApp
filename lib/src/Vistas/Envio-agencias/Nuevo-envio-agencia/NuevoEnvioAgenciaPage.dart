@@ -13,7 +13,7 @@ import 'package:tramiteapp/src/shared/modals/confirmationArray.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
-import 'NuevaEntregaExternaController.dart';
+import 'NuevoEnvioAgenciaController.dart';
 
 class NuevoEntregaExternaPage extends StatefulWidget {
   @override
@@ -27,8 +27,8 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   FocusNode focusValija = FocusNode();
   FocusNode focusEnvio = FocusNode();
   List<EnvioModel> listaEnvios = [];
-  NuevoEntregaExternaController principalcontroller =
-      new NuevoEntregaExternaController();
+  NuevoEnvioAgenciaController principalcontroller =
+      new NuevoEnvioAgenciaController();
 
   void initState() {
     super.initState();
@@ -88,11 +88,11 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
             setState(() {
               listaEnvios.add(enviocontroller);
             });
-            popupToInputShade(context,_codigoEnvioController, focusEnvio, "success", "EXACT",
-                "Envío agregado a la entrega");
+            popupToInputShade(context, _codigoEnvioController, focusEnvio,
+                "success", "EXACT", "Envío agregado a la entrega");
           } else {
-            popupToInputShade(context,_codigoEnvioController, focusEnvio, "error", "EXACT",
-                "No es posible procesar el código");
+            popupToInputShade(context, _codigoEnvioController, focusEnvio,
+                "error", "EXACT", "No es posible procesar el código");
           }
         }
       } else {

@@ -1,5 +1,6 @@
 import 'package:tramiteapp/src/ModelDto/EntregaModel.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/ModelDto/RecorridoModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
@@ -11,16 +12,17 @@ import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.d
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'package:tramiteapp/src/styles/Title_style.dart';
-import 'ListarTurnosController.dart';
+import 'RecorridosActivosController.dart';
 
-class ListarTurnosPage extends StatefulWidget {
+class RecorridosActivosPage extends StatefulWidget {
   @override
-  _ListarTurnosPageState createState() => _ListarTurnosPageState();
+  _RecorridosActivosPageState createState() => _RecorridosActivosPageState();
 }
 
-class _ListarTurnosPageState extends State<ListarTurnosPage> {
-  ListarTurnosController principalcontroller = new ListarTurnosController();
+class _RecorridosActivosPageState extends State<RecorridosActivosPage> {
+  RecorridosActivosController principalcontroller = new RecorridosActivosController();
   List<EntregaModel> listasRecorridos = new List();
+
   @override
   void initState() {
     super.initState();
@@ -30,9 +32,25 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     Navigator.of(context).pushNamed('/entregas-pisos-propios');
   }
 
+  void onSearchButtonPressed(BuildContext context, EntregaModel entrega) {
+    RecorridoModel recorridoModel = new RecorridoModel();
+    recorridoModel.id = entrega.id;
+    recorridoModel.indicepagina = entrega.estado.id;
+    if (entrega.estado.id == 1) {
+      Navigator.of(context).pushNamed('/miruta', arguments: {
+        'indicepagina': entrega.estado.id,
+        'recorridoId': entrega.id,
+      });
+    } else {
+      Navigator.of(context).pushNamed('/entrega-regular', arguments: {
+        'indicepagina': entrega.estado.id,
+        'recorridoId': entrega.id,
+      });
+    }
+  }
+
   void onPressRecorrido(dynamic indiceRecorrido) {
-    principalcontroller.onSearchButtonPressed(
-        context, listasRecorridos[indiceRecorrido]);
+    onSearchButtonPressed(context, listasRecorridos[indiceRecorrido]);
   }
 
   setList(List<dynamic> listRecorridos) {
@@ -44,7 +62,7 @@ class _ListarTurnosPageState extends State<ListarTurnosPage> {
     Widget listWidget(dynamic indice) {
       return ItemWidget(
           iconPrimary: IconsData.ICON_USER,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          iconSend: IconsData.ICON_SEND_ARROW,
           itemIndice: indice,
           methodAction: onPressRecorrido,
           colorItem: indice % 2 == 0

@@ -209,6 +209,15 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
     });
   }
 
+  void listarEnviosByArea() {
+    desenfocarInputfx(context);
+    setState(() {
+      _sobreController.text="";
+      this.mensaje="";
+    });
+    _validarBandejaText(_bandejaController.text);
+  }
+
   void _validarBandejaText(dynamic value) async {
     if (value != "") {
       if (enRecojo) {
@@ -283,7 +292,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
   }
 
   void onPressItemRecojo(dynamic indice) async {
-    bool respuestaConfirmacion = await confirmacion(context, "succes", "EXACT",
+    bool respuestaConfirmacion = await confirmacion(context, "success", "EXACT",
         "El documento ${listaEnvios[indice].codigoPaquete} no se encuentra. ¿Deseas enviar una notificación?");
     if (respuestaConfirmacion) {
       dynamic responseNotificacion = await entregaregularController
@@ -304,7 +313,8 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
       Expanded(
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/entrega-personalizada');
+            Navigator.pushNamed(context, '/entrega-personalizada')
+                .whenComplete(listarEnviosByArea);
           },
           child: Text(
             'Entrega Personalizada',
@@ -331,7 +341,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           methodAction: this.enRecojo ? onPressItemRecojo : null,
           iconPrimary: FontAwesomeIcons.qrcode,
-          iconSend: this.enRecojo ? IconsData.ICON_ITEM_WIDGETRIGHT : null,
+          iconSend: this.enRecojo ? IconsData.ICON_SEND_ARROW : null,
           itemIndice: indice,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR

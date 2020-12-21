@@ -7,14 +7,16 @@ class FutureItemWidget extends StatelessWidget {
   final Future<List<dynamic>> futureList;
   final Function(List<dynamic>) setList;
   final String mensajeEmpty;
+  final Function(List<dynamic>) methodPostFuture;
 
-  const FutureItemWidget({
-    Key key,
-    @required this.itemWidget,
-    @required this.futureList,
-    this.setList,
-    this.mensajeEmpty
-  }) : super(key: key);
+  const FutureItemWidget(
+      {Key key,
+      @required this.itemWidget,
+      @required this.futureList,
+      this.setList,
+      this.mensajeEmpty,
+      this.methodPostFuture})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +44,29 @@ class FutureItemWidget extends StatelessWidget {
                         "Ha surgido un problema", IconsData.ICON_ERROR_PROBLEM);
                   } else {
                     if (snapshot.hasData) {
+                      if (methodPostFuture != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          methodPostFuture(snapshot.data);
+                        });
+                      }
                       final listDynamic = snapshot.data;
                       setList(snapshot.data);
                       if (listDynamic.length == 0) {
-                        return sinResultados(mensajeEmpty==null?"No se han encontrado resultados":mensajeEmpty,
+                        return sinResultados(
+                            mensajeEmpty == null
+                                ? "No se han encontrado resultados"
+                                : mensajeEmpty,
                             IconsData.ICON_ERROR_EMPTY);
                       } else {
                         return ListView.builder(
                             itemCount: listDynamic.length,
-                            itemBuilder: (context, i) =>
-                                itemWidget(i));
+                            itemBuilder: (context, i) => itemWidget(i));
                       }
                     } else {
-                      return sinResultados(mensajeEmpty==null?"No se han encontrado resultados":mensajeEmpty,
+                      return sinResultados(
+                          mensajeEmpty == null
+                              ? "No se han encontrado resultados"
+                              : mensajeEmpty,
                           IconsData.ICON_ERROR_EMPTY);
                     }
                   }

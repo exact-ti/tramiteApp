@@ -5,4 +5,5 @@ abstract class INotificacionProvider {
   Future<dynamic> modificarNotificacionesVistas();
   Future<dynamic> modificarNotificacionesRevisadas(int notificacionId);
   Future<dynamic> enviarNotificacionEnAusenciaRecojo(String paqueteId);
+  Future<dynamic> notificarMasivoRecojo(int recorridoId);
 }

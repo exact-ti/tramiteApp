@@ -4,40 +4,49 @@ import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import '../INotificacionProvider.dart';
 
-
 class NotificacionProvider implements INotificacionProvider {
-  
   Requester req = Requester();
   NotificacionModel notificacionModel = new NotificacionModel();
 
   @override
   Future<List<NotificacionModel>> listarNotificaciones() async {
-    Response resp = await req.get('/servicio-tramite/notificaciones/pendientes');
+    Response resp =
+        await req.get('/servicio-tramite/notificaciones/pendientes');
     dynamic respuestaData = resp.data;
     return notificacionModel.fromJsonToNotificacion(respuestaData["data"]);
   }
 
   @override
   Future modificarNotificacionesVistas() async {
-    Response response = await req.put("/servicio-tramite/notificaciones/visto", null, {
-      "buzonId":obtenerBuzonid()
-    });
+    Response response = await req.put("/servicio-tramite/notificaciones/visto",
+        null, {"buzonId": obtenerBuzonid()});
     return response.data;
   }
 
   @override
   Future modificarNotificacionesRevisadas(int notificacionId) async {
-    Response response = await req.put("/servicio-tramite/notificaciones/$notificacionId/revision",null,null);
+    Response response = await req.put(
+        "/servicio-tramite/notificaciones/$notificacionId/revision",
+        null,
+        null);
     return response.data;
   }
 
   @override
   Future enviarNotificacionEnAusenciaRecojo(String paqueteId) async {
-    Response resp = await req.post(
-        '/servicio-tramite/envios/notificaciones/creadopendiente', null, {
+    Response resp = await req
+        .post('/servicio-tramite/envios/notificaciones/creadopendiente', null, {
       "paqueteId": paqueteId,
     });
     return resp.data;
   }
 
+  @override
+  Future notificarMasivoRecojo(int recorridoId) async {
+    Response resp = await req
+        .post('/servicio-tramite/envios/notificaciones/masivo/creadopendiente', null, {
+      "recorridoId": recorridoId,
+    });
+    return resp.data;
+  }
 }

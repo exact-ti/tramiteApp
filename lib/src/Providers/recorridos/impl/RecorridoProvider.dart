@@ -24,7 +24,7 @@ class RecorridoProvider implements IRecorridoProvider {
   Future<List<EnvioModel>> enviosRecojoProvider(
       String codigo, int recorridoId) async {
     try {
-      Response resp = await req.get('/servicio-tramite/areas/$codigo/envios');
+      Response resp = await req.get('/servicio-tramite/recorridos/$recorridoId/envios/$codigo/paraRecojo');
       if (resp.data == "") return null;
       return envioModel.fromJsonValidar(resp.data);
     } catch (e) {

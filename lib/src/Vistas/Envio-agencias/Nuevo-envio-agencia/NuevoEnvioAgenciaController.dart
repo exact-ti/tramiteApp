@@ -15,7 +15,7 @@ import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 
-class NuevoEntregaExternaController {
+class NuevoEnvioAgenciaController {
   RecorridoInterface recorridoCore = new RecorridoImpl(new RecorridoProvider());
   InterSedeInterface intersedeInterface =
       new InterSedeImpl(new InterSedeProvider());
@@ -24,13 +24,10 @@ class NuevoEntregaExternaController {
   EnvioModel envioModel = new EnvioModel();
   final NavigationService _navigationService = locator<NavigationService>();
 
-  Future<dynamic> listarEnviosEntrega(
-      BuildContext context, String codigo) async {
+  Future<dynamic> listarEnviosEntrega(BuildContext context, String codigo) async {
     _navigationService.showModal();
-
     dynamic recorridos = await agenciacore.listarEnviosAgenciasByCodigo(codigo);
     _navigationService.goBack();
-
     return recorridos;
   }
 
@@ -38,7 +35,7 @@ class NuevoEntregaExternaController {
       String bandeja, String codigo, BuildContext context) async {
     _navigationService.showModal();
     EnvioModel envio = await agenciacore.validarCodigoAgencia(bandeja, codigo);
-    if(envio!=null) envio.estado=true;
+    if (envio != null) envio.estado = true;
     _navigationService.goBack();
     return envio;
   }
@@ -65,7 +62,8 @@ class NuevoEntregaExternaController {
               "Se ha registrado correctamente el envio");
           if (respuestatrue != null) {
             if (respuestatrue) {
-              Navigator.of(context).pushNamedAndRemoveUntil('/envios-agencia', (Route<dynamic> route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/envios-agencia', (Route<dynamic> route) => false);
             }
           }
         } else {

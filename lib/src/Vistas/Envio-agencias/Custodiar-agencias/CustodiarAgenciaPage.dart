@@ -7,6 +7,8 @@ import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
 import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Item_style.dart';
 import 'CustodiarAgenciaController.dart';
@@ -41,6 +43,21 @@ class _CustodiarAgenciaPageState extends State<CustodiarAgenciaPage> {
     setState(() {
       this._codigoController.text = codigoTextForm;
     });
+  }
+
+    void onPressEnvio(dynamic indice) async {
+    bool respuestaConfirmacion = await confirmacion(context, "success", "EXACT",
+        "El documento ${listEnviosAgencias[indice].codigoPaquete} no se encuentra. ¿Deseas enviar una notificación?");
+    if (respuestaConfirmacion) {
+      dynamic responseNotificacion = await custodiaAgenciaController.enviarNotificacion(listEnviosAgencias[indice].codigoPaquete);
+      if (responseNotificacion["status"] == "success") {
+        notificacion(
+            context, "success", "EXACT", "La notificación fue realizada");
+      } else {
+        notificacion(
+            context, "error", "EXACT", responseNotificacion["message"]);
+      }
+    }
   }
 
   @override
@@ -93,6 +110,8 @@ class _CustodiarAgenciaPageState extends State<CustodiarAgenciaPage> {
                   itemWidget: (indice) => ItemWidget(
                       itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
                       itemIndice: indice,
+                      methodAction: onPressEnvio,
+                      iconSend: IconsData.ICON_SEND_ARROW,
                       iconPrimary: IconsData.ICON_QR,
                       iconColor: StylesThemeData.ICON_COLOR,
                       colorItem: indice % 2 == 0

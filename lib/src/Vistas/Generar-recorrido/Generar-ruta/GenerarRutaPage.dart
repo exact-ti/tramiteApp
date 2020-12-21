@@ -25,10 +25,12 @@ class GenerarRutaPage extends StatefulWidget {
 class _GenerarRutaPageState extends State<GenerarRutaPage> {
   RecorridoModel recorridoUsuario;
   _GenerarRutaPageState(this.recorridoUsuario);
-  GenerarRutaController principalcontroller = new GenerarRutaController();
+  GenerarRutaController generarRutaController = new GenerarRutaController();
   List<RutaModel> lisRutas = new List();
+  Future listarAreas;
   int recorridoId;
   int indicePagina;
+  int cantidadRecojos;
   @override
   void initState() {
     WidgetsBinding.instance
@@ -39,6 +41,8 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
   void inicializarParametros() {
     if (mounted) {
       Map recorrido = ModalRoute.of(context).settings.arguments;
+      listarAreas =
+          generarRutaController.listarMiRuta(recorrido["recorridoId"]);
       setState(() {
         recorridoId = recorrido["recorridoId"];
         indicePagina = recorrido["indicepagina"];
@@ -56,19 +60,36 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
         bool respuestabool = await confirmacion(
             context, "success", "EXACT", "Tienes pendientes ¿Desea Continuar?");
         if (respuestabool) {
-          principalcontroller.opcionRecorrido(
+          generarRutaController.opcionRecorrido(
               recorridoId, indicePagina, context);
         }
       } else {
-        principalcontroller.opcionRecorrido(recorridoId, indicePagina, context);
+        generarRutaController.opcionRecorrido(
+            recorridoId, indicePagina, context);
       }
     } else {
-      principalcontroller.opcionRecorrido(recorridoId, indicePagina, context);
+      generarRutaController.opcionRecorrido(recorridoId, indicePagina, context);
     }
+  }
+
+  void actionButtonNotificar() async {
+    generarRutaController.notificarMasivoRecojo(this.recorridoId, context);
   }
 
   void setList(List<dynamic> listDynamic) {
     this.lisRutas = listDynamic;
+  }
+
+  methodPostFuture(List<dynamic> listDynamic) {
+    if (this.cantidadRecojos == null) {
+      setState(() {
+        this.cantidadRecojos = listDynamic.isEmpty
+            ? 0
+            : listDynamic
+                .map((area) => area.cantidadRecojo)
+                .reduce((a, b) => a + b);
+      });
+    }
   }
 
   @override
@@ -135,10 +156,24 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                 this.recorridoId == null
                     ? Container()
                     : FutureItemWidget(
+                        methodPostFuture: methodPostFuture,
                         itemWidget: itemRuta,
                         setList: setList,
-                        futureList:
-                            principalcontroller.listarMiRuta(this.recorridoId)),
+                        futureList: listarAreas),
+                indicePagina != 1 && this.cantidadRecojos != null
+                    ? this.cantidadRecojos > 0
+                        ? paddingWidget(Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            width: double.infinity,
+                            child: ButtonWidget(
+                                iconoButton: IconsData.ICON_AUDIBLE,
+                                onPressed: actionButtonNotificar,
+                                colorParam:
+                                    StylesThemeData.BUTTON_PRIMARY_COLOR,
+                                texto: 'Notificar recojos')))
+                        : Container()
+                    : Container(),
                 paddingWidget(Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.only(top: 10, bottom: 40),

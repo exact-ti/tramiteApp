@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/AgenciasExternas/AgenciasExternasImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/AgenciasExternas/IAgenciasExternasInterface.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/agenciasExternas/impl/AgenciasExternasProvider.dart';
+import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class CustodiarAgenciaController {
   IAgenciasExternasInterface agenciasCore =new AgenciasExternasImpl(new AgenciaExternaProvider());
+  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
 
   void inicializarListEnviosAgencias(Function(dynamic) stateListEnvios) async {
     List<EnvioModel> listAgencias = new List();
@@ -64,5 +68,9 @@ class CustodiarAgenciaController {
       notifierAccion("El código del envío es obligatorio",
           StylesThemeData.ERROR_COLOR, scaffoldkey);
     }
+  }
+
+  Future enviarNotificacion(String paqueteId) async {
+    return await notificacionCore.enviarNotificacionEnAusenciaRecojo(paqueteId);
   }
 }

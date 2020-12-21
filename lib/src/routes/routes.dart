@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Clasificacion-palomar/ClasificacionPage.dart';
 import 'package:tramiteapp/src/Vistas/Consulta-Envio/ConsultaEnvioPage.dart';
-import 'package:tramiteapp/src/Vistas/Custodiar-agencias/CustodiarAgenciaPage.dart';
 import 'package:tramiteapp/src/Vistas/Dashboard-Cliente/dashboardPage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLotePage.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-intersedes/Listar-envios/ListarEnviosPage.dart';
@@ -16,14 +15,15 @@ import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-personalizada/Listar-
 import 'package:tramiteapp/src/Vistas/Entrega-sede/Entrega-regular/EntregaRegularPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-UTD/ListarEnviosUTDPage.dart';
 import 'package:tramiteapp/src/Vistas/Envio-activos/ListarEnviosActivosPage.dart';
-import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Listar-envios-agencias/ListarEnviosPage.dart';
-import 'package:tramiteapp/src/Vistas/Envio-agencias-externas/Nueva-entrega-externa/NuevaEntregaExternaPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-agencias/Custodiar-agencias/CustodiarAgenciaPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-agencias/Listar-envios-agencias/ListarEnviosAgenciasPage.dart';
+import 'package:tramiteapp/src/Vistas/Envio-agencias/Nuevo-envio-agencia/NuevoEnvioAgenciaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Buscar-usuario/principalPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioConfirmadoPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Detalle-ruta/DetalleRutaPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/Generar-ruta/GenerarRutaPage.dart';
-import 'package:tramiteapp/src/Vistas/Generar-recorrido/Listar-turnos/ListarTurnosPage.dart';
+import 'package:tramiteapp/src/Vistas/Generar-recorrido/Recorridos-activos/RecorridosActivosPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-adicionales/recorridoAdicionalPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/recorridos-propios/recorridoPropioPage.dart';
 import 'package:tramiteapp/src/Vistas/Generar-recorrido/validar-envios/validarEnvioPage.dart';
@@ -49,7 +49,7 @@ Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
     '/home': (BuildContext context) => HomePage(),
     '/dashboard-operación': (BuildContext context) => DashboardOperacionPage(),
     '/generar-envio': (BuildContext context) => PrincipalPage(),
-    '/recorridos': (BuildContext context) => ListarTurnosPage(),
+    '/recorridos': (BuildContext context) => RecorridosActivosPage(),
     '/clasificar-envio': (BuildContext context) => ClasificacionPage(),
     '/envio-interutd': (BuildContext context) => ListarEnviosPage(),
     '/envio-lote': (BuildContext context) => ListaEntregaLotePage(),

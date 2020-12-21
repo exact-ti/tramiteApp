@@ -224,6 +224,11 @@ class NotificacionImpl implements NotificacionInterface {
     }
   }
 
+  @override
+  Future notificarMasivoRecojo(int recorridoId) async {
+    return await notificacionProvider.notificarMasivoRecojo(recorridoId);
+  }
+
  /*  @override
   void cerrarNotificacionPush() async {
     this.flp.cancelAll();

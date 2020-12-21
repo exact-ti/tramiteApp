@@ -178,7 +178,7 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
             itemIndice: indice,
             methodAction: onPressTap,
             iconColor: StylesThemeData.ICON_COLOR,
-            iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+            iconSend: IconsData.ICON_SEND_ARROW,
             colorItem: colorSelect(indice, validados["$codigoUtd"]),
             titulo: enviosvalidados[indice].destino,
             subtitulo: subtitulo,

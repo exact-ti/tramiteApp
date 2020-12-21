@@ -146,7 +146,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
       itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
       itemIndice: indice,
       iconPrimary: IconsData.ICON_LOTE_VALIJA,
-      iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+      iconSend: IconsData.ICON_SEND_ARROW,
       iconColor: StylesThemeData.ICON_COLOR,
       methodAction: recepcionarEnvio,
       colorItem: indice % 2 == 0

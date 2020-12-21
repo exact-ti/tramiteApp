@@ -90,7 +90,7 @@ class _RecorridosAdicionalesPageState extends State<RecorridosAdicionalesPage> {
                               itemHeight:
                                   StylesItemData.ITEM_HEIGHT_THREE_TITLE,
                               iconPrimary: IconsData.ICON_USER,
-                              iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+                              iconSend: IconsData.ICON_SEND_ARROW,
                               itemIndice: i,
                               methodAction: onPressRecorrido,
                               colorItem: i % 2 == 0

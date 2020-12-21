@@ -38,7 +38,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
       return ItemWidget(
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           iconPrimary: IconsData.ICON_FILE,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          iconSend: IconsData.ICON_SEND_ARROW,
           itemIndice: indice,
           methodAction: _selectPaquete,
           colorItem: indice % 2 == 0

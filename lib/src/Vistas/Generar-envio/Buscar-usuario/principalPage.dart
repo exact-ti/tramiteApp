@@ -52,7 +52,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
       return ItemWidget(
           itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
           iconPrimary: IconsData.ICON_USER,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          iconSend: IconsData.ICON_SEND_ARROW,
           itemIndice: indice,
           methodAction: onPressedItemWidget,
           colorItem: indice % 2 == 0

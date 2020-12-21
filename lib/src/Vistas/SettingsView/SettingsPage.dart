@@ -103,7 +103,7 @@ class _SettingPageState extends State<SettingPage> {
                     color: StylesThemeData.ICON_COLOR,
                   ),
                   title: Text('Cambiar contraseña'),
-                  trailing: Icon(IconsData.ICON_ITEM_WIDGETRIGHT,
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
                       size: StylesIconData.ICON_SIZE,
                       color: StylesThemeData.ICON_COLOR),
                   onTap: () {
@@ -124,7 +124,7 @@ class _SettingPageState extends State<SettingPage> {
                     color: StylesThemeData.ICON_COLOR,
                   ),
                   title: Text("Cerrar sesión"),
-                  trailing: Icon(IconsData.ICON_ITEM_WIDGETRIGHT,
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
                       size: StylesIconData.ICON_SIZE,
                       color: StylesThemeData.ICON_COLOR),
                   onTap: () async{

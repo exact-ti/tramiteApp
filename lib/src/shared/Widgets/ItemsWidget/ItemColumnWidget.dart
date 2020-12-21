@@ -79,7 +79,8 @@ class ItemColumnWidget extends StatelessWidget {
                           height: 80,
                           child: Text(
                             "$titulo",
-                            style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.bold),
                           )),
                       flex: 3,
                     ),
@@ -87,45 +88,50 @@ class ItemColumnWidget extends StatelessWidget {
                       child: Container(
                           alignment: Alignment.center,
                           height: itemHeight,
-                          child: ListView(shrinkWrap: true, children: <Widget>[
-                            Container(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              alignment: Alignment.bottomCenter,
-                              height: 40,
-                              child: Text("$secondTitulo",
-                                  style: TextStyle(fontSize: 9)),
-                            ),
-                            Center(
-                              child: Container(
+                          child: ListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  alignment: Alignment.bottomCenter,
                                   height: 40,
-                                  child: Text("$subSecondTitulo",
-                                      style: TextStyle(fontSize: 11))),
-                            )
-                          ])),
+                                  child: Text("$secondTitulo",
+                                      style: TextStyle(fontSize: 9)),
+                                ),
+                                Center(
+                                  child: Container(
+                                      height: 40,
+                                      child: Text("$subSecondTitulo",
+                                          style: TextStyle(fontSize: 11))),
+                                )
+                              ])),
                       flex: 3,
                     ),
                     Expanded(
                       child: Center(
                         child: Container(
                             height: itemHeight,
-                            child:
-                                ListView(shrinkWrap: true, children: <Widget>[
-                              Center(
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  height: 40,
-                                  child: Text("$thirdTitulo",
-                                      style: TextStyle(fontSize: 9)),
-                                ),
-                              ),
-                              Center(
-                                child: Container(
-                                    height: 40,
-                                    child: Text("$subThirdtitulo",
-                                        style: TextStyle(fontSize: 11))),
-                              )
-                            ])),
+                            child: ListView(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                children: <Widget>[
+                                  Center(
+                                    child: Container(
+                                      alignment: Alignment.bottomCenter,
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      height: 40,
+                                      child: Text("$thirdTitulo",
+                                          style: TextStyle(fontSize: 9)),
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Container(
+                                        height: 40,
+                                        child: Text("$subThirdtitulo",
+                                            style: TextStyle(fontSize: 11))),
+                                  )
+                                ])),
                       ),
                       flex: 3,
                     ),

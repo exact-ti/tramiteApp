@@ -33,13 +33,13 @@ class ListarEnviosController {
   IconData iconByEstadoEntrega(int estadoId) {
     switch (estadoId) {
       case EstadoEntregaEnum.CREADA:
-        return IconsData.ICON_ITEM_WIDGETRIGHT;
+        return IconsData.ICON_SEND_ARROW;
       case EstadoEntregaEnum.INICIADA:
         return null;
       case EstadoEntregaEnum.TERMINADA:
         return null;
       case EstadoEntregaEnum.TRANSITO:
-        return IconsData.ICON_ITEM_WIDGETRIGHT;
+        return IconsData.ICON_SEND_ARROW;
       default:
         return null;
     }

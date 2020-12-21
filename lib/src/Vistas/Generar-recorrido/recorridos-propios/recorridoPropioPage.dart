@@ -16,9 +16,11 @@ class RecorridosPropiosPage extends StatefulWidget {
   _RecorridosPropiosPageState createState() => _RecorridosPropiosPageState();
 }
 
-class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
-  RecorridoPropioController principalcontroller = new RecorridoPropioController();
+class _RecorridosPropiosPageState extends State<RecorridosPropiosPage>{
+  RecorridoPropioController principalcontroller =
+      new RecorridoPropioController();
   List<RecorridoModel> listRecorridos = new List();
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +49,7 @@ class _RecorridosPropiosPageState extends State<RecorridosPropiosPage> {
       return ItemWidget(
           itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
           iconPrimary: IconsData.ICON_USER,
-          iconSend: IconsData.ICON_ITEM_WIDGETRIGHT,
+          iconSend: IconsData.ICON_SEND_ARROW,
           itemIndice: indice,
           methodAction: onPressRecorrido,
           colorItem: indice % 2 == 0
