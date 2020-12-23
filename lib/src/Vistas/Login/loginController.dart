@@ -6,6 +6,8 @@ import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
+import 'package:tramiteapp/src/CoreProyecto/ServicioBackground/IServicioBackground.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/ServicioBackground/ServicioBackground.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
@@ -40,10 +42,12 @@ class LoginController {
       new UtdProvider(),
       new NotificacionProvider(),
       new PerfilProvider());
-  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
+  NotificacionInterface notificacionCore =
+      NotificacionImpl.getInstance(new NotificacionProvider());
   SseInterface sseInterface = new SseImpl(new SseProvider());
   NotificacionModel notificacionModel = new NotificacionModel();
   NotificacionController notificacioncontroller = new NotificacionController();
+  IServicioBackgroundCore servicioBackgroundCore = new ServicioBackgroundCore();
   SharedPreferences sharedPreferences;
 
   final _prefs = new PreferenciasUsuario();
@@ -65,7 +69,8 @@ class LoginController {
         _navigationService.inicializarProvider();
         List<dynamic> menus = json.decode(_prefs.menus);
         List<Menu> listmenu = menuu.fromPreferencs(menus);
-        List<NotificacionModel> listanotificacionesPendientes = await notificacionCore.listarNotificacionesPendientes();
+        List<NotificacionModel> listanotificacionesPendientes =
+            await notificacionCore.listarNotificacionesPendientes();
         Provider.of<NotificationInfo>(context, listen: false)
                 .cantidadNotificacion =
             listanotificacionesPendientes
@@ -73,7 +78,9 @@ class LoginController {
                     element.notificacionEstadoModel.id == pendiente)
                 .toList()
                 .length;
-        notificacionCore.inicializarStreamNotification();
+/*         notificacionCore.inicializarStreamNotification();
+ */
+        servicioBackgroundCore.inicializarNotificacionBackground();
         for (Menu men in listmenu) {
           if (men.home) {
             _navigationService.goBack();
@@ -101,7 +108,9 @@ class LoginController {
             .where((element) => element.notificacionEstadoModel.id == pendiente)
             .toList()
             .length;
-    notificacionCore.inicializarStreamNotification();
+
+/*     notificacionCore.inicializarStreamNotification();
+ */
     Navigator.of(context).pushNamedAndRemoveUntil(
         '/menuBottom', (Route<dynamic> route) => false);
   }
@@ -117,7 +126,9 @@ class LoginController {
             .where((element) => element.notificacionEstadoModel.id == pendiente)
             .toList()
             .length;
-    notificacionCore.inicializarStreamNotification();
+
+/*     notificacionCore.inicializarStreamNotification();
+ */
     Navigator.of(context).pushNamedAndRemoveUntil(
         rutaPrincipal(), (Route<dynamic> route) => false);
   }

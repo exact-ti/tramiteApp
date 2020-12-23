@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tramiteapp/src/CoreProyecto/ServicioBackground/ClasesBackground/NotificacionService.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
@@ -22,25 +23,34 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
- 
     return Scaffold(
       appBar: CustomAppBar(text: "Bienvenido"),
       drawer: DrawerPage(),
       backgroundColor: Colors.white,
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-                child: Text("EXACT",
-                    style: TextStyle(
-                        fontSize: 30,
-                        color: StylesThemeData.PRIMARY_COLOR,
-                        fontWeight: FontWeight.bold))),
-            Center(
-                child: Text("Expertos en Gestion Documental",
-                    style: TextStyle(fontSize: 20, color: Colors.grey))),
-          ],
-        ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+              child: Text("EXACT",
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: StylesThemeData.PRIMARY_COLOR,
+                      fontWeight: FontWeight.bold))),
+          Center(
+              child: Text("Expertos en Gestion Documental",
+                  style: TextStyle(fontSize: 20, color: Colors.grey))),
+          Center(
+            child: Container(
+              child: ValueListenableBuilder(
+                valueListenable: NotificacionService.instance().serverData,
+                builder: (context, data, child) {
+                  return Text('DATA RECEPCIONADA : $data');
+                },
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

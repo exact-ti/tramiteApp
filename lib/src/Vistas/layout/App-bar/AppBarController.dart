@@ -9,7 +9,7 @@ import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 
 class AppBarController {
   SseInterface sseInterface = new SseImpl(new SseProvider());
-  
+
   NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
 
   List<NotificacionModel> listanotificaciones = [];
@@ -27,5 +27,4 @@ class AppBarController {
   void cancelarNotificacionPushByBuzon(){
       notificacionCore.cerrarNotificacionPush();
   }
-
 }

@@ -42,9 +42,7 @@ import 'package:tramiteapp/src/Vistas/recepcion/RecepcionEnvio.dart';
 Map<String, WidgetBuilder> getAplicationRoutes(dynamic data) {
   return <String, WidgetBuilder>{
     //==================Login====================================
-
     '/login': (BuildContext context) => LoginPage(),
-
     //==================Menu principal====================================
     '/home': (BuildContext context) => HomePage(),
     '/dashboard-operación': (BuildContext context) => DashboardOperacionPage(),
