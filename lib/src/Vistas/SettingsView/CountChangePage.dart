@@ -42,7 +42,7 @@ class _CountChangePageState extends State<CountChangePage> {
   Widget build(BuildContext context) {
     Widget _crearListado() {
       List<dynamic> opciones = new List();
-      if (_prefs.tipoperfil == cliente) {
+      if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
         BuzonModel buzonmodel = new BuzonModel();
         List<dynamic> buzonCore = json.decode(_prefs.buzones);
         opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -56,7 +56,7 @@ class _CountChangePageState extends State<CountChangePage> {
         listadecodigos.add(InkWell(
             onTap: () async {
               bool buzonUTDActual = false;
-              if (_prefs.tipoperfil == cliente) {
+              if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                 if (opcion.id == obtenerBuzonid()) {
                   buzonUTDActual = true;
                   notifierAccion("${opcion.nombre} es el buzón actual",
@@ -73,7 +73,7 @@ class _CountChangePageState extends State<CountChangePage> {
                 bool respuestabool = await confirmacion(context, "success",
                     "EXACT", "¿Seguro que desea continuar?");
                 if (respuestabool) {
-                  if (_prefs.tipoperfil == cliente) {
+                  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                     if (opcion.id == obtenerBuzonid()) {
                       notifierAccion("${opcion.nombre} es el buzón actual",
                           StylesThemeData.PRIMARY_COLOR);
@@ -127,7 +127,7 @@ class _CountChangePageState extends State<CountChangePage> {
                 child: ListTile(
                   trailing: Icon(IconsData.ICON_SEND_ARROW,
                       size: StylesIconData.ICON_SIZE,
-                      color: _prefs.tipoperfil == cliente
+                      color: _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                           ? opcion.id == obtenerBuzonid()
                               ? Colors.blue
                               : StylesThemeData.ICON_COLOR
@@ -137,7 +137,7 @@ class _CountChangePageState extends State<CountChangePage> {
                   title: Text(opcion.nombre,
                       style: TextStyle(
                           fontSize: 18,
-                          color: _prefs.tipoperfil == cliente
+                          color: _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                               ? opcion.id == obtenerBuzonid()
                                   ? Colors.blue
                                   : Colors.black
@@ -179,7 +179,7 @@ class _CountChangePageState extends State<CountChangePage> {
         appBar: AppBar(
             backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text(
-                _prefs.tipoperfil == cliente ? "Cambiar buzón" : "Cambiar UTD",
+                _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE ? "Cambiar buzón" : "Cambiar UTD",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/AgenciasExternas/AgenciasExternasImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/AgenciasExternas/IAgenciasExternasInterface.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/NotificationPush.core.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Providers/agenciasExternas/impl/AgenciasExternasProvider.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
@@ -12,7 +12,7 @@ import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class CustodiarAgenciaController {
   IAgenciasExternasInterface agenciasCore =new AgenciasExternasImpl(new AgenciaExternaProvider());
-  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
+  INotificationPush notificationPushCore = NotificacionPush.getInstance(new NotificacionProvider());
 
   void inicializarListEnviosAgencias(Function(dynamic) stateListEnvios) async {
     List<EnvioModel> listAgencias = new List();
@@ -71,6 +71,6 @@ class CustodiarAgenciaController {
   }
 
   Future enviarNotificacion(String paqueteId) async {
-    return await notificacionCore.enviarNotificacionEnAusenciaRecojo(paqueteId);
+    return await notificationPushCore.enviarNotificacionEnAusenciaRecojo(paqueteId);
   }
 }

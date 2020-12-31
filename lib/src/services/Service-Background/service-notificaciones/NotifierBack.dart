@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificacionNotifier {
+class NotifierBack {
 
-  NotificacionNotifier() { 
+  NotifierBack() { 
     _readNotifier().then((count) => _notifierNotificacion.value = count);
   }
 

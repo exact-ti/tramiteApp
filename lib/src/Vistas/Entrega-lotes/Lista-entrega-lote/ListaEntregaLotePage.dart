@@ -71,7 +71,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
   }
 
   void iniciarEnvioLote(indice) async {
-    if (listLotesPorEnviados[indice].estadoEnvio.id == creado) {
+    if (listLotesPorEnviados[indice].estadoEnvio.id == EstadoEnvioEnum.ENVIO_CREADO) {
       bool confirmarInicio = await confirmacion(context, "success", "EXACT",
           "¿Desea iniciar el envío del lote a la UTD ${listLotesPorEnviados[indice].udtNombre}?");
       if (confirmarInicio) {
@@ -110,7 +110,7 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           itemIndice: indice,
           iconPrimary: IconsData.ICON_LOTE_VALIJA,
-          iconSend: listLotesPorEnviados[indice].estadoEnvio.id == creado
+          iconSend: listLotesPorEnviados[indice].estadoEnvio.id == EstadoEnvioEnum.ENVIO_CREADO
               ? IconsData.ICON_SEND_ARROW
               : null,
           methodAction: iniciarEnvioLote,

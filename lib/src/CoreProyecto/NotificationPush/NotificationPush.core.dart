@@ -1,37 +1,35 @@
 import 'dart:convert';
-
-import 'package:eventsource/eventsource.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tramiteapp/src/CoreProyecto/Buzon/BuzonImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Buzon/BuzonInterface.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseInterface.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/service-notificaciones/NotificacionesBack.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'dart:async';
-import 'package:tramiteapp/src/Enumerator/CancelSubcripcion.dart';
-import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/INotificacionProvider.dart';
-import 'NotificacionInterface.dart';
+import 'INotificationPush.core.dart';
 
-class NotificacionImpl implements NotificacionInterface {
+class NotificacionPush implements INotificationPush {
   INotificacionProvider notificacionProvider;
   SseInterface sseCore = new SseImpl(new SseProvider());
   BuzonInterface buzonCore = new BuzonImpl(new BuzonProvider());
   final NavigationService _navigationService = locator<NavigationService>();
   NotificacionModel notificacionModel = new NotificacionModel();
-  final _prefs = new PreferenciasUsuario();
   FlutterLocalNotificationsPlugin flp;
-  static NotificacionImpl notificacionImpl;
+  static NotificacionPush notificacionImpl;
+  final _prefs = new PreferenciasUsuario();
 
-  NotificacionImpl._internal(INotificacionProvider notificacionProvider) {
+  NotificacionPush._internal(INotificacionProvider notificacionProvider) {
     var android = AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOS = IOSInitializationSettings();
     flp = new FlutterLocalNotificationsPlugin();
@@ -42,64 +40,20 @@ class NotificacionImpl implements NotificacionInterface {
 
   static getInstance(INotificacionProvider notificacionProvider) {
     if (notificacionImpl == null) {
-      notificacionImpl = NotificacionImpl._internal(notificacionProvider);
+      notificacionImpl = NotificacionPush._internal(notificacionProvider);
     }
     return notificacionImpl;
   }
 
   @override
-  Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
-    if (_prefs.token == "") return [];
-    List<NotificacionModel> listNotificaciones =
-        await notificacionProvider.listarNotificaciones();
-    return listNotificaciones
-        .where((notificacion) => notificacion.buzonId == obtenerBuzonid())
-        .toList();
-  }
-
-  @override
-  Future revisarNotificacion(int notificacionId) async {
-    return await notificacionProvider
-        .modificarNotificacionesRevisadas(notificacionId);
-  }
-
-  @override
-  Future verNotificaciones() async {
-    return await notificacionProvider.modificarNotificacionesVistas();
-  }
-
-  @override
-  void inicializarStreamNotification() async {
-    EventSource notificacionesStream = await sseCore.listarEventSource();
-    StreamSubscription<Event> subscription;
-    subscription = notificacionesStream.listen((event) {
-      dynamic respuesta = jsonDecode(event.data);
-      print(event.data);
-      if (respuesta["status"] == "success") {
-        List<NotificacionModel> listarNotificaciones =
-            notificacionModel.fromJsonToNotificacion(respuesta["data"]);
-        if (_navigationService.retornarEstado() == paused) {
-          realizarnotificacionPush(listarNotificaciones);
-        }
-        _navigationService.setCantidadNotificacion(listarNotificaciones
-            .where((notificacion) =>
-                notificacion.notificacionEstadoModel.id == pendiente &&
-                notificacion.buzonId == obtenerBuzonid())
-            .toList()
-            .length);
-      }
-      if (_navigationService.estadoFinalizar() == finalizar) {
-        subscription.cancel();
-      }
-    });
-  }
-
-  void realizarnotificacionPush(
+  void realizarnotificacionesPush(
       List<NotificacionModel> listarNotificaciones) async {
     Map<dynamic, List<NotificacionModel>> notificacionesByBuzones = new Map();
     List<NotificacionModel> listarNotificacionesPendientes =
         listarNotificaciones
-            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .where((element) =>
+                element.notificacionEstadoModel.id ==
+                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
             .toList();
     listarNotificacionesPendientes.forEach((notificacionPendiente) {
       if (notificacionesByBuzones.containsKey(notificacionPendiente.buzonId)) {
@@ -162,40 +116,63 @@ class NotificacionImpl implements NotificacionInterface {
     dynamic mapDataNotificacion = json.decode(payload);
     if (payload != null) {
       buzonCore.changeBuzonById(mapDataNotificacion["buzonId"]);
+      if (!_prefs.estadoAppOpen) {
+        _prefs.estadoAppOpen = true;        
+        NotificacionBack.instance()
+            .startServerSentEvent(EstadoAppEnum.APP_OPEN);
+      }
       if (isCliente()) {
-        _navigationService.setCantidadNotificacion(0);
+        _navigationService.setCantidadNotificacionBadge(0);
         if (mapDataNotificacion["notificacionId"] != null) {
-          await revisarNotificacion(mapDataNotificacion["notificacionId"]);
-          _navigationService.navigationClienteTo(mapDataNotificacion["ruta"]);
+          await notificacionProvider.modificarNotificacionesRevisadas(
+              mapDataNotificacion["notificacionId"]);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigationService.navigationClienteToOneNotification(mapDataNotificacion["ruta"]);
+          });
         } else {
-          _navigationService
-              .navigationToHome(mapDataNotificacion["ruta"])
-              .whenComplete(() async {
-            List<NotificacionModel> listNotificaciones =
-                await listarNotificacionesPendientes();
-            _navigationService.setCantidadNotificacion(listNotificaciones
-                .where((notificacion) =>
-                    notificacion.notificacionEstadoModel.id == pendiente)
-                .toList()
-                .length);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigationService
+                .navigationClienteToNotifications(mapDataNotificacion["ruta"])
+                .whenComplete(() async {
+              List<NotificacionModel> listNotificaciones =
+                  await notificacionProvider.listarNotificaciones();
+              _navigationService.setCantidadNotificacionBadge(listNotificaciones
+                  .where((notificacion) =>
+                      notificacion.buzonId == obtenerBuzonid())
+                  .toList()
+                  .where((notificacion) =>
+                      notificacion.notificacionEstadoModel.id ==
+                      EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
+                  .toList()
+                  .length);
+            });
           });
         }
       } else {
-        _navigationService.setCantidadNotificacion(0);
+        _navigationService.setCantidadNotificacionBadge(0);
         if (mapDataNotificacion["notificacionId"] != null) {
-          await revisarNotificacion(mapDataNotificacion["notificacionId"]);
-          _navigationService.navigationToHome(mapDataNotificacion["ruta"]);
+          await notificacionProvider.modificarNotificacionesRevisadas(
+              mapDataNotificacion["notificacionId"]);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigationService.navigationExactToNotifications(mapDataNotificacion["ruta"]);
+          });
         } else {
-          _navigationService
-              .navigationToHome(mapDataNotificacion["ruta"])
-              .whenComplete(() async {
-            List<NotificacionModel> listNotificaciones =
-                await listarNotificacionesPendientes();
-            _navigationService.setCantidadNotificacion(listNotificaciones
-                .where((notificacion) =>
-                    notificacion.notificacionEstadoModel.id == pendiente)
-                .toList()
-                .length);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigationService
+                .navigationExactToNotifications(mapDataNotificacion["ruta"])
+                .whenComplete(() async {
+              List<NotificacionModel> listNotificaciones =
+                  await notificacionProvider.listarNotificaciones();
+              _navigationService.setCantidadNotificacionBadge(listNotificaciones
+                  .where((notificacion) =>
+                      notificacion.buzonId == obtenerBuzonid())
+                  .toList()
+                  .where((notificacion) =>
+                      notificacion.notificacionEstadoModel.id ==
+                      EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
+                  .toList()
+                  .length);
+            });
           });
         }
       }
@@ -215,7 +192,8 @@ class NotificacionImpl implements NotificacionInterface {
           await notificacionProvider.listarNotificaciones();
       if (listNotificaciones
           .where((notificacion) =>
-              notificacion.notificacionEstadoModel.id == pendiente &&
+              notificacion.notificacionEstadoModel.id ==
+                  EstadoNotificacionEnum.NOTIFICACION_PENDIENTE &&
               notificacion.buzonId == obtenerBuzonid())
           .toList()
           .isNotEmpty) {
@@ -229,7 +207,7 @@ class NotificacionImpl implements NotificacionInterface {
     return await notificacionProvider.notificarMasivoRecojo(recorridoId);
   }
 
- /*  @override
+  /*  @override
   void cerrarNotificacionPush() async {
     this.flp.cancelAll();
   } */

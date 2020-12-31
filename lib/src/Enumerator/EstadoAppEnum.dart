@@ -1,3 +1,4 @@
-int resumed=0;
-int inactivo=1; 
-int paused=2; 
+class EstadoAppEnum {
+   static const APP_OPEN = true;
+   static const APP_CLOSE = false;
+}

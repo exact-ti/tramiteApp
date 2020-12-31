@@ -28,7 +28,7 @@ class _ListarTipoPersonalizadaPageState
 
   void _onSearchButtonPressed(dynamic indiceTipoEntrega) {
     TipoEntregaPersonalizadaModel item = listTipoEntrega[indiceTipoEntrega];
-    if (item.id == dniId) {
+    if (item.id == TipoEntregaPersonalizadaEnum.TIPO_ENTREGA_PERSONALIZDA_DNI) {
       Navigator.push(
         context,
         MaterialPageRoute(

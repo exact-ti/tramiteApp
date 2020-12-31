@@ -1,14 +1,9 @@
 package com.example.tramiteapp
+
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.plugins.GeneratedPluginRegistrant
-import android.os.Build
-import android.view.View
-import android.view.ViewTreeObserver
-import android.view.WindowManager
-import io.flutter.plugin.common.MethodChannel
-import android.content.SharedPreferences
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
   

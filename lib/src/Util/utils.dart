@@ -290,7 +290,7 @@ BuzonModel buzonPrincipal() {
 }
 
 Widget drawerIfPerfil() {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     return null;
   } else {
     return DrawerPage();
@@ -298,7 +298,7 @@ Widget drawerIfPerfil() {
 }
 
 bool boolIfPerfil() {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     return true;
   } else {
     return false;
@@ -306,7 +306,7 @@ bool boolIfPerfil() {
 }
 
 bool isCliente() {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     return true;
   } else {
     return false;
@@ -320,7 +320,7 @@ void navegarHomeExact(BuildContext context) {
     List<Menu> listmenu = menu.fromPreferencs(menus);
     for (Menu men in listmenu) {
       if (men.home) {
-        if (_prefs.tipoperfil == cliente) {
+        if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>
@@ -341,7 +341,7 @@ void navegarEnviosActivos(BuildContext context) {
     List<Menu> listmenu = menu.fromPreferencs(menus);
     for (Menu men in listmenu) {
       if (men.home) {
-        if (_prefs.tipoperfil == cliente) {
+        if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>
@@ -356,7 +356,7 @@ void navegarEnviosActivos(BuildContext context) {
 }
 
 void navegarNotificaciones(BuildContext context) {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     Navigator.of(context, rootNavigator: true).pushReplacement(
         MaterialPageRoute(
             builder: (context) =>

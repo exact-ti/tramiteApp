@@ -1,8 +1,10 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/NotificationPush.core.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
@@ -18,7 +20,8 @@ import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class SettingsController {
 
-  NotificacionInterface notificacionCore = NotificacionImpl.getInstance(new NotificacionProvider());
+  INotificationCore notificationCore = new NotificationCore(new NotificacionProvider(), NotificacionPush.getInstance(new NotificacionProvider()));
+  INotificationPush notificationPushCore = NotificacionPush.getInstance(new NotificacionProvider());
   final NavigationService _navigationService = locator<NavigationService>();
 
 
@@ -26,7 +29,7 @@ class SettingsController {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
     final _prefs = new PreferenciasUsuario();
-    if (tipo == cliente) {
+    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
       BuzonModel buzonmodel = new BuzonModel();
       List<dynamic> buzonCore = json.decode(_prefs.buzones);
       opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -61,7 +64,7 @@ class SettingsController {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continuar?");
                   if (respuestabool) {
-                    if (tipo == cliente) {
+                    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                       HashMap<String, dynamic> buzonhash = new HashMap();
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
@@ -85,7 +88,7 @@ class SettingsController {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(tipo == cliente
+            title: Text(tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                 ? "Seleccione un nuevo buzón"
                 : "Seleccione un nuevo UTD"),
             content: Container(
@@ -107,8 +110,8 @@ class SettingsController {
   }
 
     void gestionNotificaciones(BuildContext context) async {
-    List<NotificacionModel> listanotificacionesPendientes = await notificacionCore.listarNotificacionesPendientes();
-    _navigationService.setCantidadNotificacion(listanotificacionesPendientes.where((notificacion) => notificacion.notificacionEstadoModel.id==pendiente && notificacion.buzonId==obtenerBuzonid()).toList().length);
-    notificacionCore.cerrarNotificacionPush();
+    List<NotificacionModel> listanotificacionesPendientes = await notificationCore.listarNotificacionesPendientes();
+    _navigationService.setCantidadNotificacionBadge(listanotificacionesPendientes.where((notificacion) => notificacion.notificacionEstadoModel.id==EstadoNotificacionEnum.NOTIFICACION_PENDIENTE && notificacion.buzonId==obtenerBuzonid()).toList().length);
+    notificationPushCore.cerrarNotificacionPush();
   }
 }

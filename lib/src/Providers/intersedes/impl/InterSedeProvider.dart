@@ -25,7 +25,7 @@ class InterSedeProvider implements IInterSedeProvider {
   Future<List<EnvioInterSedeModel>> listarRecepcionByUsuario() async {
     int utdId = obtenerUTDid();
     Response resp = await req.get(
-        '/servicio-tramite/utds/$utdId/tiposentregas/$entregaValijaId/entregas/recepcion');
+        '/servicio-tramite/utds/$utdId/tiposentregas/${TipoEntregaEnum.TIPO_ENTREGA_VALIJA}/entregas/recepcion');
     return sedeModel.fromJsonValidarRecepcion(resp.data);
   }
 
@@ -33,7 +33,7 @@ class InterSedeProvider implements IInterSedeProvider {
   Future<List<EnvioModel>> listarEnviosByCodigo(String codigo) async {
     int utdId = obtenerUTDid();
     Response resp = await req.get(
-        '/servicio-tramite/utds/$utdId/tipospaquetes/$valijaId/paquetes/$codigo/envios');
+        '/servicio-tramite/utds/$utdId/tipospaquetes/${TipoEstadoEnum.TIPO_PAQUETE_VALIJA}/paquetes/$codigo/envios');
     if (resp.data == "" || resp.data == null) return null;
     return envioModel.fromJsonValidar(resp.data);
   }
@@ -54,7 +54,7 @@ class InterSedeProvider implements IInterSedeProvider {
     List<int> ids = enviosvalidados.map((envio) => envio.id).toList();
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$utdId/valijas/$codigo/tiposentregas/$entregaValijaId/entregas',
+        '/servicio-tramite/utds/$utdId/valijas/$codigo/tiposentregas/${TipoEntregaEnum.TIPO_ENTREGA_VALIJA}/entregas',
         listaIds,
         null);
     return resp.data;

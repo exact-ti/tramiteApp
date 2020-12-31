@@ -25,7 +25,21 @@ class NavigationService {
         builder: (context) => new TopLevelWidget(rutaPage: routeName)));
   }
 
+  
+  Future<dynamic> navigationClienteToNotifications(String routeName) {
+    return navigatorKey.currentState.pushNamed(routeName,arguments: {'notificacionPush': true});
+  }
+
+    Future<dynamic> navigationClienteToOneNotification(String routeName) {
+    return navigatorKey.currentState.pushReplacement(MaterialPageRoute(
+        builder: (context) => new TopLevelWidget(rutaPage: routeName)));
+  }
+
   Future<dynamic> navigationToHome(String routeName) {
+    return navigatorKey.currentState.pushNamed(routeName);
+  }
+
+  Future<dynamic> navigationExactToNotifications(String routeName) {
     return navigatorKey.currentState.pushNamed(routeName);
   }
   
@@ -37,7 +51,7 @@ class NavigationService {
     navigatorKey.currentState.pop();
   }
 
-  setCantidadNotificacion(int cantidad) {
+  setCantidadNotificacionBadge(int cantidad) {
     Provider.of<NotificationInfo>(navigatorKey.currentContext, listen: false)
         .cantidadNotificacion = cantidad;
   }

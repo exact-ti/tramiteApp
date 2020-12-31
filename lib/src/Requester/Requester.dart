@@ -71,8 +71,9 @@ class Requester {
   Future<EventSource> sseventSource(String url) async {
     var token = _prefs.token;
     Map<String, dynamic> header = {
-      'Authorization': '$token',
-    };
+      'Authorization': '$token'/* ,
+      'Connection': 'Keep-Alive' */
+    };  
     EventSource eventSource =  await EventSource.connect(properties['API'] + url, headers: header);
     return eventSource;
   }

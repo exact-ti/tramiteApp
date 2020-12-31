@@ -23,8 +23,6 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   @override
   void initState() {
     gestionNotificaciones();
-/*     WidgetsBinding.instance
-        .addPostFrameCallback((_) => mostrarChangedBuzon()); */
     super.initState();
   }
 
@@ -34,17 +32,6 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     });
   }
 
-/*   void mostrarChangedBuzon() async {
-    if (_prefs.changedBuzon) {
-      BuzonModel buzon = buzonPrincipal();
-      bool respuesta = await notificacion(context, "success", "EXACT",
-          "El buzón actual es ${buzon.nombre}");
-      if (respuesta) {
-        _prefs.changedBuzon = false;
-      }
-    }
-  }
- */
   void verNotificaciones() {
     notificacioncontroller.verNotificaciones();
     Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
@@ -58,8 +45,9 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       Provider.of<NotificationInfo>(context, listen: false)
               .cantidadNotificacion =
           listanotificacionesPendientes
-              .where(
-                  (element) => element.notificacionEstadoModel.id == pendiente)
+              .where((element) =>
+                  element.notificacionEstadoModel.id ==
+                  EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
               .toList()
               .length;
     }
@@ -93,7 +81,8 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
               padding:
                   const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               decoration: BoxDecoration(
-                color: notificacionModel.notificacionEstadoModel.id == pendiente
+                color: notificacionModel.notificacionEstadoModel.id ==
+                        EstadoNotificacionEnum.NOTIFICACION_PENDIENTE
                     ? StylesThemeData.ITEM_SELECT_COLOR
                     : Colors.white,
                 border: new Border(bottom: BorderSide(color: Colors.grey[300])),
@@ -261,15 +250,23 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
       );
     }
 
-    return Scaffold(
-        appBar: AppBar(
-            backgroundColor: StylesThemeData.PRIMARY_COLOR,
-            title: Text("Notificaciones",
-                style: TextStyle(
-                    fontSize: 18,
-                    decorationStyle: TextDecorationStyle.wavy,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.normal))),
-        body: scaffoldbody(mainscaffold(), context));
+    return WillPopScope(
+        onWillPop: () async {
+          Map dataPush = ModalRoute.of(context).settings.arguments;
+          if (dataPush != null) {
+            navegarHomeExact(context);
+          }
+          return true;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+                backgroundColor: StylesThemeData.PRIMARY_COLOR,
+                title: Text("Notificaciones",
+                    style: TextStyle(
+                        fontSize: 18,
+                        decorationStyle: TextDecorationStyle.wavy,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.normal))),
+            body: scaffoldbody(mainscaffold(), context)));
   }
 }

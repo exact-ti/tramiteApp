@@ -9,7 +9,7 @@ class PaqueteProvider implements IPaqueteProvider {
 
   @override
   Future<bool> validarPaqueteSobrePorCodigo(String texto) async {
-    Response resp = await req.get('/servicio-tramite/tipospaquetes/$sobreId/paquetes/parauso?codigo=$texto');
+    Response resp = await req.get('/servicio-tramite/tipospaquetes/${TipoEstadoEnum.TIPO_PAQUETE_SOBRE}/paquetes/parauso?codigo=$texto');
     return resp.data;
   }
 }

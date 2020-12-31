@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.tramiteapp">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -9,14 +10,17 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
-        android:name="io.flutter.app.FlutterApplication"
-        android:label="Tramite App"
+        android:name="com.example.tramiteapp.App"
+        android:label="Tramite App"        
+        android:allowBackup="false"
+        tools:ignore="GoogleAppIndexingWarning"
         android:icon="@mipmap/ic_launcher">
         
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.tramiteapp.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -44,7 +48,13 @@
             android:name="com.example.tramiteapp.BackgroundService"
             android:enabled="true"
             android:exported="false" />
-
+        <receiver
+            android:name=".receiver.StartMyServiceAtBootReceiver"
+            android:label="StartMyServiceAtBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

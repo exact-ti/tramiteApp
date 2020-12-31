@@ -1,2 +1,5 @@
-int personal=1;
-int generico=2; 
+
+class TipoBuzonEnum {
+   static const TIPO_BUZON_PERSONAL = 1;
+   static const TIPO_BUZON_GENERICO = 2;
+}

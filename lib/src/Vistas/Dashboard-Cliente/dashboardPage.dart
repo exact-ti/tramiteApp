@@ -36,7 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Text(indicador.cantidad.toString()),
                   InkWell(
                       onTap: () {
-                        if (_prefs.tipoperfil == cliente) {
+                        if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                           Map<String, Object> dataEnvio = {
                             'modalidad': modalidad,
                             'estadoid': indicador.id
@@ -134,7 +134,7 @@ class _DashboardPageState extends State<DashboardPage> {
             height: screenHeightExcludingToolbar(context, dividedBy: 6),
             width: MediaQuery.of(context).size.width,
             child: Container(
-              child: itemContent(data["entrada"], entrada),
+              child: itemContent(data["entrada"], TipoEstadoEnum.TIPO_ESTADO_ENTRADA),
             )),
         textModo("Salidas"),
         Container(
@@ -142,7 +142,7 @@ class _DashboardPageState extends State<DashboardPage> {
             height: screenHeightExcludingToolbar(context, dividedBy: 6),
             width: MediaQuery.of(context).size.width,
             child: Container(
-              child: itemContent(data["salida"], salida),
+              child: itemContent(data["salida"], TipoEstadoEnum.TIPO_ESTADO_SALIDA),
             )),
       ],
     );

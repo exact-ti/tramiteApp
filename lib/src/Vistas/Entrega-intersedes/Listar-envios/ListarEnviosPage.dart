@@ -133,7 +133,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
   }
 
   IconData obtenerIconInEnviados(dynamic intersedeIndice) {
-    return listEnviosEnviados[intersedeIndice].estadoEnvio.id == creado
+    return listEnviosEnviados[intersedeIndice].estadoEnvio.id == EstadoEnvioEnum.ENVIO_CREADO
         ? FontAwesomeIcons.locationArrow
         : null;
   }

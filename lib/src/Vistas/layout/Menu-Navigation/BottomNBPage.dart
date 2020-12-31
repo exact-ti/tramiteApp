@@ -86,14 +86,12 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
           initialRoute: menuinicio,
           localizationsDelegates: [GlobalMaterialLocalizations.delegate],
           supportedLocales: [const Locale('en'), const Locale('es')],
-          routes: {
+/*           routes: {
             "/": (_) => DashboardPage(),
-          },
+          }, */
           onGenerateRoute: (settings) {
             if (settings.name == "/") {
-              return PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => DashboardPage(),
-                  transitionDuration: Duration(milliseconds: 0));
+              return null;
             }
             if (settings.name == "/generar-envio") {
               return PageRouteBuilder(
@@ -143,6 +141,7 @@ class _TopLevelWidgetState extends State<TopLevelWidget> {
                       ),
                   transitionDuration: Duration(milliseconds: 0));
             }
+
             return MaterialPageRoute(builder: (_) => DashboardPage());
           },
         );

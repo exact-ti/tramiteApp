@@ -25,7 +25,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   Future<dynamic> listarEnviosAgenciaByCodigo(String codigo) async {
     int utdId = obtenerUTDid();
     Response resp = await req.get(
-        '/servicio-tramite/utds/$utdId/tipospaquetes/$valijaExternaId/paquetes/$codigo/envios');
+        '/servicio-tramite/utds/$utdId/tipospaquetes/${TipoEstadoEnum.TIPO_PAQUETE_VALIJA_EXTERNA}/paquetes/$codigo/envios');
     return resp.data;
   }
 
@@ -49,7 +49,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
     List<int> ids = enviosvalidados.map((envio) => envio.id).toList();
     var listaIds = json.encode(ids);
     Response resp = await req.post(
-        '/servicio-tramite/utds/$utdId/valijas/$codigo/tiposentregas/$valijaExternaId/entregas',
+        '/servicio-tramite/utds/$utdId/valijas/$codigo/tiposentregas/${TipoEstadoEnum.TIPO_PAQUETE_VALIJA_EXTERNA}/entregas',
         listaIds,
         null);
     return resp.data;

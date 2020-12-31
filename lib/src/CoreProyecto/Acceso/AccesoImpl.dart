@@ -62,7 +62,7 @@ class AccesoImpl implements AccesoInterface {
           await buzonProvider.listarBuzonesDelUsuarioAutenticado();
       _prefs.buzones = buzones;
       for (BuzonModel buzon in buzones) {
-        if (buzon.tipoBuzon.id == personal) {
+        if (buzon.tipoBuzon.id == TipoBuzonEnum.TIPO_BUZON_PERSONAL) {
           HashMap<String, dynamic> buzonhash = new HashMap();
           buzonhash['id'] = buzon.id;
           buzonhash['nombre'] = buzon.nombre;
@@ -82,7 +82,7 @@ class AccesoImpl implements AccesoInterface {
         }
       }
 
-      if (_prefs.tipoperfil == cliente) {
+      if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
         if (_prefs.buzon == null) {
           deletepreferencesWithoutContext();
           return {

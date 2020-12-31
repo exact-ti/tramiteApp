@@ -66,7 +66,7 @@ class MenuController {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
     final _prefs = new PreferenciasUsuario();
-    if (tipo == cliente) {
+    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
       BuzonModel buzonmodel = new BuzonModel();
       List<dynamic> buzonCore = json.decode(_prefs.buzones);
       opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -102,7 +102,7 @@ class MenuController {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continua?");
                   if (respuestabool) {
-                    if (tipo == cliente) {
+                    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                       HashMap<String, dynamic> buzonhash = new HashMap();
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
@@ -126,7 +126,7 @@ class MenuController {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(tipo == cliente
+            title: Text(tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                 ? "Seleccione un nuevo buzón"
                 : "Seleccione un nuevo UTD"),
             content: Container(

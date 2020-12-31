@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoAppOpenEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'AppBarController.dart';
@@ -34,14 +35,18 @@ class _CustomAppBarState extends State<CustomAppBar>
   List<NotificacionModel> listanotificacionesSinVer = new List();
   int estadoApp;
   int idBuzonOrUTD = 0;
+  final _prefs = new PreferenciasUsuario();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state.index != inactivo) {
-      Provider.of<NotificationInfo>(context, listen: false).estadoApp =
-          state.index;
-      if (state.index == resumed) {
+    if (state.index != EstadoAppOpenEnum.APP_INACTIVO) {
+      Provider.of<NotificationInfo>(context, listen: false).estadoApp = state.index;
+      if (state.index == EstadoAppOpenEnum.APP_RESUMED) {
+        _prefs.estadoAppOpen = true;        
         appBarController.cancelarNotificacionPushByBuzon();
+      }
+      if(state.index == EstadoAppOpenEnum.APP_BACKGROUND){
+        _prefs.estadoAppOpen = false;
       }
     }
   }
@@ -82,7 +87,7 @@ class _CustomAppBarState extends State<CustomAppBar>
     if (this.mounted) {
       setState(() {
         listanotificacionesSinVer = listanotificacionesPendientes
-            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .where((element) => element.notificacionEstadoModel.id == EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
             .toList();
         Provider.of<NotificationInfo>(context, listen: false)
             .cantidadNotificacion = listanotificacionesSinVer.length;

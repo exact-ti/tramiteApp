@@ -72,7 +72,7 @@ class EntregaProvider implements IEntregaProvider {
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async {
       Response resp = await req.get(
-          '/servicio-tramite/tiposentregas/$entregaValijaId/valijas/$codigo/libre');
+          '/servicio-tramite/tiposentregas/${TipoEntregaEnum.TIPO_ENTREGA_VALIJA}/valijas/$codigo/libre');
       if (resp.data == "") return null;
       return envioModel.fromOneJson(resp.data);
   }

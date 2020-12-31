@@ -1,2 +1,5 @@
-int entrada=0;
-int salida=1;
+
+ class TipoEstadoEnum {
+   static const TIPO_ESTADO_ENTRADA = 0;
+   static const TIPO_ESTADO_SALIDA = 1;
+}

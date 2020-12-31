@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/Acceso/AccesoInterface.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionImpl.dart';
-import 'package:tramiteapp/src/CoreProyecto/NotificacionCore/NotificacionInterface.dart';
-import 'package:tramiteapp/src/CoreProyecto/ServicioBackground/IServicioBackground.core.dart';
-import 'package:tramiteapp/src/CoreProyecto/ServicioBackground/ServicioBackground.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/NotificationPush.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
@@ -27,6 +28,7 @@ import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/service-notificaciones/NotificacionesBack.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'dart:convert';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
@@ -42,14 +44,19 @@ class LoginController {
       new UtdProvider(),
       new NotificacionProvider(),
       new PerfilProvider());
-  NotificacionInterface notificacionCore =
-      NotificacionImpl.getInstance(new NotificacionProvider());
+
+  INotificationCore notificationCore = new NotificationCore(
+      new NotificacionProvider(),
+      NotificacionPush.getInstance(new NotificacionProvider()));
+  INotificationPush notificationPushCore =
+      NotificacionPush.getInstance(new NotificacionProvider());
+
   SseInterface sseInterface = new SseImpl(new SseProvider());
   NotificacionModel notificacionModel = new NotificacionModel();
   NotificacionController notificacioncontroller = new NotificacionController();
-  IServicioBackgroundCore servicioBackgroundCore = new ServicioBackgroundCore();
+/*   IServicioBackgroundCore servicioBackgroundCore = new ServicioBackgroundCore();
+ */
   SharedPreferences sharedPreferences;
-
   final _prefs = new PreferenciasUsuario();
   final NavigationService _navigationService = locator<NavigationService>();
 
@@ -70,21 +77,27 @@ class LoginController {
         List<dynamic> menus = json.decode(_prefs.menus);
         List<Menu> listmenu = menuu.fromPreferencs(menus);
         List<NotificacionModel> listanotificacionesPendientes =
-            await notificacionCore.listarNotificacionesPendientes();
+            await notificationCore.listarNotificacionesPendientes();
         Provider.of<NotificationInfo>(context, listen: false)
                 .cantidadNotificacion =
             listanotificacionesPendientes
                 .where((element) =>
-                    element.notificacionEstadoModel.id == pendiente)
+                    element.notificacionEstadoModel.id ==
+                    EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
                 .toList()
                 .length;
 /*         notificacionCore.inicializarStreamNotification();
  */
-        servicioBackgroundCore.inicializarNotificacionBackground();
+/*         servicioBackgroundCore.inicializarNotificacionBackground();
+
+ */
+        NotificacionBack.instance()
+            .startServerSentEvent(EstadoAppEnum.APP_OPEN);
+        _prefs.estadoAppOpen=true;
         for (Menu men in listmenu) {
           if (men.home) {
             _navigationService.goBack();
-            if (_prefs.tipoperfil == cliente) {
+            if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
               Navigator.of(context).pushNamedAndRemoveUntil(
                   '/menuBottom', (Route<dynamic> route) => false);
             } else {
@@ -102,17 +115,26 @@ class LoginController {
     Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
         buzonModel.nombre;
     List<NotificacionModel> listanotificacionesPendientes =
-        await notificacionCore.listarNotificacionesPendientes();
+        await notificationCore.listarNotificacionesPendientes();
     Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
         listanotificacionesPendientes
-            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .where((element) =>
+                element.notificacionEstadoModel.id ==
+                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
             .toList()
             .length;
 
 /*     notificacionCore.inicializarStreamNotification();
  */
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        '/menuBottom', (Route<dynamic> route) => false);
+
+    if (!_prefs.estadoAppOpen) {
+    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+    _prefs.estadoAppOpen=true;
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/menuBottom', (Route<dynamic> route) => false);
+    }else{
+      _navigationService.setCantidadNotificacionBadge(0);
+    }
   }
 
   openAppPerfilOperativo(BuildContext context) async {
@@ -120,16 +142,26 @@ class LoginController {
     Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
         utdModel.nombre;
     List<NotificacionModel> listanotificacionesPendientes =
-        await notificacionCore.listarNotificacionesPendientes();
+        await notificationCore.listarNotificacionesPendientes();
     Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
         listanotificacionesPendientes
-            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .where((element) =>
+                element.notificacionEstadoModel.id ==
+                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
             .toList()
             .length;
 
 /*     notificacionCore.inicializarStreamNotification();
  */
+    if (!_prefs.estadoAppOpen) {
+    _navigationService.setCantidadNotificacionBadge(0);
+    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+    _prefs.estadoAppOpen=true;
     Navigator.of(context).pushNamedAndRemoveUntil(
         rutaPrincipal(), (Route<dynamic> route) => false);
+    }else{
+      _navigationService.setCantidadNotificacionBadge(0);
+    }
+
   }
 }

@@ -117,4 +117,20 @@ class PreferenciasUsuario {
   set ultimaPagina(String value) {
     _prefs.setString('ultimaPagina', value);
   }
+
+  get estadoAppOpen {
+    return _prefs.getBool('estadoAppOpen') ?? true;
+  }
+
+  set estadoAppOpen (bool value) {
+    _prefs.setBool('estadoAppOpen', value);
+  }
+
+  get modalidadByOpen {
+    return _prefs.getInt('modalidadByOpen') ?? 0;
+  }
+
+  set modalidadByOpen (int value) {
+    _prefs.setInt('modalidadByOpen', value);
+  }
 }
