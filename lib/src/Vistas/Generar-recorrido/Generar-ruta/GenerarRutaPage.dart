@@ -171,7 +171,7 @@ class _GenerarRutaPageState extends State<GenerarRutaPage> {
                                 onPressed: actionButtonNotificar,
                                 colorParam:
                                     StylesThemeData.BUTTON_PRIMARY_COLOR,
-                                texto: 'Notificar recojos')))
+                                texto: 'Notificar recojos faltantes')))
                         : Container()
                     : Container(),
                 paddingWidget(Container(

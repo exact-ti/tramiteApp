@@ -55,6 +55,8 @@ dependencies:
   basic_utils: ^1.2.0 
   route_observer_mixin: ^1.4.2+2
   fl_chart: ^0.12.0
+  horizontal_data_table: ^1.0.8
+  table_sticky_headers: ^1.2.0
 
 dev_dependencies:
   flutter_driver:

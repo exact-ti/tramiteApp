@@ -33,6 +33,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   }
 
   void verNotificaciones() {
+    print("Vio las  notificaciones ");
     notificacioncontroller.verNotificaciones();
     Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
         0;
@@ -69,7 +70,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
                     .whenComplete(retrieveData());
               } else {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    notificacionModel.ruta, (Route<dynamic> route) => false);
+                    notificacionModel.ruta, (Route<dynamic> route) => false).whenComplete(retrieveData());
               }
             } else {
               notificacion(context, "error", "EXACT", "Surgió un problema");

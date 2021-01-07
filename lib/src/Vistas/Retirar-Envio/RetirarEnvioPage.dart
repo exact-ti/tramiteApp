@@ -316,6 +316,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
         _paqueteController.text = "";
         _remitenteController.text = "";
         _destinatarioController.text = "";
+        _observacionController.text="";
         listaEnvios = [];
         mensajeError = "";
         button = false;

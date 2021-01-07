@@ -9,6 +9,8 @@ import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'AppBarController.dart';
@@ -33,6 +35,7 @@ class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
   AppBarController appBarController = new AppBarController();
   List<NotificacionModel> listanotificacionesSinVer = new List();
+  final NavigationService _navigationService = locator<NavigationService>();
   int estadoApp;
   int idBuzonOrUTD = 0;
   final _prefs = new PreferenciasUsuario();
@@ -84,6 +87,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   void gestionNotificaciones() async {
     List<NotificacionModel> listanotificacionesPendientes =
         await appBarController.listarNotificacionesPendientes();
+
     if (this.mounted) {
       setState(() {
         listanotificacionesSinVer = listanotificacionesPendientes
@@ -91,6 +95,8 @@ class _CustomAppBarState extends State<CustomAppBar>
             .toList();
         Provider.of<NotificationInfo>(context, listen: false)
             .cantidadNotificacion = listanotificacionesSinVer.length;
+                        print("listanotificacionesSinVer"+listanotificacionesSinVer.length.toString());
+
       });
     }
   }
@@ -196,8 +202,7 @@ class _CustomAppBarState extends State<CustomAppBar>
           IconButton(
             icon: myAppBarIcon(),
             onPressed: () async {
-              Provider.of<NotificationInfo>(context, listen: false)
-                  .cantidadNotificacion = 0;
+              _navigationService.setCantidadNotificacionBadge(0);
               Navigator.push(
                 context,
                 PageTransition(

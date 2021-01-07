@@ -88,6 +88,24 @@ class BackgroundService : Service(), LifecycleDetector.Listener {
         val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         prefs.edit().putLong(KEY_CALLBACK_RAW_HANDLE, handle).apply()
     }
+    
+    private fun stopService() {
+        log("Stopping the foreground service")
+        Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
+        try {
+            wakeLock?.let {
+                if (it.isHeld) {
+                    it.release()
+                }
+            }
+            stopForeground(true)
+            stopSelf()
+        } catch (e: Exception) {
+            log("Service stopped without being started: ${e.message}")
+        }
+        isServiceStarted = false
+        setServiceState(this, ServiceState.STOPPED)
+    }
 
     companion object {
         private const val SHARED_PREFERENCES_NAME = "com.example.BackgroundService"

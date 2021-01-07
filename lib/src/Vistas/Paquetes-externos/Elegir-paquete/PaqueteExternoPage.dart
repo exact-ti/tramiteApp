@@ -50,7 +50,7 @@ class _PaqueteExternoPageState extends State<PaqueteExternoPage> {
     }
 
     return Scaffold(
-        appBar: CustomAppBar(text: "Custodia de documentos externos"),
+        appBar: CustomAppBar(text: "Envíos  externos"),
         drawer: DrawerPage(),
         body: scaffoldbody(
             Column(

@@ -129,6 +129,7 @@ class LoginController {
 
     if (!_prefs.estadoAppOpen) {
     NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+    notificationPushCore.cerrarNotificacionPush();
     _prefs.estadoAppOpen=true;
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/menuBottom', (Route<dynamic> route) => false);
@@ -154,9 +155,9 @@ class LoginController {
 /*     notificacionCore.inicializarStreamNotification();
  */
     if (!_prefs.estadoAppOpen) {
-    _navigationService.setCantidadNotificacionBadge(0);
     NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
     _prefs.estadoAppOpen=true;
+        notificationPushCore.cerrarNotificacionPush();
     Navigator.of(context).pushNamedAndRemoveUntil(
         rutaPrincipal(), (Route<dynamic> route) => false);
     }else{

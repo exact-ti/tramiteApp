@@ -8,10 +8,10 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 
 object Notifications {
-    const val NOTIFICATION_ID_BACKGROUND_SERVICE = 1
+    const val NOTIFICATION_ID_BACKGROUND_SERVICE = 1000000000.toInt()
 
     private const val CHANNEL_ID_BACKGROUND_SERVICE = "background_service"
-
+    
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -29,6 +29,8 @@ object Notifications {
         return NotificationCompat
             .Builder(context, CHANNEL_ID_BACKGROUND_SERVICE)
             .setSmallIcon(R.mipmap.ic_launcher)
+            .setAutoCancel(true)
+            .setOngoing(true)
             .setContentTitle("Background Service")
             .setContentText("Keeps app process on foreground.")
             .build()

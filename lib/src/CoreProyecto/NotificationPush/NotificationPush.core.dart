@@ -206,9 +206,5 @@ class NotificacionPush implements INotificationPush {
   Future notificarMasivoRecojo(int recorridoId) async {
     return await notificacionProvider.notificarMasivoRecojo(recorridoId);
   }
-
-  /*  @override
-  void cerrarNotificacionPush() async {
-    this.flp.cancelAll();
-  } */
+  
 }

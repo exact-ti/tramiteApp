@@ -16,10 +16,6 @@ import 'package:tramiteapp/src/Util/timezone.dart' as timezone;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 
-/* 
-import 'app_retain_widget.dart';
-import 'background_main.dart';
-import 'counter_service.dart'; */
 
 
 void main() async {

@@ -3,12 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-import 'package:tramiteapp/src/services/Service-Background/service-notificaciones/NotificacionesBack.dart';
-import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
-/* import '../../../counter_service.dart';
- */
 class HomePage extends StatefulWidget {
   static String tag = 'login-page';
 
@@ -30,7 +26,9 @@ class _HomePageState extends State<HomePage> {
       appBar: CustomAppBar(text: "Bienvenido"),
       drawer: DrawerPage(),
       backgroundColor: Colors.white,
-      body: ListView(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(
               child: Text("EXACT",
@@ -41,21 +39,6 @@ class _HomePageState extends State<HomePage> {
           Center(
               child: Text("Expertos en Gestion Documental",
                   style: TextStyle(fontSize: 20, color: Colors.grey))),
-          ButtonWidget(
-              onPressed: () {
-              },
-              colorParam: StylesThemeData.PRIMARY_COLOR,
-              texto: "Send background"),
-          Center(
-            child: Container(
-              child: ValueListenableBuilder(
-                valueListenable: NotificacionBack.instance().serverData,
-                builder: (context, data, child) {
-                  return Text('DATA RECEPCIONADA : $data');
-                },
-              ),
-            ),
-          )
         ],
       ),
     );

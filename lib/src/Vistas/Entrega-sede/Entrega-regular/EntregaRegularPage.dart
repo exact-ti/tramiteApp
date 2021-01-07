@@ -230,6 +230,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
             setState(() {
               mensaje = "";
               listaEnvios = [];
+              _sobreController.clear();
             });
             enfocarInputfx(context, focusBandeja);
           }
@@ -248,6 +249,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               mensaje = "";
               listaEnvios = [];
               _bandejaController.text = value;
+              _sobreController.clear();
             });
           } else {
             enfocarInputfx(context, focusEnvio);
@@ -255,6 +257,7 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
               mensaje = "";
               _bandejaController.text = value;
               listaEnvios = listaEnvios;
+              _sobreController.clear();
             });
           }
         }
@@ -266,7 +269,9 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           if (listaEnvios.isEmpty) {
             setState(() {
               listaEnvios = [];
-              _bandejaController.text = "";
+              mensaje = "";
+              _bandejaController.text = value;
+              _sobreController.clear();
             });
             bool respuestatrue = await notificacion(context, "error", "EXACT",
                 "No tienes envíos para entregar a esta área");
@@ -274,14 +279,18 @@ class _EntregaRegularPageState extends State<EntregaRegularPage> {
           } else {
             enfocarInputfx(context, focusEnvio);
             setState(() {
+              mensaje = "";
               listaEnvios = listaEnvios;
               _bandejaController.text = value;
+              _sobreController.clear();
             });
           }
         } else {
           setState(() {
+          mensaje = "";
             listaEnvios = [];
-            _bandejaController.text = "";
+            _bandejaController.text = value;
+            _sobreController.clear();
           });
           bool respuestatrue = await notificacion(
               context, "error", "EXACT", respuesta["message"]);

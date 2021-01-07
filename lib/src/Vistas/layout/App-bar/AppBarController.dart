@@ -1,4 +1,3 @@
-import 'package:eventsource/eventsource.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
@@ -14,17 +13,11 @@ class AppBarController {
 
   INotificationCore notificationCore = new NotificationCore(new NotificacionProvider(), NotificacionPush.getInstance(new NotificacionProvider()));
   INotificationPush notificationPushCore = NotificacionPush.getInstance(new NotificacionProvider());
-  
   List<NotificacionModel> listanotificaciones = [];
 
   Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
     List<NotificacionModel> notificacionespendientes = await notificationCore.listarNotificacionesPendientes();
     return notificacionespendientes;
-  }
-
-  Future<EventSource> ssEventSource() async {
-    EventSource entregas = await sseInterface.listarEventSource();
-    return entregas;
   }
 
   void cancelarNotificacionPushByBuzon(){

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
+import 'package:tramiteapp/src/Resources/conection-sse/sse.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:eventsource/eventsource.dart';
 
 class Requester {
   static final Requester _instancia = new Requester._internal();
@@ -71,10 +71,10 @@ class Requester {
   Future<EventSource> sseventSource(String url) async {
     var token = _prefs.token;
     Map<String, dynamic> header = {
-      'Authorization': '$token'/* ,
-      'Connection': 'Keep-Alive' */
+      'Authorization': "Bearer $token"
     };  
-    EventSource eventSource =  await EventSource.connect(properties['API'] + url, headers: header);
+    
+    EventSource eventSource =  await EventSource.conectar(properties['API'] + url, headers: header);
     return eventSource;
   }
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:eventsource/eventsource.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
@@ -11,6 +10,8 @@ import 'package:tramiteapp/src/Enumerator/SubscriptionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
+import 'package:tramiteapp/src/Resources/conection-sse/event.dart';
+import 'package:tramiteapp/src/Resources/conection-sse/sse.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import '../../navigation_service_file.dart';
 import 'NotifierBack.dart';
@@ -40,9 +41,19 @@ class NotificacionBack {
   SseInterface sseCore = new SseImpl(new SseProvider());
 
   void startServerSentEvent(bool estadoAppOpen) async {
-    EventSource notificacionesStream = await sseCore.listarEventSource();
+/*     EventSource eventSource = await sseCore.listarEventSource();
+    eventSource.listen((event) {
+      Map data = jsonDecode(event.data);
+      print(data);
+    });
+
+    Future.delayed(Duration(seconds: 10), () {
+      eventSource.close();
+    }); */
+
+    EventSource eventSource = await sseCore.listarEventSource();
     StreamSubscription<Event> subscription;
-    subscription = notificacionesStream.listen((event) {
+    subscription = eventSource.listen((event) {
       dynamic respuesta = jsonDecode(event.data);
       String estadoApp = estadoAppOpen ? "FOREGROUND : " : "BACKGROUND : ";
       print(estadoApp + event.data);
@@ -59,6 +70,7 @@ class NotificacionBack {
           _navigationService.estadoFinalizar() ==
               SubscriptionEnum.SUBSCRIPTION_FINALIZAR) {
         subscription.cancel();
+        eventSource.close();
       }
     });
   }

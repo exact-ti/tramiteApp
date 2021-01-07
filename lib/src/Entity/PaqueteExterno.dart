@@ -4,6 +4,13 @@ class PaqueteExterno {
   String destinatarioId;
   String tipoPaquete;
 
+    PaqueteExterno({
+        this.id,
+        this.paqueteId,
+        this.destinatarioId,
+        this.tipoPaquete
+    });
+
   Map<String, dynamic> toJson() =>
       {"paqueteId": paqueteId, "destinatarioId": destinatarioId};
 
