@@ -27,8 +27,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkLoginStatus());
     super.initState();
-    checkLoginStatus();
   }
 
   checkLoginStatus() async {

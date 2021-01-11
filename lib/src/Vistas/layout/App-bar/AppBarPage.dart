@@ -56,11 +56,23 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => listarNotificacionesPendientes());
     listanotificacionesSinVer = [];
     estadoApp = 0;
     registrarIfPerfil();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  void listarNotificacionesPendientes() async {
+    List<NotificacionModel> listanotificacionesPendientes = await appBarController.listarNotificacionesPendientes();
+    Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
+        listanotificacionesPendientes
+            .where((element) =>
+                element.notificacionEstadoModel.id ==
+                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
+            .toList()
+            .length; 
   }
 
   void registrarIfPerfil() {

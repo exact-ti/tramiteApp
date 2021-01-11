@@ -58,8 +58,7 @@ class AccesoImpl implements AccesoInterface {
       _prefs.changedBuzon = false;
       dynamic tipoPerfil = await perfilProvider.listarTipoPerfilByPerfil();
       _prefs.tipoperfil = tipoPerfil['id'];
-      List<BuzonModel> buzones =
-          await buzonProvider.listarBuzonesDelUsuarioAutenticado();
+      List<BuzonModel> buzones = await buzonProvider.listarBuzonesDelUsuarioAutenticado();
       _prefs.buzones = buzones;
       for (BuzonModel buzon in buzones) {
         if (buzon.tipoBuzon.id == TipoBuzonEnum.TIPO_BUZON_PERSONAL) {
@@ -114,6 +113,7 @@ class AccesoImpl implements AccesoInterface {
       List<ConfiguracionModel> configuraciones =
           await configuracionProvider.listarConfiguraciones();
       _prefs.configuraciones = configuraciones;
+
 
       return authResponse;
     } else {

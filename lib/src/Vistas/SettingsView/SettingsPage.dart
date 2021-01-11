@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Gestion-password/CambiarPassworPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/BackgroundService.dart';
 import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'package:tramiteapp/src/styles/Icon_style.dart';
@@ -131,6 +132,7 @@ class _SettingPageState extends State<SettingPage> {
                   bool respuestaPop = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea cerrar sesión?");
                   if (respuestaPop) {
+                    BackgroundService.stopBackground();
                     eliminarpreferences(context);
                   }
                   },

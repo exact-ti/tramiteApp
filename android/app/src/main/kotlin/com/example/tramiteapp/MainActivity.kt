@@ -25,7 +25,13 @@ class MainActivity: FlutterActivity() {
                     BackgroundService.startService(this@MainActivity, callbackRawHandle)
                     result.success(null)
                 } else {
+                 if (method.method == "stopService") {
+                    val callbackRawHandle = method.arguments as Long
+                    BackgroundService.stopService(this@MainActivity, callbackRawHandle)
+                    result.success(null)
+                } else {
                     result.notImplemented()
+                }
                 }
             }
         }

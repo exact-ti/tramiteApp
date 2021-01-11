@@ -28,6 +28,7 @@ import 'package:tramiteapp/src/Providers/utds/impl/UtdProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/BackgroundService.dart';
 import 'package:tramiteapp/src/services/Service-Background/service-notificaciones/NotificacionesBack.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'dart:convert';
@@ -54,8 +55,6 @@ class LoginController {
   SseInterface sseInterface = new SseImpl(new SseProvider());
   NotificacionModel notificacionModel = new NotificacionModel();
   NotificacionController notificacioncontroller = new NotificacionController();
-/*   IServicioBackgroundCore servicioBackgroundCore = new ServicioBackgroundCore();
- */
   SharedPreferences sharedPreferences;
   final _prefs = new PreferenciasUsuario();
   final NavigationService _navigationService = locator<NavigationService>();
@@ -76,24 +75,9 @@ class LoginController {
         _navigationService.inicializarProvider();
         List<dynamic> menus = json.decode(_prefs.menus);
         List<Menu> listmenu = menuu.fromPreferencs(menus);
-        List<NotificacionModel> listanotificacionesPendientes =
-            await notificationCore.listarNotificacionesPendientes();
-        Provider.of<NotificationInfo>(context, listen: false)
-                .cantidadNotificacion =
-            listanotificacionesPendientes
-                .where((element) =>
-                    element.notificacionEstadoModel.id ==
-                    EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
-                .toList()
-                .length;
-/*         notificacionCore.inicializarStreamNotification();
- */
-/*         servicioBackgroundCore.inicializarNotificacionBackground();
-
- */
-        NotificacionBack.instance()
-            .startServerSentEvent(EstadoAppEnum.APP_OPEN);
-        _prefs.estadoAppOpen=true;
+        BackgroundService.startBackground();
+        NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+        _prefs.estadoAppOpen = true;
         for (Menu men in listmenu) {
           if (men.home) {
             _navigationService.goBack();
@@ -112,57 +96,31 @@ class LoginController {
 
   openAppPerfilCliente(BuildContext context) async {
     BuzonModel buzonModel = buzonPrincipal();
-    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
-        buzonModel.nombre;
-    List<NotificacionModel> listanotificacionesPendientes =
-        await notificationCore.listarNotificacionesPendientes();
-    Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
-        listanotificacionesPendientes
-            .where((element) =>
-                element.notificacionEstadoModel.id ==
-                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
-            .toList()
-            .length;
-
-/*     notificacionCore.inicializarStreamNotification();
- */
-
+    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = buzonModel.nombre;
     if (!_prefs.estadoAppOpen) {
-    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
-    notificationPushCore.cerrarNotificacionPush();
-    _prefs.estadoAppOpen=true;
+      print("ENTRO CLIENTE");
+      NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+      notificationPushCore.cerrarNotificacionPush();
+      _prefs.estadoAppOpen = true;
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/menuBottom', (Route<dynamic> route) => false);
-    }else{
+    } else {
       _navigationService.setCantidadNotificacionBadge(0);
     }
   }
 
   openAppPerfilOperativo(BuildContext context) async {
     UtdModel utdModel = obtenerUTD();
-    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
-        utdModel.nombre;
-    List<NotificacionModel> listanotificacionesPendientes =
-        await notificationCore.listarNotificacionesPendientes();
-    Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
-        listanotificacionesPendientes
-            .where((element) =>
-                element.notificacionEstadoModel.id ==
-                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
-            .toList()
-            .length;
-
-/*     notificacionCore.inicializarStreamNotification();
- */
+    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = utdModel.nombre;
     if (!_prefs.estadoAppOpen) {
-    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
-    _prefs.estadoAppOpen=true;
-        notificationPushCore.cerrarNotificacionPush();
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        rutaPrincipal(), (Route<dynamic> route) => false);
-    }else{
+      print("ENTRO OPERATIVO");
+      NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+      _prefs.estadoAppOpen = true;
+      notificationPushCore.cerrarNotificacionPush();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          rutaPrincipal(), (Route<dynamic> route) => false);
+    } else {
       _navigationService.setCantidadNotificacionBadge(0);
     }
-
   }
 }

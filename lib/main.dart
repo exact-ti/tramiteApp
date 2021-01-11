@@ -1,3 +1,100 @@
+/* import 'dart:async';
+import 'package:flutter/material.dart';
+import 'dart:isolate';
+
+void main() => runApp(new MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      title: 'Flutter Isolate Demo',
+      theme: new ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: new MyHomePage(title: 'Flutter Isolates'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  Isolate _isolate;
+  bool _running = false;
+  static int _counter = 0;
+  String notification = "";
+  ReceivePort _receivePort;
+ 
+  void _start() async {
+    _running = true;
+    _receivePort = ReceivePort();
+    _isolate = await Isolate.spawn(_checkTimer, _receivePort.sendPort);
+    _receivePort.listen(_handleMessage, onDone:() {
+        print("done!");
+    });
+  }
+
+  static void _checkTimer(SendPort sendPort) async {
+    Timer.periodic(new Duration(seconds: 1), (Timer t) {
+      _counter++;
+      String msg = 'notification ' + _counter.toString();      
+      print('SEND: ' + msg);
+      sendPort.send(msg);
+    });
+  }
+
+  void _handleMessage(dynamic data) {
+    print('RECEIVED: ' + data);
+    setState(() {      
+      notification = data;
+    });
+  }
+
+  void _stop() {
+    if (_isolate != null) {
+      setState(() {
+          _running = false; 
+          notification = '';   
+      });
+      _receivePort.close();
+      _isolate.kill(priority: Isolate.immediate);
+      _isolate = null;        
+      }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text(widget.title),
+      ),
+      body: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Text(
+              notification,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: _running ? _stop : _start,
+        tooltip: _running ? 'Timer stop' : 'Timer start',
+        child: _running ? new Icon(Icons.stop) : new Icon(Icons.play_arrow),
+      ),
+      );
+  }
+} */
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,7 +106,6 @@ import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/app_retain_widget.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/routes/routes.dart';
-import 'package:tramiteapp/src/services/Service-Background/BackgroundService.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/Util/timezone.dart' as timezone;
@@ -30,14 +126,9 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
     (_) => runApp(MyApp()),
   );
-  inicializarBackground();
 }
 
-inicializarBackground(){
- var channel = const MethodChannel('com.example/background_service');
-  var callbackHandle = PluginUtilities.getCallbackHandle(backgroundMain);
-  channel.invokeMethod('startService', callbackHandle.toRawHandle());
-}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -45,7 +136,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) => new NotificationInfo(),
         child: MaterialApp(
-            title: 'Componentes App',
+            title: 'Componentes App', 
             debugShowCheckedModeBanner: false,
             home:   AppRetainWidget ( child:  LoginPage(), ), 
             routes: getAplicationRoutes(null),

@@ -30,9 +30,13 @@ object Notifications {
             .Builder(context, CHANNEL_ID_BACKGROUND_SERVICE)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setAutoCancel(true)
-            .setOngoing(true)
             .setContentTitle("Background Service")
             .setContentText("Keeps app process on foreground.")
             .build()
+    }
+
+    fun onCancel(context: Context) {
+        val notificationManager = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID_BACKGROUND_SERVICE)
     }
 }

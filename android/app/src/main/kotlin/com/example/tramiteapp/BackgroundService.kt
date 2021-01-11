@@ -33,6 +33,13 @@ class BackgroundService : Service(), LifecycleDetector.Listener {
             startFlutterNativeView()
         }
 
+        if (intent != null) {
+            val ss:String = intent.getStringExtra("key_stop_service")
+            if(ss=="true"){
+                stopForegroundService()
+            }
+        }
+    
         return START_STICKY
     }
 
@@ -89,22 +96,14 @@ class BackgroundService : Service(), LifecycleDetector.Listener {
         prefs.edit().putLong(KEY_CALLBACK_RAW_HANDLE, handle).apply()
     }
     
-    private fun stopService() {
-        log("Stopping the foreground service")
-        Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
+    private fun stopForegroundService() {
         try {
-            wakeLock?.let {
-                if (it.isHeld) {
-                    it.release()
-                }
-            }
             stopForeground(true)
-            stopSelf()
+            Notifications.onCancel(this)
         } catch (e: Exception) {
-            log("Service stopped without being started: ${e.message}")
+        Log.i("BackgroundService", "Surgió un error")
         }
-        isServiceStarted = false
-        setServiceState(this, ServiceState.STOPPED)
+        stopSelf()
     }
 
     companion object {
@@ -112,9 +111,20 @@ class BackgroundService : Service(), LifecycleDetector.Listener {
 
         private const val KEY_CALLBACK_RAW_HANDLE = "callbackRawHandle"
 
+        private const val KEY_STOP_SERVICE = "key_stop_service"
+
+
         fun startService(context: Context, callbackRawHandle: Long) {
             val intent = Intent(context, BackgroundService::class.java).apply {
                 putExtra(KEY_CALLBACK_RAW_HANDLE, callbackRawHandle)
+                putExtra(KEY_STOP_SERVICE, "false")
+            }
+            ContextCompat.startForegroundService(context, intent)
+        }
+
+        fun stopService(context: Context, callbackRawHandle: Long) {
+            val intent = Intent(context, BackgroundService::class.java).apply {
+                putExtra(KEY_STOP_SERVICE, "true")
             }
             ContextCompat.startForegroundService(context, intent)
         }

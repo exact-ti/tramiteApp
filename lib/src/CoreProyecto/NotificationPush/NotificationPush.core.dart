@@ -12,6 +12,7 @@ import 'package:tramiteapp/src/Providers/buzones/impl/BuzonProvider.dart';
 import 'package:tramiteapp/src/Providers/sseProvider/impl/SseProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/BackgroundService.dart';
 import 'package:tramiteapp/src/services/Service-Background/service-notificaciones/NotificacionesBack.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
@@ -148,6 +149,7 @@ class NotificacionPush implements INotificationPush {
             });
           });
         }
+        BackgroundService.startBackground();
       } else {
         _navigationService.setCantidadNotificacionBadge(0);
         if (mapDataNotificacion["notificacionId"] != null) {
@@ -175,6 +177,7 @@ class NotificacionPush implements INotificationPush {
             });
           });
         }
+        BackgroundService.startBackground();
       }
     }
   }

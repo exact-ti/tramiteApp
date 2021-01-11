@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
@@ -19,11 +20,12 @@ import 'package:tramiteapp/src/shared/modals/confirmation.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class SettingsController {
-
-  INotificationCore notificationCore = new NotificationCore(new NotificacionProvider(), NotificacionPush.getInstance(new NotificacionProvider()));
-  INotificationPush notificationPushCore = NotificacionPush.getInstance(new NotificacionProvider());
+  INotificationCore notificationCore = new NotificationCore(
+      new NotificacionProvider(),
+      NotificacionPush.getInstance(new NotificacionProvider()));
+  INotificationPush notificationPushCore =
+      NotificacionPush.getInstance(new NotificacionProvider());
   final NavigationService _navigationService = locator<NavigationService>();
-
 
   Future<bool> modificarUtdOrBuzon(BuildContext context, int tipo) async {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
@@ -57,7 +59,8 @@ class SettingsController {
                     child: Center(
                       child: Text(
                         opcion.nombre,
-                        style: TextStyle(color: StylesThemeData.LETTER_COLOR, fontSize: 12),
+                        style: TextStyle(
+                            color: StylesThemeData.LETTER_COLOR, fontSize: 12),
                       ),
                     )),
                 onTap: () async {
@@ -69,7 +72,6 @@ class SettingsController {
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
                       _prefs.buzon = buzonhash;
-
                     } else {
                       HashMap<String, dynamic> utdhash = new HashMap();
                       utdhash['id'] = opcion.id;
@@ -109,9 +111,18 @@ class SettingsController {
     return respuesta;
   }
 
-    void gestionNotificaciones(BuildContext context) async {
-    List<NotificacionModel> listanotificacionesPendientes = await notificationCore.listarNotificacionesPendientes();
-    _navigationService.setCantidadNotificacionBadge(listanotificacionesPendientes.where((notificacion) => notificacion.notificacionEstadoModel.id==EstadoNotificacionEnum.NOTIFICACION_PENDIENTE && notificacion.buzonId==obtenerBuzonid()).toList().length);
+  void gestionNotificaciones(BuildContext context) async {
+    List<NotificacionModel> listanotificacionesPendientes =
+        await notificationCore.listarNotificacionesPendientes();
+    _navigationService.setCantidadNotificacionBadge(
+        listanotificacionesPendientes
+            .where((notificacion) =>
+                notificacion.notificacionEstadoModel.id ==
+                    EstadoNotificacionEnum.NOTIFICACION_PENDIENTE &&
+                notificacion.buzonId == obtenerBuzonid())
+            .toList()
+            .length);
     notificationPushCore.cerrarNotificacionPush();
   }
+  
 }

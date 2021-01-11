@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
@@ -14,10 +13,10 @@ import 'package:tramiteapp/src/Resources/conection-sse/event.dart';
 import 'package:tramiteapp/src/Resources/conection-sse/sse.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import '../../navigation_service_file.dart';
-import 'NotifierBack.dart';
 import 'package:tramiteapp/src/CoreProyecto/NotificationPush/NotificationPush.core.dart';
 
 class NotificacionBack {
+
   factory NotificacionBack.instance() => _instance;
 
   NotificacionBack._internal();
@@ -28,10 +27,6 @@ class NotificacionBack {
 
   static final _instance = NotificacionBack._internal();
 
-  final _notificacionNotifier = NotifierBack();
-
-  ValueListenable<String> get serverData => _notificacionNotifier.dataNotifier;
-
   INotificationCore notification = new NotificationCore(
       new NotificacionProvider(),
       NotificacionPush.getInstance(new NotificacionProvider()));
@@ -41,16 +36,6 @@ class NotificacionBack {
   SseInterface sseCore = new SseImpl(new SseProvider());
 
   void startServerSentEvent(bool estadoAppOpen) async {
-/*     EventSource eventSource = await sseCore.listarEventSource();
-    eventSource.listen((event) {
-      Map data = jsonDecode(event.data);
-      print(data);
-    });
-
-    Future.delayed(Duration(seconds: 10), () {
-      eventSource.close();
-    }); */
-
     EventSource eventSource = await sseCore.listarEventSource();
     StreamSubscription<Event> subscription;
     subscription = eventSource.listen((event) {

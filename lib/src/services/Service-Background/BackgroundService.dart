@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +12,21 @@ import '../locator.dart';
 import 'service-notificaciones/NotificacionesBack.dart';
 import 'package:tramiteapp/src/Util/timezone.dart' as timezone;
 
-void backgroundMain() async {
+class BackgroundService {
+  static startBackground() {
+    var channel = const MethodChannel('com.example/background_service');
+    var callbackHandle = PluginUtilities.getCallbackHandle(backgroundMain);
+    channel.invokeMethod('startService', callbackHandle.toRawHandle());
+  }
+
+  static stopBackground() {
+    var channel = const MethodChannel('com.example/background_service');
+    var callbackHandle = PluginUtilities.getCallbackHandle(backgroundMain);
+    channel.invokeMethod('stopService', callbackHandle.toRawHandle());
+  }
+}
+
+backgroundMain() async {
   final prefs = new PreferenciasUsuario();
   WidgetsFlutterBinding.ensureInitialized();
   await prefs.initPrefs();
