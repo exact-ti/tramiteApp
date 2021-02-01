@@ -46,6 +46,8 @@ class _CustomAppBarState extends State<CustomAppBar>
       Provider.of<NotificationInfo>(context, listen: false).estadoApp = state.index;
       if (state.index == EstadoAppOpenEnum.APP_RESUMED) {
         _prefs.estadoAppOpen = true;        
+        print("PRIMERO ES APPBAR");
+        _prefs.openByNotificationPush = null;
         appBarController.cancelarNotificacionPushByBuzon();
       }
       if(state.index == EstadoAppOpenEnum.APP_BACKGROUND){

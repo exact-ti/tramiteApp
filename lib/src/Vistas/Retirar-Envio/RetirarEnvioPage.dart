@@ -360,6 +360,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                     iconSufix: IconsData.ICON_CAMERA,
                     methodOnPressedSufix: _traerdatosescanerPaquete,
                     controller: _paqueteController,
+                    iconPrefix: IconsData.ICON_SOBRE,
                     focusInput: f1paquete,
                     hinttext: "Código de paquete",
                     methodOnPressed: _validarPaqueteText,
@@ -370,6 +371,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                   child: InputWidget(
                     controller: _remitenteController,
                     focusInput: f2remitente,
+                    iconPrefix: IconsData.ICON_USER,
                     hinttext: "De",
                     methodOnPressed: _validarRemitenteText,
                   )),
@@ -379,6 +381,7 @@ class _RetirarEnvioPageState extends State<RetirarEnvioPage> {
                 child: InputWidget(
                   controller: _destinatarioController,
                   focusInput: f3destinatario,
+                  iconPrefix: IconsData.ICON_USER,
                   hinttext: "Para",
                   methodOnPressed: _validarDestinatarioText,
                 ),

@@ -172,8 +172,7 @@ class _ListarEnviosPageState extends State<ListarEnviosPage> {
         itemIndice: indice,
         iconPrimary: IconsData.ICON_LOTE_VALIJA,
         methodAction: iniciarEnvio,
-        iconSend: listarEnviosController
-            .iconByEstadoEntrega(listEnviosEnviados[indice].estadoEnvio.id),
+        iconSend: iconByEstadoEntrega(listEnviosEnviados[indice].estadoEnvio.id),
         colorItem: indice % 2 == 0
             ? StylesThemeData.ITEM_SHADED_COLOR
             : StylesThemeData.ITEM_UNSHADED_COLOR,

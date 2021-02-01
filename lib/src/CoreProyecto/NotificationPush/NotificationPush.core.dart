@@ -117,11 +117,7 @@ class NotificacionPush implements INotificationPush {
     dynamic mapDataNotificacion = json.decode(payload);
     if (payload != null) {
       buzonCore.changeBuzonById(mapDataNotificacion["buzonId"]);
-      if (!_prefs.estadoAppOpen) {
-        _prefs.estadoAppOpen = true;        
-        NotificacionBack.instance()
-            .startServerSentEvent(EstadoAppEnum.APP_OPEN);
-      }
+        _prefs.openByNotificationPush = true;
       if (isCliente()) {
         _navigationService.setCantidadNotificacionBadge(0);
         if (mapDataNotificacion["notificacionId"] != null) {

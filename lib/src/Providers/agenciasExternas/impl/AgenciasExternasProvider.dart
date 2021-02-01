@@ -16,8 +16,7 @@ class AgenciaExternaProvider implements IAgenciaExternaProvider {
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciaByUsuario() async {
     int utdId = obtenerUTDid();
-    Response resp =
-        await req.get('/servicio-tramite/utds/$utdId/gruposagencias/activos');
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/gruposagencias/activos');
     return sedeModel.fromJsonlistarEntregas(resp.data);
   }
 

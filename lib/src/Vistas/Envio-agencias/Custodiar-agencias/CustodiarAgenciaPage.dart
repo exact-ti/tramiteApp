@@ -101,6 +101,7 @@ class _CustodiarAgenciaPageState extends State<CustodiarAgenciaPage> {
                       methodOnPressedSufix: custodiarConCamara,
                       controller: _codigoController,
                       focusInput: focusCodigo,
+                      iconPrefix: IconsData.ICON_SOBRE,
                       hinttext: "Ingresar código",
                       methodOnPressed: validarCodigoPaquete,
                     ),

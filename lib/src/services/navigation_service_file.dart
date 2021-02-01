@@ -40,7 +40,7 @@ class NavigationService {
   }
 
   Future<dynamic> navigationExactToNotifications(String routeName) {
-    return navigatorKey.currentState.pushNamed(routeName);
+    return navigatorKey.currentState.pushNamedAndRemoveUntil(routeName, (Route<dynamic> route) => false);
   }
   
   Future<dynamic> navigationNotificaciones() {

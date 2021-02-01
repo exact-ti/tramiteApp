@@ -7,6 +7,7 @@ import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoEntregaEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
@@ -15,6 +16,7 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/Widgets/LoadingWidget.dart';
@@ -444,4 +446,19 @@ void selectionText(TextEditingController _controller, FocusNode focusInput,
        inciales=inciales+ cadena[0];
      });
      return inciales;
+  }
+
+    IconData iconByEstadoEntrega(int estadoId) {
+    switch (estadoId) {
+      case EstadoEntregaEnum.CREADA:
+        return IconsData.ICON_SEND_ARROW;
+      case EstadoEntregaEnum.INICIADA:
+        return null;
+      case EstadoEntregaEnum.TERMINADA:
+        return null;
+      case EstadoEntregaEnum.TRANSITO:
+        return IconsData.ICON_SEND_ARROW;
+      default:
+        return null;
+    }
   }

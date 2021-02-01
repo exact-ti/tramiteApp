@@ -5,6 +5,7 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
 import 'package:tramiteapp/src/shared/modals/information.dart';
 import 'package:tramiteapp/src/styles/Color_style.dart';
@@ -19,6 +20,7 @@ class NotificacionesPage extends StatefulWidget {
 class _NotificacionesPageState extends State<NotificacionesPage> {
   NotificacionController notificacioncontroller = new NotificacionController();
   NotificacionModel notificacionModel = new NotificacionModel();
+  final _prefs = new PreferenciasUsuario();
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     List<NotificacionModel> listanotificacionesPendientes =
         await notificacioncontroller.listarNotificacionesPendientes();
     if (this.mounted) {
+      _prefs.openByNotificationPush = null;
       Provider.of<NotificationInfo>(context, listen: false)
               .cantidadNotificacion =
           listanotificacionesPendientes

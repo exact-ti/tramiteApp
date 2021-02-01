@@ -122,7 +122,7 @@ class _RecepcionEntregaLotePageState extends State<RecepcionEntregaLotePage> {
           }
         } else {
           bool respuestaPopUp = await confirmacion(context, "success", "EXACT",
-              "¿Desea custodiar el envío ${_codValijaController.text}");
+              "¿Desea custodiar el envío ${_codValijaController.text}?");
           if (respuestaPopUp) {
             dynamic respuesta =
                 await recepcionControllerLote.recogerdocumentoLote(context,

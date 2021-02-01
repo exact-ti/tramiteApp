@@ -126,6 +126,14 @@ class PreferenciasUsuario {
     _prefs.setBool('estadoAppOpen', value);
   }
 
+  get openByNotificationPush{
+    return _prefs.getBool('openByNotificationPush') ?? false;
+  }
+
+  set openByNotificationPush(bool value) {
+    _prefs.setBool('openByNotificationPush', value);
+  }
+
   get modalidadByOpen {
     return _prefs.getInt('modalidadByOpen') ?? 0;
   }

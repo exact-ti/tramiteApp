@@ -110,9 +110,8 @@ class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
           itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           itemIndice: indice,
           iconPrimary: IconsData.ICON_LOTE_VALIJA,
-          iconSend: listLotesPorEnviados[indice].estadoEnvio.id == EstadoEnvioEnum.ENVIO_CREADO
-              ? IconsData.ICON_SEND_ARROW
-              : null,
+          subSixtitulo: listLotesPorEnviados[indice].estadoEnvio.nombre,
+          iconSend: iconByEstadoEntrega(listLotesPorEnviados[indice].estadoEnvio.id),
           methodAction: iniciarEnvioLote,
           colorItem: indice % 2 == 0
               ? StylesThemeData.ITEM_SHADED_COLOR

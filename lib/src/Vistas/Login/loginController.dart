@@ -76,7 +76,8 @@ class LoginController {
         List<dynamic> menus = json.decode(_prefs.menus);
         List<Menu> listmenu = menuu.fromPreferencs(menus);
         BackgroundService.startBackground();
-        NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+        NotificacionBack.instance()
+            .startServerSentEvent(EstadoAppEnum.APP_OPEN);
         _prefs.estadoAppOpen = true;
         for (Menu men in listmenu) {
           if (men.home) {
@@ -96,30 +97,35 @@ class LoginController {
 
   openAppPerfilCliente(BuildContext context) async {
     BuzonModel buzonModel = buzonPrincipal();
-    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = buzonModel.nombre;
-    if (!_prefs.estadoAppOpen) {
+    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
+        buzonModel.nombre;
+    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+    notificationPushCore.cerrarNotificacionPush();
+    _prefs.estadoAppOpen = true;
+    if (!_prefs.openByNotificationPush) {
       print("ENTRO CLIENTE");
-      NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
-      notificationPushCore.cerrarNotificacionPush();
-      _prefs.estadoAppOpen = true;
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/menuBottom', (Route<dynamic> route) => false);
     } else {
+      _prefs.openByNotificationPush = false;
       _navigationService.setCantidadNotificacionBadge(0);
     }
   }
 
   openAppPerfilOperativo(BuildContext context) async {
     UtdModel utdModel = obtenerUTD();
-    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario = utdModel.nombre;
-    if (!_prefs.estadoAppOpen) {
+    Provider.of<NotificationInfo>(context, listen: false).nombreUsuario =
+        utdModel.nombre;
+    NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
+    _prefs.estadoAppOpen = true;
+    notificationPushCore.cerrarNotificacionPush();
+    if (!_prefs.openByNotificationPush) {
       print("ENTRO OPERATIVO");
-      NotificacionBack.instance().startServerSentEvent(EstadoAppEnum.APP_OPEN);
-      _prefs.estadoAppOpen = true;
-      notificationPushCore.cerrarNotificacionPush();
+      print("PRIMERO ES LOGINCONTROLLER");
       Navigator.of(context).pushNamedAndRemoveUntil(
           rutaPrincipal(), (Route<dynamic> route) => false);
     } else {
+      _prefs.openByNotificationPush = null;
       _navigationService.setCantidadNotificacionBadge(0);
     }
   }

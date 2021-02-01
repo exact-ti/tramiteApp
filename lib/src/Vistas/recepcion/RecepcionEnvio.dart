@@ -4,6 +4,7 @@ import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
@@ -31,6 +32,8 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   bool respuestaBack = false;
   final NavigationService _navigationService = locator<NavigationService>();
   FocusNode focusBandeja = FocusNode();
+  final _prefs = new PreferenciasUsuario();
+
   @override
   void initState() {
     inicializarEnviosRecepcion();
@@ -44,6 +47,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       validados["$cod"] = false;
     });
     if (mounted) {
+      _prefs.openByNotificationPush=null;
       setState(() {
         respuestaBack = true;
         listaEnviosModel = listaEnviosModel;
@@ -196,6 +200,7 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
                 child: InputWidget(
+                  iconPrefix: IconsData.ICON_QR,
                     iconSufix: IconsData.ICON_CAMERA,
                     methodOnPressedSufix: _traerdatosescanerBandeja,
                     controller: _bandejaController,

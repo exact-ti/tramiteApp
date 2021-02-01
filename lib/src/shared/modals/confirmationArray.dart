@@ -88,5 +88,8 @@ Future<bool> confirmarArray(BuildContext context, String tipo, String titulo,
           contentPadding: EdgeInsets.all(0),
         );
       });
+  if (respuesta == null) {
+    respuesta = false;
+  }
   return respuesta;
 }

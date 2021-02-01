@@ -78,9 +78,6 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
     if (listaEnvios.length > 0) {
       bool respuestaarray = await confirmarArray(context, "success", "EXACT",
           "Faltan los siguientes elementos a validar", listaEnvios);
-      if (respuestaarray == null) {
-        Navigator.of(context).pop();
-      } else {
         if (respuestaarray) {
           bool respuestatrue = await notificacion(context, "success", "EXACT",
               "Se ha recepcionado los documentos con éxito");
@@ -89,10 +86,7 @@ class _RecepcionInterPageState extends State<RecepcionInterPage> {
               Navigator.of(context).pushNamed('/envio-interutd');
             }
           }
-        } else {
-          Navigator.of(context).pop();
         }
-      }
     } else {
       bool respuestatrue = await notificacion(context, "success", "EXACT",
           "Se ha completado con la recepción de documentos");

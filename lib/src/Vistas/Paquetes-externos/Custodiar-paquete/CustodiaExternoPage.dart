@@ -43,6 +43,7 @@ class _CustodiaExternoPageState extends State<CustodiaExternoPage> {
     final snack = new SnackBar(
       content: new Text(mensaje),
       backgroundColor: colorNotifier,
+      duration: Duration(seconds: 2)
     );
     scaffoldkey.currentState.showSnackBar(snack);
   }

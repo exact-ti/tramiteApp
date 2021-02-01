@@ -32,7 +32,8 @@ class UsuarioProvider implements IUsuariosProvider {
 
   @override
   Future<List<UsuarioFrecuente>> listarUsuariosporFiltro(String texto) async{
-    Response resp = await req.get('/servicio-tramite/buzones?filtro=$texto');
+    int idbuzon = obtenerBuzonid(); 
+    Response resp = await req.get('/servicio-tramite/buzones?filtro=$texto&remitenteId=$idbuzon');
     return usuarioFrecuente.fromJson(resp.data);
   }
 

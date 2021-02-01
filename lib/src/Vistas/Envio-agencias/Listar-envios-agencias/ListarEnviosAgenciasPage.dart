@@ -160,13 +160,13 @@ class _ListarEnviosAgenciasPageState extends State<ListarEnviosAgenciasPage> {
   Widget build(BuildContext context) {
     Widget crearItem(dynamic indice) {
       String codigoUtd = enviosvalidados[indice].utdId.toString();
-      String subtitulo = enviosvalidados[indice].numdocumentos == 1
-          ? enviosvalidados[indice].numvalijas == 1
-              ? "${enviosvalidados[indice].numdocumentos} destino (${enviosvalidados[indice].numvalijas} valija)"
-              : "${enviosvalidados[indice].numdocumentos} destino (${enviosvalidados[indice].numvalijas} valijas)"
-          : enviosvalidados[indice].numvalijas == 1
-              ? "${enviosvalidados[indice].numdocumentos} destinos (${enviosvalidados[indice].numvalijas} valija)"
-              : "${enviosvalidados[indice].numdocumentos} destinos (${enviosvalidados[indice].numvalijas} valijas)";
+      String subtitulo = enviosvalidados[indice].numvalijas == 1
+          ? enviosvalidados[indice].numdocumentos == 1
+              ? "${enviosvalidados[indice].numvalijas} destino (${enviosvalidados[indice].numdocumentos} entrega)"
+              : "${enviosvalidados[indice].numvalijas} destino (${enviosvalidados[indice].numdocumentos} entregas)"
+          : enviosvalidados[indice].numdocumentos == 1
+              ? "${enviosvalidados[indice].numvalijas} destinos (${enviosvalidados[indice].numdocumentos} entrega)"
+              : "${enviosvalidados[indice].numvalijas} destinos (${enviosvalidados[indice].numdocumentos} entregas)";
       return GestureDetector(
           onLongPress: () {
             setState(() {

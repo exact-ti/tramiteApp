@@ -164,7 +164,7 @@ class _NuevoEntregaExternaPageState extends State<NuevoEntregaExternaPage> {
   Widget build(BuildContext context) {
     Widget crearItem(dynamic indice) {
       return ItemWidget(
-          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
           iconPrimary: FontAwesomeIcons.qrcode,
           iconSend: listaEnvios[indice].estado
               ? IconsData.ICON_ENVIO_CONFIRMADO
