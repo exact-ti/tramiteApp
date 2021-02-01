@@ -12,7 +12,6 @@ import 'package:tramiteapp/src/CoreProyecto/SseCore/SseImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/SseCore/SseInterface.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
-import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';

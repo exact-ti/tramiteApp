@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeImpl.dart';
 import 'package:tramiteapp/src/CoreProyecto/InterSede/InterSedeInterface.dart';
-import 'package:tramiteapp/src/Enumerator/EstadoEntregaEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/Providers/intersedes/impl/InterSedeProvider.dart';
-import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
 
