@@ -12,25 +12,21 @@ class ListarEnviosController {
   final NavigationService _navigationService = locator<NavigationService>();
 
   Future<List<EnvioInterSedeModel>> listarentregasInterSedeController(
-      int switched) async {
-    List<EnvioInterSedeModel> entregas =  await intersedeInterface.listarIntersedesUsuario(switched);
+      bool porRecibir) async {
+    List<EnvioInterSedeModel> entregas =
+        await intersedeInterface.listarIntersedesUsuario(porRecibir);
     return entregas;
   }
 
-  Future<bool> onSearchButtonPressed(
+  Future<bool> iniciarEntrega(
       BuildContext context, EnvioInterSedeModel enviomodel) async {
-            _navigationService.showModal();
-
+    _navigationService.showModal();
     bool respuesta =
-        await intersedeInterface.iniciarEntregaIntersede(enviomodel.utdId);
-            _navigationService.goBack();
+        await intersedeInterface.iniciarEntregaIntersede(enviomodel);
+    _navigationService.goBack();
 
-    /*if(respuesta){
-        confirmarAlerta(context, "Se ha iniciado el envío correctamente", "Inicio Correcto");
-    }else{
-      mostrarAlerta( context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    }*/
     return respuesta;
   }
+
 
 }

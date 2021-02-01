@@ -1,14 +1,18 @@
 import 'dart:collection';
 import 'dart:convert';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Icon_style.dart';
 import 'SettingsController.dart';
 
 class CountChangePage extends StatefulWidget {
@@ -19,18 +23,26 @@ class CountChangePage extends StatefulWidget {
 class _CountChangePageState extends State<CountChangePage> {
   SettingsController settingscontroller = new SettingsController();
   final _prefs = new PreferenciasUsuario();
-  String nombreCuenta = "";
-  List<dynamic> listarOpciones = new List();
+  final GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
+  }
+
+  void notifierAccion(String mensaje, Color colorNotifier) {
+    final snack = new SnackBar(
+      content: new Text(mensaje),
+      backgroundColor: colorNotifier,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
   }
 
   @override
   Widget build(BuildContext context) {
     Widget _crearListado() {
       List<dynamic> opciones = new List();
-      if (_prefs.tipoperfil == cliente) {
+      if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
         BuzonModel buzonmodel = new BuzonModel();
         List<dynamic> buzonCore = json.decode(_prefs.buzones);
         opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -43,21 +55,67 @@ class _CountChangePageState extends State<CountChangePage> {
       for (dynamic opcion in opciones) {
         listadecodigos.add(InkWell(
             onTap: () async {
-              bool respuestabool = await confirmacion(
-                  context, "success", "EXACT", "¿Seguro que desea continuar?");
-              if (respuestabool) {
-                if (_prefs.tipoperfil == cliente) {
-                  HashMap<String, dynamic> buzonhash = new HashMap();
-                  buzonhash['id'] = opcion.id;
-                  buzonhash['nombre'] = opcion.nombre;
-                  _prefs.buzon = buzonhash;
-                } else {
-                  HashMap<String, dynamic> utdhash = new HashMap();
-                  utdhash['id'] = opcion.id;
-                  utdhash['nombre'] = opcion.nombre;
-                  _prefs.utd = utdhash;
+              bool buzonUTDActual = false;
+              if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
+                if (opcion.id == obtenerBuzonid()) {
+                  buzonUTDActual = true;
+                  notifierAccion("${opcion.nombre} es el buzón actual",
+                      StylesThemeData.PRIMARY_COLOR);
                 }
-                Navigator.of(context).pop();
+              } else {
+                if (opcion.id == obtenerUTDid()) {
+                  buzonUTDActual = true;
+                  notifierAccion("${opcion.nombre} es la UTD actual",
+                      StylesThemeData.PRIMARY_COLOR);
+                }
+              }
+              if (!buzonUTDActual) {
+                bool respuestabool = await confirmacion(context, "success",
+                    "EXACT", "¿Seguro que desea continuar?");
+                if (respuestabool) {
+                  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
+                    if (opcion.id == obtenerBuzonid()) {
+                      notifierAccion("${opcion.nombre} es el buzón actual",
+                          StylesThemeData.PRIMARY_COLOR);
+                    } else {
+                      HashMap<String, dynamic> buzonhash = new HashMap();
+                      buzonhash['id'] = opcion.id;
+                      buzonhash['nombre'] = opcion.nombre;
+                      _prefs.buzon = buzonhash;
+                      bool respuesta = await notificacion(
+                          context,
+                          "success",
+                          "EXACT",
+                          "Se modificó el buzón, su buzón actual es ${opcion.nombre}");
+                      if (respuesta) {
+                        Provider.of<NotificationInfo>(context, listen: false)
+                            .nombreUsuario = buzonhash['nombre'];
+                        settingscontroller.gestionNotificaciones(context);
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  } else {
+                    if (opcion.id == obtenerUTDid()) {
+                      notifierAccion("${opcion.nombre} es la UTD actual",
+                          StylesThemeData.PRIMARY_COLOR);
+                    } else {
+                      HashMap<String, dynamic> utdhash = new HashMap();
+                      utdhash['id'] = opcion.id;
+                      utdhash['nombre'] = opcion.nombre;
+                      _prefs.utd = utdhash;
+                      bool respuesta = await notificacion(
+                          context,
+                          "success",
+                          "EXACT",
+                          "Se modificó la UTD, su UTD actual es ${opcion.nombre}");
+                      if (respuesta) {
+                        Provider.of<NotificationInfo>(context, listen: false)
+                            .nombreUsuario = utdhash['nombre'];
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  }
+                }
               }
             },
             child: Container(
@@ -67,12 +125,36 @@ class _CountChangePageState extends State<CountChangePage> {
                   ),
                 ),
                 child: ListTile(
-                  trailing: Icon(Icons.keyboard_arrow_right),
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
+                      size: StylesIconData.ICON_SIZE,
+                      color: _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
+                          ? opcion.id == obtenerBuzonid()
+                              ? Colors.blue
+                              : StylesThemeData.ICON_COLOR
+                          : opcion.id == obtenerUTDid()
+                              ? Colors.blue
+                              : StylesThemeData.ICON_COLOR),
                   title: Text(opcion.nombre,
-                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
+                              ? opcion.id == obtenerBuzonid()
+                                  ? Colors.blue
+                                  : Colors.black
+                              : opcion.id == obtenerUTDid()
+                                  ? Colors.blue
+                                  : Colors.black)),
                   leading: boolIfPerfil()
-                      ? Icon(FontAwesomeIcons.userAlt)
-                      : Icon(FontAwesomeIcons.home),
+                      ? Icon(IconsData.ICON_USER,
+                          size: StylesIconData.ICON_SIZE,
+                          color: opcion.id == obtenerBuzonid()
+                              ? Colors.blue
+                              : StylesThemeData.ICON_COLOR)
+                      : Icon(IconsData.ICON_SEDE,
+                          size: StylesIconData.ICON_SIZE,
+                          color: opcion.id == obtenerUTDid()
+                              ? Colors.blue
+                              : StylesThemeData.ICON_COLOR),
                 ))));
       }
       return Column(children: listadecodigos);
@@ -84,7 +166,7 @@ class _CountChangePageState extends State<CountChangePage> {
         children: <Widget>[
           Expanded(
             child: Container(
-                color: Colors.grey[200],
+                color: Colors.grey.shade200,
                 alignment: Alignment.bottomCenter,
                 child: _crearListado()),
           )
@@ -93,12 +175,11 @@ class _CountChangePageState extends State<CountChangePage> {
     }
 
     return Scaffold(
+        key: scaffoldkey,
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text(
-                _prefs.tipoperfil == cliente
-                    ? "Cambiar buzón"
-                    : "Cambiar UTD",
+                _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE ? "Cambiar buzón" : "Cambiar UTD",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,

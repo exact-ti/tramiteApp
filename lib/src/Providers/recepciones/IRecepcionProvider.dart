@@ -1,7 +1,7 @@
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 
 abstract class IRecepcionProvider {
-  Future<dynamic> recepcionJumboProvider(String codigo,int buzonId);
+  Future<dynamic> recepcionJumboProvider(String codigo,int utdId);
 
   Future<List<EnvioModel>> recepcionValijaProvider(String codigo);
 
@@ -15,12 +15,9 @@ abstract class IRecepcionProvider {
 
   Future<List<EnvioModel>> listarenviosPrincipal();
 
-  Future<List<EnvioModel>> listarenviosPrincipal2();
-
-  Future<bool> registrarEnvioPrincipalProvider(String codigopaquete);
 
   Future<bool> registrarListaEnvioPrincipalProvider(
       List<String> codigospaquetes);
 
-  Future<bool> recibirJumboProvider(String codigoLote, String codigoPaquete);
+  Future<dynamic> recibirJumboProvider(String codigoLote, String codigoPaquete);
 }

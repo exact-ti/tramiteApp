@@ -22,7 +22,6 @@ class PreferenciasUsuario {
     this._prefs = await SharedPreferences.getInstance();
   }
 
-  // GET y SET de la última página
   get token {
     return _prefs.getString('token') ?? '';
   }
@@ -87,6 +86,14 @@ class PreferenciasUsuario {
     _prefs.setString("utds", json.encode(utds));
   }
 
+  get changedBuzon {
+    return _prefs.getBool("changedBuzon")?? false ;
+  }
+
+  set changedBuzon(bool changedBuzon) {
+    _prefs.setBool("changedBuzon", changedBuzon);
+  }
+
   get menus {
     return _prefs.getString("menus");
   }
@@ -103,12 +110,35 @@ class PreferenciasUsuario {
     _prefs.setString("configuraciones", json.encode(configuraciones));
   }
 
-  // GET y SET de la última página
   get ultimaPagina {
     return _prefs.getString('ultimaPagina') ?? 'login';
   }
 
   set ultimaPagina(String value) {
     _prefs.setString('ultimaPagina', value);
+  }
+
+  get estadoAppOpen {
+    return _prefs.getBool('estadoAppOpen') ?? true;
+  }
+
+  set estadoAppOpen (bool value) {
+    _prefs.setBool('estadoAppOpen', value);
+  }
+
+  get openByNotificationPush{
+    return _prefs.getBool('openByNotificationPush') ?? false;
+  }
+
+  set openByNotificationPush(bool value) {
+    _prefs.setBool('openByNotificationPush', value);
+  }
+
+  get modalidadByOpen {
+    return _prefs.getInt('modalidadByOpen') ?? 0;
+  }
+
+  set modalidadByOpen (int value) {
+    _prefs.setInt('modalidadByOpen', value);
   }
 }

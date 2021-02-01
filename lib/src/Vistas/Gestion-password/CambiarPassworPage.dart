@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/GestionPasswordController.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class CambiarPasswordPage extends StatefulWidget {
   @override
@@ -9,18 +13,19 @@ class CambiarPasswordPage extends StatefulWidget {
 }
 
 class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
-  final _actualController = TextEditingController();
-  final _primeraCController = TextEditingController();
-  final _segundaCController = TextEditingController();
-  String actualString = "";
-  bool passwordVisible1 = true;
-  bool passwordVisible2 = true;
-  bool passwordVisible3 = true;
-  bool passwordIgualdad = true;
   PasswordController passwordController = new PasswordController();
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
-  FocusNode f3 = FocusNode();
+  final _actualPasswordController = TextEditingController();
+  final _nuevaPasswordController = TextEditingController();
+  final _confirmarPasswordController = TextEditingController();
+  String actualPassword = "";
+  bool visibilidadActualPassword = true;
+  bool visibilidadNuevaPassword = true;
+  bool visibilidadConfirmarPassword = true;
+  bool cumplirIgualdadPassword = true;
+  FocusNode focusActualPassword = FocusNode();
+  FocusNode focusNuevaPassword = FocusNode();
+  FocusNode focusConfirmarPassword = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -28,11 +33,11 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
 
   bool validarSend(String dato) {
     if (dato.length == 0 ||
-        _primeraCController.text.length == 0 ||
-        _segundaCController.text.length == 0) {
+        _nuevaPasswordController.text.length == 0 ||
+        _confirmarPasswordController.text.length == 0) {
       return false;
     } else {
-      if (_primeraCController.text == _segundaCController.text) {
+      if (_nuevaPasswordController.text == _confirmarPasswordController.text) {
         return true;
       } else {
         return false;
@@ -40,52 +45,136 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
     }
   }
 
-  void validarPassActual() async {
-    if (_actualController.text.length == 0) {
-      popuptoinput(
-          context, f1, "error", "EXACT", "La contraseña actual es obligatoria");
+  void validarPassActual(dynamic valueActualPassword) async {
+    if (_actualPasswordController.text.length == 0) {
+      popuptoinput(context, focusActualPassword, "error", "EXACT",
+          "La contraseña actual es obligatoria");
     } else {
-      enfocarInputfx(context, f2);
+      enfocarInputfx(context, focusNuevaPassword);
     }
   }
 
   void validarPassPrimera() async {
-    if (_primeraCController.text.length == 0) {
-      popuptoinput(
-          context, f2, "error", "EXACT", "Ingresar la nueva contraseña");
+    if (_nuevaPasswordController.text.length == 0) {
+      popuptoinput(context, focusNuevaPassword, "error", "EXACT",
+          "Ingresar la nueva contraseña");
     } else {
-      enfocarInputfx(context, f3);
+      enfocarInputfx(context, focusConfirmarPassword);
     }
   }
 
-  void validarPassSegunda() async {
-    if (_segundaCController.text.length == 0) {
-      popuptoinput(
-          context, f1, "error", "EXACT", "Debe confirmar la nueva contraseña");
-    } else {
-      validarElCambio();
-    }
-  }
-
-  void validarElCambio() {
-    if (actualString.length != 0) {
-      popuptoinput(
-          context, f1, "error", "EXACT", "Debe ingresar la contraseña actual");
-    } else {
-      if (_primeraCController.text.length != 0) {
-        popuptoinput(
-            context, f2, "error", "EXACT", "Debe ingresar la contraseña nueva");
+  void onPressedCambiarButton() async {
+    desenfocarInputfx(context);
+    if (validarSend(actualPassword)) {
+      dynamic respuestaBack = await passwordController.changePassword(
+          _actualPasswordController.text, _nuevaPasswordController.text);
+      if (respuestaBack["status"] == "success") {
+        bool respuestaPopUP = await notificacion(
+            context, "success", "EXACT", "Se cambió la contraseña");
+        if (respuestaPopUP) {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        }
       } else {
-        if (_segundaCController.text.length != 0) {
-          popuptoinput(context, f2, "error", "EXACT",
-              "Debe confirmar la nueva contraseña");
+        notificacion(context, "error", "EXACT", respuestaBack["message"]);
+      }
+    }
+  }
+
+  dynamic onChangedPassActual(dynamic valuePassActual) {
+    setState(() {
+      actualPassword = valuePassActual;
+    });
+  }
+
+  dynamic onPressSufixActualPassword() {
+    setState(() {
+      visibilidadActualPassword = !visibilidadActualPassword;
+    });
+  }
+
+  dynamic onChangedPassNueva(dynamic valuePassActual) {
+    if (_confirmarPasswordController.text.length != 0) {
+      if (_nuevaPasswordController.text == _confirmarPasswordController.text) {
+        setState(() {
+          cumplirIgualdadPassword = true;
+        });
+      } else {
+        setState(() {
+          cumplirIgualdadPassword = false;
+        });
+      }
+    } else {
+      setState(() {
+        cumplirIgualdadPassword = true;
+      });
+    }
+  }
+
+  dynamic onPressSufixNuevaPassword() {
+    setState(() {
+      visibilidadNuevaPassword = !visibilidadNuevaPassword;
+    });
+  }
+
+  void validarNuevaPassword(dynamic valueActualPassword) {
+    if (_nuevaPasswordController.text.length == 0) {
+      popuptoinput(context, focusNuevaPassword, "error", "EXACT",
+          "Ingresar la nueva contraseña");
+    } else {
+      enfocarInputfx(context, focusConfirmarPassword);
+    }
+  }
+
+  dynamic onChangedPassConfirmar(dynamic valuePassActual) {
+    if (_nuevaPasswordController.text.length != 0) {
+      if (_nuevaPasswordController.text == _confirmarPasswordController.text) {
+        setState(() {
+          cumplirIgualdadPassword = true;
+        });
+      } else {
+        setState(() {
+          cumplirIgualdadPassword = false;
+        });
+      }
+    } else {
+      setState(() {
+        cumplirIgualdadPassword = true;
+      });
+    }
+  }
+
+  dynamic onPressSufixConfirmarPassword() {
+    setState(() {
+      visibilidadNuevaPassword = !visibilidadNuevaPassword;
+    });
+  }
+
+  void validarConfirmarPassword(dynamic valueActualPassword) {
+    if (_confirmarPasswordController.text.length == 0) {
+      popuptoinput(context, focusActualPassword, "error", "EXACT",
+          "Debe confirmar la nueva contraseña");
+    } else {
+      if (actualPassword.length != 0) {
+        popuptoinput(context, focusActualPassword, "error", "EXACT",
+            "Debe ingresar la contraseña actual");
+      } else {
+        if (_nuevaPasswordController.text.length != 0) {
+          popuptoinput(context, focusNuevaPassword, "error", "EXACT",
+              "Debe ingresar la contraseña nueva");
         } else {
-          if (_primeraCController.text != _segundaCController.text) {
-            notificacion(context, "Error", "EXACT",
-                "Las contraseñas nuevas no son iguales");
+          if (_confirmarPasswordController.text.length != 0) {
+            popuptoinput(context, focusNuevaPassword, "error", "EXACT",
+                "Debe confirmar la nueva contraseña");
           } else {
-            passwordController.changePassword(
-                _actualController.text, _primeraCController.text);
+            if (_nuevaPasswordController.text !=
+                _confirmarPasswordController.text) {
+              notificacion(context, "Error", "EXACT",
+                  "Las contraseñas nuevas no son iguales");
+            } else {
+              passwordController.changePassword(_actualPasswordController.text,
+                  _nuevaPasswordController.text);
+            }
           }
         }
       }
@@ -94,277 +183,81 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sendButton2 = Container(
-        child: ButtonTheme(
-      minWidth: 150.0,
-      height: 50.0,
-      child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          onPressed: () async {
-            desenfocarInputfx(context);
-            if (validarSend(actualString)) {
-              dynamic respuestaBack = await passwordController.changePassword(
-                  _actualController.text, _primeraCController.text);
-              if (respuestaBack["status"] == "success") {
-                bool respuestaPopUP = await notificacion(
-                    context, "success", "EXACT", "Se cambió la contraseña");
-                if (respuestaPopUP) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                }
-              } else {
-                notificacion(
-                    context, "error", "EXACT", respuestaBack["message"]);
-              }
-            }
-          },
-          color:
-              validarSend(actualString) ? Color(0xFF2C6983) : Colors.grey[500],
-          child: Text('Cambiar', style: TextStyle(color: Colors.white))),
-    ));
-
-    var actualText = TextFormField(
-      keyboardType: TextInputType.text,
-      obscureText: passwordVisible1,
-      focusNode: f1,
-      autofocus: false,
-      controller: _actualController,
-      textInputAction: TextInputAction.next,
-      onChanged: (value) {
-        setState(() {
-          actualString = value;
-        });
-      },
-      onFieldSubmitted: (value) {
-        validarPassActual();
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            setState(() {
-              passwordVisible1 = !passwordVisible1;
-            });
-          },
-          child: Icon(
-            !passwordVisible1 ? Icons.visibility_off : Icons.visibility,
-            size: 18,
-            color: primaryColor,
-          ),
-        ),
-      ),
-    );
-
-    var primeraText = TextFormField(
-      keyboardType: TextInputType.text,
-      obscureText: passwordVisible2,
-      focusNode: f2,
-      autofocus: false,
-      controller: _primeraCController,
-      textInputAction: TextInputAction.next,
-      onChanged: (value) {
-        if (_segundaCController.text.length != 0) {
-          if (_primeraCController.text == _segundaCController.text) {
-            setState(() {
-              passwordIgualdad = true;
-            });
-          } else {
-            setState(() {
-              passwordIgualdad = false;
-            });
-          }
-        } else {
-          setState(() {
-            passwordIgualdad = true;
-          });
-        }
-      },
-      onFieldSubmitted: (value) {
-        validarPassPrimera();
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            setState(() {
-              passwordVisible2 = !passwordVisible2;
-            });
-          },
-          child: Icon(
-            !passwordVisible2 ? Icons.visibility_off : Icons.visibility,
-            size: 18,
-            color: primaryColor,
-          ),
-        ),
-      ),
-    );
-
-    var segundaText = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      focusNode: f3,
-      controller: _segundaCController,
-      obscureText: passwordVisible3,
-      textInputAction: TextInputAction.send,
-      onChanged: (value) {
-        if (_primeraCController.text.length != 0) {
-          if (_primeraCController.text == _segundaCController.text) {
-            setState(() {
-              passwordIgualdad = true;
-            });
-          } else {
-            setState(() {
-              passwordIgualdad = false;
-            });
-          }
-        } else {
-          setState(() {
-            passwordIgualdad = true;
-          });
-        }
-      },
-      onFieldSubmitted: (value) {
-        validarPassSegunda();
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            setState(() {
-              passwordVisible3 = !passwordVisible3;
-            });
-          },
-          child: Icon(
-            !passwordVisible3 ? Icons.visibility_off : Icons.visibility,
-            size: 18,
-            color: primaryColor,
-          ),
-        ),
-      ),
-    );
-
     mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+      return SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 10, bottom: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: passwordController.labeltext("Contraseña actual")),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: actualText),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: passwordController.labeltext("Contraseña nueva")),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: primeraText),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  alignment: Alignment.bottomLeft,
-                  width: double.infinity,
-                  child: passwordController
-                      .labeltext("Confirmar contraseña nueva")),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: segundaText),
-            ),
-            !passwordIgualdad
-                ? Container(
-                    alignment: Alignment.centerLeft,
+            paddingWidget(Column(
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 10, top: 20),
                     width: double.infinity,
-                    child: Text(
-                      "Las contraseñas no son iguales",
-                      style: TextStyle(color: Colors.red),
-                    ))
-                : Container(),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  alignment: Alignment.center,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 8),
-                  width: double.infinity,
-                  child: sendButton2),
-            )
+                    child: InputWidget(
+                      iconSufix: IconsData.ICON_EYE_ENABLED,
+                      methodOnPressedSufix: onPressSufixActualPassword,
+                      controller: _actualPasswordController,
+                      focusInput: focusActualPassword,
+                      hinttext: 'Actual contraseña',
+                      methodOnPressed: validarPassActual,
+                      visibilityTextForm: visibilidadActualPassword,
+                      methodOnChange: onChangedPassActual,
+                      iconPrefix: IconsData.ICON_PADLOCK,
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    width: double.infinity,
+                    child: InputWidget(
+                      iconSufix: IconsData.ICON_EYE_ENABLED,
+                      methodOnPressedSufix: onPressSufixNuevaPassword,
+                      controller: _nuevaPasswordController,
+                      focusInput: focusNuevaPassword,
+                      hinttext: 'Nueva contraseña',
+                      methodOnPressed: validarNuevaPassword,
+                      visibilityTextForm: visibilidadNuevaPassword,
+                      methodOnChange: onChangedPassNueva,
+                      iconPrefix: IconsData.ICON_PADLOCK,
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    width: double.infinity,
+                    child: InputWidget(
+                      iconSufix: IconsData.ICON_EYE_ENABLED,
+                      methodOnPressedSufix: onPressSufixConfirmarPassword,
+                      controller: _confirmarPasswordController,
+                      focusInput: focusConfirmarPassword,
+                      hinttext: 'Confirmar contraseña nueva',
+                      methodOnPressed: validarConfirmarPassword,
+                      visibilityTextForm: visibilidadConfirmarPassword,
+                      methodOnChange: onChangedPassConfirmar,
+                      iconPrefix: IconsData.ICON_PADLOCK,
+                    )),
+                !cumplirIgualdadPassword
+                    ? Container(
+                        alignment: Alignment.centerLeft,
+                        width: double.infinity,
+                        child: Text(
+                          "Las contraseñas no son iguales",
+                          style: TextStyle(color: Colors.red),
+                        ))
+                    : Container(),
+              ],
+            )),
+            paddingWidget(Container(
+                margin: const EdgeInsets.only(bottom: 20, top: 20),
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: ButtonWidget(
+                    iconoButton: IconsData.ICON_PASSWORD,
+                    onPressed: onPressedCambiarButton,
+                    colorParam: validarSend(actualPassword)
+                        ? StylesThemeData.BUTTON_PRIMARY_COLOR
+                        : StylesThemeData.DISABLE_COLOR,
+                    texto: "Cambiar contraseña")))
           ],
         ),
       );
@@ -372,13 +265,14 @@ class _CambiarPasswordPageState extends State<CambiarPasswordPage> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Cambiar contraseña",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.normal))),
-        body: scaffoldbody(mainscaffold(), context));
+        resizeToAvoidBottomInset: false,
+        body: mainscaffold());
   }
 }

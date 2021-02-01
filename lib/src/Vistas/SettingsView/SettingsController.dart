@@ -1,19 +1,37 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/INotification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/Notification/Notification.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/INotificationPush.core.dart';
+import 'package:tramiteapp/src/CoreProyecto/NotificationPush/NotificationPush.core.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
+import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
+import 'package:tramiteapp/src/Providers/notificacionProvider/impl/NotificacionProvider.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class SettingsController {
+  INotificationCore notificationCore = new NotificationCore(
+      new NotificacionProvider(),
+      NotificacionPush.getInstance(new NotificacionProvider()));
+  INotificationPush notificationPushCore =
+      NotificacionPush.getInstance(new NotificacionProvider());
+  final NavigationService _navigationService = locator<NavigationService>();
+
   Future<bool> modificarUtdOrBuzon(BuildContext context, int tipo) async {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
     final _prefs = new PreferenciasUsuario();
-    if (tipo == cliente) {
+    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
       BuzonModel buzonmodel = new BuzonModel();
       List<dynamic> buzonCore = json.decode(_prefs.buzones);
       opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -27,7 +45,7 @@ class SettingsController {
 
     for (dynamic opcion in opciones) {
       listadecodigos.add(Container(
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 5),
           padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
@@ -41,14 +59,15 @@ class SettingsController {
                     child: Center(
                       child: Text(
                         opcion.nombre,
-                        style: TextStyle(color: colorletra, fontSize: 12),
+                        style: TextStyle(
+                            color: StylesThemeData.LETTER_COLOR, fontSize: 12),
                       ),
                     )),
                 onTap: () async {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continuar?");
                   if (respuestabool) {
-                    if (tipo == cliente) {
+                    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
                       HashMap<String, dynamic> buzonhash = new HashMap();
                       buzonhash['id'] = opcion.id;
                       buzonhash['nombre'] = opcion.nombre;
@@ -68,12 +87,10 @@ class SettingsController {
     }
 
     bool respuesta = await showDialog(
-/*         barrierDismissible: false,
- */
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(tipo == cliente
+            title: Text(tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                 ? "Seleccione un nuevo buzón"
                 : "Seleccione un nuevo UTD"),
             content: Container(
@@ -84,12 +101,6 @@ class SettingsController {
                       child: SingleChildScrollView(
                           child: Column(children: listadecodigos)))
                 ])),
-            /*   actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.pop(context, false)
-              )
-            ], */
           );
         });
 
@@ -99,4 +110,19 @@ class SettingsController {
 
     return respuesta;
   }
+
+  void gestionNotificaciones(BuildContext context) async {
+    List<NotificacionModel> listanotificacionesPendientes =
+        await notificationCore.listarNotificacionesPendientes();
+    _navigationService.setCantidadNotificacionBadge(
+        listanotificacionesPendientes
+            .where((notificacion) =>
+                notificacion.notificacionEstadoModel.id ==
+                    EstadoNotificacionEnum.NOTIFICACION_PENDIENTE &&
+                notificacion.buzonId == obtenerBuzonid())
+            .toList()
+            .length);
+    notificationPushCore.cerrarNotificacionPush();
+  }
+  
 }

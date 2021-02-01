@@ -3,8 +3,13 @@ import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/FutureItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'ListarEnviosUTDController.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class ListarEnviosUTDPage extends StatefulWidget {
   @override
@@ -19,109 +24,54 @@ class _ListarEnviosUTDPageState extends State<ListarEnviosUTDPage> {
     super.initState();
   }
 
+  
+    void setList(List<dynamic> listEnvios) {
+      this.envios = listEnvios;
+    }
+
+
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(EnvioModel entrega) {
-      String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.destinatario;
-      String observacion = entrega.observacion;
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(colorletra),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("$destinatario"),
-                  )
-                ],
-              ))),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("$codigopaquete",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                          trackingPopUp(context, entrega.id);
-                        },
-                      )),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text("$observacion")))
-                ],
-              )))
-            ],
-          ));
+    void onPressedCodePaquete(dynamic indice) {
+          showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: this.envios[indice].id,
+          );
+        });
     }
 
-    Widget _crearListado() {
-      return FutureBuilder(
-          future: principalcontroller.listarUTDController(),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<EnvioModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    final envios = snapshot.data;
-                    if (envios.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: envios.length,
-                          itemBuilder: (context, i) => crearItem(envios[i]));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
-    }
-
-    Widget mainscaffold() {
-      return Padding(
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado()),
-            )
-          ],
-        ),
+    Widget itemEnvioUTD(indice) {
+      return ItemWidget(
+        itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+        itemIndice: indice,
+        colorItem: indice % 2 == 0
+            ? StylesThemeData.ITEM_UNSHADED_COLOR
+            : StylesThemeData.ITEM_SHADED_COLOR,
+        titulo: this.envios[indice].destinatario,
+        subSecondtitulo: this.envios[indice].codigoPaquete,
+        styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+        subFivetitulo: this.envios[indice].observacion,
+        onPressedCode: onPressedCodePaquete,
+        iconColor: StylesThemeData.ICON_COLOR
       );
     }
 
     return Scaffold(
         appBar: CustomAppBar(text: "Envíos en UTD"),
         drawer: DrawerPage(),
-        body: scaffoldbody(mainscaffold(), context));
+        body: scaffoldbody(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                FutureItemWidget(
+                  itemWidget: itemEnvioUTD,
+                  futureList: principalcontroller.listarUTDController(),
+                  setList: setList,
+                )
+              ],
+            ),
+            context));
   }
 }

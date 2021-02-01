@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoEnvioEnum.dart';
 import 'package:tramiteapp/src/ModelDto/EntregaLote.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
-import 'package:tramiteapp/src/Util/utils.dart' as sd;
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/Entrega-lotes/Lista-entrega-lote/ListaEntregaLoteController.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-lotes/Nueva-entrega-lote/NuevaEntregaLotePage.dart';
-import 'package:tramiteapp/src/Vistas/Entrega-lotes/Recepcionar-lote/RecepcionEntregaLote.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
-
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/FilaButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 
 class ListaEntregaLotePage extends StatefulWidget {
   @override
@@ -20,351 +24,163 @@ class ListaEntregaLotePage extends StatefulWidget {
 class _ListaEntregaLotePageState extends State<ListaEntregaLotePage> {
   ListaEntregaLoteController listarLoteController =
       new ListaEntregaLoteController();
-
-  final titulo = 'Entregas de Lotes';
-  String textdestinatario = "";
-  List<bool> isSelected;
-  int indexSwitch = 0;
+  int modalidadTipoId = 0;
   List<EntregaLoteModel> entregas = new List();
-  // int numvalijas = 0;
+  List<EntregaLoteModel> listLotesPorRecibir;
+  List<EntregaLoteModel> listLotesPorEnviados;
+  bool buttonNuevo = false;
+  int indexTabSection = 0;
 
   @override
   void initState() {
-    isSelected = [true, false];
-    setState(() {
-      textdestinatario = "";
-    });
+    listarEnviosLotes();
     super.initState();
+  }
+
+  void listarEnviosLotes() async {
+    listLotesPorRecibir = await listarLoteController.listarLotesPorRecibir();
+    listLotesPorEnviados = await listarLoteController.listarLotesActivos();
+    if (this.mounted) {
+      setState(() {
+        this.listLotesPorRecibir = listLotesPorRecibir;
+        this.listLotesPorEnviados = listLotesPorEnviados;
+      });
+    }
+  }
+
+  void setValueButton(dynamic indexTab) {
+    if (indexTab == 0) {
+      setState(() {
+        buttonNuevo = false;
+      });
+    } else {
+      setState(() {
+        buttonNuevo = true;
+      });
+    }
+  }
+
+  void actionButton() {
+    if (!buttonNuevo) {
+      Navigator.of(context).pushNamed('/recepcionar-lote', arguments: {
+        'codLote': null,
+      });
+    } else {
+      Navigator.of(context).pushNamed('/nuevo-Lote');
+    }
+  }
+
+  void iniciarEnvioLote(indice) async {
+    if (listLotesPorEnviados[indice].estadoEnvio.id == EstadoEnvioEnum.ENVIO_CREADO) {
+      bool confirmarInicio = await confirmacion(context, "success", "EXACT",
+          "¿Desea iniciar el envío del lote a la UTD ${listLotesPorEnviados[indice].udtNombre}?");
+      if (confirmarInicio) {
+        bool respuesta = await listarLoteController.onSearchButtonPressed(
+            context, listLotesPorEnviados[indice]);
+        if (respuesta) {
+          notificacion(context, "success", "EXACT",
+              "Se ha iniciado el envío correctamente");
+          listarEnviosLotes();
+          setState(() {
+            modalidadTipoId = modalidadTipoId;
+          });
+        } else {
+          notificacion(
+              context, "error", "EXACT", "No se pudo iniciar la entrega");
+        }
+      }
+    } else {
+      notificacion(context, "error", "EXACT", "El envío ya se ha enviado");
+    }
+  }
+
+  void methodRecepcionarLote(indice) {
+    Navigator.of(context).pushNamed('/recepcionar-lote', arguments: {
+      'codLote': listLotesPorRecibir[indice].paqueteId,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget informacionEntrega(EntregaLoteModel entrega, int switched) {
-      String destino = entrega.udtNombre;
-      int numvalijas = entrega.cantLotes;
-      int numenvios = 0;
-      String codigo = "";
-      if (switched == 0) {
-        numenvios = entrega.cantLotes;
-      } else {
-        codigo = entrega.paqueteId;
-      }
-
-      return Container(
-          height: 70,
-          child: ListView(shrinkWrap: true, 
-          physics: const NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(left: 20),
-              height: 35,
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text("$destino",
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold)),
-                    Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: switched == 0
-                          ? Container()
-                          : Text("$codigo", style: TextStyle(fontSize: 10)),
-                    ),
-                  ]),
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 20, top: 10),
-                height: 35,
-                child: switched == 0
-                    ? Text(
-                        numvalijas == 1
-                            ? "$numvalijas Lote"
-                            : "$numvalijas Lotes",
-                        style: TextStyle(fontSize: 12))
-                    : Text(
-                        numvalijas == 1
-                            ? "$numvalijas valija"
-                            : "$numvalijas valijas",
-                        style: TextStyle(fontSize: 12))),
-          ]));
+    Widget itemLotesEnviados(dynamic indice) {
+      String tituloItem = listLotesPorEnviados[indice].cantLotes == 1
+          ? "${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lote)"
+          : "${listLotesPorEnviados[indice].udtNombre} (${listLotesPorEnviados[indice].cantLotes} lotes)";
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_ONE_TITLE,
+          itemIndice: indice,
+          iconPrimary: IconsData.ICON_LOTE_VALIJA,
+          subSixtitulo: listLotesPorEnviados[indice].estadoEnvio.nombre,
+          iconSend: iconByEstadoEntrega(listLotesPorEnviados[indice].estadoEnvio.id),
+          methodAction: iniciarEnvioLote,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: tituloItem,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
-    // void iniciarEnvio(EnvioInterSedeModel entrega) async {
-    //   bool respuesta =
-    //       await principalcontroller.onSearchButtonPressed(context, entrega);
-    //   if (respuesta) {
-    //     principalcontroller.confirmarAlerta(context,
-    //         "Se ha iniciado el envío correctamente", "Inicio Correcto");
-    //     setState(() {
-    //       indexSwitch = indexSwitch;
-    //     });
-    //   } else {
-    //     principalcontroller.confirmarAlerta(
-    //         context, "No se pudo iniciar la entrega", "Incorrecto Inicio");
-    //   }
-    // }
-
-    Widget iconoRecepcion(EntregaLoteModel entregaLote, BuildContext context) {
-      return Container(
-          height: 70,
-          child: Center(
-            child:FaIcon(
-                FontAwesomeIcons.locationArrow,
-                color: Color(0xffC7C7C7),
-                size: 25,
-              )
-          ));
+    Widget itemLotesRecepcion(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_THREE_TITLE,
+          itemIndice: indice,
+          iconPrimary: IconsData.ICON_LOTE_VALIJA,
+          methodAction: methodRecepcionarLote,
+          iconSend: IconsData.ICON_SEND_ARROW,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: "${listLotesPorRecibir[indice].udtNombre}",
+          subtitulo: listLotesPorRecibir[indice].paqueteId,
+          subSecondtitulo: listLotesPorRecibir[indice].cantLotes == 1
+              ? "${listLotesPorRecibir[indice].cantLotes} valija"
+              : "${listLotesPorRecibir[indice].cantLotes} valijas",
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SECOND_SUBTILE,
+          iconColor: StylesThemeData.ICON_COLOR);
     }
 
-    void iniciarEnvioLote(EntregaLoteModel entrega) async {
-      bool respuesta =
-          await listarLoteController.onSearchButtonPressed(context, entrega);
-      if (respuesta) {
-        notificacion(context, "success", "EXACT",
-            "Se ha iniciado el envío correctamente");
-        setState(() {
-          indexSwitch = indexSwitch;
-        });
-      } else {
-        notificacion(
-            context, "error", "EXACT", "No se pudo iniciar la entrega");
-      }
-    }
-
-    Widget iconoEnvio(EntregaLoteModel entrega) {
-      return Container(
-          height: 70,
-          child: entrega.estadoEnvio.id == creado
-              ? Center(
-                child:FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  )
-              )
-              : Opacity(
-                  opacity: 0.0,
-                  child: FaIcon(
-                    FontAwesomeIcons.locationArrow,
-                    color: Color(0xffC7C7C7),
-                    size: 25,
-                  )));
-    }
-
-    Widget crearItem(EntregaLoteModel entrega, int switched) {
-      return Container(
-          decoration: sd.myBoxDecoration(sd.colorletra),
-          margin: EdgeInsets.only(bottom: 5),
-          child: InkWell(
-              onTap: () {
-                if (switched == 0) {
-                  iniciarEnvioLote(entrega);
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            RecepcionEntregaLotePage(entregaLotepage: entrega),
-                      ));
-                }
-              }, // handle your onTap here
-              child: Container(
-                child: Row(children: <Widget>[
-                  Expanded(
-                      flex: 1,
-                      child: Container(
-                          height: 70,
-                          child: Center(
-                              child: FaIcon(
-                            FontAwesomeIcons.cube,
-                            color: Color(0xff000000),
-                            size: 40,
-                          )))),
-                  Expanded(
-                    child: informacionEntrega(entrega, switched),
-                    flex: 3,
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            switched == 0
-                                ? iconoEnvio(entrega)
-                                : iconoRecepcion(entrega, context)
-                          ])),
-                ]),
-              )));
-    }
-
-    Widget _crearListado(int switched) {
-      entregas.clear();
-
-      return FutureBuilder(
-          future: listarEntregas(switched),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<EntregaLoteModel>> snapshot) {
-
-                  switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    entregas = snapshot.data;
-                    if (entregas.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: entregas.length,
-                          itemBuilder: (context, i) => crearItem(entregas[i], switched));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
-    }
-
-    final sendRecepcion = Container(
-        margin: const EdgeInsets.only(left: 5),
-        child: ButtonTheme(
-          minWidth: 130.0,
-          height: 40.0,
-          child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          RecepcionEntregaLotePage(entregaLotepage: null),
-                    ));
-              },
-              color: Colors.grey,
-              child:
-                  Text('Recepcionar', style: TextStyle(color: Colors.white))),
-        ));
-
-    final sendButton = Container(
-        margin: const EdgeInsets.only(right: 5),
-        child: ButtonTheme(
-          minWidth: 130.0,
-          height: 40.0,
-          child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NuevoEntregaLotePage(),
-                  ),
-                );
-              },
-              color: Color(0xFF2C6983),
-              child: Text('Nuevo', style: TextStyle(color: Colors.white))),
-        ));
-
-    final filaBotones = Container(
-      child: Row(
+    return Scaffold(
+      appBar: CustomAppBar(text: 'Entregas de Lotes'),
+      drawer: DrawerPage(),
+      backgroundColor: Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Expanded(flex: 5, child: sendButton),
+          paddingWidget(
+            Container(
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: FilaButtonWidget(
+                  firsButton: ButtonWidget(
+                      iconoButton: !buttonNuevo
+                          ? IconsData.ICON_RECEIVE
+                          : IconsData.ICON_NEW,
+                      onPressed: actionButton,
+                      colorParam: !buttonNuevo
+                          ? StylesThemeData.DISABLE_COLOR
+                          : StylesThemeData.PRIMARY_COLOR,
+                      texto: !buttonNuevo ? 'Recepcionar' : 'Nuevo'),
+                )),
+          ),
           Expanded(
-            child: sendRecepcion,
-            flex: 5,
-          )
+              child: TabSectionListWidget(
+            iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+            iconSecondTap: IconsData.ICON_ENVIADOS,
+            namePrimerTap: "Por recibir",
+            nameSecondTap: "Enviados",
+            listPrimerTap: listLotesPorRecibir,
+            listSecondTap: listLotesPorEnviados,
+            itemPrimerTapWidget: itemLotesRecepcion,
+            itemSecondTapWidget: itemLotesEnviados,
+            onTapTabSection: setValueButton,
+            initstateIndex: indexTabSection,
+          ))
         ],
       ),
     );
-
-    final tabs = ToggleButtons(
-      borderColor: sd.colorletra,
-      fillColor: sd.colorletra,
-      borderWidth: 1,
-      selectedBorderColor: sd.colorletra,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Enviados',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por recibir',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
-
-    return Scaffold(
-      appBar:CustomAppBar(text: titulo),
-      drawer: DrawerPage(),
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                height: sd.screenHeightExcludingToolbar(context, dividedBy: 8),
-                width: double.infinity,
-                child: filaBotones),
-            Container(
-                height: sd.screenHeightExcludingToolbar(context, dividedBy: 20),
-                child: tabs),
-            Expanded(
-              child: Container(
-                  decoration: sd.myBoxDecoration(sd.colorletra),
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado(indexSwitch)),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<List<EntregaLoteModel>> listarEntregas(int op) async {
-    List<EntregaLoteModel> elm = new List();
-
-    if (op == 0) {
-      elm = await listarLoteController.listarLotesActivos();
-    } else {
-      elm = await listarLoteController.listarLotesPorRecibir();
-    }
-
-    return elm;
   }
 }

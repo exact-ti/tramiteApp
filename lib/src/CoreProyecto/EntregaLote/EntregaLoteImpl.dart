@@ -13,20 +13,17 @@ class EntregaLoteImpl implements EntregaLoteInterface{
   
   @override
   Future<List<EntregaLoteModel>> listarLotesActivos() async {
-    List<EntregaLoteModel> entregas = await entregaLote.listarLotesActivos();
-    return entregas;
+    return await entregaLote.listarLotesActivos();
   }
 
   @override
   Future<List<EntregaLoteModel>> listarLotesPorRecibir() async {
-    List<EntregaLoteModel> entregas = await entregaLote.listarLotesPorRecibir();
-    return entregas;
+    return await entregaLote.listarLotesPorRecibir();
   }
 
     @override
   Future<bool> iniciarEntregaLote(int utdDestino) async{
-    bool i = await entregaLote.iniciarEntregaLote(utdDestino);
-    return i;
+    return await entregaLote.iniciarEntregaLote(utdDestino);
   }
   
 }

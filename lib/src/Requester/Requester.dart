@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/Configuration/config.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
+import 'package:tramiteapp/src/Resources/conection-sse/sse.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
-import 'package:eventsource/eventsource.dart';
 
 class Requester {
   static final Requester _instancia = new Requester._internal();
@@ -68,32 +68,13 @@ class Requester {
     return respuestaGet;
   }
 
-/*   Stream<dynamic> sse2(String url) async* {
-    var token = _prefs.token;
-    var request = http.Request("GET", Uri.parse(properties['API'] + url));
-    request.headers["Authorization"] = token;
-    http.StreamedResponse response = await _client.send(request);
-    var nuevoStream = response.stream.transform(utf8.decoder).where((data) {
-      try {
-        print(data);
-        json.decode(data);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }).map((data) => jsonDecode(data));
-    await for (final item in nuevoStream) {
-      yield item;
-    }
-  } */
-
   Future<EventSource> sseventSource(String url) async {
     var token = _prefs.token;
     Map<String, dynamic> header = {
-      'Authorization': '$token',
-    };
-    EventSource eventSource =
-        await EventSource.connect(properties['API'] + url, headers: header);
+      'Authorization': "Bearer $token"
+    };  
+    
+    EventSource eventSource =  await EventSource.conectar(properties['API'] + url, headers: header);
     return eventSource;
   }
 
@@ -146,14 +127,15 @@ class Requester {
   }
 
   dynamic errorInterceptor(DioError dioError) async {
+    if(dioError.response==null) return dioError;
     dynamic data = dioError.response.data;
-    if (data!=null) {
+    if (data != null) {
       Response response;
       final resp = await refreshToken(
           "/servicio-auth/auth/refresh", _prefs.refreshToken);
       if (resp.statusCode == 200) {
         dynamic refreshdata = resp.data;
-        dynamic dataCore = refreshdata["data"]; 
+        dynamic dataCore = refreshdata["data"];
         _prefs.token = dataCore['access_token'];
         _prefs.refreshToken = dataCore['refresh_token'];
         RequestOptions request = dioError.request;

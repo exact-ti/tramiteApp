@@ -1,11 +1,16 @@
 import 'package:tramiteapp/src/ModelDto/DetalleRuta.dart';
-import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
 import 'package:tramiteapp/src/ModelDto/RutaModel.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/TapSectionListWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'DetalleRutaController.dart';
 
 class DetalleRutaPage extends StatefulWidget {
@@ -22,78 +27,59 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
   int recorridoID;
   RutaModel rutaModel;
   _DetalleRutaPagePageState(this.objetoModo);
-  DetalleRutaController principalcontroller = new DetalleRutaController();
-  List<EstadoEnvio> estadosSave = new List();
-  List<DetalleRutaModel> detallesRuta = new List();
-  List<int> estadosIds = new List();
-  var listadestinatarios;
-  String textdestinatario = "";
-  List<bool> isSelected;
-  int indexSwitch = 0;
-  int numvalijas = 0;
-  var listadetinatario;
-  var listadetinatarioDisplay;
-  var colorletra = const Color(0xFFACADAD);
-  var prueba;
-  String codigo = "";
-  var nuevo = 0;
+  DetalleRutaController detalleRutaController = new DetalleRutaController();
+  bool porEntregar = true;
+  List<DetalleRutaModel> listDetallesEntregar;
+  List<DetalleRutaModel> listDetallesRecoger;
 
   @override
   void initState() {
-    isSelected = [true, false];
-    this.recorridoID = objetoModo["recorridoId"];
-    this.rutaModel = objetoModo["ruta"];
-    setState(() {
-      textdestinatario = "";
-    });
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => listarEnviosIntersedes());
     super.initState();
+  }
+
+  void listarEnviosIntersedes() async {
+    if (this.mounted) {
+      Map recorrido = ModalRoute.of(context).settings.arguments;
+      this.recorridoID = recorrido["recorridoId"];
+      this.rutaModel = recorrido["ruta"];
+      listDetallesEntregar = await detalleRutaController.listarDetalleRuta(
+          porEntregar, rutaModel.id, recorridoID);
+      listDetallesRecoger = await detalleRutaController.listarDetalleRuta(
+          !porEntregar, rutaModel.id, recorridoID);
+      setState(() {
+        rutaModel = rutaModel;
+        recorridoID = recorridoID;
+        listDetallesEntregar = listDetallesEntregar;
+        listDetallesRecoger = listDetallesRecoger;
+      });
+    }
+  }
+
+  void methodPopUpInEntregas(dynamic intersedeIndice) {
+        showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listDetallesEntregar[intersedeIndice].id,
+          );
+        });
+  }
+
+  void methodPopUpInRecojos(dynamic intersedeIndice) {
+        showDialog(
+        context: context,
+        builder: (_) {
+          return TrackingModal(
+            paqueteId: listDetallesRecoger[intersedeIndice].id,
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget crearItem(DetalleRutaModel detalleRutaModel, int switched) {
-      String codigopaquete = detalleRutaModel.paqueteId;
-      String destinatario = detalleRutaModel.destinatario;
-
-      return Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-          decoration: myBoxDecoration(colorletra),
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("$destinatario"),
-                  )
-                ],
-              ))),
-              Expanded(
-                  child: Container(
-                      child: Row(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        child: Text("$codigopaquete",
-                            style: TextStyle(color: Colors.blue)),
-                        onTap: () {
-                          trackingPopUp(context, detalleRutaModel.id);
-                        },
-                      ))
-                ],
-              )))
-            ],
-          ));
-    }
-
     Widget informacionArea() {
-      String nombrearea = rutaModel.nombre;
-      String ubicacion = rutaModel.ubicacion;
       return Container(
           child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -115,7 +101,7 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('$nombrearea'),
+                    child: Text(rutaModel == null ? "" : '${rutaModel.nombre}'),
                     flex: 5,
                   ),
                 ],
@@ -131,13 +117,13 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
                       child: Text('Ubicación:',
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight:
-                                  FontWeight.bold /* , fontSize: 15 */)),
+                              fontWeight: FontWeight.bold)),
                     ),
                     flex: 2,
                   ),
                   Expanded(
-                    child: Text('$ubicacion'),
+                    child:
+                        Text(rutaModel == null ? "" : '${rutaModel.ubicacion}'),
                     flex: 5,
                   ),
                 ],
@@ -146,107 +132,59 @@ class _DetalleRutaPagePageState extends State<DetalleRutaPage> {
       ));
     }
 
-    Widget _crearListado(int switched) {
-      detallesRuta.clear();
-      return FutureBuilder(
-          future: principalcontroller.listarDetalleRuta(
-              switched, rutaModel.id, recorridoID),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<DetalleRutaModel>> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return sinResultados("No hay conexión con el servidor");
-              case ConnectionState.waiting:
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: loadingGet(),
-                ));
-              default:
-                if (snapshot.hasError) {
-                  return sinResultados("Ha surgido un problema");
-                } else {
-                  if (snapshot.hasData) {
-                    detallesRuta = snapshot.data;
-                    if (detallesRuta.length == 0) {
-                      return sinResultados("No se han encontrado resultados");
-                    } else {
-                      return ListView.builder(
-                          itemCount: detallesRuta.length,
-                          itemBuilder: (context, i) =>
-                              crearItem(detallesRuta[i], switched));
-                    }
-                  } else {
-                    return sinResultados("No se han encontrado resultados");
-                  }
-                }
-            }
-          });
+    Widget itemEntregar(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listDetallesEntregar[indice].destinatario,
+          subSecondtitulo: listDetallesEntregar[indice].paqueteId,
+          onPressedCode: methodPopUpInEntregas,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed);
     }
 
-    Widget tabs = ToggleButtons(
-      borderColor: colorletra,
-      fillColor: colorletra,
-      borderWidth: 1,
-      selectedBorderColor: colorletra,
-      selectedColor: Colors.white,
-      borderRadius: BorderRadius.circular(0),
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por Entregar',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Text(
-            'Por recoger',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
-      onPressed: (int index) {
-        setState(() {
-          for (int i = 0; i < isSelected.length; i++) {
-            isSelected[i] = i == index;
-          }
-          indexSwitch = index;
-        });
-      },
-      isSelected: isSelected,
-    );
+    Widget itemRecoger(dynamic indice) {
+      return ItemWidget(
+          itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+          itemIndice: indice,
+          colorItem: indice % 2 == 0
+              ? StylesThemeData.ITEM_SHADED_COLOR
+              : StylesThemeData.ITEM_UNSHADED_COLOR,
+          titulo: listDetallesRecoger[indice].destinatario,
+          subSecondtitulo: listDetallesRecoger[indice].paqueteId,
+          onPressedCode: methodPopUpInRecojos,
+          iconColor: StylesThemeData.ICON_COLOR,
+          styleTitulo: StylesTitleData.STYLE_TITLE,
+          styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed);
+    }
 
     Widget mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 10),
-                  width: double.infinity,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(Column(
+            children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only(bottom: 10, top: 10),
                   child: informacionArea()),
-            ),
-            Container(
-                margin: const EdgeInsets.only(top: 10),
-                height: screenHeightExcludingToolbar(context, dividedBy: 20),
-                child: tabs),
-            Expanded(
-              child: Container(
-                  decoration: myBoxDecoration(colorletra),
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  alignment: Alignment.bottomCenter,
-                  child: _crearListado(indexSwitch)),
-            )
-          ],
-        ),
+            ],
+          )),
+          Expanded(
+              child: TabSectionListWidget(
+            iconPrimerTap: IconsData.ICON_POR_RECIBIR,
+            iconSecondTap: IconsData.ICON_ENVIADOS,
+            namePrimerTap: "Por entregar",
+            nameSecondTap: "Por recoger",
+            listPrimerTap: listDetallesEntregar,
+            listSecondTap: listDetallesRecoger,
+            itemPrimerTapWidget: itemEntregar,
+            itemSecondTapWidget: itemRecoger,
+            initstateIndex: 0,
+          ))
+        ],
       );
     }
 

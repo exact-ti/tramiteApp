@@ -1,43 +1,72 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 
 class MenuController {
-
   final icons = <String, IconData>{
-    'home': Icons.home,
-    'envio': Icons.send,
-    'recorrido': Icons.directions_run,
-    'importar': Icons.file_upload,
-    'custodiar': Icons.check_box,
-    'clasificar': Icons.sort,
-    'interutd': Icons.transfer_within_a_station,
-    'revalija': Icons.markunread,
-    'lote': Icons.check_box_outline_blank,
-    'relote': Icons.filter_none,
-    'agencia': Icons.airline_seat_recline_normal,
+    'home': FontAwesomeIcons.home,
+    'envio': FontAwesomeIcons.solidPaperPlane,
+    'recorrido': FontAwesomeIcons.running,
+    'importar': FontAwesomeIcons.fileUpload,
+    'custodiar': FontAwesomeIcons.inbox,
+    'clasificar': FontAwesomeIcons.stream,
+    'interutd': FontAwesomeIcons.exchangeAlt,
+    'revalija': FontAwesomeIcons.conciergeBell,
+    'lote': FontAwesomeIcons.archive,
+    'relote': FontAwesomeIcons.boxOpen,
+    'agencia': FontAwesomeIcons.truck,
     'recepcion': Icons.receipt,
-    'consulta': Icons.record_voice_over,
-    'dashboard': Icons.dashboard,
-    'activos': Icons.accessibility,
-    'confirmar': Icons.confirmation_number,
-    'historico': Icons.history,
-    'retiro': Icons.remove_circle_outline
+    'consulta': FontAwesomeIcons.peopleArrows,
+    'enUTD': FontAwesomeIcons.building,
+    'dashboard': FontAwesomeIcons.chartLine,
+    'activos': FontAwesomeIcons.fileExport,
+    'confirmar': FontAwesomeIcons.clipboardCheck,
+    'historico': FontAwesomeIcons.history,
+    'retiro': FontAwesomeIcons.solidMinusSquare,
+    'HomeDashboard': FontAwesomeIcons.home
   };
 
+  List<String> listRutasRecorridos = [
+    "/recorridos",
+    "/entregas-pisos-validacion",
+    "/entregas-pisos-propios",
+    "/entregas-pisos-adicionales",
+    "/miruta",
+    "/detalleruta",
+    "/entrega-regular",
+    "/entrega-personalizada",
+    "/personalizada-dni",
+    "/generar-firma",
+    "/registrar-firma"
+  ];
 
-    modificarUtdOrBuzon(BuildContext context, int tipo) async {
+  List<String> listRutasUsuarios = ["/generar-envio", "/crear-envio","/envio-confirmado"];
+
+  List<String> listRutasAgencias = ['/envios-agencia', '/nuevo-agencia'];
+
+  List<String> listIntersedes = [
+    '/envio-interutd',
+    '/recepcionar-valija',
+    '/nueva-entrega-intersede'
+  ];
+
+  List<String> listLotes = ['/envio-lote', '/nuevo-Lote', '/recepcionar-lote'];
+
+  List<String> listPaquetes = ['/paquete-externo', '/importar-paquete'];
+
+  modificarUtdOrBuzon(BuildContext context, int tipo) async {
     double heightCel = 0.6 * (MediaQuery.of(context).size.height);
     List<dynamic> opciones = new List();
     final _prefs = new PreferenciasUsuario();
-    if (tipo == cliente) {
+    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
       BuzonModel buzonmodel = new BuzonModel();
       List<dynamic> buzonCore = json.decode(_prefs.buzones);
       opciones = buzonmodel.listfromPreferencs(buzonCore);
@@ -51,7 +80,7 @@ class MenuController {
 
     for (dynamic opcion in opciones) {
       listadecodigos.add(Container(
-          decoration: myBoxDecoration(colorletra),
+          decoration: myBoxDecoration(StylesThemeData.LETTER_COLOR),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 5),
           padding: const EdgeInsets.only(top: 5, right: 5, bottom: 5, left: 5),
@@ -65,28 +94,26 @@ class MenuController {
                     child: Center(
                       child: Text(
                         opcion.nombre,
-                        style: TextStyle(color: colorletra, fontSize: 12),
+                        style: TextStyle(
+                            color: StylesThemeData.LETTER_COLOR, fontSize: 12),
                       ),
                     )),
                 onTap: () async {
                   bool respuestabool = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea continua?");
-                  if (respuestabool != null) {
-                    if (respuestabool) {
-                      /*       eventNotifier.value += 1; */
-                      if (tipo == cliente) {
-                        HashMap<String, dynamic> buzonhash = new HashMap();
-                        buzonhash['id'] = opcion.id;
-                        buzonhash['nombre'] = opcion.nombre;
-                        _prefs.buzon = buzonhash;
-                      } else {
-                        HashMap<String, dynamic> utdhash = new HashMap();
-                        utdhash['id'] = opcion.id;
-                        utdhash['nombre'] = opcion.nombre;
-                        _prefs.utd = utdhash;
-                      }
-                      Navigator.of(context).pushNamed('/principal-admin');
+                  if (respuestabool) {
+                    if (tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
+                      HashMap<String, dynamic> buzonhash = new HashMap();
+                      buzonhash['id'] = opcion.id;
+                      buzonhash['nombre'] = opcion.nombre;
+                      _prefs.buzon = buzonhash;
+                    } else {
+                      HashMap<String, dynamic> utdhash = new HashMap();
+                      utdhash['id'] = opcion.id;
+                      utdhash['nombre'] = opcion.nombre;
+                      _prefs.utd = utdhash;
                     }
+                    Navigator.of(context).pushNamed('/principal-admin');
                   }
                 },
               )
@@ -99,7 +126,7 @@ class MenuController {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(tipo == cliente
+            title: Text(tipo == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
                 ? "Seleccione un nuevo buzón"
                 : "Seleccione un nuevo UTD"),
             content: Container(
@@ -119,6 +146,4 @@ class MenuController {
           );
         });
   }
-
-
 }

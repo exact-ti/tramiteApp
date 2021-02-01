@@ -6,7 +6,7 @@ class RutaModel {
   int orden;
   int cantidadRecojo;
   int cantidadEntrega;
-  //corregirarea
+  
   List<RutaModel> fromJson(List<dynamic> jsons) {
     List<RutaModel> rutas = new List();
     for (Map<String, dynamic> json in jsons) {

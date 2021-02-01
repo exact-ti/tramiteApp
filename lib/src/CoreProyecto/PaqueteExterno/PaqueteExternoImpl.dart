@@ -15,26 +15,22 @@ class PaqueteExternoImpl implements PaqueteExternoInterface {
 
   @override
   Future<List<TipoPaqueteModel>> listarPaquetesPorTipo(bool interno) async{
-    List<TipoPaqueteModel> tipoPaqueteModelList = await paqueteExterno.listarPaquetesPorTipo(false);
-    return tipoPaqueteModelList;
+    return await paqueteExterno.listarPaquetesPorTipo(false);
   }
 
   @override
   Future<dynamic> importarPaquetesExternos(List<PaqueteExterno> paqueteExternoList, TipoPaqueteModel tipoPaquete) async {
-    dynamic resp = await paqueteExterno.importarPaquetesExternos(paqueteExternoList, tipoPaquete);
-    return resp;
+    return await paqueteExterno.importarPaquetesExternos(paqueteExternoList, tipoPaquete);
   }
 
   @override
   Future<List<PaqueteExterno>> listarPaquetesExternosCreados() async {
-    List<PaqueteExterno> paquetes = await paqueteExterno.listarPaquetesExternosCreados();
-    return paquetes;
+    return await paqueteExterno.listarPaquetesExternosCreados();
   }
 
   @override
-  Future<bool> custodiarPaquete(PaqueteExterno paquete) async {
-    bool resp = await paqueteExterno.custodiarPaquete(paquete);
-    return resp;
+  Future<dynamic> custodiarPaquete(String paquete) async {
+    return await paqueteExterno.custodiarPaquete(paquete);
   }
 
 }

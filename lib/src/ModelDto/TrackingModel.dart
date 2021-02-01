@@ -32,7 +32,6 @@ class TrackingModel {
             trackingModel.destino  = json["destino"];
             trackingModel.observacion  = json["observacion"];
             trackingModel.codigo = json["paqueteId"];
-           // List<dynamic> detallesHashMap = json2["detalles"];
             for(Map<String, dynamic> json in json2 ){
                 TrackingDetalleModel  detalle = new TrackingDetalleModel();
                 detalle = detalle.fromJson(json);
@@ -41,7 +40,4 @@ class TrackingModel {
             trackingModel.detalles=detalleTracking;
           return trackingModel;
     }   
-}
-
-class DateFormat {
 }

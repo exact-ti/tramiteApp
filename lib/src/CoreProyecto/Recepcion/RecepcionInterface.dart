@@ -11,11 +11,9 @@ abstract class RecepcionInterface {
 
   Future<bool> registrarLote(String codigoArea, String codigoPaquete);
 
-  Future<bool> recibirLote(String codigoArea, String codigoPaquete);
+  Future<dynamic> recibirLote(String codigoLote, String codigoValija);
 
   Future<bool> registrarEnvioCore(String codigoPaquete);
-
-  Future<bool> registrarEnvioPrincipalCore(String codigoPaquete);
 
   Future<bool> registrarListaEnvioPrincipalCore(List<String> codigosPaquete);
 }

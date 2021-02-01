@@ -10,7 +10,7 @@ class RecorridoPropioController {
     EntregaInterface entregaInterface = new EntregaImpl( new EntregaProvider());
     
     
-    Future<List<RecorridoModel>>  listarentregasController() async {
+    Future<List<RecorridoModel>>  listarRecorridosController() async {
        List<RecorridoModel> recorridos =  await entregaInterface.listarRecorridosUsuario();
         return recorridos;
     }

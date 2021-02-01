@@ -1,13 +1,22 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:tramiteapp/src/Vistas/layout/App-bar/AppBarPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/locator.dart';
 import 'package:tramiteapp/src/services/navigation_service_file.dart';
+import 'package:tramiteapp/src/shared/Widgets/ButtonWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/InputWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ItemsWidget/ItemWidget.dart';
+import 'package:tramiteapp/src/shared/Widgets/ListItemsWidget/ListItemWidget.dart';
+import 'package:tramiteapp/src/shared/modals/TrackingModal.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Item_style.dart';
+import 'package:tramiteapp/src/styles/Title_style.dart';
 import 'RecepcionController.dart';
-import 'package:tramiteapp/src/Util/modals/tracking.dart';
 
 class RecepcionEnvioPage extends StatefulWidget {
   @override
@@ -20,22 +29,13 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
   List<EnvioModel> listaEnviosModel = new List();
   RecepcionController principalcontroller = new RecepcionController();
   Map<String, dynamic> validados = new HashMap();
-  String qrsobre, qrbarra = "";
-  String codigoBandeja = "";
-  String codigoSobre = "";
-  var listadetinatario;
-  var colorletra = const Color(0xFFACADAD);
   bool respuestaBack = false;
-  var colorseleccion = const Color(0xFFB7DCEE);
   final NavigationService _navigationService = locator<NavigationService>();
-  FocusNode _focusNode;
-  FocusNode f1 = FocusNode();
+  FocusNode focusBandeja = FocusNode();
+  final _prefs = new PreferenciasUsuario();
+
   @override
   void initState() {
-    _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) _bandejaController.clear();
-    });
     inicializarEnviosRecepcion();
     super.initState();
   }
@@ -46,149 +46,140 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       String cod = element.codigoPaquete;
       validados["$cod"] = false;
     });
-    setState(() {
-      respuestaBack = true;
-      listaEnviosModel = listaEnviosModel;
-    });
+    if (mounted) {
+      _prefs.openByNotificationPush=null;
+      setState(() {
+        respuestaBack = true;
+        listaEnviosModel = listaEnviosModel;
+      });
+    }
   }
 
-  var colorplomos = const Color(0xFFEAEFF2);
+  void onPressedCode(dynamic indice) {
+    String codigopaquete = listaEnviosModel[indice].codigoPaquete;
+
+    if (validados["$codigopaquete"] == null ||
+        validados["$codigopaquete"] == false) {
+      if (!validados.containsValue(true)) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return TrackingModal(
+                paqueteId: listaEnviosModel[indice].id,
+              );
+            });
+      }
+    }
+  }
+
+  void onpressedTap(dynamic indice) {
+    String codigopaquete = listaEnviosModel[indice].codigoPaquete;
+    bool contienevalidados = validados.containsValue(true);
+    if (contienevalidados && validados["$codigopaquete"] == false) {
+      setState(() {
+        validados["$codigopaquete"] = true;
+      });
+    } else {
+      setState(() {
+        validados["$codigopaquete"] = false;
+      });
+    }
+  }
+
+  Color colorSelect(dynamic indice, bool seleccionado) {
+    return seleccionado == null || seleccionado == false
+        ? indice % 2 == 0
+            ? StylesThemeData.ITEM_SHADED_COLOR
+            : StylesThemeData.ITEM_UNSHADED_COLOR
+        : StylesThemeData.ITEM_SELECT_COLOR;
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    Widget crearItem(EnvioModel entrega) {
-      String codigopaquete = entrega.codigoPaquete;
-      String destinatario = entrega.usuario;
-      String observacion = entrega.observacion;
-      int id = entrega.id;
+    Widget crearItem(dynamic indice) {
+      String codigopaquete = listaEnviosModel[indice].codigoPaquete;
       return GestureDetector(
           onLongPress: () {
             setState(() {
               validados["$codigopaquete"] = true;
             });
           },
-          onTap: () {
-            bool contienevalidados = validados.containsValue(true);
-            if (contienevalidados && validados["$codigopaquete"] == false) {
-              setState(() {
-                validados["$codigopaquete"] = true;
-              });
-            } else {
-              setState(() {
-                validados["$codigopaquete"] = false;
-              });
-            }
-          },
-          child: Container(
-              height: 70,
-              padding:
-                  const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-              decoration: myBoxDecorationselect(validados["$codigopaquete"]),
-              margin: EdgeInsets.only(bottom: 5),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    height: 35,
-                    child: RichText(
-                      text: TextSpan(
-                        /*defining default style is optional */
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: 'De',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 17)),
-                          TextSpan(
-                              text: ' $destinatario',
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 17)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: Container(
-                          child: Row(
-                    children: <Widget>[
-                      validados["$codigopaquete"] == null ||
-                              validados["$codigopaquete"] == false
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              child: InkWell(
-                                child: Text("$codigopaquete",
-                                    style: TextStyle(color: Colors.blue)),
-                                onTap: () {
-                                  if (!validados.containsValue(true)) {
-                                    trackingPopUp(context, id);
-                                  }
-                                },
-                              ))
-                          : Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text("$codigopaquete",
-                                  style: TextStyle(color: Colors.blue)),
-                            ),
-                      Expanded(
-                          child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Text("$observacion")))
-                    ],
-                  )))
-                ],
-              )));
+          child: ItemWidget(
+              itemHeight: StylesItemData.ITEM_HEIGHT_TWO_TITLE,
+              itemIndice: indice,
+              colorItem: colorSelect(indice, validados["$codigopaquete"]),
+              titulo: listaEnviosModel[indice].usuario == null
+                  ? "De: Envío importado"
+                  : "De: ${listaEnviosModel[indice].usuario}",
+              subSecondtitulo: listaEnviosModel[indice].codigoPaquete,
+              subFivetitulo: listaEnviosModel[indice].observacion,
+              styleTitulo: StylesTitleData.STYLE_TITLE,
+              styleSubTitulo: StylesTitleData.STYLE_SUBTILE,
+              styleSubSecondtitulo: StylesTitleData.STYLE_SUBTILE_OnPressed,
+              onPressedCode: onPressedCode,
+              methodAction: onpressedTap,
+              iconColor: StylesThemeData.ICON_COLOR));
     }
 
     void validarEnvio(List<String> listid, int cantidad) async {
       bool respuestaLista =
           await principalcontroller.guardarLista(context, listid);
       if (respuestaLista) {
-        notificacion(
+        bool respuesta = await notificacion(
             context,
             "success",
             "EXACT",
             cantidad == 1
                 ? "Se recepcionó el envío"
                 : "Se recepcionó los envíos");
-        _navigationService.showModal();
-        listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
-        validados.clear();
-        listaEnviosModel.forEach((element) {
-          String cod = element.codigoPaquete;
-          validados["$cod"] = false;
-        });
-        _navigationService.goBack();
-        setState(() {
-          validados = validados;
-          _bandejaController.text = "";
-          listaEnviosModel = listaEnviosModel;
-        });
+
+        if (respuesta) {
+          _navigationService.showModal();
+          listaEnviosModel = await principalcontroller.listarEnviosPrincipal();
+          validados.clear();
+          listaEnviosModel.forEach((element) {
+            String cod = element.codigoPaquete;
+            validados["$cod"] = false;
+          });
+          _navigationService.goBack();
+          setState(() {
+            validados = validados;
+            listaEnviosModel = listaEnviosModel;
+          });
+          if (listaEnviosModel.isNotEmpty) {
+            selectionText(_bandejaController, focusBandeja, context);
+          }
+        }
       } else {
-        notificacion(
+        bool respuesta = await notificacion(
             context,
             "error",
             "EXACT",
             cantidad == 1
                 ? "No es posible procesar el código"
                 : "No es posible procesar los códigos");
-        validados.clear();
-        setState(() {
-          _bandejaController.text = "";
-        });
+        if (respuesta) {
+          validados.clear();
+          selectionText(_bandejaController, focusBandeja, context);
+        }
       }
     }
 
-    void _validarBandejaText(String value) {
-      if (value != "") {
+    void _validarBandejaText(dynamic valueBandejaController) {
+      if (valueBandejaController != "") {
         List<String> lista = new List();
-        lista.add(value);
+        lista.add(valueBandejaController);
         validarEnvio(lista, 1);
       }
     }
 
     Future _traerdatosescanerBandeja() async {
       if (!validados.containsValue(true)) {
-        qrbarra = await getDataFromCamera();
-        _validarBandejaText(qrbarra);
+        _bandejaController.text = await getDataFromCamera(context);
+        setState(() {
+          _bandejaController.text = _bandejaController.text;
+        });
+        _validarBandejaText(_bandejaController.text);
       }
     }
 
@@ -199,140 +190,49 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
       validarEnvio(listid, 2);
     }
 
-    final sendButton2 = Container(
-        child: ButtonTheme(
-      minWidth: 150.0,
-      height: 50.0,
-      child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          onPressed: () async {
-            registrarLista();
-          },
-          color: Color(0xFF2C6983),
-          child: Text('Recepcionar', style: TextStyle(color: Colors.white))),
-    ) /* RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {
-          registrarLista();
-        },
-        padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-        color: Color(0xFF2C6983),
-        child: Text('Recepcionar', style: TextStyle(color: Colors.white)),
-      ), */
-        );
-
-    Widget _crearListado(List<EnvioModel> listaEnv) {
-      if (listaEnv.length == 0)
-        return Container(
-            child:
-                Center(child: sinResultados("No hay envíos para recepcionar")));
-      return ListView.builder(
-          itemCount: listaEnv.length,
-          itemBuilder: (context, i) => crearItem(listaEnv[i]));
-    }
-
-    var bandeja = TextFormField(
-      keyboardType: TextInputType.text,
-      autofocus: false,
-/*       focusNode: f1,
- */
-      controller: _bandejaController,
-      textInputAction: TextInputAction.done,
-      onFieldSubmitted: (value) {
-        if (!validados.containsValue(true)) {
-          _validarBandejaText(value);
-        } else {
-          _bandejaController.text = "";
-        }
-      },
-      decoration: InputDecoration(
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        filled: true,
-        fillColor: Color(0xFFEAEFF2),
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            color: Color(0xFFEAEFF2),
-            width: 0.0,
-          ),
-        ),
-      ),
-    );
-
-    final campodetextoandIconoBandeja = Row(children: <Widget>[
-      Expanded(
-        child: bandeja,
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.only(left: 15),
-          child: new IconButton(
-              icon: Icon(Icons.camera_alt),
-              tooltip: "Increment",
-              onPressed: _traerdatosescanerBandeja),
-        ),
-      ),
-    ]);
-
     mainscaffold() {
-      return Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  alignment: Alignment.bottomLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 30),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          paddingWidget(
+            Container(
+                margin: const EdgeInsets.only(bottom: 30, top: 20),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: InputWidget(
+                  iconPrefix: IconsData.ICON_QR,
+                    iconSufix: IconsData.ICON_CAMERA,
+                    methodOnPressedSufix: _traerdatosescanerBandeja,
+                    controller: _bandejaController,
+                    focusInput: focusBandeja,
+                    methodOnPressed: _validarBandejaText,
+                    hinttext: "Envío")),
+          ),
+          !respuestaBack
+              ? Expanded(
+                  child: Container(
+                      child: Center(
+                          child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: loadingGet(),
+                ))))
+              : ListItemWidget(
+                  itemWidget: crearItem,
+                  listItems: listaEnviosModel,
+                  mostrarMensaje: true,
+                ),
+          validados.containsValue(true)
+              ? paddingWidget(Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.center,
                   width: double.infinity,
-                  child: principalcontroller.labeltext("Envío")),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 30),
-                  alignment: Alignment.centerLeft,
-                  height: screenHeightExcludingToolbar(context, dividedBy: 12),
-                  width: double.infinity,
-                  child: campodetextoandIconoBandeja),
-            ),
-            !respuestaBack
-                ? Expanded(
-                    child: Container(
-                        child: Center(
-                            child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: loadingGet(),
-                  ))))
-                : Expanded(
-                    child: Container(child: _crearListado(listaEnviosModel))),
-            validados.containsValue(true)
-                ? Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        alignment: Alignment.center,
-                        height:
-                            screenHeightExcludingToolbar(context, dividedBy: 8),
-                        width: double.infinity,
-                        child: sendButton2),
-                  )
-                : Container()
-          ],
-        ),
+                  child: ButtonWidget(
+                      iconoButton: IconsData.ICON_RECEIVE,
+                      onPressed: registrarLista,
+                      colorParam: StylesThemeData.PRIMARY_COLOR,
+                      texto: "Recepcionar")))
+              : Container()
+        ],
       );
     }
 
@@ -344,20 +244,5 @@ class _RecepcionEnvioPageState extends State<RecepcionEnvioPage> {
         drawer: drawerIfPerfil(),
         resizeToAvoidBottomInset: false,
         body: mainscaffold());
-  }
-
-  BoxDecoration myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-    );
-  }
-
-  BoxDecoration myBoxDecorationselect(bool seleccionado) {
-    return BoxDecoration(
-      border: Border.all(color: colorletra),
-      color: seleccionado == null || seleccionado == false
-          ? Colors.white
-          : colorseleccion,
-    );
   }
 }

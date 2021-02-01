@@ -1,8 +1,3 @@
-//import 'dart:convert';
-
-//Menu menuFromJson(String str) => Menu.fromJson(json.decode(str));
-
-//String usuarioFrecuenteToJson(UsuarioFrecuente data) => json.encode(data);
 
 class UsuarioFrecuente {
   

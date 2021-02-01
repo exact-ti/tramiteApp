@@ -12,7 +12,6 @@ class DashboardCoreImpl implements DashboardCoreInterface {
 
   @override
   Future<dynamic> consultarItems() async {
-    dynamic envios = await dashboardProvider.listarIndicadores();
-    return envios;
+    return await dashboardProvider.listarIndicadores();
   }
 }

@@ -11,13 +11,11 @@ class PasswordCore implements IPasswordCore {
 
   @override
   Future submitEmail(String email) async  {
-    dynamic resp = await passwordProvider.submitEmail(email);
-    return resp;
+    return await passwordProvider.submitEmail(email);
   }
 
   @override
   Future changePassword(String passActual, String passNew) async {
-    dynamic resp = await passwordProvider.changePassword(passActual, passNew);
-    return resp;
+    return await passwordProvider.changePassword(passActual, passNew);
   }
 }

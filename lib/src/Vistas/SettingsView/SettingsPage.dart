@@ -1,13 +1,15 @@
 import 'dart:convert';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:settings_ui/settings_ui.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
-import 'package:tramiteapp/src/Util/modals/confirmation.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tramiteapp/src/Vistas/Gestion-password/CambiarPassworPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/Service-Background/BackgroundService.dart';
+import 'package:tramiteapp/src/shared/modals/confirmation.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
+import 'package:tramiteapp/src/styles/Icon_style.dart';
 import 'CountChangePage.dart';
 import 'SettingsController.dart';
 
@@ -27,7 +29,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void cambiarBuzonOrUtd() {
-    dynamic typePerfil = _prefs.tipoperfil == cliente
+    dynamic typePerfil = _prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE
         ? json.decode(_prefs.buzon)
         : json.decode(_prefs.utd);
     if (this.mounted) {
@@ -39,16 +41,30 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    Container _buildDivider() {
+      return Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+        ),
+        width: double.infinity,
+        height: 1.0,
+        color: Colors.grey.shade400,
+      );
+    }
+
+
     Widget mainscaffold() {
-      return SettingsList(
-        sections: [
-          SettingsSection(
-            tiles: [
-              SettingsTile(
-                title: nombreCuenta,
-                subtitle: boolIfPerfil() ? 'Cambiar usuario' : 'Cambiar UTD',
-                leading: Icon(FontAwesomeIcons.userEdit),
-                trailing: Icon(Icons.keyboard_arrow_right),
+      return Container(
+          child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 20, bottom: 20),
+            child: Card(
+              elevation: 8.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              color: StylesThemeData.PRIMARY_COLOR,
+              child: ListTile(
                 onTap: () {
                   Navigator.push(
                     context,
@@ -58,13 +74,40 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ).whenComplete(cambiarBuzonOrUtd);
                 },
+                title: Text(
+                  nombreCuenta,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                leading: CircleAvatar(
+                  child: Text(obtenerInicialesOfString(nombreCuenta)),
+                ),
+                trailing: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
               ),
-              SettingsTile(
-                title: 'Contraseña',
-                subtitle: 'Cambiar contraseña',
-                leading: Icon(FontAwesomeIcons.lock),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                onTap: () {
+            ),
+          ),
+          Card(
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(
+                    IconsData.ICON_PADLOCK,
+                    size: StylesIconData.ICON_SIZE,
+                    color: StylesThemeData.ICON_COLOR,
+                  ),
+                  title: Text('Cambiar contraseña'),
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
+                      size: StylesIconData.ICON_SIZE,
+                      color: StylesThemeData.ICON_COLOR),
+                  onTap: () {
                   Navigator.push(
                     context,
                     PageTransition(
@@ -72,35 +115,45 @@ class _SettingPageState extends State<SettingPage> {
                       child: CambiarPasswordPage(),
                     ),
                   );
-                },
-              ),
-              SettingsTile(
-                title: 'Cerrar sesión',
-                leading: Icon(FontAwesomeIcons.doorOpen),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                onTap: () async {
+                  },
+                ),
+                _buildDivider(),
+                ListTile(
+                  leading: Icon(
+                    IconsData.ICON_EXIT,
+                    size: StylesIconData.ICON_SIZE,
+                    color: StylesThemeData.ICON_COLOR,
+                  ),
+                  title: Text("Cerrar sesión"),
+                  trailing: Icon(IconsData.ICON_SEND_ARROW,
+                      size: StylesIconData.ICON_SIZE,
+                      color: StylesThemeData.ICON_COLOR),
+                  onTap: () async{
                   bool respuestaPop = await confirmacion(context, "success",
                       "EXACT", "¿Seguro que desea cerrar sesión?");
                   if (respuestaPop) {
-                    eliminarpreferences2(context);
+                    BackgroundService.stopBackground();
+                    eliminarpreferences(context);
                   }
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ],
-      );
+      ));
     }
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: primaryColor,
+            backgroundColor: StylesThemeData.PRIMARY_COLOR,
             title: Text("Cuenta",
                 style: TextStyle(
                     fontSize: 18,
                     decorationStyle: TextDecorationStyle.wavy,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.normal))),
+        backgroundColor: Colors.grey.shade200,
         body: scaffoldbody(mainscaffold(), context));
   }
 }

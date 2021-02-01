@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:tramiteapp/src/Enumerator/EstadoAppEnum.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoAppOpenEnum.dart';
 import 'package:tramiteapp/src/Enumerator/EstadoNotificacionEnum.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesController.dart';
 import 'package:tramiteapp/src/Vistas/Notificaciones/NotificacionesPage.dart';
 import 'package:tramiteapp/src/Vistas/SettingsView/SettingsPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
+import 'package:tramiteapp/src/services/locator.dart';
+import 'package:tramiteapp/src/services/navigation_service_file.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'AppBarController.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -31,27 +34,47 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar>
     with WidgetsBindingObserver {
   AppBarController appBarController = new AppBarController();
-  NotificacionController notificacionController = new NotificacionController();
   List<NotificacionModel> listanotificacionesSinVer = new List();
-  NotificacionModel notificacionModel = new NotificacionModel();
+  final NavigationService _navigationService = locator<NavigationService>();
   int estadoApp;
   int idBuzonOrUTD = 0;
+  final _prefs = new PreferenciasUsuario();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state.index != inactivo) {
-      Provider.of<NotificationInfo>(context, listen: false).estadoApp =
-          state.index;
+    if (state.index != EstadoAppOpenEnum.APP_INACTIVO) {
+      Provider.of<NotificationInfo>(context, listen: false).estadoApp = state.index;
+      if (state.index == EstadoAppOpenEnum.APP_RESUMED) {
+        _prefs.estadoAppOpen = true;        
+        print("PRIMERO ES APPBAR");
+        _prefs.openByNotificationPush = null;
+        appBarController.cancelarNotificacionPushByBuzon();
+      }
+      if(state.index == EstadoAppOpenEnum.APP_BACKGROUND){
+        _prefs.estadoAppOpen = false;
+      }
     }
   }
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => listarNotificacionesPendientes());
     listanotificacionesSinVer = [];
     estadoApp = 0;
     registrarIfPerfil();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  void listarNotificacionesPendientes() async {
+    List<NotificacionModel> listanotificacionesPendientes = await appBarController.listarNotificacionesPendientes();
+    Provider.of<NotificationInfo>(context, listen: false).cantidadNotificacion =
+        listanotificacionesPendientes
+            .where((element) =>
+                element.notificacionEstadoModel.id ==
+                EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
+            .toList()
+            .length; 
   }
 
   void registrarIfPerfil() {
@@ -63,6 +86,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   void dirigirHome() {
+    gestionNotificaciones();
     if (boolIfPerfil()) {
       if (idBuzonOrUTD != obtenerBuzonid()) {
         navegarHomeExact(context);
@@ -77,11 +101,16 @@ class _CustomAppBarState extends State<CustomAppBar>
   void gestionNotificaciones() async {
     List<NotificacionModel> listanotificacionesPendientes =
         await appBarController.listarNotificacionesPendientes();
+
     if (this.mounted) {
       setState(() {
         listanotificacionesSinVer = listanotificacionesPendientes
-            .where((element) => element.notificacionEstadoModel.id == pendiente)
+            .where((element) => element.notificacionEstadoModel.id == EstadoNotificacionEnum.NOTIFICACION_PENDIENTE)
             .toList();
+        Provider.of<NotificationInfo>(context, listen: false)
+            .cantidadNotificacion = listanotificacionesSinVer.length;
+                        print("listanotificacionesSinVer"+listanotificacionesSinVer.length.toString());
+
       });
     }
   }
@@ -99,8 +128,6 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   @override
   Widget build(BuildContext context) {
-    final int cantidad =
-        Provider.of<NotificationInfo>(context).cantidadNotificacion;
     Widget myAppBarIcon() {
       return Container(
         width: 30,
@@ -108,12 +135,13 @@ class _CustomAppBarState extends State<CustomAppBar>
         child: Stack(
           children: [
             Icon(
-              Icons.notifications,
+              IconsData.ICON_NOTIFICATIONS,
               color: Colors.white,
               size: 30,
             ),
-            cantidad < 100
-                ? cantidad != 0
+            Provider.of<NotificationInfo>(context).cantidadNotificacion < 100
+                ? Provider.of<NotificationInfo>(context).cantidadNotificacion !=
+                        0
                     ? Container(
                         width: 30,
                         height: 30,
@@ -130,7 +158,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                             padding: const EdgeInsets.all(0.0),
                             child: Center(
                               child: Text(
-                                cantidad.toString(),
+                                "${Provider.of<NotificationInfo>(context).cantidadNotificacion}",
                                 style: TextStyle(fontSize: 10),
                               ),
                             ),
@@ -154,7 +182,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                         padding: const EdgeInsets.all(0.0),
                         child: Center(
                           child: Text(
-                            cantidad.toString(),
+                            "${Provider.of<NotificationInfo>(context).cantidadNotificacion}",
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -167,14 +195,14 @@ class _CustomAppBarState extends State<CustomAppBar>
     }
 
     return AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: StylesThemeData.PRIMARY_COLOR,
         automaticallyImplyLeading:
             widget.leadingbool == null || widget.leadingbool == true
                 ? true
                 : false,
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle, size: 30),
+            icon: Icon(IconsData.ICON_USERCICLE, size: 30),
             onPressed: () async {
               Navigator.push(
                 context,
@@ -183,39 +211,19 @@ class _CustomAppBarState extends State<CustomAppBar>
                   child: SettingPage(),
                 ),
               ).whenComplete(dirigirHome);
-/*               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingPage(),
-                ),
-              ).whenComplete(dirigirHome); */
             },
           ),
           IconButton(
             icon: myAppBarIcon(),
             onPressed: () async {
-              dynamic respuestaBack =
-                  await appBarController.verNotificaciones();
-              if (respuestaBack["status"] == "success") {
-                Provider.of<NotificationInfo>(context, listen: false)
-                    .cantidadNotificacion = 0;
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: NotificacionesPage(),
-                  ),
-                ).whenComplete(gestionNotificaciones);
-/*                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NotificacionesPage(),
-                  ),
-                ).whenComplete(gestionNotificaciones); */
-              } else {
-                notificacion(
-                    context, "error", "EXACT", "Ha surgido un problema");
-              }
+              _navigationService.setCantidadNotificacionBadge(0);
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: NotificacionesPage(),
+                ),
+              ).whenComplete(gestionNotificaciones);
             },
           )
         ],

@@ -26,6 +26,7 @@ class PrincipalController {
         usuarios=null;
       }
     }    
+    usuarios=usuarios;
     return usuarios;
   }
 }

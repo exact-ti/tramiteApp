@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tramiteapp/src/Entity/Menu.dart';
+import 'package:tramiteapp/src/Enumerator/EstadoEntregaEnum.dart';
 import 'package:tramiteapp/src/Enumerator/TipoPerfilEnum.dart';
 import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
 import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
@@ -13,37 +16,17 @@ import 'package:tramiteapp/src/Vistas/Generar-envio/Crear-envio/EnvioController.
 import 'package:tramiteapp/src/Vistas/Login/loginPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/BottomNBPage.dart';
 import 'package:tramiteapp/src/Vistas/layout/Menu-Navigation/DrawerPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
 import 'package:tramiteapp/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:tramiteapp/src/services/notificationProvider.dart';
+import 'package:tramiteapp/src/shared/Widgets/LoadingWidget.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'dart:convert';
-import 'loader.dart';
-import 'modals/information.dart';
 
 EnvioController envioController = new EnvioController();
 Menu menu = new Menu();
 final _prefs = new PreferenciasUsuario();
-
-final primaryColor = Color(0xFF2C6983);
-final colorletra = Color(0xFFACADAD);
-final colorplomo = Color(0xFFEAEFF2);
-final colorblanco = Color(0xFFFFFFFF);
-
-/* int tipoPerfil(String perfilId) {
-  switch (perfilId) {
-    case "1":
-      return exact;
-      break;
-    case "2":
-      return exact;
-    case "3":
-      return exact;
-      break;
-    case "4":
-      return cliente;
-    default:
-      return exact;
-  }
-} */
 
 String titulosPage(int pos) {
   switch (pos) {
@@ -62,27 +45,21 @@ String titulosPage(int pos) {
 void eliminarpreferences(BuildContext context) async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
-      1;
-  sharedPreferences.clear();
-  sharedPreferences.commit();
   if (context != null) {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false);
-  }
-}
-
-void eliminarpreferences2(BuildContext context) async {
-  SharedPreferences sharedPreferences;
-  sharedPreferences = await SharedPreferences.getInstance();
-  Provider.of<NotificationInfo>(context, listen: false).finalizarSubcripcion =
-      1;
-  sharedPreferences.clear();
-  sharedPreferences.commit();
-  if (context != null) {
-    Navigator.of(context, rootNavigator: true).pushReplacement(
-        MaterialPageRoute(builder: (context) => new LoginPage()));
+    if (!isCliente()) {
+      Provider.of<NotificationInfo>(context, listen: false)
+          .finalizarSubcripcion = 1;
+      sharedPreferences.clear();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    } else {
+      Provider.of<NotificationInfo>(context, listen: false)
+          .finalizarSubcripcion = 1;
+      sharedPreferences.clear();
+      Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => new LoginPage()));
+    }
   }
 }
 
@@ -90,7 +67,6 @@ void deletepreferencesWithoutContext() async {
   SharedPreferences sharedPreferences;
   sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
-  sharedPreferences.commit();
 }
 
 void redirection(BuildContext context, String ruta) {
@@ -111,7 +87,8 @@ double screenHeightExcludingToolbar(BuildContext context,
   return screenHeight(context, dividedBy: dividedBy, reducedBy: kToolbarHeight);
 }
 
-Future<String> getDataFromCamera() async {
+Future<String> getDataFromCamera(BuildContext context) async {
+  desenfocarInputfx(context);
   var scanResult = await BarcodeScanner.scan();
   String qrbarra = scanResult;
   return qrbarra;
@@ -125,7 +102,7 @@ void enfocarInputfx(BuildContext context, FocusNode fx) {
 
 void desenfocarInputfx(BuildContext context) {
   FocusScope.of(context).unfocus();
-  FocusScope.of(context).requestFocus(new FocusNode()); //remove focus
+  FocusScope.of(context).requestFocus(new FocusNode());
   new TextEditingController().clear();
 }
 
@@ -137,10 +114,30 @@ void popuptoinput(BuildContext context, FocusNode fx, String tipo,
   }
 }
 
+void popupToInputShade(
+    BuildContext context,
+    TextEditingController textEditingController,
+    FocusNode fx,
+    String tipo,
+    String titulo,
+    String mensaje) async {
+  bool respuestatrue = await notificacion(context, tipo, titulo, mensaje);
+  if (respuestatrue) {
+    selectionText(textEditingController, fx, context);
+  }
+}
+
 BoxDecoration myBoxDecoration(Color colorparam) {
   return BoxDecoration(
       border: Border.all(color: colorparam),
       borderRadius: BorderRadius.circular(5));
+}
+
+Widget paddingWidget(Widget widgetChild) {
+  return Container(
+    padding: const EdgeInsets.only(left: 20, right: 20),
+    child: widgetChild,
+  );
 }
 
 BoxDecoration myBigBoxDecoration(Color colorletra) {
@@ -149,11 +146,26 @@ BoxDecoration myBigBoxDecoration(Color colorletra) {
   );
 }
 
-Widget sinResultados(String mensaje) {
+Widget sinResultados(String mensaje, IconData iconData) {
   return Center(
-      child: Text(mensaje,
-          style: TextStyle(
-              color: colorletra, fontSize: 20, fontWeight: FontWeight.bold)));
+      child: Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      FaIcon(
+        iconData,
+        color: StylesThemeData.ICON_COLOR,
+        size: 100,
+      ),
+      Container(
+          margin: const EdgeInsets.only(top: 15),
+          child: Text(mensaje,
+              style: TextStyle(
+                color: StylesThemeData.LETTER_COLOR,
+                fontSize: 20,
+              )))
+    ],
+  ));
 }
 
 Widget loadingGet() {
@@ -163,7 +175,7 @@ Widget loadingGet() {
     mainAxisSize: MainAxisSize.min,
     children: [
       Container(
-        child: ColorLoader3(
+        child: LoadingWidget(
           radius: 40.0,
           dotRadius: 10.0,
         ),
@@ -172,7 +184,7 @@ Widget loadingGet() {
           margin: EdgeInsets.only(top: 5),
           child: FadingText(
             "Loading",
-            style: TextStyle(fontSize: 20, color: colorletra),
+            style: TextStyle(fontSize: 20, color: StylesThemeData.LETTER_COLOR),
           )),
     ],
   );
@@ -202,8 +214,8 @@ Widget scaffoldbody(Widget principal, BuildContext context) {
 Widget scaffoldbodyLogin(Widget principal, BuildContext context) {
   return SingleChildScrollView(
       child: ConstrainedBox(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height),
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: principal));
 }
 
@@ -221,27 +233,66 @@ int obtenerCantidadMinima() {
   return cantidad;
 }
 
+int obtenerCantidadMinimaCodigoPaquete() {
+  ConfiguracionModel configuracionModel = new ConfiguracionModel();
+  List<dynamic> configuraciones = json.decode(_prefs.configuraciones);
+  List<ConfiguracionModel> configuration =
+      configuracionModel.fromPreferencs(configuraciones);
+  int cantidad = 0;
+  for (ConfiguracionModel confi in configuration) {
+    if (confi.nombre == "MAX_CARACTERES_CODIGO_PAQUETE") {
+      cantidad = int.parse(confi.valor);
+    }
+  }
+  return cantidad;
+}
+
+List<Menu> listMenuUtil() {
+  List<dynamic> menus = json.decode(_prefs.menus);
+  List<Menu> listmenu = menu.fromPreferencs(menus);
+  listmenu.sort((a, b) => a.orden.compareTo(b.orden));
+  listmenu.reversed;
+  return listmenu;
+}
+
 int obtenerUTDid() {
   UtdModel utdModel = new UtdModel();
-  if (_prefs.utd!=null) {
-      Map<String, dynamic> utd = json.decode(_prefs.utd);
-  UtdModel umodel = utdModel.fromPreferencs(utd);
+  if (_prefs.utd != null) {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
     return umodel.id;
-
-  }else{
+  } else {
     return 0;
+  }
+}
+
+UtdModel obtenerUTD() {
+  UtdModel utdModel = new UtdModel();
+  if (_prefs.utd != null) {
+    Map<String, dynamic> utd = json.decode(_prefs.utd);
+    UtdModel umodel = utdModel.fromPreferencs(utd);
+    return umodel;
+  } else {
+    return null;
   }
 }
 
 int obtenerBuzonid() {
   BuzonModel buzonModel = new BuzonModel();
+  if (_prefs.buzon == null) return null;
   Map<String, dynamic> buzon = json.decode(_prefs.buzon);
   BuzonModel bmodel = buzonModel.fromPreferencs(buzon);
   return bmodel.id;
 }
 
+BuzonModel buzonPrincipal() {
+  BuzonModel buzonModel = new BuzonModel();
+  Map<String, dynamic> buzon = json.decode(_prefs.buzon);
+  return buzonModel.fromPreferencs(buzon);
+}
+
 Widget drawerIfPerfil() {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     return null;
   } else {
     return DrawerPage();
@@ -249,7 +300,15 @@ Widget drawerIfPerfil() {
 }
 
 bool boolIfPerfil() {
-  if (_prefs.tipoperfil == cliente) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool isCliente() {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
     return true;
   } else {
     return false;
@@ -263,7 +322,7 @@ void navegarHomeExact(BuildContext context) {
     List<Menu> listmenu = menu.fromPreferencs(menus);
     for (Menu men in listmenu) {
       if (men.home) {
-        if (_prefs.tipoperfil== cliente) {
+        if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>
@@ -277,20 +336,40 @@ void navegarHomeExact(BuildContext context) {
   }
 }
 
-
-void navegarNotificaciones(BuildContext context) {
-        if (_prefs.tipoperfil== cliente) {
+void navegarEnviosActivos(BuildContext context) {
+  Menu menu = new Menu();
+  if (_prefs.menus != null) {
+    List<dynamic> menus = json.decode(_prefs.menus);
+    List<Menu> listmenu = menu.fromPreferencs(menus);
+    for (Menu men in listmenu) {
+      if (men.home) {
+        if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
           Navigator.of(context, rootNavigator: true).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>
-                      new TopLevelWidget(rutaPage: "/notificaciones")));
+                      new TopLevelWidget(rutaPage: men.link)));
         } else {
           Navigator.of(context).pushNamedAndRemoveUntil(
-              "/notificaciones", (Route<dynamic> route) => false);
+              men.link, (Route<dynamic> route) => false);
         }
+      }
+    }
+  }
 }
 
-String validateEmail(String value) {
+void navegarNotificaciones(BuildContext context) {
+  if (_prefs.tipoperfil == TipoPerfilEnum.TIPO_PERFIL_CLIENTE) {
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) =>
+                new TopLevelWidget(rutaPage: "/notificaciones")));
+  } else {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        "/notificaciones", (Route<dynamic> route) => false);
+  }
+}
+
+String validateEmail(dynamic value) {
   if (value == "") {
     return null;
   } else {
@@ -311,5 +390,75 @@ String rutaPrincipal() {
   return listmenu
       .where((element) => element.home)
       .map((e) => e.link)
-      .toList().first;
+      .toList()
+      .first;
 }
+
+Color colorByEstadoDocumento(String nombreEstadoDocumento) {
+  Color color = Colors.white;
+  switch (nombreEstadoDocumento) {
+    case 'Creado':
+      color = Color(0xff004885);
+      break;
+    case 'En ruta':
+      color = Color(0xff1161A4);
+      break;
+    case 'Custodiado':
+      color = Color(0xff269FC0);
+      break;
+    case 'Clasificado':
+      color = StylesThemeData.PRIMARY_COLOR;
+      break;
+    default:
+      color = StylesThemeData.PRIMARY_COLOR;
+      break;
+  }
+
+  return color;
+}
+
+double redondearDouble(double val, int places) {
+  double mod = pow(10.0, places);
+  return ((val * mod).round().toDouble() / mod);
+}
+
+void selectionText(TextEditingController _controller, FocusNode focusInput,
+    BuildContext context) {
+  _controller.selection =
+      TextSelection(baseOffset: 0, extentOffset: _controller.value.text.length);
+  FocusScope.of(context).unfocus();
+  new TextEditingController().clear();
+  FocusScope.of(context).requestFocus(focusInput);
+}
+
+  void notifierAccion(String mensaje, Color colorNotifier,GlobalKey<ScaffoldState> scaffoldkey) {
+    final snack = new SnackBar(
+      content: new Text(mensaje),
+      backgroundColor: colorNotifier,
+    );
+    scaffoldkey.currentState.showSnackBar(snack);
+  }
+
+  String obtenerInicialesOfString(String cadena){
+    String inciales = "";
+     List<String> listCadena = cadena.split(" ");
+     listCadena.forEach((cadena) {
+       inciales=inciales+ cadena[0];
+     });
+     return inciales;
+  }
+
+    IconData iconByEstadoEntrega(int estadoId) {
+    switch (estadoId) {
+      case EstadoEntregaEnum.CREADA:
+        return IconsData.ICON_SEND_ARROW;
+      case EstadoEntregaEnum.INICIADA:
+        return null;
+      case EstadoEntregaEnum.TERMINADA:
+        return null;
+      case EstadoEntregaEnum.TRANSITO:
+        return IconsData.ICON_SEND_ARROW;
+      default:
+        return null;
+    }
+  }

@@ -18,56 +18,47 @@ class EntregaImpl implements EntregaInterface {
 
   @override
   Future<List<EntregaModel>> listarEntregas() async {
-     List<EntregaModel> entregas = await entrega.listarEntregaporUsuario();
-        return entregas;
+        return await entrega.listarEntregaporUsuario();
   }
 
   @override
   Future<List<RecorridoModel>> listarRecorridosUsuario() async {
-     List<RecorridoModel> recorridos = await entrega.listarRecorridoUsuario();
-      return recorridos;
+      return await entrega.listarRecorridoUsuario();
   }
 
   @override
   Future<List<EnvioModel>> listarEnviosValidacion(int recorridoId) async {
-     List<EnvioModel> recorridos = await entrega.listarEnviosValidacion(recorridoId) ;
-      return recorridos;
+      return await entrega.listarEnviosValidacion(recorridoId) ;
   }
 
   @override
   Future<List<RecorridoModel>> listarRecorridosporNombre(String nombre) async {
-     List<RecorridoModel> recorridos = await entrega.listarRecorridoporNombre(nombre);
-      return recorridos;
+      return  await entrega.listarRecorridoporNombre(nombre);
   }
 
   @override
   Future<int>  listarEnviosValidados(List<EnvioModel> envios,int id) async{
-    int i = await entrega.listarEnviosValidados(envios,id);
-    return i;
+    return await entrega.listarEnviosValidados(envios,id);
   }
 
   @override
   Future<EnvioModel> validarCodigo(String codigo,int id) async{
-     EnvioModel envio = await entrega.validarCodigoProvider(codigo,id);
-    return envio;
+    return await entrega.validarCodigoProvider(codigo,id);
   }
 
   @override
   Future<dynamic> listarTurnosByCodigoLote(String codigo)async {
-    dynamic i = await entrega.listarTurnosByCodigoLote(codigo);
-    return i;
+    return await entrega.listarTurnosByCodigoLote(codigo);
   }
 
   @override
   Future<EnvioModel> listarValijaByCodigoLote(String codigo) async{
-    EnvioModel i = await entrega.listarValijaByCodigoLote(codigo);
-    return i;
+    return await entrega.listarValijaByCodigoLote(codigo);
   }
 
   @override
   Future<dynamic> registrarLoteLote(List<EnvioModel> envios, int turnoID, String codigo) async {
-    dynamic i = await entrega.registrarLoteLote(envios,turnoID,codigo);
-    return i;
+    return await entrega.registrarLoteLote(envios,turnoID,codigo);
   }
 
 

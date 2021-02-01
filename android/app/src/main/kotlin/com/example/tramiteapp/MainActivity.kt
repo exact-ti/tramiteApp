@@ -1,35 +1,51 @@
 package com.example.tramiteapp
 
 import android.os.Bundle
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
-import io.flutter.app.FlutterActivity
-import io.flutter.plugins.GeneratedPluginRegistrant
-
-import android.os.Build
-import android.view.ViewTreeObserver
-import android.view.WindowManager
 class MainActivity: FlutterActivity() {
+  
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    val flutter_native_splash = true
-    var originalStatusBarColor = 0
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        originalStatusBarColor = window.statusBarColor
-        window.statusBarColor = 0xff2d98e7.toInt()
-    }
-    val originalStatusBarColorFinal = originalStatusBarColor
-
-    GeneratedPluginRegistrant.registerWith(this)
-    val vto = flutterView.viewTreeObserver
-    vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-      override fun onGlobalLayout() {
-        flutterView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          window.statusBarColor = originalStatusBarColorFinal
-        }
-      }
-    })
-
+        super.onCreate(savedInstanceState)
+        Notifications.createNotificationChannels(this)
   }
+
+      override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        val binaryMessenger = flutterEngine.dartExecutor.binaryMessenger
+        val flutter_native_splash = true
+
+        MethodChannel(binaryMessenger, "com.example/background_service").apply {
+            setMethodCallHandler { method, result ->
+                if (method.method == "startService") {
+                    val callbackRawHandle = method.arguments as Long
+                    BackgroundService.startService(this@MainActivity, callbackRawHandle)
+                    result.success(null)
+                } else {
+                 if (method.method == "stopService") {
+                    val callbackRawHandle = method.arguments as Long
+                    BackgroundService.stopService(this@MainActivity, callbackRawHandle)
+                    result.success(null)
+                } else {
+                    result.notImplemented()
+                }
+                }
+            }
+        }
+
+        MethodChannel(binaryMessenger, "com.example/app_retain").apply {
+            setMethodCallHandler { method, result ->
+                if (method.method == "sendToBackground") {
+                    moveTaskToBack(true)
+                    result.success(null)
+                } else {
+                    result.notImplemented()
+                }
+            }
+        }
+    }
+
 }

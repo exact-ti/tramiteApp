@@ -12,8 +12,7 @@ class UtdImpl implements UtdInterface {
 
   @override
   Future<List<UtdModel>> listarUtds() async {
-  List<UtdModel> utds = await utdProvider.listarUtdsDelUsuarioAutenticado();
-    return utds;
+    return await utdProvider.listarUtdsDelUsuarioAutenticado();
   }
 
 }

@@ -12,7 +12,7 @@ abstract class EnvioInterface {
 
   Future<List<EnvioInterSedeModel>> listarAgenciasUsuario();
 
-  Future<List<EnvioModel>> listarActivos(int switched, List<int> estadosids);
+  Future<List<EnvioModel>> listarActivos(bool porRecibir, List<int> estadosids);
 
   Future<List<EstadoEnvio>> listarEstadosEnvios();
 
@@ -20,6 +20,6 @@ abstract class EnvioInterface {
 
   Future<List<EnvioModel>> listarEnviosHistoricos(String fechaInicio, String fechaFin, int opcion);
 
-  Future<dynamic> retirarEnvio(EnvioModel envioModel, String motivo);
+  Future<dynamic> retirarEnvio(String envioId, String motivo);
   
 }

@@ -1,40 +1,52 @@
 import 'package:dio/dio.dart';
 import 'package:tramiteapp/src/ModelDto/NotificacionModel.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
+import 'package:tramiteapp/src/Util/utils.dart';
 import '../INotificacionProvider.dart';
 
-
 class NotificacionProvider implements INotificacionProvider {
-  
   Requester req = Requester();
-
-  NotificacionModel notificacionclase = new NotificacionModel();
+  NotificacionModel notificacionModel = new NotificacionModel();
 
   @override
-  Future<List<NotificacionModel>> listarNotificacionesPendientes() async {
-    Response resp = await req.get('/servicio-tramite/notificaciones/pendientes');
-     dynamic respuestaData = resp.data;
-    List<dynamic> respdatalist = respuestaData["data"];
-    List<NotificacionModel> listNotificaciones = notificacionclase.fromJsonToNotificacion(respdatalist);
-    return listNotificaciones;
+  Future<List<NotificacionModel>> listarNotificaciones() async {
+    Response resp =
+        await req.get('/servicio-tramite/notificaciones/pendientes');
+    dynamic respuestaData = resp.data;
+    return notificacionModel.fromJsonToNotificacion(respuestaData["data"]);
   }
 
   @override
-  Future<dynamic> modificarNotificacionesVistas() async {
-    Response response =
-        await req.put("/servicio-tramite/notificaciones/visto", null, null);
-        dynamic responsedata = response.data;
-    return responsedata;
+  Future modificarNotificacionesVistas() async {
+    Response response = await req.put("/servicio-tramite/notificaciones/visto",
+        null, {"buzonId": obtenerBuzonid()});
+    return response.data;
   }
 
   @override
-  Future<dynamic> modificarNotificacionesRevisadas(int notificacionId) async {
+  Future modificarNotificacionesRevisadas(int notificacionId) async {
     Response response = await req.put(
         "/servicio-tramite/notificaciones/$notificacionId/revision",
         null,
         null);
-        dynamic responsedata = response.data;
-    return responsedata;
+    return response.data;
   }
 
+  @override
+  Future enviarNotificacionEnAusenciaRecojo(String paqueteId) async {
+    Response resp = await req
+        .post('/servicio-tramite/envios/notificaciones/creadopendiente', null, {
+      "paqueteId": paqueteId,
+    });
+    return resp.data;
+  }
+
+  @override
+  Future notificarMasivoRecojo(int recorridoId) async {
+    Response resp = await req
+        .post('/servicio-tramite/envios/notificaciones/masivo/creadopendiente', null, {
+      "recorridoId": recorridoId,
+    });
+    return resp.data;
+  }
 }

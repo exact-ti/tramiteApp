@@ -14,8 +14,7 @@ class PalomarImpl implements PalomarInterface {
 
   @override
   Future<dynamic> listarPalomarByCodigo(String codigo) async {
-     dynamic palomarModel = await palomar.listarPalomarByCodigo(codigo) ;
-      return palomarModel;
+      return await palomar.listarPalomarByCodigo(codigo) ;
   }
 
 }

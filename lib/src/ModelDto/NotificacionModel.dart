@@ -9,6 +9,7 @@ class NotificacionModel {
   String fecha;
   NotificacionEstadoModel notificacionEstadoModel;
   int id;
+  int buzonId;
 
   List<NotificacionModel> fromJsonToNotificacion(List<dynamic> jsons) {
     List<NotificacionModel> listnotificaciones = new List();
@@ -18,13 +19,14 @@ class NotificacionModel {
       notificacionModel.id = json["id"];
       notificacionModel.mensaje = json["mensaje"];
       notificacionModel.ruta = json["ruta"];
+      notificacionModel.buzonId = json["buzonId"];
       notificacionModel.notificacionEstadoModel=estadoModel.fromJsonToEstado(json["estado"]);
       dynamic dateTimeZone = timezone.parse(json["fecha"]);
       notificacionModel.fecha = "$dateTimeZone";
       DateTime fecha =
           new DateFormat("yyyy-MM-dd hh:mm:ss").parse(notificacionModel.fecha);
       notificacionModel.fecha =
-          DateFormat('yyyy-MM-dd hh:mm:ssa').format(fecha);
+          DateFormat('dd-MM-yyyy hh:mm:ssa').format(fecha);
       listnotificaciones.add(notificacionModel);
     }
     return listnotificaciones;

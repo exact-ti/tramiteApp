@@ -1,10 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:tramiteapp/src/ModelDto/BuzonModel.dart';
-import 'package:tramiteapp/src/ModelDto/ConfiguracionModel.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioInterSede.dart';
 import 'package:tramiteapp/src/ModelDto/EnvioModel.dart';
 import 'package:tramiteapp/src/ModelDto/EstadoEnvio.dart';
-import 'package:tramiteapp/src/ModelDto/UtdModel.dart';
 import 'package:tramiteapp/src/Providers/envios/IEnvioProvider.dart';
 import 'package:tramiteapp/src/Requester/Requester.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
@@ -12,11 +9,8 @@ import 'dart:convert';
 
 class EnvioProvider implements IEnvioProvider {
   Requester req = Requester();
-  ConfiguracionModel configuracionmodel = new ConfiguracionModel();
   EnvioInterSedeModel sedeModel = new EnvioInterSedeModel();
   EnvioModel envioModel = new EnvioModel();
-  UtdModel utdModel = new UtdModel();
-  BuzonModel buzonModel = new BuzonModel();
   EstadoEnvio estadoEnvio = new EstadoEnvio();
 
   @override
@@ -31,7 +25,8 @@ class EnvioProvider implements IEnvioProvider {
     });
 
     try {
-      Response resp = await req.post('/servicio-tramite/envios', formData, null);
+      Response resp =
+          await req.post('/servicio-tramite/envios', formData, null);
       if (resp.data != null || resp.data != "") {
         return true;
       } else {
@@ -42,66 +37,44 @@ class EnvioProvider implements IEnvioProvider {
     }
   }
 
-  //agencias
   @override
   Future<List<EnvioInterSedeModel>> listarEnvioAgenciasByUsuario() async {
     int utdId = obtenerUTDid();
-    Response resp =
-        await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
-    List<dynamic> envios = resp.data;
-    List<EnvioInterSedeModel> listEnvio = sedeModel.fromJsonValidar(envios);
-    return listEnvio;
+    Response resp = await req.get('/servicio-tramite/utds/$utdId/utdsparaentrega');
+    return sedeModel.fromJsonValidar(resp.data);
   }
 
   @override
   Future<List<EnvioModel>> listarEnviosActivosByUsuario(
       List<int> estadosids) async {
-    List<String> ids = new List();
-    estadosids.forEach((element) {
-      ids.add("$element");
-    });
+    List<String> ids = estadosids.map((estadoId) => "$estadoId").toList();
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
     int buzonId = obtenerBuzonid();
     Response resp = await req.get(
         '/servicio-tramite/buzones/$buzonId/envios/salida?etapasIds=$gruposIds');
-    if (resp.data == "") {
-      return null;
-    }
+    if (resp.data == "") return null;
     dynamic respuesta = resp.data;
-    List<dynamic> envio = respuesta["data"];
-    List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
-    return enviosMode;
+    return envioModel.fromEnviadosActivos(respuesta["data"]);
   }
 
   @override
   Future<List<EnvioModel>> listarRecepcionesActivas(
       List<int> estadosids) async {
-    List<String> ids = new List();
-    estadosids.forEach((element) {
-      ids.add("$element");
-    });
+    List<String> ids = estadosids.map((estadoId) => "$estadoId").toList();
     final gruposIds = ids.reduce((value, element) => value + ',' + element);
     int buzonId = obtenerBuzonid();
     Response resp = await req.get(
         '/servicio-tramite/buzones/$buzonId/envios/entrada?etapasIds=$gruposIds');
-    if (resp.data == "") {
-      return null;
-    }
+    if (resp.data == "") return null;
     dynamic respuesta = resp.data;
-    List<dynamic> envio = respuesta["data"];
-    List<EnvioModel> enviosMode = envioModel.fromEnviadosActivos(envio);
-    return enviosMode;
+    return envioModel.fromEnviadosActivos(respuesta["data"]);
   }
 
   @override
   Future<List<EstadoEnvio>> listarEstadosEnvios() async {
-    Response resp =
-        await req.get('/servicio-tramite/etapasenvios?incluirHistoricos=false');
+    Response resp = await req.get('/servicio-tramite/etapasenvios?incluirHistoricos=false');
     dynamic respuestaData = resp.data;
-    List<dynamic> respdatalist = respuestaData["data"];
-    List<EstadoEnvio> listEstados =
-        estadoEnvio.fromJsonToEnviosActivos(respdatalist);
-    return listEstados;
+    return estadoEnvio.fromJsonToEnviosActivos(respuestaData["data"]);
   }
 
   @override
@@ -109,9 +82,7 @@ class EnvioProvider implements IEnvioProvider {
     int utdId = obtenerUTDid();
     Response resp = await req.get('/servicio-tramite/utds/$utdId/envios');
     dynamic respuestaData = resp.data;
-    List<dynamic> respdatalist = respuestaData["data"];
-    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
-    return listEstados;
+    return envioModel.fromEnviosUTD(respuestaData["data"]);
   }
 
   @override
@@ -121,9 +92,7 @@ class EnvioProvider implements IEnvioProvider {
     Response resp = await req.get(
         '/servicio-tramite/buzones/$buzonId/envios/entrada?etapasIds=5&desde=$fechaInicio&hasta=$fechaFin');
     dynamic respuestaData = resp.data;
-    List<dynamic> respdatalist = respuestaData["data"];
-    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
-    return listEstados;
+    return envioModel.fromEnviosUTD(respuestaData["data"]);
   }
 
   @override
@@ -133,21 +102,17 @@ class EnvioProvider implements IEnvioProvider {
     Response resp = await req.get(
         '/servicio-tramite/buzones/$buzonId/envios/salida?etapasIds=5&desde=$fechaInicio&hasta=$fechaFin');
     dynamic respuestaData = resp.data;
-    List<dynamic> respdatalist = respuestaData["data"];
-    List<EnvioModel> listEstados = envioModel.fromEnviosUTD(respdatalist);
-    return listEstados;
+    return envioModel.fromEnviosUTD(respuestaData["data"]);
   }
 
   @override
   Future<dynamic> retirarEnvioProvider(
-      EnvioModel envioModel, String motivo) async {
-    String envioId = envioModel.id.toString();
+      String envioModelId, String motivo) async {
     final Map<String, dynamic> parametros = {
       "motivo": motivo,
     };
     Response resp = await req.put(
-        "/servicio-tramite/envios/$envioId/retiro", null, parametros);
-    dynamic respuestaData = resp.data;
-    return respuestaData;
+        "/servicio-tramite/envios/$envioModelId/retiro", null, parametros);
+    return resp.data;
   }
 }

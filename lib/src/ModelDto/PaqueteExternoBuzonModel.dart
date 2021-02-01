@@ -1,10 +1,15 @@
 
 
+import 'package:flutter/cupertino.dart';
+
 class PaqueteExternoBuzonModel {
 
   String id;  
   String nombre;
   String idBuzon;
+  Widget textIdPaquete;
+  Widget textNombreBuzon;
+  Widget textIdBuzon;
   bool estado;
 
   List<PaqueteExternoBuzonModel> fromJson(List< dynamic> jsons){

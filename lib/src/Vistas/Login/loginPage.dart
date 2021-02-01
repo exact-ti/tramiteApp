@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tramiteapp/src/Util/modals/information.dart';
 import 'package:tramiteapp/src/Util/utils.dart';
-import 'package:tramiteapp/src/Util/widgets/FadeAnimation.dart';
 import 'package:tramiteapp/src/Vistas/gestion-password/RecuperarPasswordPage.dart';
+import 'package:tramiteapp/src/icons/theme_data.dart';
+import 'package:tramiteapp/src/shared/Animations/FadeAnimationWidget.dart';
+import 'package:tramiteapp/src/shared/modals/information.dart';
+import 'package:tramiteapp/src/styles/Color_style.dart';
 import 'loginController.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,19 +15,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  SharedPreferences sharedPreferences;
   bool pressbutton = true;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  FocusNode f1 = FocusNode();
-  FocusNode f2 = FocusNode();
+  LoginController logincontroller = new LoginController();
+  SharedPreferences sharedPreferences;
+  FocusNode focusUsername = FocusNode();
+  FocusNode focusPassword = FocusNode();
   bool passwordVisible = true;
-  String usuario = "";
   String password = "";
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkLoginStatus());
     super.initState();
-    checkLoginStatus();
   }
 
   checkLoginStatus() async {
@@ -33,14 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     if (sharedPreferences.getString("token") != null) {
       if (boolIfPerfil()) {
         if (sharedPreferences.getString("buzon") != null) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/menuBottom', (Route<dynamic> route) => false);
+          logincontroller.openAppPerfilCliente(context);
         }
       } else {
         if (sharedPreferences.getString("utd") != null ||
             sharedPreferences.getString("buzon") != null) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              rutaPrincipal(), (Route<dynamic> route) => false);
+          logincontroller.openAppPerfilOperativo(context);
         }
       }
     }
@@ -48,43 +49,32 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    LoginController logincontroller = new LoginController();
-
-/*     final logo = Hero(
-        tag: 'hero',
-        child: CircleAvatar(
-          backgroundColor: primaryColor,
-          radius: 150.0,
-          child: Image.asset('assets/images/logo-header.PNG',width: 250.0,),
-        ));  */
-
-     final logo = Image.asset('assets/images/logo-header.PNG',width: 250.0,); 
-
+    final logo = Image.asset(
+      'assets/images/logo-header.PNG',
+      width: 250.0,
+    );
 
     void enfocarcodigocontrasena() {
       FocusScope.of(context).unfocus();
-      enfocarInputfx(context, f2);
+      enfocarInputfx(context, focusPassword);
     }
 
     var email = TextFormField(
-/*       onChanged: onChanged,
- */
       controller: _usernameController,
       obscureText: false,
-      focusNode: f1,
-      cursorColor: primaryColor,
+      focusNode: focusUsername,
+      cursorColor: StylesThemeData.PRIMARY_COLOR,
       style: TextStyle(
-        color: primaryColor,
+        color: StylesThemeData.PRIMARY_COLOR,
         fontSize: 20.0,
       ),
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (newValue) {
-        usuario = newValue;
         enfocarcodigocontrasena();
       },
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: primaryColor),
-        focusColor: primaryColor,
+        labelStyle: TextStyle(color: StylesThemeData.PRIMARY_COLOR),
+        focusColor: StylesThemeData.PRIMARY_COLOR,
         filled: true,
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -92,13 +82,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color: StylesThemeData.PRIMARY_COLOR),
         ),
         labelText: "Usuario",
         prefixIcon: Icon(
-          Icons.account_circle,
+          IconsData.ICON_USERCICLE,
           size: 20,
-          color: primaryColor,
+          color: StylesThemeData.PRIMARY_COLOR,
         ),
       ),
     );
@@ -120,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
     void enfocarUsuarioOrContrasena() {
       FocusScope.of(context).unfocus();
       if (_usernameController.text.length == 0) {
-        enfocarInputfx(context, f1);
+        enfocarInputfx(context, focusUsername);
       } else {
         if (pressbutton) {
           pressbutton = false;
@@ -132,10 +122,10 @@ class _LoginPageState extends State<LoginPage> {
     final password = TextFormField(
       obscureText: passwordVisible,
       controller: _passwordController,
-      focusNode: f2,
-      cursorColor: primaryColor,
+      focusNode: focusPassword,
+      cursorColor: StylesThemeData.PRIMARY_COLOR,
       style: TextStyle(
-        color: primaryColor,
+        color: StylesThemeData.PRIMARY_COLOR,
         fontSize: 20.0,
       ),
       onFieldSubmitted: (value) async {
@@ -143,8 +133,8 @@ class _LoginPageState extends State<LoginPage> {
       },
       textInputAction: TextInputAction.send,
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: primaryColor),
-        focusColor: primaryColor,
+        labelStyle: TextStyle(color: StylesThemeData.PRIMARY_COLOR),
+        focusColor: StylesThemeData.PRIMARY_COLOR,
         filled: true,
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -152,13 +142,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color: StylesThemeData.PRIMARY_COLOR),
         ),
         labelText: "Contraseña",
         prefixIcon: Icon(
-          Icons.lock,
+          IconsData.ICON_PADLOCK,
           size: 20,
-          color: primaryColor,
+          color: StylesThemeData.PRIMARY_COLOR,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -167,9 +157,11 @@ class _LoginPageState extends State<LoginPage> {
             });
           },
           child: Icon(
-            !passwordVisible ? Icons.visibility_off : Icons.visibility,
+            !passwordVisible
+                ? IconsData.ICON_EYE_DISABLED
+                : IconsData.ICON_EYE_ENABLED,
             size: 20,
-            color: primaryColor,
+            color: StylesThemeData.PRIMARY_COLOR,
           ),
         ),
       ),
@@ -178,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = Material(
       child: Ink(
         decoration: BoxDecoration(
-          color: primaryColor,
+          color: StylesThemeData.PRIMARY_COLOR,
           borderRadius: BorderRadius.circular(10),
           border: Border.fromBorderSide(BorderSide.none),
         ),
@@ -214,14 +206,16 @@ class _LoginPageState extends State<LoginPage> {
       textAlign: TextAlign.center,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-          fontWeight: FontWeight.bold, fontSize: 30, color: primaryColor),
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+          color: StylesThemeData.PRIMARY_COLOR),
     );
 
     final enlace = InkWell(
       child: Text(
         '¿Olvidaste tu contraseña?',
         style: TextStyle(
-          color: primaryColor,
+          color: StylesThemeData.PRIMARY_COLOR,
           fontWeight: FontWeight.w600,
           fontSize: 16.0,
         ),
@@ -256,9 +250,9 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FadeAnimation(1.7, titulo),
+                FadeAnimationWidget(1.7, titulo),
                 SizedBox(height: 20.0),
-                FadeAnimation(1.7, logo),
+                FadeAnimationWidget(1.7, logo),
               ],
             ),
           ),
@@ -268,13 +262,13 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 24.0),
-                      FadeAnimation(1.7, email),
+                      FadeAnimationWidget(1.7, email),
                       SizedBox(height: 8.0),
-                      FadeAnimation(1.7, password),
+                      FadeAnimationWidget(1.7, password),
                       SizedBox(height: 24.0),
-                      FadeAnimation(1.7, loginButton),
+                      FadeAnimationWidget(1.7, loginButton),
                       SizedBox(height: 8.0),
-                      FadeAnimation(1.7, enlace),
+                      FadeAnimationWidget(1.7, enlace),
                     ],
                   )))
         ],
